@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trình tạo truyện ngụ ngôn</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main>
+    <h1>Trình tạo truyện ngụ ngôn cho trẻ em</h1>
+    <form id="fable-form">
+      <label>Chủ đề
+        <input id="topic" name="topic" required maxlength="200" placeholder="ví dụ: lòng trung thực" />
+      </label>
+      <label>Bài học đạo đức
+        <input id="moral" name="moral" required maxlength="200" placeholder="ví dụ: trung thực luôn được quý mến" />
+      </label>
+      <label>Độ tuổi
+        <input id="age_range" name="age_range" required maxlength="50" placeholder="ví dụ: 6-8 tuổi" />
+      </label>
+      <label class="toggle">
+        <input id="guardrail" type="checkbox" checked />
+        Bật guardrail an toàn nội dung
+      </label>
+      <button type="submit">Tạo truyện</button>
+    </form>
+
+    <section id="status" aria-live="polite">
+      <p id="loading" hidden>Đang sáng tác truyện…</p>
+      <p id="empty">Nhập thông tin và bấm "Tạo truyện" để bắt đầu.</p>
+      <p id="error" class="error" hidden></p>
+      <p id="refused" class="refused" hidden></p>
+      <article id="story" hidden></article>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
