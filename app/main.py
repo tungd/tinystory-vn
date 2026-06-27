@@ -18,6 +18,17 @@ app = FastAPI(title="Vietnamese Fable Generator")
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 MAX_REGEN = 1
 
+MODEL_INFO = {
+    "base": {
+        "label": "Mô hình nền (chưa train)",
+        "desc": 'Mô hình gốc chưa fine-tune trên truyện ngụ ngôn — dùng làm mốc so sánh "trước khi train".',
+    },
+    "tuned": {
+        "label": "Mô hình đã fine-tune",
+        "desc": 'Mô hình đã fine-tune trên bộ truyện ngụ ngôn — kết quả "sau khi train".',
+    },
+}
+
 
 def resolve_model(choice: str) -> str:
     return BASE_MODEL if choice == "base" else TUNED_MODEL
@@ -150,6 +161,14 @@ def generate_stream_endpoint(req: GenerateRequest,
         yield _sse({"type": "done", "status": "refused", "reason": out_reason})
 
     return StreamingResponse(events(), media_type="text/event-stream")
+
+
+@app.get("/models")
+def models():
+    return {
+        "base": {"name": BASE_MODEL, **MODEL_INFO["base"]},
+        "tuned": {"name": TUNED_MODEL, **MODEL_INFO["tuned"]},
+    }
 
 
 # Phục vụ frontend tĩnh (mount sau /generate để không che API)

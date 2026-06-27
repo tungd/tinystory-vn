@@ -122,3 +122,23 @@ form.addEventListener("submit", async (e) => {
   });
   submitBtn.disabled = false;
 });
+
+const modelSelect = document.getElementById("model_choice");
+const modelInfoEl = document.getElementById("model-info");
+let MODEL_INFO = null;
+
+function updateModelInfo() {
+  if (!MODEL_INFO) return;
+  const info = MODEL_INFO[modelSelect.value];
+  if (info) modelInfoEl.textContent = `${info.name} — ${info.desc}`;
+}
+
+async function loadModelInfo() {
+  try {
+    const res = await fetch("/models");
+    if (res.ok) { MODEL_INFO = await res.json(); updateModelInfo(); }
+  } catch (e) { /* bỏ qua: chú thích chỉ là phụ trợ */ }
+}
+
+modelSelect.addEventListener("change", updateModelInfo);
+loadModelInfo();

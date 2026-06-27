@@ -99,3 +99,7 @@ button#submit-btn:disabled { background: #d8cabb; cursor: not-allowed; }
 .state-error { color: var(--danger); font-weight: 600; }
 .state-refused { color: var(--warn); font-weight: 600; }
 .state-story { white-space: pre-wrap; font-size: 1.05rem; }
+.model-info {
+  margin: 0.4rem 0 0; font-size: 0.85rem; color: var(--muted);
+  font-style: italic; line-height: 1.4;
+}

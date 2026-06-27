@@ -160,3 +160,14 @@ def test_length_short_passes_smaller_num_predict():
     client.post("/generate", json={"topic": "tình bạn", "moral": "sẻ chia", "age_range": "6-8 tuổi",
                                    "guardrail_enabled": True, "length": "short"})
     assert captured["num_predict"] == 300
+
+
+def test_models_endpoint_returns_configured_names():
+    r = client.get("/models")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["base"]["name"] == config.BASE_MODEL
+    assert data["tuned"]["name"] == config.TUNED_MODEL
+    # có nhãn + mô tả tiếng Việt
+    assert data["base"]["label"] and data["base"]["desc"]
+    assert data["tuned"]["label"] and data["tuned"]["desc"]
