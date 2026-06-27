@@ -1,3 +1,5 @@
+import json
+
 import httpx
 import pytest
 
@@ -32,3 +34,21 @@ def test_generate_raises_on_http_error(monkeypatch):
     monkeypatch.setattr(oc.httpx, "Client", lambda **kw: _RealClient(transport=_mock_transport(handler), **{k: v for k, v in kw.items() if k != "transport"}))
     with pytest.raises(oc.OllamaError):
         oc.generate(prompt="x", system="y")
+
+
+def test_generate_stream_yields_content_pieces(monkeypatch):
+    body = "\n".join([
+        json.dumps({"message": {"content": "Ngày xưa "}}),
+        json.dumps({"message": {"content": "có một chú thỏ."}}),
+        json.dumps({"done": True}),
+    ])
+
+    def handler(request):
+        assert request.url.path == "/api/chat"
+        return httpx.Response(200, text=body)
+
+    monkeypatch.setattr(oc.httpx, "Client",
+        lambda **kw: _RealClient(transport=_mock_transport(handler),
+                                 **{k: v for k, v in kw.items() if k != "transport"}))
+    pieces = list(oc.generate_stream(prompt="x", system="y"))
+    assert "".join(pieces) == "Ngày xưa có một chú thỏ."

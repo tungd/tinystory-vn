@@ -10,9 +10,12 @@ SYSTEM_PROMPT_GUARDED = (
 SYSTEM_PROMPT_MINIMAL = "Bạn là một trợ lý viết truyện."
 
 
-def build_instruction(topic: str, moral: str, age_range: str) -> str:
-    return (
+def build_instruction(topic: str, moral: str, age_range: str, length_hint: str = "") -> str:
+    base = (
         f"Viết một truyện ngụ ngôn cho trẻ em về chủ đề: {topic.strip()}. "
         f"Bài học đạo đức: {moral.strip()}. "
         f"Độ tuổi phù hợp: {age_range.strip()}."
     )
+    if length_hint:
+        base += " " + length_hint.strip()
+    return base
