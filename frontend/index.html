@@ -3,43 +3,88 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trình tạo truyện ngụ ngôn</title>
+  <title>Trình tạo truyện ngụ ngôn cho trẻ em</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <main>
-    <h1>Trình tạo truyện ngụ ngôn cho trẻ em</h1>
-    <form id="fable-form">
-      <label>Chủ đề
-        <input id="topic" name="topic" required maxlength="200" placeholder="ví dụ: lòng trung thực" />
-      </label>
-      <label>Bài học đạo đức
-        <input id="moral" name="moral" required maxlength="200" placeholder="ví dụ: trung thực luôn được quý mến" />
-      </label>
-      <label>Độ tuổi
-        <input id="age_range" name="age_range" required maxlength="50" placeholder="ví dụ: 6-8 tuổi" />
-      </label>
-      <label>Chọn mô hình
-        <select id="model_choice" name="model_choice">
-          <option value="tuned">Mô hình đã fine-tune</option>
-          <option value="base">Mô hình nền (chưa train)</option>
-        </select>
-      </label>
-      <label class="toggle">
-        <input id="guardrail" type="checkbox" checked />
-        Bật guardrail an toàn nội dung
-      </label>
-      <button type="submit">Tạo truyện</button>
-    </form>
+  <div class="container">
+    <header class="app-header">
+      <h1>📖 Trình tạo truyện ngụ ngôn</h1>
+      <p class="subtitle">Sáng tác truyện ngụ ngôn trong sáng cho trẻ em bằng AI</p>
+    </header>
 
-    <section id="status" aria-live="polite">
-      <p id="loading" hidden>Đang sáng tác truyện…</p>
-      <p id="empty">Nhập thông tin và bấm "Tạo truyện" để bắt đầu.</p>
-      <p id="error" class="error" hidden></p>
-      <p id="refused" class="refused" hidden></p>
-      <article id="story" hidden></article>
-    </section>
-  </main>
+    <main>
+      <section class="card form-card">
+        <form id="fable-form">
+          <div class="field">
+            <label for="topic">Chủ đề</label>
+            <input id="topic" name="topic" required maxlength="200" placeholder="ví dụ: lòng trung thực" />
+          </div>
+          <div class="field">
+            <label for="moral">Bài học đạo đức</label>
+            <input id="moral" name="moral" required maxlength="200" placeholder="ví dụ: trung thực luôn được quý mến" />
+          </div>
+          <div class="field">
+            <label for="age_range">Độ tuổi</label>
+            <input id="age_range" name="age_range" required maxlength="50" placeholder="ví dụ: 6-8 tuổi" />
+          </div>
+
+          <div class="field">
+            <label>Độ dài truyện</label>
+            <div class="segmented" role="radiogroup" aria-label="Độ dài truyện">
+              <input type="radio" id="len-short" name="length" value="short" />
+              <label for="len-short">Ngắn</label>
+              <input type="radio" id="len-medium" name="length" value="medium" checked />
+              <label for="len-medium">Vừa</label>
+              <input type="radio" id="len-long" name="length" value="long" />
+              <label for="len-long">Dài</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="model_choice">Mô hình</label>
+            <select id="model_choice" name="model_choice">
+              <option value="tuned">Mô hình đã fine-tune</option>
+              <option value="base">Mô hình nền (chưa train)</option>
+            </select>
+          </div>
+
+          <div class="field toggle-field">
+            <label class="switch">
+              <input id="guardrail" type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label">
+              Bật guardrail an toàn nội dung
+              <span class="tooltip" tabindex="0" aria-label="Giải thích guardrail">ⓘ
+                <span class="tooltip-text">
+                  Guardrail là cơ chế bảo vệ nhiều lớp: lọc yêu cầu đầu vào, ràng buộc vai trò
+                  của mô hình, và kiểm duyệt truyện sinh ra để đảm bảo nội dung an toàn,
+                  trong sáng, phù hợp với trẻ em. Tắt để quan sát mô hình hoạt động khi
+                  không có lớp bảo vệ (dùng để so sánh).
+                </span>
+              </span>
+            </span>
+          </div>
+
+          <button type="submit" id="submit-btn">Tạo truyện</button>
+        </form>
+      </section>
+
+      <section class="card log-card" id="log-card" hidden>
+        <h2>Quá trình tạo truyện</h2>
+        <ul id="log-list" aria-live="polite"></ul>
+      </section>
+
+      <section class="card result-card" aria-live="polite">
+        <p id="empty" class="state-empty">Nhập thông tin và bấm "Tạo truyện" để bắt đầu.</p>
+        <p id="loading" class="state-loading" hidden>Đang sáng tác truyện…</p>
+        <p id="error" class="state-error" hidden></p>
+        <p id="refused" class="state-refused" hidden></p>
+        <article id="story" class="state-story" hidden></article>
+      </section>
+    </main>
+  </div>
   <script src="/static/app.js"></script>
 </body>
 </html>
