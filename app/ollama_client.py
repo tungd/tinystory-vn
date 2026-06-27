@@ -3,7 +3,7 @@ from collections.abc import Iterator
 
 import httpx
 
-from app.config import MODEL_NAME, OLLAMA_BASE_URL, REQUEST_TIMEOUT_SECONDS
+from app.config import ENABLE_THINKING, MODEL_NAME, OLLAMA_BASE_URL, REQUEST_TIMEOUT_SECONDS
 
 
 class OllamaError(Exception):
@@ -18,6 +18,7 @@ def generate(prompt: str, system: str, model: str | None = None, num_predict: in
             {"role": "user", "content": prompt},
         ],
         "stream": False,
+        "think": ENABLE_THINKING,
     }
     if num_predict is not None:
         payload["options"] = {"num_predict": num_predict}
@@ -44,6 +45,7 @@ def generate_stream(prompt: str, system: str, model: str | None = None,
             {"role": "user", "content": prompt},
         ],
         "stream": True,
+        "think": ENABLE_THINKING,
     }
     if num_predict is not None:
         payload["options"] = {"num_predict": num_predict}

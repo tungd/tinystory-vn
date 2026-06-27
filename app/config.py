@@ -5,6 +5,7 @@ MODEL_NAME = os.getenv("FABLE_MODEL", "fable-tuned")
 REQUEST_TIMEOUT_SECONDS = float(os.getenv("FABLE_TIMEOUT", "120"))
 BASE_MODEL = os.getenv("FABLE_BASE_MODEL", "qwen3:1.7b")
 TUNED_MODEL = os.getenv("FABLE_TUNED_MODEL", "fable-tuned")
+ENABLE_THINKING = os.getenv("FABLE_THINK", "false").lower() == "true"
 
 LENGTH_NUM_PREDICT = {"short": 300, "medium": 600, "long": 1100}
 LENGTH_HINT = {

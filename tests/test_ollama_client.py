@@ -52,3 +52,35 @@ def test_generate_stream_yields_content_pieces(monkeypatch):
                                  **{k: v for k, v in kw.items() if k != "transport"}))
     pieces = list(oc.generate_stream(prompt="x", system="y"))
     assert "".join(pieces) == "Ngày xưa có một chú thỏ."
+
+
+def test_generate_payload_disables_thinking(monkeypatch):
+    seen = {}
+
+    def handler(request):
+        seen.update(json.loads(request.read().decode()))
+        return httpx.Response(200, json={"message": {"content": "ok"}})
+
+    monkeypatch.setattr(oc.httpx, "Client",
+        lambda **kw: _RealClient(transport=_mock_transport(handler),
+                                 **{k: v for k, v in kw.items() if k != "transport"}))
+    oc.generate(prompt="x", system="y")
+    assert seen.get("think") is False
+
+
+def test_generate_stream_payload_disables_thinking(monkeypatch):
+    seen = {}
+    body = "\n".join([
+        json.dumps({"message": {"content": "hello"}}),
+        json.dumps({"done": True}),
+    ])
+
+    def handler(request):
+        seen.update(json.loads(request.read().decode()))
+        return httpx.Response(200, text=body)
+
+    monkeypatch.setattr(oc.httpx, "Client",
+        lambda **kw: _RealClient(transport=_mock_transport(handler),
+                                 **{k: v for k, v in kw.items() if k != "transport"}))
+    list(oc.generate_stream(prompt="x", system="y"))
+    assert seen.get("think") is False
