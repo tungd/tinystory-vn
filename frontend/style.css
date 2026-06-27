@@ -20,7 +20,7 @@ body {
 }
 html, body { height: 100%; }
 .container {
-  max-width: 1200px; margin: 0 auto; padding: 1.25rem 1rem;
+  max-width: 100%; margin: 0; padding: 1.5rem 2rem;
   height: 100vh; display: flex; flex-direction: column; overflow: hidden;
 }
 .app-header { flex-shrink: 0; text-align: center; margin-bottom: 1.5rem; }
@@ -30,13 +30,13 @@ html, body { height: 100%; }
 .layout {
   flex: 1; min-height: 0;
   display: grid;
-  grid-template-columns: minmax(300px, 340px) minmax(0, 1fr) minmax(280px, 360px);
-  gap: 1.25rem;
+  grid-template-columns: 1fr 3fr 1fr;
+  gap: 1.5rem;
 }
 .col { overflow-y: auto; overflow-x: hidden; min-height: 0; }
 .config-col { padding-right: 0.25rem; }
 .col > .card { margin-bottom: 0; }
-.story-col > .card, .log-col > .card { min-height: 100%; }
+.story-col > .card { min-height: 100%; }
 .card {
   background: var(--card); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow);
