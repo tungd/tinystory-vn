@@ -1,13 +1,21 @@
 from fastapi.testclient import TestClient
 
 import app.main as main_mod
+from app import config
 from app.main import app, generate_fn
 
 client = TestClient(app)
 
 
 def _override_generate(text: str):
-    app.dependency_overrides[generate_fn] = lambda: (lambda prompt, system: text)
+    app.dependency_overrides[generate_fn] = lambda: (lambda prompt, system, model=None: text)
+
+
+def _override_capture(captured: dict, text: str = "Ngày xưa có một chú thỏ tốt bụng."):
+    def fake_gen(prompt, system, model=None):
+        captured["model"] = model
+        return text
+    app.dependency_overrides[generate_fn] = lambda: fake_gen
 
 
 def teardown_function():
@@ -52,3 +60,43 @@ def test_guardrail_off_bypasses_filters():
     body = r.json()
     assert body["status"] == "success"  # không lọc input lẫn output
     assert "đụ má" in body["story"]
+
+
+def test_model_choice_base_uses_base_model():
+    captured = {}
+    _override_capture(captured)
+    r = client.post("/generate", json={
+        "topic": "tình bạn", "moral": "biết sẻ chia", "age_range": "6-8 tuổi",
+        "guardrail_enabled": False, "model_choice": "base",
+    })
+    assert r.json()["status"] == "success"
+    assert captured["model"] == config.BASE_MODEL
+
+
+def test_model_choice_tuned_uses_tuned_model():
+    captured = {}
+    _override_capture(captured)
+    r = client.post("/generate", json={
+        "topic": "tình bạn", "moral": "biết sẻ chia", "age_range": "6-8 tuổi",
+        "guardrail_enabled": True, "model_choice": "tuned",
+    })
+    assert r.json()["status"] == "success"
+    assert captured["model"] == config.TUNED_MODEL
+
+
+def test_model_choice_defaults_to_tuned():
+    captured = {}
+    _override_capture(captured)
+    r = client.post("/generate", json={
+        "topic": "tình bạn", "moral": "biết sẻ chia", "age_range": "6-8 tuổi",
+        "guardrail_enabled": True,
+    })
+    assert captured["model"] == config.TUNED_MODEL
+
+
+def test_invalid_model_choice_rejected():
+    r = client.post("/generate", json={
+        "topic": "tình bạn", "moral": "biết sẻ chia", "age_range": "6-8 tuổi",
+        "model_choice": "khong-hop-le",
+    })
+    assert r.status_code == 422  # pydantic Literal validation

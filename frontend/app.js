@@ -26,6 +26,7 @@ form.addEventListener("submit", async (e) => {
         moral: document.getElementById("moral").value,
         age_range: document.getElementById("age_range").value,
         guardrail_enabled: document.getElementById("guardrail").checked,
+        model_choice: document.getElementById("model_choice").value,
       }),
     });
     const data = await res.json();

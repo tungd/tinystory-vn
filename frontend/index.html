@@ -19,6 +19,12 @@
       <label>Độ tuổi
         <input id="age_range" name="age_range" required maxlength="50" placeholder="ví dụ: 6-8 tuổi" />
       </label>
+      <label>Chọn mô hình
+        <select id="model_choice" name="model_choice">
+          <option value="tuned">Mô hình đã fine-tune</option>
+          <option value="base">Mô hình nền (chưa train)</option>
+        </select>
+      </label>
       <label class="toggle">
         <input id="guardrail" type="checkbox" checked />
         Bật guardrail an toàn nội dung

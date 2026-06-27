@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Literal
 
 from fastapi import Depends, FastAPI
 from fastapi.responses import FileResponse
@@ -6,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app import ollama_client
+from app.config import BASE_MODEL, TUNED_MODEL
 from app.guardrail.input_filter import check_input
 from app.guardrail.output_filter import check_output
 from app.prompt import SYSTEM_PROMPT_GUARDED, SYSTEM_PROMPT_MINIMAL, build_instruction
@@ -16,11 +18,16 @@ FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 MAX_REGEN = 1
 
 
+def resolve_model(choice: str) -> str:
+    return BASE_MODEL if choice == "base" else TUNED_MODEL
+
+
 class GenerateRequest(BaseModel):
     topic: str = Field(min_length=1, max_length=200)
     moral: str = Field(min_length=1, max_length=200)
     age_range: str = Field(min_length=1, max_length=50)
     guardrail_enabled: bool = True
+    model_choice: Literal["base", "tuned"] = "tuned"
 
 
 class GenerateResponse(BaseModel):
@@ -37,10 +44,11 @@ def generate_fn():
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest, gen=Depends(generate_fn)) -> GenerateResponse:
     instruction = build_instruction(req.topic, req.moral, req.age_range)
+    model = resolve_model(req.model_choice)
 
     if not req.guardrail_enabled:
         try:
-            story = gen(prompt=instruction, system=SYSTEM_PROMPT_MINIMAL)
+            story = gen(prompt=instruction, system=SYSTEM_PROMPT_MINIMAL, model=model)
         except ollama_client.OllamaError as exc:
             return GenerateResponse(status="error", reason=str(exc))
         return GenerateResponse(status="success", story=story)
@@ -53,7 +61,7 @@ def generate(req: GenerateRequest, gen=Depends(generate_fn)) -> GenerateResponse
     # Lớp 2 + 3: system prompt ràng buộc + model đã học từ chối
     for _ in range(MAX_REGEN + 1):
         try:
-            story = gen(prompt=instruction, system=SYSTEM_PROMPT_GUARDED)
+            story = gen(prompt=instruction, system=SYSTEM_PROMPT_GUARDED, model=model)
         except ollama_client.OllamaError as exc:
             return GenerateResponse(status="error", reason=str(exc))
         # Lớp 4: lọc đầu ra
