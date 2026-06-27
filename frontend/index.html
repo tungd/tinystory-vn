@@ -14,7 +14,7 @@
     </header>
 
     <main class="layout">
-      <aside class="config-col">
+      <aside class="config-col col">
         <section class="card form-card">
           <form id="fable-form">
             <div class="field">
@@ -74,12 +74,7 @@
         </section>
       </aside>
 
-      <div class="output-col">
-        <section class="card log-card" id="log-card" hidden>
-          <h2>Quá trình tạo truyện</h2>
-          <ul id="log-list" aria-live="polite"></ul>
-        </section>
-
+      <section class="story-col col">
         <section class="card result-card" aria-live="polite">
           <p id="empty" class="state-empty">Nhập thông tin và bấm "Tạo truyện" để bắt đầu.</p>
           <p id="loading" class="state-loading" hidden>Đang sáng tác truyện…</p>
@@ -87,7 +82,14 @@
           <p id="refused" class="state-refused" hidden></p>
           <article id="story" class="state-story" hidden></article>
         </section>
-      </div>
+      </section>
+
+      <aside class="log-col col">
+        <section class="card log-card" id="log-card">
+          <h2>Quá trình tạo truyện</h2>
+          <ul id="log-list" aria-live="polite"></ul>
+        </section>
+      </aside>
     </main>
   </div>
   <script src="/static/app.js"></script>

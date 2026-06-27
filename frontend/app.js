@@ -10,6 +10,48 @@ const states = {
   story: document.getElementById("story"),
 };
 
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Render markdown an toàn: escape HTML TRƯỚC, rồi mới áp một tập markdown giới hạn.
+function renderMarkdown(md) {
+  const esc = escapeHtml(md);
+  const inline = (t) =>
+    t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+     .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  const out = [];
+  let listType = null; // "ul" | "ol" | null
+  const closeList = () => { if (listType) { out.push(`</${listType}>`); listType = null; } };
+  for (const raw of esc.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) { closeList(); continue; }
+    let m;
+    if ((m = line.match(/^(#{1,3})\s+(.*)$/))) {
+      closeList();
+      const lvl = m[1].length;
+      out.push(`<h${lvl}>${inline(m[2])}</h${lvl}>`);
+    } else if ((m = line.match(/^[-*]\s+(.*)$/))) {
+      if (listType !== "ul") { closeList(); out.push("<ul>"); listType = "ul"; }
+      out.push(`<li>${inline(m[1])}</li>`);
+    } else if ((m = line.match(/^\d+\.\s+(.*)$/))) {
+      if (listType !== "ol") { closeList(); out.push("<ol>"); listType = "ol"; }
+      out.push(`<li>${inline(m[1])}</li>`);
+    } else {
+      closeList();
+      out.push(`<p>${inline(line)}</p>`);
+    }
+  }
+  closeList();
+  return out.join("");
+}
+
+// Hiển thị truyện hoàn chỉnh ở chế độ markdown.
+function showStory(md) {
+  for (const key of Object.keys(states)) states[key].hidden = key !== "story";
+  states.story.innerHTML = renderMarkdown(md);  // an toàn: nội dung đã được escape trong renderMarkdown
+}
+
 function showState(name, text) {
   for (const key of Object.keys(states)) {
     states[key].hidden = key !== name;
@@ -96,7 +138,7 @@ async function generate(payload) {
           story += ev.text;
           states.story.textContent = story;
         } else if (ev.type === "done") {
-          if (ev.status === "success") showState("story", ev.story);
+          if (ev.status === "success") showStory(ev.story);
           else if (ev.status === "refused") showState("refused", ev.reason);
         } else if (ev.type === "error") {
           showState("error", ev.reason || "Đã có lỗi xảy ra.");
