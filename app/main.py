@@ -21,11 +21,11 @@ MAX_REGEN = 1
 MODEL_INFO = {
     "base": {
         "label": "Mô hình nền (chưa train)",
-        "desc": 'Mô hình gốc chưa fine-tune trên truyện ngụ ngôn — dùng làm mốc so sánh "trước khi train".',
+        "desc": "Qwen3-4B gốc, chưa fine-tune trên truyện ngụ ngôn — mốc so sánh \"trước khi train\".",
     },
     "tuned": {
         "label": "Mô hình đã fine-tune",
-        "desc": 'Mô hình đã fine-tune trên bộ truyện ngụ ngôn — kết quả "sau khi train".',
+        "desc": "Qwen3-4B đã fine-tune (SFT + ORPO) trên truyện ngụ ngôn — kết quả \"sau khi train\".",
     },
 }
 

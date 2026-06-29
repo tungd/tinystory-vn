@@ -162,6 +162,13 @@ def test_length_short_passes_smaller_num_predict():
     assert captured["num_predict"] == 300
 
 
+def test_default_base_model_is_qwen3_4b():
+    import os
+    assert os.getenv("FABLE_BASE_MODEL") in (None, "qwen3:4b")
+    assert config.BASE_MODEL == "qwen3:4b"
+    assert config.TUNED_MODEL == "fable-tuned"
+
+
 def test_models_endpoint_returns_configured_names():
     r = client.get("/models")
     assert r.status_code == 200
