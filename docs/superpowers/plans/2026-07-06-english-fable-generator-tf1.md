@@ -678,3 +678,9 @@ Cập nhật theo spec §12 + [ADR-0002]. Các task thêm/sửa:
 - **Judge registry**: thêm mục judges vào `config/models.json` (hoặc `config/judges.json`) — mỗi judge có `name`, `ollama`, `family` (để đảm bảo "khác họ").
 
 **Ràng buộc khoa học (ADR-0002):** KHÔNG tự chế trục đánh giá; chỉ dùng 4 trục của paper + metric kinh điển (perplexity/Distinct/Self-BLEU/Flesch). Per-generation eval trên UI = chỉ báo nhanh 1 judge; số liệu chuẩn ở batch + Results panel.
+
+### UI chốt sau grill (bổ sung Phase B)
+- **Chart lib**: thêm `recharts` (hoặc tương đương) cho **radar** (eval 4 trục base vs tuned) + **line** (loss curve). Cô lập trong component chart để dễ thay.
+- **Task 8b Compare (cập nhật)**: 2 cột song song base|tuned + khung **Verdict** (radar overlay + Δ + rank). Eval **tự động, non-blocking**: render story trước, radar loading async.
+- **Task 9/9b (cập nhật)**: eval per-gen dùng **radar overlay + bảng**; Results tab = radar batch + bảng metric khách quan + κ/τ + loss curve. Điều hướng **2 tab Playground | Results**.
+- **Eval trigger**: auto cả 2 mode, hiển thị story ngay, điểm load sau (skeleton), KHÔNG chặn UI.

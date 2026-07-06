@@ -158,3 +158,10 @@ Ngoài log các bước guardrail, hiện **panel chi tiết sinh**: model + kin
 - [ ] Results panel đọc `results/eval_summary.json` (eval tổng hợp + objective metrics + κ/τ + loss curve).
 - [ ] Panel chi tiết sinh (params + seed + prompt + tokens + latency + tokens/sec).
 - [ ] `scripts/eval_tf1.py` xuất `eval_summary.json` gồm: 4 trục panel (đa judge) + κ/τ + perplexity + Distinct-1/2 + Self-BLEU + Flesch, cho cả base & fine-tuned.
+
+### 12.6. Chi tiết UI (chốt sau grill)
+- **Trực quan eval**: **radar overlay** 4 trục (base vs fine-tuned chồng nhau) + **bảng số + delta**. Cần thư viện chart radar/line trong React (vd recharts), tương thích Astryx.
+- **Điều hướng**: **2 tab — Playground | Results**. Playground = sinh (Single/Compare) + input + story + log + observability + eval radar; Results = dashboard tổng hợp.
+- **Compare layout**: input chung trên; dưới là **2 cột song song BASE | FINE-TUNED** (mỗi cột có observability riêng); cuối là khung **Verdict**: radar overlay + bảng Δ + câu kết luận theo **thứ hạng** (vd "Tuned thắng 4/4 trục").
+- **Kích hoạt eval**: **luôn tự động** cả 2 mode, NHƯNG **không block UI** — render truyện ngay khi `done`; phần điểm hiện **skeleton/loading** rồi đổ vào radar khi `/evaluate` trả về (Compare: chấm song song cả hai).
+- **Results tab layout**: radar base-vs-tuned (batch) | bảng metric khách quan (perplexity, Distinct-1/2, Self-BLEU, Flesch) | κ + Kendall τ | biểu đồ loss.
