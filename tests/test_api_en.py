@@ -1,6 +1,6 @@
 import json
 from fastapi.testclient import TestClient
-from app.main import app, generate_fn, stream_fn, judge_fn
+from app.main import app, generate_fn, meta_fn, stream_fn, judge_fn
 
 client = TestClient(app)
 
@@ -65,8 +65,13 @@ def test_stream_guardrail_on_bad_input_refused_no_tokens():
 
 
 def test_stream_guardrail_on_clean_input_no_tokens():
-    app.dependency_overrides[generate_fn] = lambda: (
-        lambda prompt, system, **kw: "Once upon a time a kind fox learned to share with friends. The end."
+    app.dependency_overrides[meta_fn] = lambda: (
+        lambda prompt, system, **kw: {
+            "text": "Once upon a time a kind fox learned to share with friends. The end.",
+            "input_tokens": 10,
+            "output_tokens": 20,
+            "latency_ms": 100,
+        }
     )
     ev = _collect(
         {
@@ -117,3 +122,86 @@ def test_invalid_model_id_422_or_error():
     assert [e for e in ev if e["type"] == "error"] or [
         e for e in ev if e["type"] == "done" and e["status"] == "error"
     ]
+
+
+# ── New observability tests ────────────────────────────────────────────────────
+
+META_KEYS = {
+    "model_id", "model_name", "kind", "temperature", "num_predict",
+    "seed", "prompt_sent", "latency_ms", "tokens_per_sec",
+}
+
+
+def test_done_event_has_meta():
+    """Guardrail OFF: done event must contain a meta dict with required keys."""
+    app.dependency_overrides[stream_fn] = lambda: (
+        lambda prompt, system, **kw: iter(["Once ", "upon a time."])
+    )
+    ev = _collect(
+        {
+            "character": "a brave rabbit",
+            "setting": "a forest",
+            "challenge": "a storm",
+            "outcome": "finds shelter",
+            "teaching": "perseverance",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": False,
+        }
+    )
+    done_ev = [e for e in ev if e["type"] == "done"][-1]
+    assert done_ev["status"] == "success"
+    assert "meta" in done_ev, "done event must have a meta dict"
+    meta = done_ev["meta"]
+    for key in META_KEYS:
+        assert key in meta, f"meta missing key: {key}"
+
+
+def test_seed_passed_through():
+    """seed=123 sent in request must appear in done.meta['seed']."""
+    app.dependency_overrides[stream_fn] = lambda: (
+        lambda prompt, system, **kw: iter(["Hello world."])
+    )
+    ev = _collect(
+        {
+            "character": "a turtle",
+            "setting": "",
+            "challenge": "",
+            "outcome": "",
+            "teaching": "",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": False,
+            "seed": 123,
+        }
+    )
+    done_ev = [e for e in ev if e["type"] == "done"][-1]
+    assert done_ev["meta"]["seed"] == 123
+
+
+def test_guardrail_on_done_has_meta_with_input_tokens():
+    """Guardrail ON with meta_fn fake: done.meta must contain input_tokens."""
+    app.dependency_overrides[meta_fn] = lambda: (
+        lambda prompt, system, **kw: {
+            "text": "A kind bear shared honey with all his friends in the forest.",
+            "input_tokens": 42,
+            "output_tokens": 15,
+            "latency_ms": 200,
+        }
+    )
+    ev = _collect(
+        {
+            "character": "a kind bear",
+            "setting": "forest",
+            "challenge": "loneliness",
+            "outcome": "makes friends",
+            "teaching": "generosity",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": True,
+        }
+    )
+    done_ev = [e for e in ev if e["type"] == "done"][-1]
+    assert done_ev["status"] == "success"
+    assert "meta" in done_ev
+    assert done_ev["meta"]["input_tokens"] == 42

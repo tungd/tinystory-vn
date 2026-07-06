@@ -1,4 +1,5 @@
 import json
+import time
 from pathlib import Path
 from typing import Literal
 
@@ -9,7 +10,12 @@ from pydantic import BaseModel, Field
 
 from app import ollama_client, judge
 from app.models_registry import load_models, resolve_ollama
-from app.config import JUDGE_MODEL_ID
+from app.config import (
+    JUDGE_MODEL_ID,
+    GEN_TEMPERATURE,
+    GEN_TOP_P,
+    GEN_REPEAT_PENALTY,
+)
 from app.guardrail.input_filter import check_input_en
 from app.guardrail.output_filter import check_output_en
 from app.prompt_en import (
@@ -34,6 +40,7 @@ class GenReq(BaseModel):
     length: Literal["short", "medium", "long"] = "medium"
     model_id: str = "base-qwen3-4b"
     guardrail_enabled: bool = True
+    seed: int | None = None
 
 
 class EvalReq(BaseModel):
@@ -44,6 +51,10 @@ class EvalReq(BaseModel):
 
 def generate_fn():
     return ollama_client.generate
+
+
+def meta_fn():
+    return ollama_client.generate_meta
 
 
 def stream_fn():
@@ -58,13 +69,26 @@ def _sse(d: dict) -> str:
     return f"data: {json.dumps(d, ensure_ascii=False)}\n\n"
 
 
+def _resolve_model_info(model_id: str) -> tuple[str, str]:
+    """Return (model_name, kind) from registry for a given model_id."""
+    for m in load_models():
+        if m["id"] == model_id:
+            return m.get("name", model_id), m.get("kind", "base")
+    return model_id, "base"
+
+
 @app.get("/models")
 def models():
     return load_models()
 
 
 @app.post("/generate/stream")
-def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(stream_fn)):
+def generate_stream(
+    req: GenReq,
+    gen=Depends(generate_fn),
+    gstream=Depends(stream_fn),
+    gmeta=Depends(meta_fn),
+):
     hint = LENGTH_HINT_EN[req.length]
     num_predict = LENGTH_NUM_PREDICT[req.length]
     prompt = build_fable_prompt(
@@ -78,6 +102,8 @@ def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(strea
             media_type="text/event-stream",
         )
 
+    model_name, kind = _resolve_model_info(req.model_id)
+
     def events():
         if not req.guardrail_enabled:
             yield _sse(
@@ -89,19 +115,45 @@ def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(strea
                 }
             )
             buf = []
+            t0 = time.perf_counter()
             try:
                 for piece in gstream(
                     prompt=prompt,
                     system=SYSTEM_PROMPT_MINIMAL_EN,
                     model=model,
                     num_predict=num_predict,
+                    seed=req.seed,
+                    temperature=GEN_TEMPERATURE,
+                    top_p=GEN_TOP_P,
+                    repeat_penalty=GEN_REPEAT_PENALTY,
                 ):
                     buf.append(piece)
                     yield _sse({"type": "token", "text": piece})
             except ollama_client.OllamaError as e:
                 yield _sse({"type": "error", "reason": str(e)})
                 return
-            yield _sse({"type": "done", "status": "success", "story": "".join(buf)})
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            story_text = "".join(buf)
+            output_tokens = len(story_text.split())
+            tokens_per_sec = (
+                output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
+            )
+            meta = {
+                "model_id": req.model_id,
+                "model_name": model_name,
+                "kind": kind,
+                "temperature": GEN_TEMPERATURE,
+                "top_p": GEN_TOP_P,
+                "repetition_penalty": GEN_REPEAT_PENALTY,
+                "num_predict": num_predict,
+                "seed": req.seed,
+                "prompt_sent": prompt,
+                "input_tokens": 0,
+                "output_tokens": output_tokens,
+                "latency_ms": latency_ms,
+                "tokens_per_sec": round(tokens_per_sec, 2),
+            }
+            yield _sse({"type": "done", "status": "success", "story": story_text, "meta": meta})
             return
 
         # guardrail ON
@@ -136,15 +188,26 @@ def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(strea
                 }
             )
             try:
-                story = gen(
+                result = gmeta(
                     prompt=prompt,
                     system=SYSTEM_PROMPT_EN,
                     model=model,
                     num_predict=num_predict,
+                    seed=req.seed,
+                    temperature=GEN_TEMPERATURE,
+                    top_p=GEN_TOP_P,
+                    repeat_penalty=GEN_REPEAT_PENALTY,
                 )
             except ollama_client.OllamaError as e:
                 yield _sse({"type": "error", "reason": str(e)})
                 return
+            story = result["text"]
+            input_tokens = result.get("input_tokens", 0)
+            output_tokens = result.get("output_tokens", 0)
+            latency_ms = result.get("latency_ms", 0)
+            tokens_per_sec = (
+                output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
+            )
             yield _sse(
                 {
                     "type": "step",
@@ -163,7 +226,22 @@ def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(strea
                         "detail": "Content safe",
                     }
                 )
-                yield _sse({"type": "done", "status": "success", "story": story})
+                meta = {
+                    "model_id": req.model_id,
+                    "model_name": model_name,
+                    "kind": kind,
+                    "temperature": GEN_TEMPERATURE,
+                    "top_p": GEN_TOP_P,
+                    "repetition_penalty": GEN_REPEAT_PENALTY,
+                    "num_predict": num_predict,
+                    "seed": req.seed,
+                    "prompt_sent": prompt,
+                    "input_tokens": input_tokens,
+                    "output_tokens": output_tokens,
+                    "latency_ms": latency_ms,
+                    "tokens_per_sec": round(tokens_per_sec, 2),
+                }
+                yield _sse({"type": "done", "status": "success", "story": story, "meta": meta})
                 return
             reason = out.reason
             yield _sse(
