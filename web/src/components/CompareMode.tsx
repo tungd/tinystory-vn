@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchModels, streamFable } from '../api';
+import type { SSEEvent } from '../api';
 import { StoryStream } from './StoryStream';
 import type { StoryStreamState } from './StoryStream';
 import type { FableMeta } from './ObservabilityPanel';
@@ -145,8 +146,9 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   const [slotA, setSlotA] = useState<SlotState>(EMPTY_SLOT);
   const [slotB, setSlotB] = useState<SlotState>(EMPTY_SLOT);
 
-  // Track the payload that's actively running to avoid re-triggering
-  const runningPayloadRef = useRef<string | null>(null);
+  // Monotonic generation counter — guards against double-firing the same generation
+  const generationCounterRef = useRef<number>(0);
+  const lastFiredCounterRef = useRef<number>(-1);
 
   useEffect(() => {
     fetchModels()
@@ -167,9 +169,11 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   useEffect(() => {
     if (!pendingPayload || !canCompare || !modelA || !modelB) return;
 
-    const key = JSON.stringify({ pendingPayload, modelA, modelB });
-    if (runningPayloadRef.current === key) return;
-    runningPayloadRef.current = key;
+    // Increment counter for each new generation trigger
+    const currentGen = ++generationCounterRef.current;
+    // Guard: if this generation was already fired, skip
+    if (lastFiredCounterRef.current === currentGen) return;
+    lastFiredCounterRef.current = currentGen;
 
     onGenerationStarted();
 
@@ -181,30 +185,22 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
     setSlotB({ streamState: 'generating', tokens: '' });
 
     // Stream A
-    streamFable(payloadA, (e: unknown) => {
-      const event = e as {
-        type: string;
-        token?: string;
-        status?: string;
-        story?: string;
-        reason?: string;
-        meta?: FableMeta;
-      };
-      if (event.type === 'token') {
-        setSlotA((prev) => ({ ...prev, tokens: prev.tokens + (event.token ?? '') }));
-      } else if (event.type === 'done') {
-        if (event.status === 'refused') {
-          setSlotA({ streamState: 'refused', tokens: '', reason: event.reason });
+    streamFable(payloadA, (e: SSEEvent) => {
+      if (e.type === 'token') {
+        setSlotA((prev) => ({ ...prev, tokens: prev.tokens + e.text }));
+      } else if (e.type === 'done') {
+        if (e.status === 'refused') {
+          setSlotA({ streamState: 'refused', tokens: '', reason: e.reason });
         } else {
           setSlotA({
             streamState: 'done',
             tokens: '',
-            finalStory: event.story,
-            meta: event.meta,
+            finalStory: e.story,
+            meta: e.meta as FableMeta | undefined,
           });
         }
-      } else if (event.type === 'error') {
-        setSlotA({ streamState: 'error', tokens: '', reason: event.reason ?? 'Unknown error' });
+      } else if (e.type === 'error') {
+        setSlotA({ streamState: 'error', tokens: '', reason: e.reason });
       }
     }).catch((err: unknown) => {
       const msg = err instanceof Error ? err.message : String(err);
@@ -212,30 +208,22 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
     });
 
     // Stream B
-    streamFable(payloadB, (e: unknown) => {
-      const event = e as {
-        type: string;
-        token?: string;
-        status?: string;
-        story?: string;
-        reason?: string;
-        meta?: FableMeta;
-      };
-      if (event.type === 'token') {
-        setSlotB((prev) => ({ ...prev, tokens: prev.tokens + (event.token ?? '') }));
-      } else if (event.type === 'done') {
-        if (event.status === 'refused') {
-          setSlotB({ streamState: 'refused', tokens: '', reason: event.reason });
+    streamFable(payloadB, (e: SSEEvent) => {
+      if (e.type === 'token') {
+        setSlotB((prev) => ({ ...prev, tokens: prev.tokens + e.text }));
+      } else if (e.type === 'done') {
+        if (e.status === 'refused') {
+          setSlotB({ streamState: 'refused', tokens: '', reason: e.reason });
         } else {
           setSlotB({
             streamState: 'done',
             tokens: '',
-            finalStory: event.story,
-            meta: event.meta,
+            finalStory: e.story,
+            meta: e.meta as FableMeta | undefined,
           });
         }
-      } else if (event.type === 'error') {
-        setSlotB({ streamState: 'error', tokens: '', reason: event.reason ?? 'Unknown error' });
+      } else if (e.type === 'error') {
+        setSlotB({ streamState: 'error', tokens: '', reason: e.reason });
       }
     }).catch((err: unknown) => {
       const msg = err instanceof Error ? err.message : String(err);

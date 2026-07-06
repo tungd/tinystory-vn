@@ -11,6 +11,7 @@ import { ObservabilityPanel } from './components/ObservabilityPanel';
 import type { FableMeta } from './components/ObservabilityPanel';
 import { CompareMode } from './components/CompareMode';
 import { streamFable } from './api';
+import type { SSEEvent } from './api';
 
 type AppTab = 'playground' | 'results';
 type PlaygroundMode = 'single' | 'compare';
@@ -46,60 +47,42 @@ function App() {
     setMeta(null);
     setLogEntries([]);
 
-    streamFable(payload, (e: unknown) => {
-      const event = e as {
-        type: string;
-        // step event fields
-        stage?: string;
-        status?: string;
-        detail?: string;
-        // token event
-        token?: string;
-        // done event
-        story?: string;
-        reason?: string;
-        meta?: FableMeta;
-      };
-
-      if (event.type === 'step') {
-        const stage = event.stage as LogEntry['stage'] | undefined;
-        const status = event.status as LogEntry['status'] | undefined;
-        if (stage && status) {
-          const entry: LogEntry = {
-            id: nextLogId(),
-            stage,
-            status,
-            detail: event.detail,
-            timestamp: new Date(),
-          };
-          setLogEntries((prev) => {
-            // Replace a running entry for the same stage when it transitions to ok/blocked
-            let idx = -1;
-            for (let i = prev.length - 1; i >= 0; i--) {
-              if (prev[i].stage === stage) { idx = i; break; }
-            }
-            if (idx >= 0 && prev[idx].status === 'running' && status !== 'running') {
-              const updated = [...prev];
-              updated[idx] = entry;
-              return updated;
-            }
-            return [...prev, entry];
-          });
-        }
-      } else if (event.type === 'token') {
-        setTokens((prev) => prev + (event.token ?? ''));
-      } else if (event.type === 'done') {
-        if (event.status === 'refused') {
+    streamFable(payload, (e: SSEEvent) => {
+      if (e.type === 'step') {
+        const entry: LogEntry = {
+          id: nextLogId(),
+          stage: e.stage,
+          status: e.status,
+          detail: e.detail,
+          timestamp: new Date(),
+        };
+        setLogEntries((prev) => {
+          // Replace a running entry for the same stage when it transitions to ok/blocked
+          let idx = -1;
+          for (let i = prev.length - 1; i >= 0; i--) {
+            if (prev[i].stage === e.stage) { idx = i; break; }
+          }
+          if (idx >= 0 && prev[idx].status === 'running' && e.status !== 'running') {
+            const updated = [...prev];
+            updated[idx] = entry;
+            return updated;
+          }
+          return [...prev, entry];
+        });
+      } else if (e.type === 'token') {
+        setTokens((prev) => prev + e.text);
+      } else if (e.type === 'done') {
+        if (e.status === 'refused') {
           setStreamState('refused');
-          setReason(event.reason);
+          setReason(e.reason);
         } else {
           setStreamState('done');
-          setFinalStory(event.story);
-          if (event.meta) setMeta(event.meta);
+          setFinalStory(e.story);
+          if (e.meta) setMeta(e.meta as FableMeta);
         }
-      } else if (event.type === 'error') {
+      } else if (e.type === 'error') {
         setStreamState('error');
-        setReason(event.reason ?? 'An unknown error occurred');
+        setReason(e.reason);
       }
     }).catch((err: unknown) => {
       const msg = err instanceof Error ? err.message : String(err);
@@ -192,6 +175,8 @@ function App() {
         >
           {/* Mode toggle */}
           <div
+            role="group"
+            aria-label="Playground mode"
             style={{
               display: 'flex',
               alignItems: 'center',
