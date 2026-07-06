@@ -684,3 +684,5 @@ Cập nhật theo spec §12 + [ADR-0002]. Các task thêm/sửa:
 - **Task 8b Compare (cập nhật)**: 2 cột song song base|tuned + khung **Verdict** (radar overlay + Δ + rank). Eval **tự động, non-blocking**: render story trước, radar loading async.
 - **Task 9/9b (cập nhật)**: eval per-gen dùng **radar overlay + bảng**; Results tab = radar batch + bảng metric khách quan + κ/τ + loss curve. Điều hướng **2 tab Playground | Results**.
 - **Eval trigger**: auto cả 2 mode, hiển thị story ngay, điểm load sau (skeleton), KHÔNG chặn UI.
+- **Base-first UX (Task 8b/9b)**: Compare chọn 2 model từ registry, disable nếu <2 (+tooltip); Results placeholder khi thiếu `eval_summary.json`.
+- **Task 7 (bổ sung)**: input presets (3–5 fable kinh điển điền sẵn 5 ô) + nút "Surprise me". Không làm export.

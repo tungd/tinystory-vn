@@ -165,3 +165,9 @@ Ngoài log các bước guardrail, hiện **panel chi tiết sinh**: model + kin
 - **Compare layout**: input chung trên; dưới là **2 cột song song BASE | FINE-TUNED** (mỗi cột có observability riêng); cuối là khung **Verdict**: radar overlay + bảng Δ + câu kết luận theo **thứ hạng** (vd "Tuned thắng 4/4 trục").
 - **Kích hoạt eval**: **luôn tự động** cả 2 mode, NHƯNG **không block UI** — render truyện ngay khi `done`; phần điểm hiện **skeleton/loading** rồi đổ vào radar khi `/evaluate` trả về (Compare: chấm song song cả hai).
 - **Results tab layout**: radar base-vs-tuned (batch) | bảng metric khách quan (perplexity, Distinct-1/2, Self-BLEU, Flesch) | κ + Kendall τ | biểu đồ loss.
+
+### 12.7. Trạng thái base-first & tiện ích demo (chốt sau grill)
+- **Compare = chọn Model A vs Model B** từ registry (mặc định base vs fine-tuned đầu tiên nếu có). Nếu registry **<2 model** → Compare **disabled + tooltip** "Thêm model fine-tuned để so sánh". → App dùng đủ ở Single trong Pha A/B.
+- **Results tab khi chưa có số liệu**: hiện **placeholder** "Chưa có kết quả đánh giá — chạy batch eval sau khi train" (khi thiếu `results/eval_summary.json`).
+- **Input presets**: 3–5 preset ngụ ngôn kinh điển (điền sẵn 5 yếu tố) + nút **"Surprise me"** (điền ngẫu nhiên). Giúp demo mượt + minh hoạ schema.
+- **Export**: KHÔNG làm (YAGNI) — số liệu cho báo cáo lấy từ batch eval offline (`eval_summary.json`).
