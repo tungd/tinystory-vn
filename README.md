@@ -247,11 +247,13 @@ Cơ chế bảo vệ đảm bảo app chỉ tạo truyện ngụ ngôn trẻ em 
 
 | Lớp | Vị trí | Kiểm tra |
 |---|---|---|
-| **Layer 1** | Đầu vào (`check_input_en`) | Lọc từ cấm (profanity) + mẫu ngoài phạm vi (prompt-injection, yêu cầu viết mã/nội dung người lớn...) → từ chối sớm |
+| **Layer 1** | Đầu vào (`check_input_en`) | Lọc từ cấm (profanity), prompt-injection, yêu cầu viết mã, và **nội dung không dành cho trẻ em**: người lớn/giới hạn tuổi (18+, nsfw, x/r-rated, "adult/mature content"), tình dục (sexual/erotic/nude), bạo lực đồ họa (gore). Từ chối sớm trước khi gọi model. |
 | **Layer 2–3** | Sinh có kiểm soát | System prompt ràng buộc "chỉ viết fable trẻ em", tham số sinh (temperature/top_p/repeat_penalty), thử lại nếu cần |
 | **Layer 4** | Đầu ra (`check_output_en`) | Quét từ cấm + nội dung rỗng trong truyện đã sinh trước khi trả về |
 
-**Bất biến quan trọng**: khi guardrail **ON**, app **không** stream token thô — chỉ phát log các bước và trả **truyện cuối đã lọc** (đảm bảo không lộ nội dung chưa kiểm duyệt).
+> Từ đơn như "adult"/"grown-up" **không** bị chặn (fable có thể có con vật trưởng thành, vd "an adult lion"); chỉ chặn khi có dấu hiệu giới hạn tuổi (18+) hoặc cụm "adult/mature + content/theme/lesson…".
+
+**Bất biến quan trọng**: khi guardrail **ON**, app **không** stream token thô — chỉ phát log các bước và trả **truyện cuối đã lọc** (đảm bảo không lộ nội dung chưa kiểm duyệt). Mọi lần chặn đều được ghi vào Activity Log kèm **lớp + loại vi phạm** (vd `Layer 1 BLOCKED [out_of_scope]`, `Layer 4 BLOCKED`).
 
 ### 8.3. Phương pháp đánh giá (bám ADR-0002)
 
@@ -311,7 +313,19 @@ Judge trả kèm **lý do ngắn có trích dẫn cụ thể từ truyện** cho
 
 ### 10.2. Activity Log
 
-Dòng thời gian các bước xử lý (theo guardrail): **Input check (Layer 1)** → **Generating (Layer 2-3)** → **Output check (Layer 4)**, mỗi bước có trạng thái (running/ok/blocked) + mô tả + timestamp.
+Dòng thời gian chi tiết các bước xử lý, mỗi bước có trạng thái (running/ok/blocked) + mô tả + timestamp:
+
+| Bước | Nội dung log |
+|---|---|
+| **Prepare request** | Độ dài fable, số ký tự prompt, giới hạn token |
+| **Model config** | Tên model + loại (base/finetuned) + tag Ollama + tham số (temperature/top_p/repeat_penalty/seed) |
+| **Input check (Layer 1)** | Kết quả quét đầu vào; nếu chặn: `Layer 1 BLOCKED [<loại>]: <lý do>` |
+| **Generating (Layer 2-3)** | Khi xong: số token sinh, thời gian, tokens/giây, số prompt token |
+| **Output check (Layer 4)** | Kết quả quét đầu ra; nếu chặn: `Layer 4 BLOCKED: <lý do>` (+ số lần thử lại còn lại) |
+
+Nhờ vậy có thể quan sát đầy đủ **model đã dùng gì, sinh nhanh ra sao, và guardrail chặn ở đâu**.
+
+> **Khóa nhập liệu khi đang sinh**: trong lúc generate, toàn bộ Presets/Surprise me, 5 ô nhập, độ dài, model, guardrail bị **disable** và nút chuyển thành **"Generating…"** để tránh sửa giữa chừng.
 
 ### 10.3. Độ dài truyện
 
