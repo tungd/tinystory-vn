@@ -1,0 +1,54 @@
+import { useEffect, useState } from 'react';
+import { Selector } from '@astryxdesign/core/Selector';
+import { fetchModels } from '../api';
+
+interface ModelInfo {
+  model_id: string;
+  name: string;
+  kind?: string;
+  desc?: string;
+}
+
+export interface ModelSelectProps {
+  value: string;
+  onChange: (model_id: string) => void;
+}
+
+export function ModelSelect({ value, onChange }: ModelSelectProps) {
+  const [models, setModels] = useState<ModelInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchModels()
+      .then((data: ModelInfo[]) => {
+        setModels(data);
+        if (data.length > 0 && !value) {
+          onChange(data[0].model_id);
+        }
+      })
+      .catch(() => {
+        // Graceful fallback: show empty list, no crash
+      })
+      .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const options = models.map((m) => ({
+    value: m.model_id,
+    label: m.name,
+    ...(m.kind || m.desc
+      ? { description: [m.kind, m.desc].filter(Boolean).join(' — ') }
+      : {}),
+  }));
+
+  return (
+    <Selector
+      label="Model"
+      options={options}
+      value={value}
+      onChange={onChange}
+      isLoading={loading}
+      placeholder="Select a model…"
+    />
+  );
+}
