@@ -1,22 +1,15 @@
 import { EvalRadar } from './EvalRadar';
+import type { EvalResult } from '../api';
 
 export type EvalState = 'idle' | 'loading' | 'done' | 'error';
 
-export interface EvalScores {
-  grammar: number;
-  creativity: number;
-  moral_clarity: number;
-  prompt_adherence: number;
-  overall: number;
-}
-
 export interface EvalPanelProps {
   state: EvalState;
-  scores: EvalScores | null;
+  scores: EvalResult | null;
   errorMsg?: string;
 }
 
-const AXIS_LABELS: Record<Exclude<keyof EvalScores, 'overall'>, string> = {
+const AXIS_LABELS: Record<Exclude<keyof EvalResult, 'overall'>, string> = {
   grammar: 'Grammar',
   creativity: 'Creativity',
   moral_clarity: 'Moral Clarity',
@@ -222,7 +215,7 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
             fontStyle: 'italic',
           }}
         >
-          Quick 1-judge indicator — see Results tab for canonical metrics.
+          Quick 1-judge indicator. See Results tab for canonical metrics.
         </p>
       </div>
     );

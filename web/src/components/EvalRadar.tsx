@@ -7,24 +7,18 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-
-export interface EvalScores {
-  grammar: number;
-  creativity: number;
-  moral_clarity: number;
-  prompt_adherence: number;
-}
+import type { EvalAxes } from '../api';
 
 export interface EvalSeries {
   name: string;
-  scores: EvalScores;
+  scores: EvalAxes;
 }
 
 export interface EvalRadarProps {
   series: EvalSeries[];
 }
 
-const AXIS_LABELS: Record<keyof EvalScores, string> = {
+const AXIS_LABELS: Record<keyof EvalAxes, string> = {
   grammar: 'Grammar',
   creativity: 'Creativity',
   moral_clarity: 'Moral Clarity',
@@ -34,7 +28,7 @@ const AXIS_LABELS: Record<keyof EvalScores, string> = {
 const COLORS = ['#2563eb', '#16a34a'];
 
 export function EvalRadar({ series }: EvalRadarProps) {
-  const axes = Object.keys(AXIS_LABELS) as (keyof EvalScores)[];
+  const axes = Object.keys(AXIS_LABELS) as (keyof EvalAxes)[];
 
   const chartData = axes.map((axis) => {
     const point: Record<string, string | number> = { axis: AXIS_LABELS[axis] };

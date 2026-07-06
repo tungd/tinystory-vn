@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MdChevronRight, MdExpandMore } from 'react-icons/md';
 
 export interface FableMeta {
   model_id: string;
@@ -159,16 +160,11 @@ export function ObservabilityPanel({ meta }: ObservabilityPanelProps) {
             textAlign: 'left',
           }}
         >
-          <span
-            style={{
-              display: 'inline-block',
-              transition: 'transform 0.15s',
-              transform: promptOpen ? 'rotate(90deg)' : 'rotate(0deg)',
-              fontSize: '0.625rem',
-            }}
-          >
-            ▶
-          </span>
+          {promptOpen ? (
+            <MdExpandMore size={16} aria-hidden="true" />
+          ) : (
+            <MdChevronRight size={16} aria-hidden="true" />
+          )}
           Prompt sent
         </button>
 

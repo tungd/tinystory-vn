@@ -8,10 +8,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { MdBarChart } from 'react-icons/md';
 import { fetchResults } from '../api';
 import { EvalRadar } from './EvalRadar';
 
-// Internal schema — typed defensively
+// Internal schema - typed defensively
 interface ObjectiveMetrics {
   perplexity?: number;
   distinct_1?: number;
@@ -47,7 +48,7 @@ function toEvalSummary(data: unknown): EvalSummary {
 }
 
 function fmt(v: number | undefined, digits = 3): string {
-  return v !== undefined && v !== null ? v.toFixed(digits) : '—';
+  return v !== undefined && v !== null ? v.toFixed(digits) : '-';
 }
 
 type ResultsStatus = 'loading' | 'done';
@@ -111,7 +112,9 @@ export function ResultsPanel() {
           color: 'var(--astryx-color-text-subtle, #6b7280)',
         }}
       >
-        <p style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>📊</p>
+        <p style={{ marginBottom: '0.75rem' }}>
+          <MdBarChart size={36} aria-label="Bar chart" color="var(--astryx-color-text-subtle, #6b7280)" />
+        </p>
         <p
           style={{
             fontWeight: 600,
@@ -259,7 +262,7 @@ export function ResultsPanel() {
                               : 'inherit',
                         }}
                       >
-                        {delta !== undefined ? `${delta > 0 ? '+' : ''}${delta.toFixed(3)}` : '—'}
+                        {delta !== undefined ? `${delta > 0 ? '+' : ''}${delta.toFixed(3)}` : '-'}
                       </td>
                     </tr>
                   );

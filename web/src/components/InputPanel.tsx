@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MdCasino } from 'react-icons/md';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { SegmentedControl } from '@astryxdesign/core/SegmentedControl';
 import { SegmentedControlItem } from '@astryxdesign/core/SegmentedControl';
@@ -113,6 +114,9 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
             onClick={handleSurpriseMe}
             aria-label="Fill with a random preset"
             style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.375rem',
               padding: '0.25rem 0.75rem',
               fontSize: '0.8125rem',
               borderRadius: '9999px',
@@ -123,7 +127,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
               transition: 'background 0.15s',
             }}
           >
-            🎲 Surprise me
+            <MdCasino size={14} aria-hidden="true" style={{ flexShrink: 0 }} /> Surprise me
           </button>
         </div>
       </div>

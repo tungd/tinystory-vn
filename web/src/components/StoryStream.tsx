@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { MdAutoStories, MdCheckCircle, MdBlock, MdErrorOutline } from 'react-icons/md';
 
 export type StoryStreamState = 'empty' | 'generating' | 'done' | 'refused' | 'error';
 
@@ -72,7 +73,9 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
     return (
       <div style={{ ...containerStyle, alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', color: 'var(--astryx-color-text-subtle, #6b7280)' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📖</div>
+          <div style={{ marginBottom: '0.75rem' }}>
+            <MdAutoStories size={40} aria-label="Book" color="var(--astryx-color-text-subtle, #6b7280)" />
+          </div>
           <p style={{ margin: 0, fontSize: '0.9375rem', fontWeight: 500 }}>
             Your fable will appear here
           </p>
@@ -175,7 +178,8 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
             fontWeight: 500,
           }}
         >
-          <span>✅</span> Story generated
+          <MdCheckCircle size={16} aria-hidden="true" color="var(--astryx-color-success, #16a34a)" />
+          Story generated
         </div>
         <div
           style={{
@@ -205,7 +209,7 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
             color: 'var(--astryx-color-text-subtle, #6b7280)',
           }}
         >
-          <span style={{ fontSize: '2rem' }}>⛔</span>
+          <MdBlock size={32} aria-label="Blocked" color="var(--astryx-color-danger, #dc2626)" />
           <p
             style={{
               margin: 0,
@@ -246,7 +250,7 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
             gap: '0.75rem',
           }}
         >
-          <span style={{ fontSize: '2rem' }}>❌</span>
+          <MdErrorOutline size={32} aria-label="Error" color="#dc2626" />
           <p
             style={{
               margin: 0,

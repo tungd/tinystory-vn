@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchModels, streamFable, evaluate } from '../api';
-import type { SSEEvent } from '../api';
+import { MdBalance } from 'react-icons/md';
+import { fetchModels, streamFable, evaluate, isEvalResult } from '../api';
+import type { EvalResult, SSEEvent } from '../api';
 import { StoryStream } from './StoryStream';
 import type { StoryStreamState } from './StoryStream';
 import type { FableMeta } from './ObservabilityPanel';
@@ -29,17 +30,9 @@ const EMPTY_SLOT: SlotState = {
 
 type EvalState = 'idle' | 'loading' | 'done' | 'error';
 
-interface EvalScores {
-  grammar: number;
-  creativity: number;
-  moral_clarity: number;
-  prompt_adherence: number;
-  overall: number;
-}
-
 interface SlotEval {
   state: EvalState;
-  scores: EvalScores | null;
+  scores: EvalResult | null;
   errorMsg?: string;
 }
 
@@ -149,7 +142,7 @@ function ModelDropdown({ label, models, value, onChange, disabledValue }: ModelD
 
 export interface CompareModeProps {
   /**
-   * Narrative fields from InputPanel — passed in when user hits Generate.
+   * Narrative fields from InputPanel - passed in when user hits Generate.
    * null = no generation triggered yet.
    */
   pendingPayload: Omit<FablePayload, 'model_id'> | null;
@@ -167,7 +160,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   const [evalA, setEvalA] = useState<SlotEval>(EMPTY_EVAL);
   const [evalB, setEvalB] = useState<SlotEval>(EMPTY_EVAL);
 
-  // Monotonic generation counter — guards against double-firing the same generation
+  // Monotonic generation counter - guards against double-firing the same generation
   const generationCounterRef = useRef<number>(0);
   const lastFiredCounterRef = useRef<number>(-1);
 
@@ -191,11 +184,13 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
     if (slotA.streamState === 'done' && slotA.finalStory) {
       setEvalA({ state: 'loading', scores: null });
       const prompt = slotA.meta?.prompt_sent ?? '';
-      evaluate(slotA.finalStory, prompt).then((result) => {
-        if ('error' in result) {
-          setEvalA({ state: 'error', scores: null, errorMsg: result.error as string });
+      evaluate(slotA.finalStory, prompt).then((result: unknown) => {
+        if (typeof result === 'object' && result !== null && 'error' in result) {
+          setEvalA({ state: 'error', scores: null, errorMsg: String((result as Record<string, unknown>).error) });
+        } else if (isEvalResult(result)) {
+          setEvalA({ state: 'done', scores: result });
         } else {
-          setEvalA({ state: 'done', scores: result as EvalScores });
+          setEvalA({ state: 'error', scores: null, errorMsg: 'Unexpected evaluation response' });
         }
       }).catch((err: unknown) => {
         setEvalA({ state: 'error', scores: null, errorMsg: err instanceof Error ? err.message : String(err) });
@@ -210,11 +205,13 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
     if (slotB.streamState === 'done' && slotB.finalStory) {
       setEvalB({ state: 'loading', scores: null });
       const prompt = slotB.meta?.prompt_sent ?? '';
-      evaluate(slotB.finalStory, prompt).then((result) => {
-        if ('error' in result) {
-          setEvalB({ state: 'error', scores: null, errorMsg: result.error as string });
+      evaluate(slotB.finalStory, prompt).then((result: unknown) => {
+        if (typeof result === 'object' && result !== null && 'error' in result) {
+          setEvalB({ state: 'error', scores: null, errorMsg: String((result as Record<string, unknown>).error) });
+        } else if (isEvalResult(result)) {
+          setEvalB({ state: 'done', scores: result });
         } else {
-          setEvalB({ state: 'done', scores: result as EvalScores });
+          setEvalB({ state: 'error', scores: null, errorMsg: 'Unexpected evaluation response' });
         }
       }).catch((err: unknown) => {
         setEvalB({ state: 'error', scores: null, errorMsg: err instanceof Error ? err.message : String(err) });
@@ -320,7 +317,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
           textAlign: 'center',
         }}
       >
-        <span style={{ fontSize: '2rem' }}>⚖️</span>
+        <MdBalance size={32} aria-label="Compare" color="var(--astryx-color-text-subtle, #6b7280)" />
         <p style={{ margin: 0, fontWeight: 600, color: 'var(--astryx-color-text, #111827)' }}>
           Compare mode unavailable
         </p>
@@ -382,7 +379,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
               color: 'var(--astryx-color-text-subtle, #6b7280)',
             }}
           >
-            Model A — {models.find((m) => m.model_id === modelA)?.name ?? modelA}
+            Model A: {models.find((m) => m.model_id === modelA)?.name ?? modelA}
           </div>
           <CompactObs meta={slotA.meta} streamState={slotA.streamState} />
           <div style={{ flex: 1 }}>
@@ -406,7 +403,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
               color: 'var(--astryx-color-text-subtle, #6b7280)',
             }}
           >
-            Model B — {models.find((m) => m.model_id === modelB)?.name ?? modelB}
+            Model B: {models.find((m) => m.model_id === modelB)?.name ?? modelB}
           </div>
           <CompactObs meta={slotB.meta} streamState={slotB.streamState} />
           <div style={{ flex: 1 }}>
@@ -420,7 +417,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
         </div>
       </div>
 
-      {/* Verdict — shown once both slots have finished */}
+      {/* Verdict - shown once both slots have finished */}
       {bothDone && (
         <div
           style={{
@@ -429,7 +426,18 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
             padding: '1.5rem',
           }}
         >
-          <p style={{ margin: '0 0 1rem', fontWeight: 700, fontSize: '1rem' }}>⚖️ Verdict</p>
+          <p
+            style={{
+              margin: '0 0 1rem',
+              fontWeight: 700,
+              fontSize: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.375rem',
+            }}
+          >
+            <MdBalance size={18} aria-hidden="true" /> Verdict
+          </p>
           <p
             style={{
               margin: '0 0 0.75rem',
@@ -437,7 +445,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
               color: 'var(--astryx-color-text-subtle, #6b7280)',
             }}
           >
-            Quick 1-judge indicator — see Results tab for canonical metrics.
+            Quick 1-judge indicator. See Results tab for canonical metrics.
           </p>
 
           {/* Loading state */}
@@ -486,24 +494,26 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
               moral_clarity: 'Moral Clarity',
               prompt_adherence: 'Prompt Adherence',
             };
-            const aWins = axes.filter((ax) => evalA.scores![ax] > evalB.scores![ax]).length;
-            const bWins = axes.filter((ax) => evalB.scores![ax] > evalA.scores![ax]).length;
-            const overallDelta = evalB.scores.overall - evalA.scores.overall;
+            const scoresA = evalA.scores as EvalResult;
+            const scoresB = evalB.scores as EvalResult;
+            const aWins = axes.filter((ax) => scoresA[ax] > scoresB[ax]).length;
+            const bWins = axes.filter((ax) => scoresB[ax] > scoresA[ax]).length;
+            const overallDelta = scoresB.overall - scoresA.overall;
             let verdictText: string;
             if (bWins > aWins) {
               verdictText = `Model B ranks higher on ${bWins}/4 axes (overall ${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(2)})`;
             } else if (aWins > bWins) {
               verdictText = `Model A ranks higher on ${aWins}/4 axes (overall ${(-overallDelta) > 0 ? '+' : ''}${(-overallDelta).toFixed(2)} for A)`;
             } else {
-              verdictText = `Tie — each wins ${aWins}/4 axes (overall Δ ${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(2)})`;
+              verdictText = `Tie: each wins ${aWins}/4 axes (overall delta ${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(2)})`;
             }
 
             return (
               <>
                 <EvalRadar
                   series={[
-                    { name: `Model A — ${modelAName}`, scores: evalA.scores },
-                    { name: `Model B — ${modelBName}`, scores: evalB.scores },
+                    { name: `Model A: ${modelAName}`, scores: scoresA },
+                    { name: `Model B: ${modelBName}`, scores: scoresB },
                   ]}
                 />
 
@@ -561,8 +571,8 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
                   </thead>
                   <tbody>
                     {axes.map((axis) => {
-                      const a = evalA.scores![axis];
-                      const b = evalB.scores![axis];
+                      const a = scoresA[axis];
+                      const b = scoresB[axis];
                       const delta = b - a;
                       return (
                         <tr key={axis}>
@@ -622,7 +632,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {evalA.scores.overall.toFixed(2)}
+                        {scoresA.overall.toFixed(2)}
                       </td>
                       <td
                         style={{
@@ -633,7 +643,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
                           fontVariantNumeric: 'tabular-nums',
                         }}
                       >
-                        {evalB.scores.overall.toFixed(2)}
+                        {scoresB.overall.toFixed(2)}
                       </td>
                       <td
                         style={{
@@ -667,7 +677,7 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
                     fontSize: '0.9375rem',
                   }}
                 >
-                  {verdictText} — {modelAName} vs {modelBName}
+                  {verdictText} ({modelAName} vs {modelBName})
                 </p>
               </>
             );

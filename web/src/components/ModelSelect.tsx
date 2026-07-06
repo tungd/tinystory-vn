@@ -37,7 +37,7 @@ export function ModelSelect({ value, onChange }: ModelSelectProps) {
     value: m.model_id,
     label: m.name,
     ...(m.kind || m.desc
-      ? { description: [m.kind, m.desc].filter(Boolean).join(' — ') }
+      ? { description: [m.kind, m.desc].filter(Boolean).join(' - ') }
       : {}),
   }));
 

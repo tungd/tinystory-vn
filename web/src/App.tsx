@@ -13,16 +13,8 @@ import { CompareMode } from './components/CompareMode';
 import { EvalPanel } from './components/EvalPanel';
 import type { EvalState } from './components/EvalPanel';
 import { ResultsPanel } from './components/ResultsPanel';
-import { streamFable, evaluate } from './api';
-import type { SSEEvent } from './api';
-
-interface EvalScores {
-  grammar: number;
-  creativity: number;
-  moral_clarity: number;
-  prompt_adherence: number;
-  overall: number;
-}
+import { streamFable, evaluate, isEvalResult } from './api';
+import type { EvalResult, SSEEvent } from './api';
 
 type AppTab = 'playground' | 'results';
 type PlaygroundMode = 'single' | 'compare';
@@ -46,7 +38,7 @@ function App() {
 
   // Eval state
   const [evalState, setEvalState] = useState<EvalState>('idle');
-  const [evalScores, setEvalScores] = useState<EvalScores | null>(null);
+  const [evalScores, setEvalScores] = useState<EvalResult | null>(null);
   const [evalError, setEvalError] = useState<string | undefined>();
 
   // Compare mode: InputPanel fires a payload; CompareMode picks it up
@@ -99,19 +91,22 @@ function App() {
           setFinalStory(e.story);
           if (e.meta) setMeta(e.meta as FableMeta);
 
-          // Fire async evaluation — capture values from event, not state (async)
+          // Fire async evaluation - capture values from event, not state (async)
           const storyForEval = e.story ?? '';
           const promptForEval = (e.meta as FableMeta | undefined)?.prompt_sent ?? '';
           setEvalState('loading');
           setEvalScores(null);
           setEvalError(undefined);
-          evaluate(storyForEval, promptForEval).then((result) => {
-            if ('error' in result) {
+          evaluate(storyForEval, promptForEval).then((result: unknown) => {
+            if (typeof result === 'object' && result !== null && 'error' in result) {
               setEvalState('error');
-              setEvalError(result.error as string);
-            } else {
+              setEvalError(String((result as Record<string, unknown>).error));
+            } else if (isEvalResult(result)) {
               setEvalState('done');
-              setEvalScores(result as EvalScores);
+              setEvalScores(result);
+            } else {
+              setEvalState('error');
+              setEvalError('Unexpected evaluation response');
             }
           }).catch((err: unknown) => {
             setEvalState('error');
@@ -130,7 +125,7 @@ function App() {
   }
 
   function handleCompareSubmit(payload: FablePayload) {
-    // Strip model_id — CompareMode manages its own model selections
+    // Strip model_id - CompareMode manages its own model selections
     const { model_id: _ignored, ...narrativeFields } = payload;
     void _ignored;
     setComparePayload(narrativeFields);
@@ -142,7 +137,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      {/* ── Header ── */}
+      {/* - Header - */}
       <header
         style={{
           padding: '1.25rem 2rem 0',
@@ -169,7 +164,7 @@ function App() {
         </TabList>
       </header>
 
-      {/* ── Tab: Results ── */}
+      {/* - Tab: Results - */}
       {activeTab === 'results' && (
         <main
           style={{
@@ -184,7 +179,7 @@ function App() {
         </main>
       )}
 
-      {/* ── Tab: Playground ── */}
+      {/* - Tab: Playground - */}
       {activeTab === 'playground' && (
         <main
           style={{
@@ -233,7 +228,7 @@ function App() {
             ))}
           </div>
 
-          {/* ── Single mode: 3-column layout ── */}
+          {/* - Single mode: 3-column layout - */}
           {playgroundMode === 'single' && (
             <div
               style={{
@@ -267,7 +262,7 @@ function App() {
             </div>
           )}
 
-          {/* ── Compare mode ── */}
+          {/* - Compare mode - */}
           {playgroundMode === 'compare' && (
             <div
               style={{

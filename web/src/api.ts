@@ -1,4 +1,33 @@
 export async function fetchModels() { const r = await fetch("/models"); return r.json(); }
+
+// ── Eval types (canonical, single source of truth) ──────────────────────────
+
+/** The 4 scored axes returned by the judge. */
+export interface EvalAxes {
+  grammar: number;
+  creativity: number;
+  moral_clarity: number;
+  prompt_adherence: number;
+}
+
+/** Full evaluation result: 4 axes + weighted overall. */
+export interface EvalResult extends EvalAxes {
+  overall: number;
+}
+
+/** Runtime type guard - verifies all 5 fields are finite numbers. */
+export function isEvalResult(x: unknown): x is EvalResult {
+  if (typeof x !== 'object' || x === null) return false;
+  const obj = x as Record<string, unknown>;
+  return (
+    Number.isFinite(obj.grammar) &&
+    Number.isFinite(obj.creativity) &&
+    Number.isFinite(obj.moral_clarity) &&
+    Number.isFinite(obj.prompt_adherence) &&
+    Number.isFinite(obj.overall)
+  );
+}
+
 export async function evaluate(story: string, prompt: string, judge_model_id?: string) {
   const r = await fetch("/evaluate", {method:"POST", headers:{"Content-Type":"application/json"},
     body: JSON.stringify({story, prompt, judge_model_id})}); return r.json();
