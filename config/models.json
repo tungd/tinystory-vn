@@ -1,0 +1,3 @@
+[
+  {"id": "base-qwen3-4b", "name": "Qwen3-4B (base)", "ollama": "qwen3:4b", "kind": "base", "desc": "Base model, chưa fine-tune"}
+]

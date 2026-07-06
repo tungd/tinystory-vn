@@ -6,6 +6,8 @@ REQUEST_TIMEOUT_SECONDS = float(os.getenv("FABLE_TIMEOUT", "120"))
 BASE_MODEL = os.getenv("FABLE_BASE_MODEL", "qwen3:4b")
 TUNED_MODEL = os.getenv("FABLE_TUNED_MODEL", "fable-tuned")
 ENABLE_THINKING = os.getenv("FABLE_THINK", "false").lower() == "true"
+MODELS_PATH = os.getenv("FABLE_MODELS_PATH", "config/models.json")
+JUDGE_MODEL_ID = os.getenv("FABLE_JUDGE_MODEL_ID", "base-qwen3-4b")
 
 LENGTH_NUM_PREDICT = {"short": 300, "medium": 600, "long": 1100}
 LENGTH_HINT = {
