@@ -33,3 +33,8 @@ export async function streamFable(payload: unknown, onEvent: (e: SSEEvent)=>void
     buf += dec.decode(value,{stream:true}); const parts = buf.split("\n\n"); buf = parts.pop()!;
     for (const p of parts) { const t=p.trim(); if (t.startsWith("data:")) onEvent(JSON.parse(t.slice(5).trim()) as SSEEvent); } }
 }
+
+export async function fetchResults(): Promise<{ available: boolean; data: unknown }> {
+  const r = await fetch("/results");
+  return r.json() as Promise<{ available: boolean; data: unknown }>;
+}

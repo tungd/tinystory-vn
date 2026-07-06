@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchModels, streamFable } from '../api';
+import { fetchModels, streamFable, evaluate } from '../api';
 import type { SSEEvent } from '../api';
 import { StoryStream } from './StoryStream';
 import type { StoryStreamState } from './StoryStream';
 import type { FableMeta } from './ObservabilityPanel';
 import type { FablePayload } from './InputPanel';
+import { EvalRadar } from './EvalRadar';
 
 interface ModelInfo {
   model_id: string;
@@ -25,6 +26,24 @@ const EMPTY_SLOT: SlotState = {
   streamState: 'empty',
   tokens: '',
 };
+
+type EvalState = 'idle' | 'loading' | 'done' | 'error';
+
+interface EvalScores {
+  grammar: number;
+  creativity: number;
+  moral_clarity: number;
+  prompt_adherence: number;
+  overall: number;
+}
+
+interface SlotEval {
+  state: EvalState;
+  scores: EvalScores | null;
+  errorMsg?: string;
+}
+
+const EMPTY_EVAL: SlotEval = { state: 'idle', scores: null };
 
 interface CompactObsProps {
   meta?: FableMeta;
@@ -145,6 +164,8 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   const [modelB, setModelB] = useState('');
   const [slotA, setSlotA] = useState<SlotState>(EMPTY_SLOT);
   const [slotB, setSlotB] = useState<SlotState>(EMPTY_SLOT);
+  const [evalA, setEvalA] = useState<SlotEval>(EMPTY_EVAL);
+  const [evalB, setEvalB] = useState<SlotEval>(EMPTY_EVAL);
 
   // Monotonic generation counter — guards against double-firing the same generation
   const generationCounterRef = useRef<number>(0);
@@ -164,6 +185,44 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   }, []);
 
   const canCompare = models.length >= 2;
+
+  // Auto-eval for slot A when it finishes
+  useEffect(() => {
+    if (slotA.streamState === 'done' && slotA.finalStory) {
+      setEvalA({ state: 'loading', scores: null });
+      const prompt = slotA.meta?.prompt_sent ?? '';
+      evaluate(slotA.finalStory, prompt).then((result) => {
+        if ('error' in result) {
+          setEvalA({ state: 'error', scores: null, errorMsg: result.error as string });
+        } else {
+          setEvalA({ state: 'done', scores: result as EvalScores });
+        }
+      }).catch((err: unknown) => {
+        setEvalA({ state: 'error', scores: null, errorMsg: err instanceof Error ? err.message : String(err) });
+      });
+    } else if (slotA.streamState !== 'done') {
+      setEvalA(EMPTY_EVAL);
+    }
+  }, [slotA.streamState, slotA.finalStory, slotA.meta?.prompt_sent]);
+
+  // Auto-eval for slot B when it finishes
+  useEffect(() => {
+    if (slotB.streamState === 'done' && slotB.finalStory) {
+      setEvalB({ state: 'loading', scores: null });
+      const prompt = slotB.meta?.prompt_sent ?? '';
+      evaluate(slotB.finalStory, prompt).then((result) => {
+        if ('error' in result) {
+          setEvalB({ state: 'error', scores: null, errorMsg: result.error as string });
+        } else {
+          setEvalB({ state: 'done', scores: result as EvalScores });
+        }
+      }).catch((err: unknown) => {
+        setEvalB({ state: 'error', scores: null, errorMsg: err instanceof Error ? err.message : String(err) });
+      });
+    } else if (slotB.streamState !== 'done') {
+      setEvalB(EMPTY_EVAL);
+    }
+  }, [slotB.streamState, slotB.finalStory, slotB.meta?.prompt_sent]);
 
   // Fire off both streams when pendingPayload arrives
   useEffect(() => {
@@ -361,23 +420,270 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
         </div>
       </div>
 
-      {/* Verdict placeholder — shown once both slots have finished */}
+      {/* Verdict — shown once both slots have finished */}
       {bothDone && (
         <div
           style={{
-            border: '1px dashed var(--astryx-color-border, #e5e7eb)',
+            border: '1px solid var(--astryx-color-border, #e5e7eb)',
             borderRadius: '8px',
             padding: '1.5rem',
-            textAlign: 'center',
-            color: 'var(--astryx-color-text-subtle, #6b7280)',
           }}
         >
-          <p style={{ margin: '0 0 0.25rem', fontWeight: 600, fontSize: '0.9375rem' }}>
-            ⚖️ Verdict
+          <p style={{ margin: '0 0 1rem', fontWeight: 700, fontSize: '1rem' }}>⚖️ Verdict</p>
+          <p
+            style={{
+              margin: '0 0 0.75rem',
+              fontSize: '0.75rem',
+              color: 'var(--astryx-color-text-subtle, #6b7280)',
+            }}
+          >
+            Quick 1-judge indicator — see Results tab for canonical metrics.
           </p>
-          <p style={{ margin: 0, fontSize: '0.8125rem' }}>
-            Evaluation coming next — automatic scoring and radar chart will appear here.
-          </p>
+
+          {/* Loading state */}
+          {(evalA.state === 'loading' || evalB.state === 'loading') && (
+            <div
+              role="status"
+              aria-live="polite"
+              aria-label="Evaluating both models"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                borderRadius: '6px',
+                background: 'var(--astryx-color-surface-raised, #f9fafb)',
+                border: '1px solid var(--astryx-color-border, #e5e7eb)',
+                fontSize: '0.875rem',
+                color: 'var(--astryx-color-text-subtle, #6b7280)',
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: '1rem',
+                  height: '1rem',
+                  borderRadius: '50%',
+                  border: '2px solid var(--astryx-color-border, #e5e7eb)',
+                  borderTopColor: '#2563eb',
+                  animation: 'spin 0.75s linear infinite',
+                  flexShrink: 0,
+                }}
+              />
+              Evaluating both models…
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          )}
+
+          {/* Radar + table when both done */}
+          {evalA.state === 'done' && evalB.state === 'done' && evalA.scores && evalB.scores && (() => {
+            const modelAName = models.find((m) => m.model_id === modelA)?.name ?? 'Model A';
+            const modelBName = models.find((m) => m.model_id === modelB)?.name ?? 'Model B';
+            const axes = ['grammar', 'creativity', 'moral_clarity', 'prompt_adherence'] as const;
+            const axisLabels: Record<string, string> = {
+              grammar: 'Grammar',
+              creativity: 'Creativity',
+              moral_clarity: 'Moral Clarity',
+              prompt_adherence: 'Prompt Adherence',
+            };
+            const aWins = axes.filter((ax) => evalA.scores![ax] > evalB.scores![ax]).length;
+            const bWins = axes.filter((ax) => evalB.scores![ax] > evalA.scores![ax]).length;
+            const overallDelta = evalB.scores.overall - evalA.scores.overall;
+            let verdictText: string;
+            if (bWins > aWins) {
+              verdictText = `Model B ranks higher on ${bWins}/4 axes (overall ${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(2)})`;
+            } else if (aWins > bWins) {
+              verdictText = `Model A ranks higher on ${aWins}/4 axes (overall ${(-overallDelta) > 0 ? '+' : ''}${(-overallDelta).toFixed(2)} for A)`;
+            } else {
+              verdictText = `Tie — each wins ${aWins}/4 axes (overall Δ ${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(2)})`;
+            }
+
+            return (
+              <>
+                <EvalRadar
+                  series={[
+                    { name: `Model A — ${modelAName}`, scores: evalA.scores },
+                    { name: `Model B — ${modelBName}`, scores: evalB.scores },
+                  ]}
+                />
+
+                <table
+                  role="table"
+                  aria-label="Per-axis score comparison"
+                  style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '0.8125rem',
+                    marginTop: '1rem',
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th
+                        style={{
+                          textAlign: 'left',
+                          padding: '0.375rem 0.5rem',
+                          borderBottom: '2px solid var(--astryx-color-border, #e5e7eb)',
+                        }}
+                      >
+                        Axis
+                      </th>
+                      <th
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          borderBottom: '2px solid var(--astryx-color-border, #e5e7eb)',
+                          color: '#2563eb',
+                        }}
+                      >
+                        A
+                      </th>
+                      <th
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          borderBottom: '2px solid var(--astryx-color-border, #e5e7eb)',
+                          color: '#16a34a',
+                        }}
+                      >
+                        B
+                      </th>
+                      <th
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          borderBottom: '2px solid var(--astryx-color-border, #e5e7eb)',
+                        }}
+                      >
+                        Δ (B−A)
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {axes.map((axis) => {
+                      const a = evalA.scores![axis];
+                      const b = evalB.scores![axis];
+                      const delta = b - a;
+                      return (
+                        <tr key={axis}>
+                          <td
+                            style={{
+                              padding: '0.375rem 0.5rem',
+                              borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                            }}
+                          >
+                            {axisLabels[axis]}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: 'right',
+                              padding: '0.375rem 0.5rem',
+                              borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                              color: '#2563eb',
+                              fontVariantNumeric: 'tabular-nums',
+                            }}
+                          >
+                            {a.toFixed(1)}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: 'right',
+                              padding: '0.375rem 0.5rem',
+                              borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                              color: '#16a34a',
+                              fontVariantNumeric: 'tabular-nums',
+                            }}
+                          >
+                            {b.toFixed(1)}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: 'right',
+                              padding: '0.375rem 0.5rem',
+                              borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                              fontVariantNumeric: 'tabular-nums',
+                              color: delta > 0 ? '#16a34a' : delta < 0 ? '#dc2626' : 'inherit',
+                            }}
+                          >
+                            {delta > 0 ? '+' : ''}
+                            {delta.toFixed(1)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <tr>
+                      <td style={{ padding: '0.375rem 0.5rem', fontWeight: 600 }}>Overall</td>
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          color: '#2563eb',
+                          fontWeight: 600,
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
+                        {evalA.scores.overall.toFixed(2)}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          color: '#16a34a',
+                          fontWeight: 600,
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
+                        {evalB.scores.overall.toFixed(2)}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          padding: '0.375rem 0.5rem',
+                          fontWeight: 600,
+                          fontVariantNumeric: 'tabular-nums',
+                          color:
+                            overallDelta > 0
+                              ? '#16a34a'
+                              : overallDelta < 0
+                              ? '#dc2626'
+                              : 'inherit',
+                        }}
+                      >
+                        {overallDelta > 0 ? '+' : ''}
+                        {overallDelta.toFixed(2)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p
+                  aria-live="polite"
+                  style={{
+                    margin: '1rem 0 0',
+                    padding: '0.75rem',
+                    background: 'var(--astryx-color-surface-raised, #f9fafb)',
+                    borderRadius: '6px',
+                    fontWeight: 600,
+                    fontSize: '0.9375rem',
+                  }}
+                >
+                  {verdictText} — {modelAName} vs {modelBName}
+                </p>
+              </>
+            );
+          })()}
+
+          {/* Partial errors */}
+          {(evalA.state === 'error' || evalB.state === 'error') && (
+            <p
+              role="alert"
+              style={{ color: '#dc2626', fontSize: '0.8125rem', margin: '0.5rem 0 0' }}
+            >
+              {evalA.state === 'error' ? `Model A eval error: ${evalA.errorMsg ?? 'Unknown'}` : ''}
+              {evalA.state === 'error' && evalB.state === 'error' ? ' ' : ''}
+              {evalB.state === 'error' ? `Model B eval error: ${evalB.errorMsg ?? 'Unknown'}` : ''}
+            </p>
+          )}
         </div>
       )}
     </div>

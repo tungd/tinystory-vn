@@ -10,8 +10,19 @@ import type { LogEntry } from './components/LogPanel';
 import { ObservabilityPanel } from './components/ObservabilityPanel';
 import type { FableMeta } from './components/ObservabilityPanel';
 import { CompareMode } from './components/CompareMode';
-import { streamFable } from './api';
+import { EvalPanel } from './components/EvalPanel';
+import type { EvalState } from './components/EvalPanel';
+import { ResultsPanel } from './components/ResultsPanel';
+import { streamFable, evaluate } from './api';
 import type { SSEEvent } from './api';
+
+interface EvalScores {
+  grammar: number;
+  creativity: number;
+  moral_clarity: number;
+  prompt_adherence: number;
+  overall: number;
+}
 
 type AppTab = 'playground' | 'results';
 type PlaygroundMode = 'single' | 'compare';
@@ -33,6 +44,11 @@ function App() {
   const [meta, setMeta] = useState<FableMeta | null>(null);
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
 
+  // Eval state
+  const [evalState, setEvalState] = useState<EvalState>('idle');
+  const [evalScores, setEvalScores] = useState<EvalScores | null>(null);
+  const [evalError, setEvalError] = useState<string | undefined>();
+
   // Compare mode: InputPanel fires a payload; CompareMode picks it up
   const [comparePayload, setComparePayload] = useState<Omit<FablePayload, 'model_id'> | null>(
     null,
@@ -46,6 +62,9 @@ function App() {
     setReason(undefined);
     setMeta(null);
     setLogEntries([]);
+    setEvalState('idle');
+    setEvalScores(null);
+    setEvalError(undefined);
 
     streamFable(payload, (e: SSEEvent) => {
       if (e.type === 'step') {
@@ -79,6 +98,25 @@ function App() {
           setStreamState('done');
           setFinalStory(e.story);
           if (e.meta) setMeta(e.meta as FableMeta);
+
+          // Fire async evaluation — capture values from event, not state (async)
+          const storyForEval = e.story ?? '';
+          const promptForEval = (e.meta as FableMeta | undefined)?.prompt_sent ?? '';
+          setEvalState('loading');
+          setEvalScores(null);
+          setEvalError(undefined);
+          evaluate(storyForEval, promptForEval).then((result) => {
+            if ('error' in result) {
+              setEvalState('error');
+              setEvalError(result.error as string);
+            } else {
+              setEvalState('done');
+              setEvalScores(result as EvalScores);
+            }
+          }).catch((err: unknown) => {
+            setEvalState('error');
+            setEvalError(err instanceof Error ? err.message : String(err));
+          });
         }
       } else if (e.type === 'error') {
         setStreamState('error');
@@ -135,30 +173,14 @@ function App() {
       {activeTab === 'results' && (
         <main
           style={{
-            padding: '3rem 2rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--astryx-color-text-subtle, #6b7280)',
-            textAlign: 'center',
+            padding: '1.5rem 2rem',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
-          <div>
-            <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📊</p>
-            <p
-              style={{
-                margin: 0,
-                fontWeight: 600,
-                fontSize: '1rem',
-                color: 'var(--astryx-color-text, #111827)',
-              }}
-            >
-              Results
-            </p>
-            <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>
-              Results — coming after evaluation
-            </p>
-          </div>
+          <ResultsPanel />
         </main>
       )}
 
@@ -234,6 +256,7 @@ function App() {
                   finalStory={finalStory}
                   reason={reason}
                 />
+                <EvalPanel state={evalState} scores={evalScores} errorMsg={evalError} />
               </div>
 
               {/* Right: Log + Observability stacked */}
