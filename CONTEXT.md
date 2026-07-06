@@ -26,5 +26,16 @@ Truyện kể **dài, nhiều tình tiết, văn phong hoa mỹ/cổ** (vd Grimm
 ## Model đã fine-tune (Fable-tuned)
 `fable-tuned` — Qwen3-4B đã fine-tune trên dữ liệu ngụ ngôn (SFT + ORPO). Kết quả "sau khi train".
 
+## Evaluation axes (LLM-as-judge)
+4 trục chấm chất lượng fable đầu ra (thang 0–10), theo paper TF1-EN-3M:
+- **Grammar** — độ đúng ngữ pháp/mạch lạc câu chữ.
+- **Creativity** — độ sáng tạo/hấp dẫn của truyện.
+- **Moral Clarity** — bài học có rõ ràng, truyền tải tốt không.
+- **Prompt Adherence** — bám sát các yếu tố narrative người dùng nhập.
+`overall` = trung bình 4 trục. Judge là một LLM khác model sinh (giảm self-bias).
+
+## Base vs Fine-tuned (before/after)
+So sánh cốt lõi của đồ án: **base** (`qwen3:4b`, chưa train) vs **fine-tuned** (train trên TF1). App phải phản ánh khác biệt này (Single mode để xem từng model; Compare mode để đặt cạnh nhau + delta điểm).
+
 ## Guardrail
 Cơ chế bảo vệ nhiều lớp đảm bảo app chỉ tạo truyện ngụ ngôn trẻ em an toàn, từ chối nội dung/yêu cầu ngoài phạm vi.

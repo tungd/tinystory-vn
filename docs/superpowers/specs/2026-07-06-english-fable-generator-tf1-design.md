@@ -124,3 +124,37 @@ Mỗi entry: `id`, `name` (hiển thị), `ollama` (tên model Ollama), `kind` (
 - [ ] Backend: `/models`, `/generate/stream` (SSE, guardrail, model_id), `/evaluate` (4 trục).
 - [ ] Frontend React+Astryx: 3 cột (input / story-stream / logging) + bảng đánh giá.
 - [ ] `scripts/eval_tf1.py`: batch base vs fine-tuned trên test set (4 trục) cho báo cáo.
+
+---
+
+## 12. Revision sau grill (2026-07-06) — app demo khoa học
+
+Đồ án ưu tiên **train model + tính khoa học**; app là công cụ **phản ánh kết quả** một cách trực quan, đầy đủ.
+
+### 12.1. Hai chế độ sinh
+- **Single mode**: chọn 1 model (registry) → sinh → eval nhanh (1 judge, chỉ báo).
+- **Compare mode** (trọng tâm demo): cùng bộ narrative input → sinh **song song base + fine-tuned** (2 khung cạnh nhau) → auto-eval 4 trục cả hai → hiện **delta + thứ hạng**. Đây là cách app "phản ánh kết quả train".
+
+### 12.2. Results panel (số liệu tổng hợp)
+Tab/panel đọc `results/eval_summary.json` (do `scripts/eval_tf1.py` xuất) hiển thị:
+- Bảng **4 trục base vs fine-tuned + delta + N mẫu** + **thứ hạng** (kết luận theo rank).
+- **Metric khách quan**: perplexity (base vs tuned), Distinct-1/2, Self-BLEU, Flesch.
+- **Độ tin cậy judge**: Cohen's κ, Kendall's τ.
+- **Đường cong loss** train (đọc metrics JSON từ notebook).
+Biến demo thành "báo cáo sống".
+
+### 12.3. Full observability (mỗi lần sinh)
+Ngoài log các bước guardrail, hiện **panel chi tiết sinh**: model + kind, tham số (temperature, top_p, repetition_penalty, num_predict, **seed**), **PROMPT thực gửi**, token in/out, latency, tokens/sec. Phục vụ minh bạch + tái lập.
+
+### 12.4. Đánh giá — BÁM CHUẨN KHOA HỌC (xem [ADR-0002])
+Đánh giá base vs fine-tuned KHÔNG tự chế tiêu chí; dùng đúng phương pháp paper TF1 + metric kinh điển:
+- **Khách quan**: perplexity (held-out), Distinct-1/2, Self-BLEU, Flesch Reading Ease.
+- **LLM-judge panel** ≥2–3 model khác họ, 4 trục paper (Grammar & Style, Creativity, Moral Clarity, Prompt Adherence, 1–10).
+- **Agreement**: weighted Cohen's κ + Kendall's τ; kết luận before/after **theo thứ hạng** (không dựa điểm tuyệt đối 1 judge).
+- Per-generation UI: chỉ báo nhanh 1 judge; số liệu chuẩn ở batch (`scripts/eval_tf1.py`) + Results panel.
+
+### 12.5. DoD bổ sung
+- [ ] Compare mode (song song base vs fine-tuned + delta/rank).
+- [ ] Results panel đọc `results/eval_summary.json` (eval tổng hợp + objective metrics + κ/τ + loss curve).
+- [ ] Panel chi tiết sinh (params + seed + prompt + tokens + latency + tokens/sec).
+- [ ] `scripts/eval_tf1.py` xuất `eval_summary.json` gồm: 4 trục panel (đa judge) + κ/τ + perplexity + Distinct-1/2 + Self-BLEU + Flesch, cho cả base & fine-tuned.

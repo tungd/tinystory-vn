@@ -652,3 +652,29 @@ export async function streamFable(payload: any, onEvent: (e:any)=>void) {
 **Type consistency:** `model_id`→`resolve_ollama` (Task1) dùng ở Task5. `build_fable_prompt(character,setting,challenge,outcome,teaching,length_hint)` (Task2) khớp Task5. `check_input_en`/`check_output_en` (Task3) khớp Task5. `parse_scores`/`evaluate` (Task4) khớp Task5 /evaluate + Task12. SSE events `step|token|done|error` nhất quán Task5 ↔ Task8. ✅
 
 **Lưu ý:** Phase A backend cần `ollama_client.generate_stream` hỗ trợ `**kwargs`/`num_predict` (đã có từ dự án Việt). Base model `qwen3:4b` đã pull sẵn trong Ollama.
+
+---
+
+## Plan revision (grill 2026-07-06) — bổ sung task cho demo khoa học
+
+Cập nhật theo spec §12 + [ADR-0002]. Các task thêm/sửa:
+
+### Backend (Phase A, bổ sung)
+- **Task 5b — Observability trong `/generate/stream`**: mở rộng payload event `done`/`step` để kèm `meta`: `{model_id, model_name, kind, temperature, top_p, repetition_penalty, num_predict, seed, prompt_sent, input_tokens, output_tokens, latency_ms, tokens_per_sec}`. Thêm field `seed` vào `GenReq` (optional, mặc định cố định để tái lập). TDD: event `done` chứa `meta` với các khóa trên.
+- **Task 5c — `GET /results`**: đọc `results/eval_summary.json` (nếu có) trả về cho Results panel; 404/empty nếu chưa có. TDD.
+
+### Frontend (Phase B, bổ sung)
+- **Task 8b — Compare mode**: toggle Single/Compare. Compare → frontend gọi `/generate/stream` **2 lần** (model base + model finetuned từ registry theo `kind`) hiển thị **2 khung song song**; sau khi xong auto gọi `/evaluate` cả hai → hiện điểm 4 trục + **delta + thứ hạng**. (Không cần backend mới — frontend điều phối 2 stream.)
+- **Task 8c — Observability panel**: hiển thị `meta` (params + seed + prompt thực gửi + tokens + latency + tokens/sec) cho mỗi lần sinh, cạnh Log panel.
+- **Task 9b — Results panel**: gọi `GET /results` → bảng 4 trục base vs finetuned + delta + rank + N; metric khách quan (perplexity, Distinct-1/2, Self-BLEU, Flesch); κ/τ; biểu đồ loss (đọc từ metrics JSON). Trực quan (bar/table).
+
+### Đánh giá (Phase C, SỬA Task 12 → bám ADR-0002)
+- **Task 12 (revised) — `scripts/eval_tf1.py` khoa học đầy đủ**, xuất `results/eval_summary.json` gồm:
+  - **Khách quan**: `perplexity` (base & finetuned trên test held-out), `distinct_1`, `distinct_2`, `self_bleu`, `flesch_reading_ease`.
+  - **LLM-judge panel**: ≥2–3 model **khác họ** (qua Ollama, cấu hình trong `config/models.json` role=judge) chấm 4 trục paper (Grammar & Style, Creativity, Moral Clarity, Prompt Adherence, 1–10) cho base & finetuned.
+  - **Agreement**: weighted **Cohen's κ** + **Kendall's τ** giữa các judge.
+  - **Kết luận before/after theo THỨ HẠNG** (đa số judge xếp model nào cao hơn) + delta metric khách quan — KHÔNG dựa điểm tuyệt đối 1 judge.
+  - TDD: hàm tính perplexity (mock logprobs), distinct_n, self_bleu, kappa/tau trên fixture; phần gọi judge là integration.
+- **Judge registry**: thêm mục judges vào `config/models.json` (hoặc `config/judges.json`) — mỗi judge có `name`, `ollama`, `family` (để đảm bảo "khác họ").
+
+**Ràng buộc khoa học (ADR-0002):** KHÔNG tự chế trục đánh giá; chỉ dùng 4 trục của paper + metric kinh điển (perplexity/Distinct/Self-BLEU/Flesch). Per-generation eval trên UI = chỉ báo nhanh 1 judge; số liệu chuẩn ở batch + Results panel.
