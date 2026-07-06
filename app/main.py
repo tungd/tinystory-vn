@@ -3,178 +3,192 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import Depends, FastAPI
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import ollama_client
-from app.config import BASE_MODEL, LENGTH_HINT, LENGTH_NUM_PREDICT, TUNED_MODEL
-from app.guardrail.input_filter import check_input
-from app.guardrail.output_filter import check_output
-from app.prompt import SYSTEM_PROMPT_GUARDED, SYSTEM_PROMPT_MINIMAL, build_instruction
+from app import ollama_client, judge
+from app.models_registry import load_models, resolve_ollama
+from app.config import JUDGE_MODEL_ID
+from app.guardrail.input_filter import check_input_en
+from app.guardrail.output_filter import check_output_en
+from app.prompt_en import (
+    SYSTEM_PROMPT_EN,
+    SYSTEM_PROMPT_MINIMAL_EN,
+    LENGTH_NUM_PREDICT,
+    LENGTH_HINT_EN,
+    build_fable_prompt,
+)
 
-app = FastAPI(title="Vietnamese Fable Generator")
-
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+app = FastAPI(title="English Fable Generator")
+WEB_DIST = Path(__file__).resolve().parent.parent / "web" / "dist"
 MAX_REGEN = 1
 
-MODEL_INFO = {
-    "base": {
-        "label": "Mô hình nền (chưa train)",
-        "desc": "Qwen3-4B gốc, chưa fine-tune trên truyện ngụ ngôn — mốc so sánh \"trước khi train\".",
-    },
-    "tuned": {
-        "label": "Mô hình đã fine-tune",
-        "desc": "Qwen3-4B đã fine-tune (SFT + ORPO) trên truyện ngụ ngôn — kết quả \"sau khi train\".",
-    },
-}
 
-
-def resolve_model(choice: str) -> str:
-    return BASE_MODEL if choice == "base" else TUNED_MODEL
-
-
-class GenerateRequest(BaseModel):
-    topic: str = Field(min_length=1, max_length=200)
-    moral: str = Field(min_length=1, max_length=200)
-    age_range: str = Field(min_length=1, max_length=50)
-    guardrail_enabled: bool = True
-    model_choice: Literal["base", "tuned"] = "tuned"
+class GenReq(BaseModel):
+    character: str = Field("", max_length=200)
+    setting: str = Field("", max_length=200)
+    challenge: str = Field("", max_length=300)
+    outcome: str = Field("", max_length=300)
+    teaching: str = Field("", max_length=200)
     length: Literal["short", "medium", "long"] = "medium"
+    model_id: str = "base-qwen3-4b"
+    guardrail_enabled: bool = True
 
 
-class GenerateResponse(BaseModel):
-    status: str
-    story: str | None = None
-    reason: str | None = None
+class EvalReq(BaseModel):
+    story: str
+    prompt: str
+    judge_model_id: str | None = None
 
 
 def generate_fn():
-    """Dependency: trả về hàm sinh. Override được trong test."""
     return ollama_client.generate
 
 
 def stream_fn():
-    """Dependency: trả về hàm sinh stream. Override được trong test."""
     return ollama_client.generate_stream
 
 
-def _sse(payload: dict) -> str:
-    return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+def judge_fn():
+    return ollama_client.generate
 
 
-@app.post("/generate", response_model=GenerateResponse)
-def generate(req: GenerateRequest, gen=Depends(generate_fn)) -> GenerateResponse:
-    hint = LENGTH_HINT[req.length]
-    num_predict = LENGTH_NUM_PREDICT[req.length]
-    instruction = build_instruction(req.topic, req.moral, req.age_range, hint)
-    model = resolve_model(req.model_choice)
-
-    if not req.guardrail_enabled:
-        try:
-            story = gen(prompt=instruction, system=SYSTEM_PROMPT_MINIMAL, model=model,
-                        num_predict=num_predict)
-        except ollama_client.OllamaError as exc:
-            return GenerateResponse(status="error", reason=str(exc))
-        return GenerateResponse(status="success", story=story)
-
-    # Lớp 1: lọc đầu vào
-    decision = check_input(req.topic, req.moral, req.age_range)
-    if not decision.allowed:
-        return GenerateResponse(status="refused", reason=decision.reason)
-
-    # Lớp 2 + 3: system prompt ràng buộc + model đã học từ chối
-    for _ in range(MAX_REGEN + 1):
-        try:
-            story = gen(prompt=instruction, system=SYSTEM_PROMPT_GUARDED, model=model,
-                        num_predict=num_predict)
-        except ollama_client.OllamaError as exc:
-            return GenerateResponse(status="error", reason=str(exc))
-        # Lớp 4: lọc đầu ra
-        out = check_output(story)
-        if out.ok:
-            return GenerateResponse(status="success", story=story)
-
-    return GenerateResponse(status="refused", reason=out.reason)
-
-
-@app.post("/generate/stream")
-def generate_stream_endpoint(req: GenerateRequest,
-                             gen=Depends(generate_fn),
-                             gen_stream=Depends(stream_fn)) -> StreamingResponse:
-    hint = LENGTH_HINT[req.length]
-    num_predict = LENGTH_NUM_PREDICT[req.length]
-    instruction = build_instruction(req.topic, req.moral, req.age_range, hint)
-    model = resolve_model(req.model_choice)
-
-    def events():
-        # GUARDRAIL TẮT: stream token trực tiếp
-        if not req.guardrail_enabled:
-            yield _sse({"type": "step", "stage": "generating", "status": "running",
-                        "detail": f"Sinh truyện bằng {model} (guardrail TẮT)"})
-            buf = []
-            try:
-                for piece in gen_stream(prompt=instruction, system=SYSTEM_PROMPT_MINIMAL,
-                                        model=model, num_predict=num_predict):
-                    buf.append(piece)
-                    yield _sse({"type": "token", "text": piece})
-            except ollama_client.OllamaError as exc:
-                yield _sse({"type": "error", "reason": str(exc)})
-                return
-            yield _sse({"type": "done", "status": "success", "story": "".join(buf)})
-            return
-
-        # GUARDRAIL BẬT: log từng lớp, KHÔNG stream token (Lớp 4 cần toàn bộ text)
-        yield _sse({"type": "step", "stage": "input_check", "status": "running",
-                    "detail": "Lớp 1: kiểm tra yêu cầu đầu vào"})
-        decision = check_input(req.topic, req.moral, req.age_range)
-        if not decision.allowed:
-            yield _sse({"type": "step", "stage": "input_check", "status": "blocked",
-                        "detail": decision.reason})
-            yield _sse({"type": "done", "status": "refused", "reason": decision.reason})
-            return
-        yield _sse({"type": "step", "stage": "input_check", "status": "ok",
-                    "detail": "Yêu cầu hợp lệ"})
-
-        out_reason = "Truyện sinh ra chứa nội dung không phù hợp."
-        for attempt in range(MAX_REGEN + 1):
-            yield _sse({"type": "step", "stage": "generating", "status": "running",
-                        "detail": f"Lớp 2-3: sinh truyện bằng {model} (lần {attempt + 1})"})
-            try:
-                story = gen(prompt=instruction, system=SYSTEM_PROMPT_GUARDED,
-                            model=model, num_predict=num_predict)
-            except ollama_client.OllamaError as exc:
-                yield _sse({"type": "error", "reason": str(exc)})
-                return
-            yield _sse({"type": "step", "stage": "output_check", "status": "running",
-                        "detail": "Lớp 4: kiểm tra nội dung sinh ra"})
-            out = check_output(story)
-            if out.ok:
-                yield _sse({"type": "step", "stage": "output_check", "status": "ok",
-                            "detail": "Nội dung an toàn"})
-                yield _sse({"type": "done", "status": "success", "story": story})
-                return
-            out_reason = out.reason
-            yield _sse({"type": "step", "stage": "output_check", "status": "blocked",
-                        "detail": out.reason})
-
-        yield _sse({"type": "done", "status": "refused", "reason": out_reason})
-
-    return StreamingResponse(events(), media_type="text/event-stream")
+def _sse(d: dict) -> str:
+    return f"data: {json.dumps(d, ensure_ascii=False)}\n\n"
 
 
 @app.get("/models")
 def models():
-    return {
-        "base": {"name": BASE_MODEL, **MODEL_INFO["base"]},
-        "tuned": {"name": TUNED_MODEL, **MODEL_INFO["tuned"]},
-    }
+    return load_models()
 
 
-# Phục vụ frontend tĩnh (mount sau /generate để không che API)
-@app.get("/")
-def index():
-    return FileResponse(FRONTEND_DIR / "index.html")
+@app.post("/generate/stream")
+def generate_stream(req: GenReq, gen=Depends(generate_fn), gstream=Depends(stream_fn)):
+    hint = LENGTH_HINT_EN[req.length]
+    num_predict = LENGTH_NUM_PREDICT[req.length]
+    prompt = build_fable_prompt(
+        req.character, req.setting, req.challenge, req.outcome, req.teaching, hint
+    )
+    try:
+        model = resolve_ollama(req.model_id)
+    except KeyError:
+        return StreamingResponse(
+            iter([_sse({"type": "error", "reason": f"Unknown model_id: {req.model_id}"})]),
+            media_type="text/event-stream",
+        )
+
+    def events():
+        if not req.guardrail_enabled:
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "generating",
+                    "status": "running",
+                    "detail": f"Generating with {model} (guardrail OFF)",
+                }
+            )
+            buf = []
+            try:
+                for piece in gstream(
+                    prompt=prompt,
+                    system=SYSTEM_PROMPT_MINIMAL_EN,
+                    model=model,
+                    num_predict=num_predict,
+                ):
+                    buf.append(piece)
+                    yield _sse({"type": "token", "text": piece})
+            except ollama_client.OllamaError as e:
+                yield _sse({"type": "error", "reason": str(e)})
+                return
+            yield _sse({"type": "done", "status": "success", "story": "".join(buf)})
+            return
+
+        # guardrail ON
+        yield _sse(
+            {
+                "type": "step",
+                "stage": "input_check",
+                "status": "running",
+                "detail": "Layer 1: checking request",
+            }
+        )
+        d = check_input_en(
+            req.character, req.setting, req.challenge, req.outcome, req.teaching
+        )
+        if not d.allowed:
+            yield _sse(
+                {"type": "step", "stage": "input_check", "status": "blocked", "detail": d.reason}
+            )
+            yield _sse({"type": "done", "status": "refused", "reason": d.reason})
+            return
+        yield _sse(
+            {"type": "step", "stage": "input_check", "status": "ok", "detail": "Request OK"}
+        )
+        reason = "The generated story was not appropriate."
+        for attempt in range(MAX_REGEN + 1):
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "generating",
+                    "status": "running",
+                    "detail": f"Layer 2-3: generating with {model} (try {attempt + 1})",
+                }
+            )
+            try:
+                story = gen(
+                    prompt=prompt,
+                    system=SYSTEM_PROMPT_EN,
+                    model=model,
+                    num_predict=num_predict,
+                )
+            except ollama_client.OllamaError as e:
+                yield _sse({"type": "error", "reason": str(e)})
+                return
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "output_check",
+                    "status": "running",
+                    "detail": "Layer 4: checking output",
+                }
+            )
+            out = check_output_en(story)
+            if out.ok:
+                yield _sse(
+                    {
+                        "type": "step",
+                        "stage": "output_check",
+                        "status": "ok",
+                        "detail": "Content safe",
+                    }
+                )
+                yield _sse({"type": "done", "status": "success", "story": story})
+                return
+            reason = out.reason
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "output_check",
+                    "status": "blocked",
+                    "detail": out.reason,
+                }
+            )
+        yield _sse({"type": "done", "status": "refused", "reason": reason})
+
+    return StreamingResponse(events(), media_type="text/event-stream")
 
 
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+@app.post("/evaluate")
+def evaluate(req: EvalReq, jf=Depends(judge_fn)):
+    jid = req.judge_model_id or JUDGE_MODEL_ID
+    try:
+        model = resolve_ollama(jid)
+    except KeyError:
+        return JSONResponse({"error": f"Unknown judge model: {jid}"}, status_code=400)
+    return judge.evaluate(req.story, req.prompt, model=model, gen=jf)
+
+
+# Serve web build if it exists (Phase B)
+if WEB_DIST.exists():
+    app.mount("/", StaticFiles(directory=WEB_DIST, html=True), name="web")
