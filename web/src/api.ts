@@ -22,9 +22,11 @@ export interface EvalAxes {
   prompt_adherence: number;
 }
 
-/** Full evaluation result: 4 axes + weighted overall. */
+/** Full evaluation result: 4 axes + weighted overall + optional per-axis rationale. */
 export interface EvalResult extends EvalAxes {
   overall: number;
+  /** Judge's short justification per axis (evidence quoted from the story). May be absent. */
+  rationale?: Partial<Record<keyof EvalAxes, string>>;
 }
 
 /** Runtime type guard - verifies all 5 fields are finite numbers. */

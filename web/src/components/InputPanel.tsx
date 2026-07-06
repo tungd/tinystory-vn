@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MdCasino } from 'react-icons/md';
-import { TextInput } from '@astryxdesign/core/TextInput';
+import { TextArea } from '@astryxdesign/core/TextArea';
 import { SegmentedControl } from '@astryxdesign/core/SegmentedControl';
 import { SegmentedControlItem } from '@astryxdesign/core/SegmentedControl';
 import { Switch } from '@astryxdesign/core/Switch';
@@ -133,39 +133,44 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
       </div>
 
       {/* Fable fields */}
-      <TextInput
+      <TextArea
         label="Main character"
         placeholder="e.g. a clever fox"
         value={character}
         onChange={(v) => setCharacter(v)}
+        rows={2}
         isOptional
       />
-      <TextInput
+      <TextArea
         label="Setting"
         placeholder="e.g. a foggy marsh"
         value={setting}
         onChange={(v) => setSetting(v)}
+        rows={2}
         isOptional
       />
-      <TextInput
+      <TextArea
         label="Challenge"
         placeholder="e.g. everyone is faster than him"
         value={challenge}
         onChange={(v) => setChallenge(v)}
+        rows={2}
         isOptional
       />
-      <TextInput
+      <TextArea
         label="Outcome"
         placeholder="e.g. he wins by being patient"
         value={outcome}
         onChange={(v) => setOutcome(v)}
+        rows={2}
         isOptional
       />
-      <TextInput
+      <TextArea
         label="Teaching"
         placeholder="e.g. patience pays off"
         value={teaching}
         onChange={(v) => setTeaching(v)}
+        rows={2}
         isOptional
       />
 

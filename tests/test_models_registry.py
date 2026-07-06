@@ -6,11 +6,14 @@ def test_load_models_has_base():
     ms = load_models()
     assert any(m["id"] == "base-qwen3-4b" for m in ms)
     base = next(m for m in ms if m["id"] == "base-qwen3-4b")
-    assert base["ollama"] == "qwen3:4b" and base["kind"] == "base"
+    # Don't hard-code the Ollama tag (config-driven); just require it's set + base kind.
+    assert base["ollama"] and base["kind"] == "base"
 
 
 def test_resolve_ollama():
-    assert resolve_ollama("base-qwen3-4b") == "qwen3:4b"
+    ms = load_models()
+    base = next(m for m in ms if m["id"] == "base-qwen3-4b")
+    assert resolve_ollama("base-qwen3-4b") == base["ollama"]
 
 
 def test_resolve_unknown_raises():

@@ -1,5 +1,5 @@
 import { EvalRadar } from './EvalRadar';
-import type { EvalResult } from '../api';
+import type { EvalAxes, EvalResult } from '../api';
 
 export type EvalState = 'idle' | 'loading' | 'done' | 'error';
 
@@ -9,7 +9,7 @@ export interface EvalPanelProps {
   errorMsg?: string;
 }
 
-const AXIS_LABELS: Record<Exclude<keyof EvalResult, 'overall'>, string> = {
+const AXIS_LABELS: Record<keyof EvalAxes, string> = {
   grammar: 'Grammar',
   creativity: 'Creativity',
   moral_clarity: 'Moral Clarity',
@@ -165,31 +165,49 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
             </tr>
           </thead>
           <tbody>
-            {axes.map((axis) => (
-              <tr key={axis}>
-                <td
-                  style={{
-                    padding: '0.375rem 0.5rem',
-                    borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
-                    color: 'var(--astryx-color-text, #111827)',
-                  }}
-                >
-                  {AXIS_LABELS[axis]}
-                </td>
-                <td
-                  style={{
-                    textAlign: 'right',
-                    padding: '0.375rem 0.5rem',
-                    borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
-                    fontVariantNumeric: 'tabular-nums',
-                    fontWeight: 500,
-                    color: '#2563eb',
-                  }}
-                >
-                  {scores[axis].toFixed(1)}
-                </td>
-              </tr>
-            ))}
+            {axes.map((axis) => {
+              const reason = scores.rationale?.[axis];
+              return (
+                <tr key={axis}>
+                  <td
+                    style={{
+                      padding: '0.375rem 0.5rem',
+                      borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                      color: 'var(--astryx-color-text, #111827)',
+                      verticalAlign: 'top',
+                    }}
+                  >
+                    <div>{AXIS_LABELS[axis]}</div>
+                    {reason && (
+                      <div
+                        style={{
+                          marginTop: '0.2rem',
+                          fontSize: '0.75rem',
+                          lineHeight: 1.4,
+                          color: 'var(--astryx-color-text-subtle, #6b7280)',
+                          fontWeight: 400,
+                        }}
+                      >
+                        {reason}
+                      </div>
+                    )}
+                  </td>
+                  <td
+                    style={{
+                      textAlign: 'right',
+                      padding: '0.375rem 0.5rem',
+                      borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                      fontVariantNumeric: 'tabular-nums',
+                      fontWeight: 500,
+                      color: '#2563eb',
+                      verticalAlign: 'top',
+                    }}
+                  >
+                    {scores[axis].toFixed(1)}
+                  </td>
+                </tr>
+              );
+            })}
             <tr>
               <td style={{ padding: '0.375rem 0.5rem', fontWeight: 700 }}>Overall</td>
               <td
@@ -215,7 +233,7 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
             fontStyle: 'italic',
           }}
         >
-          Quick 1-judge indicator. See Results tab for canonical metrics.
+          Scores and reasons come from a single LLM judge (quick indicator). See Results tab for canonical batch metrics.
         </p>
       </div>
     );
