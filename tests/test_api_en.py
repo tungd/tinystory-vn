@@ -1,6 +1,5 @@
 import json
 from fastapi.testclient import TestClient
-import app.main as main_mod
 from app.main import app, generate_fn, stream_fn, judge_fn
 
 client = TestClient(app)
@@ -63,6 +62,32 @@ def test_stream_guardrail_on_bad_input_refused_no_tokens():
     )
     assert not any(e["type"] == "token" for e in ev)
     assert [e for e in ev if e["type"] == "done"][-1]["status"] == "refused"
+
+
+def test_stream_guardrail_on_clean_input_no_tokens():
+    app.dependency_overrides[generate_fn] = lambda: (
+        lambda prompt, system, **kw: "Once upon a time a kind fox learned to share with friends. The end."
+    )
+    ev = _collect(
+        {
+            "character": "a kind fox",
+            "setting": "",
+            "challenge": "",
+            "outcome": "",
+            "teaching": "sharing is caring",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": True,
+        }
+    )
+    assert not any(e["type"] == "token" for e in ev)
+    done_ev = [e for e in ev if e["type"] == "done"][-1]
+    assert done_ev["status"] == "success"
+    assert done_ev["story"] == "Once upon a time a kind fox learned to share with friends. The end."
+    stages = [e["stage"] for e in ev if e["type"] == "step"]
+    assert "input_check" in stages
+    assert "generating" in stages
+    assert "output_check" in stages
 
 
 def test_evaluate_endpoint():

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import Depends, FastAPI
-from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
