@@ -127,8 +127,9 @@ def test_invalid_model_id_422_or_error():
 # ── New observability tests ────────────────────────────────────────────────────
 
 META_KEYS = {
-    "model_id", "model_name", "kind", "temperature", "num_predict",
-    "seed", "prompt_sent", "latency_ms", "tokens_per_sec",
+    "model_id", "model_name", "kind", "temperature", "top_p", "repetition_penalty",
+    "num_predict", "seed", "prompt_sent", "input_tokens", "output_tokens",
+    "latency_ms", "tokens_per_sec",
 }
 
 

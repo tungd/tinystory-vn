@@ -148,3 +148,74 @@ def test_generate_seed_included_in_options(monkeypatch):
     )
     oc.generate(prompt="x", system="y", seed=99)
     assert seen.get("options", {}).get("seed") == 99
+
+
+def test_generate_meta_forwards_sampling_params(monkeypatch):
+    seen = {}
+
+    def handler(request):
+        seen.update(json.loads(request.read().decode()))
+        return httpx.Response(
+            200,
+            json={
+                "message": {"content": "A fox learned wisdom."},
+                "prompt_eval_count": 30,
+                "eval_count": 5,
+            },
+        )
+
+    monkeypatch.setattr(
+        oc.httpx,
+        "Client",
+        lambda **kw: _RealClient(
+            transport=_mock_transport(handler),
+            **{k: v for k, v in kw.items() if k != "transport"},
+        ),
+    )
+    oc.generate_meta(
+        prompt="Tell a fable",
+        system="You are a storyteller.",
+        seed=42,
+        temperature=0.8,
+        top_p=0.9,
+        repeat_penalty=1.3,
+    )
+    opts = seen.get("options", {})
+    assert opts.get("seed") == 42
+    assert opts.get("temperature") == 0.8
+    assert opts.get("top_p") == 0.9
+    assert opts.get("repeat_penalty") == 1.3
+
+
+def test_generate_stream_forwards_sampling_params(monkeypatch):
+    seen = {}
+    body = "\n".join([
+        json.dumps({"message": {"content": "hello"}}),
+        json.dumps({"done": True}),
+    ])
+
+    def handler(request):
+        seen.update(json.loads(request.read().decode()))
+        return httpx.Response(200, text=body)
+
+    monkeypatch.setattr(
+        oc.httpx,
+        "Client",
+        lambda **kw: _RealClient(
+            transport=_mock_transport(handler),
+            **{k: v for k, v in kw.items() if k != "transport"},
+        ),
+    )
+    list(oc.generate_stream(
+        prompt="x",
+        system="y",
+        seed=42,
+        temperature=0.8,
+        top_p=0.9,
+        repeat_penalty=1.3,
+    ))
+    opts = seen.get("options", {})
+    assert opts.get("seed") == 42
+    assert opts.get("temperature") == 0.8
+    assert opts.get("top_p") == 0.9
+    assert opts.get("repeat_penalty") == 1.3

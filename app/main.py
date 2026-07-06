@@ -252,7 +252,22 @@ def generate_stream(
                     "detail": out.reason,
                 }
             )
-        yield _sse({"type": "done", "status": "refused", "reason": reason})
+        meta = {
+            "model_id": req.model_id,
+            "model_name": model_name,
+            "kind": kind,
+            "temperature": GEN_TEMPERATURE,
+            "top_p": GEN_TOP_P,
+            "repetition_penalty": GEN_REPEAT_PENALTY,
+            "num_predict": num_predict,
+            "seed": req.seed,
+            "prompt_sent": prompt,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "latency_ms": latency_ms,
+            "tokens_per_sec": round(tokens_per_sec, 2),
+        }
+        yield _sse({"type": "done", "status": "refused", "reason": reason, "meta": meta})
 
     return StreamingResponse(events(), media_type="text/event-stream")
 

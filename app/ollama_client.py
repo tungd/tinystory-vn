@@ -24,6 +24,9 @@ def generate(
         options["num_predict"] = num_predict
     if seed is not None:
         options["seed"] = seed
+    for k in ("temperature", "top_p", "repeat_penalty"):
+        if k in kwargs and kwargs[k] is not None:
+            options[k] = kwargs[k]
     payload: dict = {
         "model": model or MODEL_NAME,
         "messages": [
@@ -63,6 +66,9 @@ def generate_meta(
         options["num_predict"] = num_predict
     if seed is not None:
         options["seed"] = seed
+    for k in ("temperature", "top_p", "repeat_penalty"):
+        if k in kwargs and kwargs[k] is not None:
+            options[k] = kwargs[k]
     payload: dict = {
         "model": model or MODEL_NAME,
         "messages": [
@@ -109,6 +115,9 @@ def generate_stream(
         options["num_predict"] = num_predict
     if seed is not None:
         options["seed"] = seed
+    for k in ("temperature", "top_p", "repeat_penalty"):
+        if k in kwargs and kwargs[k] is not None:
+            options[k] = kwargs[k]
     payload: dict = {
         "model": model or MODEL_NAME,
         "messages": [
