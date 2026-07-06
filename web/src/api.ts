@@ -64,7 +64,7 @@ export interface GenMeta {
 }
 
 export type SSEEvent =
-  | { type: "step"; stage: "input_check" | "generating" | "output_check"; status: "running" | "ok" | "blocked"; detail: string }
+  | { type: "step"; stage: "prepare" | "model" | "input_check" | "generating" | "output_check"; status: "running" | "ok" | "blocked"; detail: string }
   | { type: "token"; text: string }
   | { type: "done"; status: "success" | "refused"; story?: string; reason?: string; meta?: GenMeta }
   | { type: "error"; reason: string };

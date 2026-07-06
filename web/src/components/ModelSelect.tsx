@@ -6,9 +6,10 @@ import type { ModelInfo } from '../api';
 export interface ModelSelectProps {
   value: string;
   onChange: (model_id: string) => void;
+  disabled?: boolean;
 }
 
-export function ModelSelect({ value, onChange }: ModelSelectProps) {
+export function ModelSelect({ value, onChange, disabled = false }: ModelSelectProps) {
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,6 +43,7 @@ export function ModelSelect({ value, onChange }: ModelSelectProps) {
       value={value}
       onChange={onChange}
       isLoading={loading}
+      isDisabled={disabled}
       placeholder="Select a model…"
     />
   );

@@ -24,9 +24,11 @@ export interface FablePayload {
 
 export interface InputPanelProps {
   onSubmit: (payload: FablePayload) => void;
+  /** When true, generation is in progress: lock all inputs and show a busy button. */
+  busy?: boolean;
 }
 
-export function InputPanel({ onSubmit }: InputPanelProps) {
+export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
   const [character, setCharacter] = useState('');
   const [setting, setSetting] = useState('');
   const [challenge, setChallenge] = useState('');
@@ -95,6 +97,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
             <button
               key={preset.id}
               onClick={() => applyPreset(preset.id)}
+              disabled={busy}
               aria-label={`Use "${preset.label}" preset`}
               style={{
                 padding: '0.25rem 0.75rem',
@@ -102,7 +105,8 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
                 borderRadius: '9999px',
                 border: '1px solid var(--astryx-color-border, #e5e7eb)',
                 background: 'var(--astryx-color-surface-raised, #f9fafb)',
-                cursor: 'pointer',
+                cursor: busy ? 'not-allowed' : 'pointer',
+                opacity: busy ? 0.5 : 1,
                 color: 'var(--astryx-color-text, #111827)',
                 transition: 'background 0.15s',
               }}
@@ -112,6 +116,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
           ))}
           <button
             onClick={handleSurpriseMe}
+            disabled={busy}
             aria-label="Fill with a random preset"
             style={{
               display: 'inline-flex',
@@ -122,7 +127,8 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
               borderRadius: '9999px',
               border: '1px dashed var(--astryx-color-border-emphasis, #9ca3af)',
               background: 'transparent',
-              cursor: 'pointer',
+              cursor: busy ? 'not-allowed' : 'pointer',
+              opacity: busy ? 0.5 : 1,
               color: 'var(--astryx-color-text-subtle, #6b7280)',
               transition: 'background 0.15s',
             }}
@@ -139,6 +145,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
         value={character}
         onChange={(v) => setCharacter(v)}
         rows={2}
+        isDisabled={busy}
         isOptional
       />
       <TextArea
@@ -147,6 +154,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
         value={setting}
         onChange={(v) => setSetting(v)}
         rows={2}
+        isDisabled={busy}
         isOptional
       />
       <TextArea
@@ -155,6 +163,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
         value={challenge}
         onChange={(v) => setChallenge(v)}
         rows={2}
+        isDisabled={busy}
         isOptional
       />
       <TextArea
@@ -163,6 +172,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
         value={outcome}
         onChange={(v) => setOutcome(v)}
         rows={2}
+        isDisabled={busy}
         isOptional
       />
       <TextArea
@@ -171,6 +181,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
         value={teaching}
         onChange={(v) => setTeaching(v)}
         rows={2}
+        isDisabled={busy}
         isOptional
       />
 
@@ -191,6 +202,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
           onChange={(v) => setLength(v as FableLength)}
           label="Fable length"
           layout="fill"
+          isDisabled={busy}
         >
           <SegmentedControlItem value="short" label="Short" />
           <SegmentedControlItem value="medium" label="Medium" />
@@ -199,7 +211,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
       </div>
 
       {/* Model selector */}
-      <ModelSelect value={modelId} onChange={setModelId} />
+      <ModelSelect value={modelId} onChange={setModelId} disabled={busy} />
 
       {/* Guardrail toggle */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -207,6 +219,7 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
           label="Guardrail"
           value={guardrail}
           onChange={(checked) => setGuardrail(checked)}
+          isDisabled={busy}
         />
         <Tooltip
           content="Multi-layer safety: filters unsafe requests and outputs so only wholesome children's fables are produced. Turn off to observe the model without safety."
@@ -236,11 +249,12 @@ export function InputPanel({ onSubmit }: InputPanelProps) {
 
       {/* Generate button */}
       <Button
-        label="Generate fable"
+        label={busy ? 'Generating…' : 'Generate fable'}
         variant="primary"
         onClick={handleSubmit}
+        isDisabled={busy}
       >
-        Generate fable
+        {busy ? 'Generating…' : 'Generate fable'}
       </Button>
     </div>
   );

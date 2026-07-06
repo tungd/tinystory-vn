@@ -45,6 +45,8 @@ function App() {
   const [comparePayload, setComparePayload] = useState<Omit<FablePayload, 'model_id'> | null>(
     null,
   );
+  // True while either compare slot is generating (locks the shared InputPanel).
+  const [compareBusy, setCompareBusy] = useState(false);
 
   function handleSingleSubmit(payload: FablePayload) {
     // Reset all state for a new generation
@@ -240,7 +242,10 @@ function App() {
             >
               {/* Left: Input panel */}
               <div>
-                <InputPanel onSubmit={handleSingleSubmit} />
+                <InputPanel
+                  onSubmit={handleSingleSubmit}
+                  busy={streamState === 'generating'}
+                />
               </div>
 
               {/* Center: Story stream */}
@@ -274,7 +279,7 @@ function App() {
             >
               {/* Left: Input panel */}
               <div>
-                <InputPanel onSubmit={handleCompareSubmit} />
+                <InputPanel onSubmit={handleCompareSubmit} busy={compareBusy} />
               </div>
 
               {/* Right: Compare columns */}
@@ -282,6 +287,7 @@ function App() {
                 <CompareMode
                   pendingPayload={comparePayload}
                   onGenerationStarted={handleCompareGenerationStarted}
+                  onBusyChange={setCompareBusy}
                 />
               </div>
             </div>

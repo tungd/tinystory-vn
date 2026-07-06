@@ -66,6 +66,60 @@ def test_stream_guardrail_on_bad_input_refused_no_tokens():
     assert [e for e in ev if e["type"] == "done"][-1]["status"] == "refused"
 
 
+def test_guardrail_input_violation_logged_with_layer_and_category():
+    ev = _collect(
+        {
+            "character": "a fucking fox",
+            "setting": "",
+            "challenge": "",
+            "outcome": "",
+            "teaching": "",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": True,
+        }
+    )
+    blocked = [
+        e
+        for e in ev
+        if e["type"] == "step"
+        and e["stage"] == "input_check"
+        and e["status"] == "blocked"
+    ]
+    assert blocked, "expected a blocked input_check step"
+    detail = blocked[-1]["detail"]
+    assert "Layer 1 BLOCKED" in detail
+    assert "profanity" in detail  # the violation category is surfaced in the log
+
+
+def test_stream_logs_prepare_and_model_steps():
+    app.dependency_overrides[stream_fn] = lambda: (
+        lambda prompt, system, **kw: iter(["Hi ", "there."])
+    )
+    ev = _collect(
+        {
+            "character": "a fox",
+            "setting": "",
+            "challenge": "",
+            "outcome": "",
+            "teaching": "",
+            "length": "short",
+            "model_id": "base-qwen3-4b",
+            "guardrail_enabled": False,
+        }
+    )
+    app.dependency_overrides.pop(stream_fn, None)
+    stages = [e["stage"] for e in ev if e["type"] == "step"]
+    assert "prepare" in stages and "model" in stages
+    # generating step reaches a terminal 'ok' with token stats
+    gen_ok = [
+        e
+        for e in ev
+        if e["type"] == "step" and e["stage"] == "generating" and e["status"] == "ok"
+    ]
+    assert gen_ok and "tok/s" in gen_ok[-1]["detail"]
+
+
 def test_stream_guardrail_on_clean_input_no_tokens():
     app.dependency_overrides[meta_fn] = lambda: (
         lambda prompt, system, **kw: {

@@ -141,9 +141,15 @@ export interface CompareModeProps {
   pendingPayload: Omit<FablePayload, 'model_id'> | null;
   /** Called after both streams have been kicked off, to reset pending state */
   onGenerationStarted: () => void;
+  /** Reports whether either slot is currently generating (to lock the shared InputPanel). */
+  onBusyChange?: (busy: boolean) => void;
 }
 
-export function CompareMode({ pendingPayload, onGenerationStarted }: CompareModeProps) {
+export function CompareMode({
+  pendingPayload,
+  onGenerationStarted,
+  onBusyChange,
+}: CompareModeProps) {
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelA, setModelA] = useState('');
@@ -171,6 +177,12 @@ export function CompareMode({ pendingPayload, onGenerationStarted }: CompareMode
   }, []);
 
   const canCompare = models.length >= 2;
+
+  // Report busy state to the parent whenever either slot is generating.
+  const busy = slotA.streamState === 'generating' || slotB.streamState === 'generating';
+  useEffect(() => {
+    onBusyChange?.(busy);
+  }, [busy, onBusyChange]);
 
   // Auto-eval for slot A when it finishes
   useEffect(() => {

@@ -1,9 +1,16 @@
 import type { IconType } from 'react-icons';
 import { MdHourglassEmpty, MdCheckCircle, MdBlock } from 'react-icons/md';
 
+export type LogStage =
+  | 'prepare'
+  | 'model'
+  | 'input_check'
+  | 'generating'
+  | 'output_check';
+
 export interface LogEntry {
   id: string;
-  stage: 'input_check' | 'generating' | 'output_check';
+  stage: LogStage;
   status: 'running' | 'ok' | 'blocked';
   detail?: string;
   timestamp: Date;
@@ -13,7 +20,9 @@ export interface LogPanelProps {
   entries: LogEntry[];
 }
 
-const STAGE_LABELS: Record<LogEntry['stage'], string> = {
+const STAGE_LABELS: Record<LogStage, string> = {
+  prepare: 'Prepare request',
+  model: 'Model config',
   input_check: 'Input check (Layer 1)',
   generating: 'Generating (Layer 2-3)',
   output_check: 'Output check (Layer 4)',
@@ -114,7 +123,7 @@ export function LogPanel({ entries }: LogPanelProps) {
                       size={14}
                       color={STATUS_COLORS[entry.status]}
                     />
-                    {STAGE_LABELS[entry.stage]}
+                    {STAGE_LABELS[entry.stage] ?? entry.stage}
                   </span>
                   <span
                     style={{

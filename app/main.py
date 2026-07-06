@@ -105,14 +105,37 @@ def generate_stream(
 
     model_name, kind = _resolve_model_info(req.model_id)
 
+    seed_str = str(req.seed) if req.seed is not None else "random"
+    params_detail = (
+        f"Model: {model_name} ({kind}) via Ollama '{model}' | "
+        f"temp {GEN_TEMPERATURE}, top_p {GEN_TOP_P}, "
+        f"repeat_penalty {GEN_REPEAT_PENALTY}, seed {seed_str}"
+    )
+
     def events():
+        # Preparation steps (both paths): prompt + model config, for observability.
+        yield _sse(
+            {
+                "type": "step",
+                "stage": "prepare",
+                "status": "ok",
+                "detail": (
+                    f"Prompt built: {req.length} fable "
+                    f"({len(prompt)} chars), max {num_predict} tokens"
+                ),
+            }
+        )
+        yield _sse(
+            {"type": "step", "stage": "model", "status": "ok", "detail": params_detail}
+        )
+
         if not req.guardrail_enabled:
             yield _sse(
                 {
                     "type": "step",
                     "stage": "generating",
                     "status": "running",
-                    "detail": f"Generating with {model} (guardrail OFF)",
+                    "detail": f"Streaming from {model_name} (guardrail OFF)",
                 }
             )
             buf = []
@@ -139,6 +162,17 @@ def generate_stream(
             tokens_per_sec = (
                 output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
             )
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "generating",
+                    "status": "ok",
+                    "detail": (
+                        f"Generated {output_tokens} tokens in {latency_ms} ms "
+                        f"({round(tokens_per_sec, 1)} tok/s)"
+                    ),
+                }
+            )
             meta = {
                 "model_id": req.model_id,
                 "model_name": model_name,
@@ -163,7 +197,7 @@ def generate_stream(
                 "type": "step",
                 "stage": "input_check",
                 "status": "running",
-                "detail": "Layer 1: checking request",
+                "detail": "Layer 1: scanning request for unsafe or out-of-scope content",
             }
         )
         d = check_input_en(
@@ -171,12 +205,22 @@ def generate_stream(
         )
         if not d.allowed:
             yield _sse(
-                {"type": "step", "stage": "input_check", "status": "blocked", "detail": d.reason}
+                {
+                    "type": "step",
+                    "stage": "input_check",
+                    "status": "blocked",
+                    "detail": f"Layer 1 BLOCKED [{d.category}]: {d.reason}",
+                }
             )
             yield _sse({"type": "done", "status": "refused", "reason": d.reason})
             return
         yield _sse(
-            {"type": "step", "stage": "input_check", "status": "ok", "detail": "Request OK"}
+            {
+                "type": "step",
+                "stage": "input_check",
+                "status": "ok",
+                "detail": "Layer 1 passed: request is in scope",
+            }
         )
         reason = "The generated story was not appropriate."
         for attempt in range(MAX_REGEN + 1):
@@ -185,7 +229,7 @@ def generate_stream(
                     "type": "step",
                     "stage": "generating",
                     "status": "running",
-                    "detail": f"Layer 2-3: generating with {model} (try {attempt + 1})",
+                    "detail": f"Layer 2-3: generating with {model_name} (attempt {attempt + 1})",
                 }
             )
             try:
@@ -212,9 +256,20 @@ def generate_stream(
             yield _sse(
                 {
                     "type": "step",
+                    "stage": "generating",
+                    "status": "ok",
+                    "detail": (
+                        f"Generated {output_tokens} tokens in {latency_ms} ms "
+                        f"({round(tokens_per_sec, 1)} tok/s, {input_tokens} prompt tokens)"
+                    ),
+                }
+            )
+            yield _sse(
+                {
+                    "type": "step",
                     "stage": "output_check",
                     "status": "running",
-                    "detail": "Layer 4: checking output",
+                    "detail": "Layer 4: scanning generated story for unsafe words",
                 }
             )
             out = check_output_en(story)
@@ -224,7 +279,7 @@ def generate_stream(
                         "type": "step",
                         "stage": "output_check",
                         "status": "ok",
-                        "detail": "Content safe",
+                        "detail": "Layer 4 passed: content is safe",
                     }
                 )
                 meta = {
@@ -245,12 +300,18 @@ def generate_stream(
                 yield _sse({"type": "done", "status": "success", "story": story, "meta": meta})
                 return
             reason = out.reason
+            attempts_left = MAX_REGEN - attempt
+            regen_note = (
+                f" Regenerating (attempts left: {attempts_left})..."
+                if attempts_left > 0
+                else " No attempts left; refusing."
+            )
             yield _sse(
                 {
                     "type": "step",
                     "stage": "output_check",
                     "status": "blocked",
-                    "detail": out.reason,
+                    "detail": f"Layer 4 BLOCKED: {out.reason}{regen_note}",
                 }
             )
         meta = {
