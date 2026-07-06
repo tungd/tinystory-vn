@@ -19,3 +19,8 @@ venv/
 
 # Môi trường
 .env
+
+# Node / Web
+node_modules/
+web/node_modules/
+web/dist/
