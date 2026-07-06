@@ -15,6 +15,7 @@ from app.config import (
     GEN_TEMPERATURE,
     GEN_TOP_P,
     GEN_REPEAT_PENALTY,
+    RESULTS_PATH,
 )
 from app.guardrail.input_filter import check_input_en
 from app.guardrail.output_filter import check_output_en
@@ -280,6 +281,26 @@ def evaluate(req: EvalReq, jf=Depends(judge_fn)):
     except KeyError:
         return JSONResponse({"error": f"Unknown judge model: {jid}"}, status_code=400)
     return judge.evaluate(req.story, req.prompt, model=model, gen=jf)
+
+
+@app.get("/results")
+def results():
+    """Read batch eval summary from RESULTS_PATH.
+
+    Returns:
+      - {"available": true, "data": <json>} if file exists and is valid JSON
+      - {"available": false, "data": null} if file absent or invalid JSON (HTTP 200)
+    """
+    import os
+    results_path = os.getenv("FABLE_RESULTS_PATH", "results/eval_summary.json")
+    if not Path(results_path).exists():
+        return JSONResponse({"available": False, "data": None}, status_code=200)
+    try:
+        with open(results_path, "r") as f:
+            data = json.load(f)
+        return JSONResponse({"available": True, "data": data}, status_code=200)
+    except (json.JSONDecodeError, IOError):
+        return JSONResponse({"available": False, "data": None}, status_code=200)
 
 
 # Serve web build if it exists (Phase B)

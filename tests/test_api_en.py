@@ -1,4 +1,6 @@
 import json
+import os
+from pathlib import Path
 from fastapi.testclient import TestClient
 from app.main import app, generate_fn, meta_fn, stream_fn, judge_fn
 
@@ -206,3 +208,28 @@ def test_guardrail_on_done_has_meta_with_input_tokens():
     assert done_ev["status"] == "success"
     assert "meta" in done_ev
     assert done_ev["meta"]["input_tokens"] == 42
+
+
+def test_results_absent_returns_available_false(monkeypatch, tmp_path):
+    """When RESULTS_PATH points to a non-existent file, GET /results returns 200 with available=false."""
+    missing_file = str(tmp_path / "nonexistent.json")
+    monkeypatch.setenv("FABLE_RESULTS_PATH", missing_file)
+    r = client.get("/results")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["available"] is False
+    assert data["data"] is None
+
+
+def test_results_present_returns_data(monkeypatch, tmp_path):
+    """When RESULTS_PATH points to a valid JSON file, GET /results returns 200 with available=true and the data."""
+    results_file = tmp_path / "eval_summary.json"
+    test_data = {"foo": 1, "bar": "test"}
+    results_file.write_text(json.dumps(test_data))
+    monkeypatch.setenv("FABLE_RESULTS_PATH", str(results_file))
+    r = client.get("/results")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["available"] is True
+    assert data["data"]["foo"] == 1
+    assert data["data"]["bar"] == "test"

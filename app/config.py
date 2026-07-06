@@ -8,6 +8,7 @@ TUNED_MODEL = os.getenv("FABLE_TUNED_MODEL", "fable-tuned")
 ENABLE_THINKING = os.getenv("FABLE_THINK", "false").lower() == "true"
 MODELS_PATH = os.getenv("FABLE_MODELS_PATH", "config/models.json")
 JUDGE_MODEL_ID = os.getenv("FABLE_JUDGE_MODEL_ID", "base-qwen3-4b")
+RESULTS_PATH = os.getenv("FABLE_RESULTS_PATH", "results/eval_summary.json")
 
 GEN_TEMPERATURE = float(os.getenv("GEN_TEMPERATURE", "0.8"))
 GEN_TOP_P = float(os.getenv("GEN_TOP_P", "0.9"))
