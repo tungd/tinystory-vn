@@ -1,11 +1,20 @@
-# CONTEXT — Trình tạo truyện ngụ ngôn tiếng Việt
+# CONTEXT — Trình tạo truyện ngắn cho trẻ em (English)
 
 Glossary các thuật ngữ nghiệp vụ của dự án. Không chứa chi tiết triển khai.
 
-## Truyện ngụ ngôn (Fable) — VĂN PHONG ĐÍCH
-Thể loại **đầu ra mục tiêu** của ứng dụng: truyện **ngắn** (~150–300 từ), thường có nhân vật con vật, cốt truyện đơn giản, và **một bài học đạo đức rõ ràng ở cuối**. Văn phong súc tích, trong sáng, phù hợp trẻ em.
-- **Mẫu chuẩn**: Aesop, La Fontaine.
-- Đây là văn phong mà model fine-tune cần học và app cần sinh ra.
+> **PIVOT NGÔN NGỮ (2026-07-01):** Đầu ra chuyển sang **TIẾNG ANH** (trước đây tiếng Việt). Lý do: dữ liệu huấn luyện tiếng Việt quá ít; kho dữ liệu truyện ngắn tiếng Anh (TinyStories, v.v.) dồi dào & chất lượng. App/guardrail/system prompt/khung đồ án đổi sang tiếng Anh. Dữ liệu tiếng Việt (`fables_all.jsonl`, `fairytales.jsonl`, `verse_fables.jsonl`) giữ lại để tham chiếu, không train nữa.
+
+## Fable (English) — VĂN PHONG ĐÍCH
+Đầu ra mục tiêu: **truyện ngụ ngôn tiếng Anh** cho trẻ em (4–7 tuổi), có bài học đạo đức, nhân vật (thường là con vật). Nguồn dữ liệu chuẩn: **`klusai/ds-tf1-en-3m`** (TF1-EN-3M).
+
+## Narrative Structure (5 yếu tố) — VOCABULARY ĐẦU VÀO
+Cấu trúc kể chuyện của TF1, cũng là **5 ô input** người dùng nhập (đều tùy chọn, free-text):
+1. **Main Character** — nhân vật chính (vd "a clever fox").
+2. **Setting** — bối cảnh (vd "a foggy marsh").
+3. **Challenge** — vấn đề/xung đột nhân vật gặp.
+4. **Outcome** — cách giải quyết/kết cục.
+5. **Teaching** — bài học/moral truyện truyền tải.
+Ô trống → model tự quyết. (Thay cho bộ input cũ topic/moral/age.)
 
 ## Truyện cổ tích (Fairy tale) — KHÔNG phải văn phong đích
 Truyện kể **dài, nhiều tình tiết, văn phong hoa mỹ/cổ** (vd Grimm, Andersen; median ~1066 từ). Có mặt trong dữ liệu thô nhưng **không** phải văn phong đích; nếu trộn vào tập train sẽ làm văn phong đầu ra lộn xộn, kém mạch lạc.
