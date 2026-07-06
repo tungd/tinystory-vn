@@ -9,9 +9,9 @@ AXES = ["grammar", "creativity", "moral_clarity", "prompt_adherence"]
 def build_judge_prompt(story: str, prompt: str) -> str:
     return (
         "You are a strict judge of children's fables. Given the REQUEST and the STORY, "
-        "rate the STORY from 0 to 10 on four axes: grammar, creativity, moral clarity, "
+        "rate the STORY from 1 to 10 on four axes: grammar, creativity, moral clarity, "
         "prompt adherence. Respond ONLY with a JSON object with keys "
-        '"grammar","creativity","moral_clarity","prompt_adherence" (integers 0-10).\n\n'
+        '"grammar","creativity","moral_clarity","prompt_adherence" (integers 1-10).\n\n'
         f"REQUEST:\n{prompt}\n\nSTORY:\n{story}\n\nJSON:"
     )
 

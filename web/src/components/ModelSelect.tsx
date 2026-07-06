@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Selector } from '@astryxdesign/core/Selector';
 import { fetchModels } from '../api';
-
-interface ModelInfo {
-  model_id: string;
-  name: string;
-  kind?: string;
-  desc?: string;
-}
+import type { ModelInfo } from '../api';
 
 export interface ModelSelectProps {
   value: string;

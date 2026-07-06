@@ -1,19 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { MdBalance } from 'react-icons/md';
 import { fetchModels, streamFable, evaluate, isEvalResult } from '../api';
-import type { EvalResult, SSEEvent } from '../api';
+import type { EvalResult, ModelInfo, SSEEvent } from '../api';
 import { StoryStream } from './StoryStream';
 import type { StoryStreamState } from './StoryStream';
 import type { FableMeta } from './ObservabilityPanel';
 import type { FablePayload } from './InputPanel';
 import { EvalRadar } from './EvalRadar';
-
-interface ModelInfo {
-  model_id: string;
-  name: string;
-  kind?: string;
-  desc?: string;
-}
 
 interface SlotState {
   streamState: StoryStreamState;

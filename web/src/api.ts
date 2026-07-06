@@ -1,6 +1,18 @@
-export async function fetchModels() { const r = await fetch("/models"); return r.json(); }
+export interface ModelInfo {
+  model_id: string;
+  name: string;
+  ollama: string;
+  kind: string;
+  desc: string;
+}
 
-// ── Eval types (canonical, single source of truth) ──────────────────────────
+export async function fetchModels(): Promise<ModelInfo[]> {
+  const r = await fetch("/models");
+  const raw: { id: string; name: string; ollama: string; kind: string; desc: string }[] = await r.json();
+  return raw.map((m) => ({ model_id: m.id, name: m.name, ollama: m.ollama, kind: m.kind, desc: m.desc }));
+}
+
+// -- Eval types (canonical, single source of truth) --------------------------
 
 /** The 4 scored axes returned by the judge. */
 export interface EvalAxes {
