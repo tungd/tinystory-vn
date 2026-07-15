@@ -22,6 +22,26 @@ _LABELS = [
 ]
 
 
+SEED_PREFIX = (
+    "<char> {character} </char>\n"
+    "<moral> {moral} </moral>\n"
+    "<story>\n"
+)
+
+
+def build_seed_prompt(character="", moral="", length_hint="") -> str:
+    """Keyword-guided prefix for the from-scratch 200M fable model.
+
+    Seed elements only: main character + moral lesson. The model was trained to
+    continue from this prefix and emit the fable body. Matches the format produced
+    by `scripts.prepare_tf1.format_sample`.
+    """
+    base = SEED_PREFIX.format(character=character.strip(), moral=moral.strip())
+    if length_hint:
+        base += length_hint.strip() + "\n"
+    return base
+
+
 def build_fable_prompt(
     character="", setting="", challenge="", outcome="", teaching="", length_hint=""
 ) -> str:

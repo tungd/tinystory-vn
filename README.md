@@ -20,7 +20,7 @@ Trình tạo **truyện ngụ ngôn tiếng Anh** cho trẻ em, chạy trên mô
 10. [Giải thích các thông số trong app](#10-giải-thích-các-thông-số-trong-app)
 11. [Kiểm thử](#11-kiểm-thử)
 12. [Cấu trúc thư mục](#12-cấu-trúc-thư-mục)
-13. [Phase C — Fine-tune](#13-phase-c--fine-tune)
+13. [Phase C — Train 200M Transformer (from scratch)](#13-phase-c--train-a-200m-fable-transformer-from-scratch-no-fine-tune)
 14. [Xử lý sự cố](#14-xử-lý-sự-cố)
 15. [Tài liệu tham khảo & trích dẫn](#15-tài-liệu-tham-khảo--trích-dẫn)
 
@@ -187,7 +187,7 @@ Chọn **độ dài** (Short/Medium/Long), **model**, bật/tắt **guardrail**,
 
 ### Tab Results
 
-Trình bày **đánh giá khoa học theo lô** (batch) đọc từ `results/eval_summary.json`. Khi chưa có file (mới chạy base), hiện placeholder — bình thường. File này sinh bởi `scripts/eval_tf1.py` ở [Phase C](#13-phase-c--fine-tune). Xem [§9](#9-cách-thức-đánh-giá).
+Trình bày **đánh giá khoa học theo lô** (batch) đọc từ `results/eval_summary.json`. Khi chưa có file, hiện placeholder — bình thường. File này được sinh bởi **Notebook B** (`notebooks/eval_gen_fable200m_colab.ipynb`) chạy trên Colab qua `google-colab-cli` (xem [§13](#13-phase-c--train-a-200m-fable-transformer-from-scratch-no-fine-tune) và `docs/runbooks/colab-train.md`). Xem [§9](#9-cách-thức-đánh-giá).
 
 ---
 
@@ -276,7 +276,7 @@ Có **hai tầng** đánh giá, phục vụ mục đích khác nhau:
 | Phạm vi | 1 truyện vừa sinh | Cả tập test held-out |
 | Judge | 1 judge (chỉ báo nhanh) | Panel ≥ 2–3 judge khác họ |
 | Nội dung | 4 trục + **lý do dẫn chứng** + radar | Metric khách quan + judge panel + κ/τ + loss + kết luận theo rank |
-| Nguồn | gọi `POST /evaluate` tức thời | `scripts/eval_tf1.py` → `results/eval_summary.json` |
+| Nguồn | gọi `POST /evaluate` tức thời | Notebook B trên Colab (`notebooks/eval_gen_fable200m_colab.ipynb`) → `results/eval_summary.json` |
 | Vai trò | Xem nhanh trên UI | **Số liệu chuẩn cho báo cáo** |
 
 **4 trục chấm** (thang 0–10 trên UI; 1–10 theo paper):
@@ -357,25 +357,52 @@ cd web && npm run build
 ├── app/                    # Backend FastAPI
 │   ├── main.py             # Endpoints + serve web/dist
 │   ├── ollama_client.py    # Gọi Ollama (stream/non-stream)
-│   ├── guardrail/          # Bộ lọc 4 lớp (tiếng Anh)
+│   ├── guardrail/          # Bộ lọc 4 lớp (tiếng Anh): input_filter, output_filter, wordlist
 │   ├── judge.py            # LLM-as-judge 4 trục + rationale
-│   ├── prompt_en.py        # System prompt + build prompt tiếng Anh
+│   ├── prompt_en.py        # System prompt + build prompt + build_seed_prompt (EN)
 │   ├── models_registry.py  # Đọc config/models.json (model-agnostic)
 │   └── config.py           # Biến môi trường + tham số sinh
-├── config/models.json      # Model registry
+├── config/models.json      # Model registry (base-qwen3-4b, fable-200m)
 ├── web/                    # Frontend React + Astryx + recharts
 │   └── src/                # App.tsx, components/, api.ts
+├── notebooks/              # Colab training/eval (chạy qua google-colab-cli)
+│   ├── train_fable200m_colab.ipynb     # Notebook A: train → checkpoint (Drive)
+│   └── eval_gen_fable200m_colab.ipynb  # Notebook B: eval + gen → eval_summary.json
+├── scripts/               # Tiện ích dữ liệu + train (chạy trên Colab)
+│   ├── prepare_tf1.py      # stream TF1 → BPE fables.jsonl + tokenizer.json (hoặc char-mode)
+│   ├── fable_tokenizer.py  # char-level tokenizer fallback
+│   ├── metrics.py          # Distinct-1/2, Self-BLEU, Flesch
+│   ├── train_local.py      # single-script train→gen→eval_summary.json (nháp pipeline)
+│   └── smoke_train.py      # tiny local smoke test
 ├── tests/                  # pytest (backend)
-├── scripts/                # Tiện ích dữ liệu + batch eval (Phase C)
-├── docs/                   # Spec, plan, ADR
+├── docs/
+│   ├── adr/                # 0002-evaluation-methodology, 0003-from-scratch-200m
+│   ├── runbooks/colab-train.md   # google-colab-cli runbook (canonical train path)
+│   └── superpowers/plans/2026-07-08-keyword-guided-fable-generation.md
 └── models/                 # GGUF cục bộ (gitignored)
 ```
 
+> Lịch sử: đồ án từng fine-tune Qwen3-4B (notebook `finetune_qwen3_*`, ADR-0001) và
+> sinh dữ liệu tiếng Việt (`scripts/extract_new_fables.py`, `prepare_data.py`,
+> `app/prompt.py`). Các file này đã bị xoá — quyết định train **từ đầu** 200M trên
+> TF1-EN-3M (ADR-0003) và output tiếng Anh.
+
 ---
 
-## 13. Phase C — Fine-tune
+## 13. Phase C — Train a 200M Fable Transformer (from scratch, no fine-tune)
 
-Kế hoạch huấn luyện một model trên TF1-EN-3M (SFT → ORPO, chạy trên Colab) và batch eval khoa học đầy đủ nằm trong `docs/superpowers/plans/` và `docs/adr/0002-evaluation-methodology.md`. Ứng dụng hiện chạy hoàn chỉnh trên **base model**; khi có model fine-tune, chỉ cần thêm vào `config/models.json` để so sánh before/after trong Compare mode + tab Results.
+Đồ án **không được phép fine-tune** base model. Thay vào đó ta **train từ đầu** một
+transformer ~200M tham số trên TF1-EN-3M, sinh truyện theo **keyword guidance** =
+hai seed: **nhân vật chính** + **bài học đạo đức** (không RAG, không base model).
+
+- **Keyword guidance** = prefix điều khiển: `<char> {character} </char>\n<moral> {moral} </moral>\n<story>\n`. Model học tiếp nối từ prefix để sinh thân truyện. Format này được dùng nhất quán ở `scripts/prepare_tf1.format_sample`, `app/prompt_en.build_seed_prompt` và notebook Colab.
+- **Notebook A** `notebooks/train_fable200m_colab.ipynb`: chuẩn bị data (stream TF1 → BPE tokenizer → `fables.jsonl` + `tokenizer.json`) → train GPT2LMHeadModel (~200M, `transformers.Trainer`) → lưu checkpoint lên Drive.
+- **Notebook B** `notebooks/eval_gen_fable200m_colab.ipynb`: load checkpoint → sinh truyện từ seed → metric khách quan (Distinct-1/2, Self-BLEU, Flesch) + LLM-as-judge 4 trục → `eval_summary.json`.
+- **Chạy trên Colab qua `google-colab-cli`** (xem `docs/runbooks/colab-train.md`): `uv tool install google-colab-cli` → `colab new -s trainer --gpu T4` → `colab upload` scripts → `colab exec -f notebooks/...ipynb` → `colab download` checkpoint → `colab stop`. Đây là đường đi **chuẩn** (canonical) của đồ án; mọi bước train/eval đều chạy trên Colab, không train trên máy local.
+- **Dùng trong app**: export checkpoint sang GGUF (q8) rồi `ollama create fable-200m` (hoặc chạy local inference server), thêm entry `fable-200m` (`kind: "finetuned"`) vào `config/models.json` → Compare mode + Results tab hoạt động không đổi.
+- **Script hỗ trợ (cùng chạy trên Colab, không local)**: `scripts/prepare_tf1.py` (stream TF1 → BPE `fables.jsonl` + `tokenizer.json`, hoặc char-mode fallback), `scripts/fable_tokenizer.py`, `scripts/metrics.py` (Distinct/Self-BLEU/Flesch), `scripts/train_local.py` (single-script train→gen→`eval_summary.json` dùng làm nháp kiểm thử pipeline), `scripts/smoke_train.py` (tiny local smoke test). Notebook Colab import trực tiếp các script này.
+- **Tiếp tục một lượt train** (resume): xem checklist ở `docs/runbooks/colab-train.md`. Tóm tắt: đảm bảo `google-colab-cli` đã auth (`colab sessions` trả danh sách), `colab new -s trainer --gpu T4` (hoặc `--keep` để giữ VM giữa các bước), `colab upload` 3 scripts (`prepare_tf1.py`, `fable_tokenizer.py`, `metrics.py`), `colab exec -f notebooks/train_fable200m_colab.ipynb`, `colab download` checkpoint về `models/`, `colab stop`. Nếu cần scale lên 200k fables / nhiều epoch, đổi `--gpu L4|A100` hoặc tăng `N_FABLES`/`max_steps` trong notebook.
+- Kế hoạch chi tiết: `docs/superpowers/plans/2026-07-08-keyword-guided-fable-generation.md`; quyết định: `docs/adr/0003-from-scratch-200m.md`.
 
 ---
 

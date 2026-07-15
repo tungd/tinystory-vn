@@ -7,8 +7,8 @@ models/
 *.safetensors
 
 # Dữ liệu (thường lớn / nhạy cảm)
-data/raw/
-data/processed/
+data/
+results/
 
 # Python
 __pycache__/
@@ -24,3 +24,5 @@ venv/
 node_modules/
 web/node_modules/
 web/dist/
+.DS_Store
+/tags
