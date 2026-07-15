@@ -99,24 +99,23 @@ def rec_is_valid(rec: dict) -> bool:
 
 
 def iter_tf1(n: int, seed: int = 42):
-    """Yield up to `n` valid fable records from the HF dataset (streaming)."""
+    """Yield up to `n` valid fable records from the HF dataset (streaming).
+
+    Filters valid rows on the fly and keeps at most `n` of them in memory — no
+    giant pre-buffer (the old `n*4` oversample OOM-killed small Colab VMs).
+    """
     from datasets import load_dataset
 
     ds = load_dataset(TF1_DATASET, split="train", streaming=True)
     rng = random.Random(seed)
-    pool: list[dict] = []
+    valid: list[dict] = []
     for row in ds:
-        pool.append(row)
-        if len(pool) >= n * 4:  # oversample before filtering
-            break
-    rng.shuffle(pool)
-    yielded = 0
-    for row in pool:
         if rec_is_valid(row):
-            yield row
-            yielded += 1
-            if yielded >= n:
-                return
+            valid.append(row)
+            if len(valid) >= n:
+                break
+    rng.shuffle(valid)
+    yield from valid
 
 
 def iter_local(path: str | Path):
