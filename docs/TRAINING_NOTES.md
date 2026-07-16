@@ -140,6 +140,87 @@ on the VM concatenates them back.
 
 ## 4. Training History & Iterations
 
+### 4.0. Failed Attempt 1: 211M on T4 (never completed)
+
+| Setting | Value |
+|---|---|
+| Date | 2026-07-15 |
+| n_embd / n_layer / n_head | 1024 / 16 / 16 |
+| Params | 211.0M |
+| Vocab size | 8,192 |
+| Tokenizer | BPE (no pre-tokenizer) |
+| Max steps | 30,000 (arbitrary, ~9.6 epochs) |
+| Batch | 16 (per_device), grad_accum 4 (effective 64) |
+| GPU | T4 (free Colab) |
+| Status | **FAILED** — multiple failure modes |
+
+**What happened (sequential failures):**
+
+1. **OOM kill (memory cgroup):** `iter_tf1()` buffered `n×4 = 800,000` raw rows
+   into a list before filtering. On the T4 VM (~12 GB RAM), this exceeded the
+   memory cgroup limit → process killed by OOM. `dmesg` confirmed:
+   `Memory cgroup out of memory: Killed process (python3) total-vm:22GB`.
+   **Fix:** Rewrote `iter_tf1()` to stream-filter on the fly, keeping only `n`
+   valid records (commit `939eefd`).
+
+2. **HF streaming stall (unauthenticated):** Without an `HF_TOKEN`, HuggingFace
+   streaming was rate-limited. The process hung on data prep for 25+ min with no
+   progress. **Fix:** Staged data locally on the Mac with an HF token, uploaded
+   prepared files to Colab (no streaming on the VM).
+
+3. **VM reclaimed during data prep:** Even with the token, the long data-prep
+   phase (~25 min of HF streaming on the VM) caused Colab to reclaim the session
+   before training even started. Session terminated at 17:05.
+   **Fix:** Moved data prep entirely off the VM (local Mac → chunked upload).
+
+4. **Drive mount hangs headlessly:** `drive.mount()` and
+   `auth.authenticate_user()` require interactive OAuth (browser prompt) which
+   hangs in a headless `colab exec` call. The kernel got stuck BUSY and had to
+   be restarted.
+   **Fix:** Used `gws` (Google Workspace CLI) from the Mac to manage Drive
+   files, and `colab download`/`colab upload` for VM file transfer instead of
+   Drive mount.
+
+5. **`colab upload` file size limit (~40MB):** The 313MB `fables.jsonl` was
+   rejected with 400/500 errors. **Fix:** Split into 8 × 40MB chunks, upload
+   individually, reassemble on the VM.
+
+6. **`colab exec` client timeout:** Long-running `colab exec` calls (notebook
+   execution, detached training) hit the client's 10–30s read timeout when the
+   VM was busy. The kernel kept running but the client gave up.
+   **Fix:** Used detached `nohup` launch + `colab download` of the log file for
+   monitoring instead of blocking `colab exec`.
+
+**Probe results (before abandoning T4):**
+- 211M at batch 16 on T4: ~0.5 s/step (2.0 it/s) → 30k steps ≈ 17 hours.
+- Too slow for a free T4 (12h session cap + reclaim risk).
+- GPU was ~14% utilized (MFU) — heavily underutilized at batch 16.
+
+**Key decision:** Abandoned 211M on T4. Switched to paid A100 + smaller model.
+
+### 4.0.1. A100 Probe (211M, 100 steps)
+
+| Setting | Value |
+|---|---|
+| Params | 211.0M |
+| Batch | 16 |
+| Steps | 100 (probe only) |
+| GPU | A100 |
+| Speed | ~2.1 it/s (0.47 s/step) |
+| GPU utilization | ~14% MFU (still underutilized at batch 16) |
+
+**Finding:** A100 was ~4× faster than T4 but still GPU-underutilized. Bumping
+batch size (16→64) would help more than shrinking the model. But 211M at
+30k steps was still ~4h on A100 — decided to go smaller for a first runnable
+model.
+
+### 4.0.2. Decision: TinyStories approach (smaller model)
+
+Researched the TinyStories paper (Eldan & Li, 2023): small models (10–33M) can
+generate coherent children's stories with enough data and training. Decided to
+drop from 211M to ~30M for a cheap first model + eval, matching the TinyStories
+paradigm. This is documented in the conversation and influenced the v1 config.
+
 ### 4.1. Run 1: 29.9M model (v1, broken tokenizer)
 
 | Setting | Value |
