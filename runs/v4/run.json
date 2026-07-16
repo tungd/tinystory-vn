@@ -1,6 +1,6 @@
 {
   "version": "v4",
-  "status": "data_ready",
+  "status": "evaluated",
   "initial_weights": "Google Drive: /MyDrive/fable200m_v3/full/hf",
   "reset_optimizer": true,
   "architecture": {
@@ -47,14 +47,45 @@
     "validation_samples": 1024,
     "batch": 64,
     "learning_rate": 0.00005,
-    "epochs": 1
+    "epochs": 1,
+    "pilot_actual": {
+      "runtime_seconds": 71.64,
+      "steps": 313,
+      "train_loss": 1.594,
+      "eval_loss": 1.593
+    },
+    "full_actual": {
+      "runtime_seconds": 731.1,
+      "steps": 3830,
+      "steps_per_second": 5.239,
+      "train_loss": 1.566,
+      "eval_loss": 1.546
+    }
   },
   "evaluation": {
     "controls": "100 fresh TF1 rows starting at train-valid-index-725608",
     "judge_model": "gemma-4-26b-a4b-it",
     "judge_thinking_level": "minimal",
-    "judge_prompt_version": "v2-strict"
+    "judge_prompt_version": "v2-strict",
+    "full_controls": 100,
+    "strict_judge_controls": 20
   },
-  "results": [],
+  "summary": {
+    "deterministic": {
+      "v3_full": {"exact_character": 0.71, "exact_moral": 0.91, "exact_both": 0.65, "ended": 1.0},
+      "v4": {"exact_character": 0.71, "exact_moral": 0.88, "exact_both": 0.64, "ended": 1.0}
+    },
+    "strict_judge_overall": {"v3_full": 3.2, "v4": 3.46},
+    "conclusion": "Modest judged-quality gain; no deterministic conditioning gain; not a clear v3 replacement."
+  },
+  "results": [
+    "runs/v4/results/pilot_generations_20.json",
+    "runs/v4/results/pilot_metrics_20.json",
+    "runs/v4/results/pilot_judged_5.json",
+    "runs/v4/results/full_generations_100.json",
+    "runs/v4/results/full_metrics_100.json",
+    "runs/v4/results/full_judged_20.json",
+    "runs/v4/results/quality_samples.md"
+  ],
   "logs": "runs/v4/logs"
 }

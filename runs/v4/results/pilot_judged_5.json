@@ -1,0 +1,387 @@
+{
+  "kind": "v4-judge-comparison",
+  "source": "runs/v4/results/pilot_generations_20.json",
+  "selection": {
+    "method": "seeded random paired controls",
+    "seed": 42,
+    "controls": 5,
+    "stories": 10
+  },
+  "judge_settings": {
+    "backend": "google-genai",
+    "model": "gemma-4-26b-a4b-it",
+    "thinking_level": "minimal",
+    "response_mime_type": "application/json",
+    "prompt_version": "v2-strict"
+  },
+  "summary": {
+    "v3-full": {
+      "n": 5,
+      "judge_mean": {
+        "grammar": 4.2,
+        "creativity": 3.4,
+        "moral_clarity": 2.2,
+        "prompt_adherence": 3.8,
+        "overall": 3.4
+      },
+      "mean_latency_ms": 6043,
+      "checks_passed": {
+        "exact_character": 3,
+        "exact_moral": 5,
+        "exact_moral_near_end": 5,
+        "exact_both": 3,
+        "ended": 5
+      }
+    },
+    "v4": {
+      "n": 5,
+      "judge_mean": {
+        "grammar": 3.4,
+        "creativity": 2.8,
+        "moral_clarity": 2.2,
+        "prompt_adherence": 4.0,
+        "overall": 3.1
+      },
+      "mean_latency_ms": 6365,
+      "checks_passed": {
+        "exact_character": 3,
+        "exact_moral": 4,
+        "exact_moral_near_end": 4,
+        "exact_both": 3,
+        "ended": 5
+      }
+    }
+  },
+  "judgments": [
+    {
+      "character": "a cruel pelican",
+      "moral": "hopes can unite hearts",
+      "prompt": "<char> a cruel pelican </char>\n<moral> hopes can unite hearts </moral>\n<story>\n",
+      "reference_story": "In a deserted village, surrounded by tall trees and a vast desert, a cruel pelican loved to tease the other birds. They would fly away in fear whenever he came near. One day, while exploring the village, the cruel pelican stumbled upon two birds who were secretly friends: a wise old owl and a swift falcon.\n\nThe cruel pelican was curious and wanted to join their group. But he had to promise not to tease them. The owl and the falcon agreed, but they also warned him that if he hurt them or their friends, they would fly away together, and he would be left alone.\n\nThe cruel pelican promised and even helped the owl and the falcon gather food. They worked together, and the pelican saw how much fun they had. But when it was time to share their food, the cruel pelican wanted all the fish for himself. The owl and the falcon were disappointed and sad.\n\nThe cruel pelican realized his mistake and apologized. He said, \"I want to play with you, not fight with you. Can we still be friends?\" The owl and the falcon forgave him, and they all shared the food together.\n\nFrom that day on, the cruel pelican changed his ways and became a kind friend. The owl and the falcon were happy to have him by their side. They learned that hopes can unite hearts, even when they seem different. And the deserted village was filled with the sweet songs of the birds, playing and laughing together.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725608",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 305,
+      "ended": true,
+      "story": "In the floating cloud city of Cirrus, where soft white clouds were homes and buildings floated gently on thin, lived a cruel pelican. This grumpy bird loved to swoop down at every detail that happened in Cirrus. He would steal fish from his friends and laugh as they cried.\n\nOne day, while swooping down, he spotted a young cloud-dweller, who had built her nest near the city's famous Cloud Berry Festival. The kind cloud-keeper's festival was about to begin, but when she saw how sad everyone was, she felt a pang in her heart. She realized that stealing wasn't helping her, but ruining it.\n\nThe kind baker, feeling sorry for the festival, decided not to scold her. Instead, he asked him why he didn't want the festival. To everyone's surprise, the mean bird said, \"I wanted you all to be so happy with your yummy fish!\" The kind baker smiled and gave them some fish. Together, they danced under the clouds, laughing and smiling.\n\nThe day went by, and the sun shone brightly. People began to come back for their celebrations, and it made sure they received gifts from each other. As the wise old owl looked on, she whispered to herself, \"Hopes can unite hearts, even if they're different. And sometimes, we need someone brave enough hope to make things right.\"\n\nThe cloud-keeper smiled, knowing he'd learned an important lesson about being kind. From then on, whenever anyone needed help, the people would gather around him, and together they'd share stories and laughter.\n\nMoral: hopes can unite hearts",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 4,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 3.5,
+        "rationale": {
+          "grammar": "Contains significant errors: 'floated gently on thin' is an incomplete phrase, 'asked him why' has unclear pronoun reference, and 'brave enough hope' is ungrammatical.",
+          "creativity": "The plot is disjointed and nonsensical; the pelican's sudden shift from stealing to wanting others to be happy is unearned and lacks logical transition.",
+          "moral_clarity": "The story fails to demonstrate how 'hopes' unite hearts; the resolution is actually about forgiveness and sharing fish, which does not causally link to the specific moral provided.",
+          "prompt_adherence": "While the pelican is the protagonist, the moral is merely appended as a sentence at the end and is not integrated into the narrative arc or character development."
+        }
+      },
+      "judge_latency_ms": 6140
+    },
+    {
+      "character": "a ruthless magpie",
+      "moral": "empathy dissolves hatred",
+      "prompt": "<char> a ruthless magpie </char>\n<moral> empathy dissolves hatred </moral>\n<story>\n",
+      "reference_story": "In a dark, misty swamp where the air was thick with yucky fumes, a fierce magpie lived. This ruthless magpie, known for snatching shiny things from other birds, had never met a bird she liked.\n\nOne day, while swooping down to steal a colorful feather, she spotted a young bird, trembling with fear. The magpie cawed loudly, \"You shouldn't be here! This is our swamp!\" The young bird trembled, \"I'm just looking for a safe place to rest.\"\n\nThe magpie snatched the feather, and the young bird cried. The magpie, however, felt a strange pang in her chest. For the first time, she saw the young bird's fear and sadness. She put down the feather and asked, \"Why are you scared?\"\n\nThe young bird explained that the swamp's creatures had been mean to her because of her bright feathers. The magpie realized that she had been mean too, just because she was different. 'I was taught to fight for what's mine,' she said.\n\nThe magpie decided to challenge tradition. She spread her beautiful wings and welcomed the young bird to stay. Other birds, who had been hiding in the shadows, saw the magpie's kindness and joined in. Together, they created a safe haven for all birds.\n\nAs the swamp's creatures played and shared, the magpie's chest no longer felt icky. She understood that being different wasn't something to be afraid of – it was something to celebrate. The young bird smiled, \"You're not so scary after all.\" The magpie smiled back, \"We're not so different, are we?\"",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725611",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 305,
+      "ended": true,
+      "story": "In the heart of the rainforest, where vines tangled with giant trees and colorful birds sang sweet melodies, a ruthless magpie lived in her nest. Her feathers were as black as coal, but she was also very mean. She would steal food from other birds' nests, just for fun.\n\nOne day, while flying over the forest, the ruthless magpie's nest fell apart. A fierce storm rolled in, bringing heavy rain and strong winds. The magpie, scared by his own turmoil, hid under a tree branch to stay dry.\n\nThe winds howled, and rain pounded against her. But she didn't want to give up. As the thunder grew stronger, something inside her shifted. She remembered when she, too, had nothing to eat with, and it made her feel tired.\n\nJust then, two old rivals, an ancient owl and a sly snake, appeared at the base of the tree. They had been fighting before, and they saw how their arguing hadn't helped them both. \"Wait,\" said the owl, \"we both need each other. Why don't we work together to find shelter?\"\n\nThe snake nodded, \"And what if you shared your food? And we'll be friends forever.\"\n\nThe ruthless magpie, surprised by them, agreed. Together, they huddled together, waiting out the storm. When the sun came out, the magpie realized that sharing wasn't so bad after all. It meant having friends who cared about her, not weak.\n\nFrom that day on, the ruthless magpie, the sneaky snake, and the wise old owl. They learned that when they worked together and shared, everyone felt happy and safe. Empathy dissolved their hatred, and friendship filled the rainforest.\n\nMoral: empathy dissolves hatred",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 3,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 3.25,
+        "rationale": {
+          "grammar": "Contains significant errors including pronoun inconsistency ('scared by his own turmoil' vs 'her'), nonsensical phrasing ('nothing to eat with'), and a major sentence fragment in the penultimate paragraph.",
+          "creativity": "The plot is a collection of disconnected tropes; the magpie's internal shift is unearned and the sudden appearance of an owl and snake serves no narrative purpose for the protagonist's arc.",
+          "moral_clarity": "The story fails to demonstrate empathy dissolving hatred; instead, it depicts characters simply deciding to cooperate to survive a storm, and the magpie's 'hatred' is never actually addressed or resolved.",
+          "prompt_adherence": "While the magpie is the protagonist, the moral is merely appended as a sentence at the end without being the driving force of the plot or the resolution of the character's ruthlessness."
+        }
+      },
+      "judge_latency_ms": 6451
+    },
+    {
+      "character": "a dignified owl",
+      "moral": "harmony emerges from balance",
+      "prompt": "<char> a dignified owl </char>\n<moral> harmony emerges from balance </moral>\n<story>\n",
+      "reference_story": "In a desert of endless dunes and shimmering stars, a dignified owl perched on a thorny acacia tree. The sun was setting, casting a warm orange glow over the sandy expanse. The owl, known for her wisdom, looked out at the vast desert, her eyes filled with a secret worry.\n\nOne day, a great drought struck the land, and the creatures of the desert cried out for help. The owl, with her sharp eyes and quick thinking, spotted a hidden oasis deep within a nearby canyon. She flew down to explore and discovered a natural spring, bubbling with cool, clear water. The creatures would be saved.\n\nBut as the owl returned with the news, she felt a whisper of fear: \"What if I fail?\" \"What if the creatures don't find the oasis?\" She began to doubt herself. Just then, a young ant approached, \"Dear owl, we need your help. Please show us the way.\"\n\nThe owl hesitated. But seeing the ant's determination, she took a deep breath and led the group to the oasis. As they drank from the spring, the creatures' faces lit up with gratitude. But the owl didn't ask for praise or reward. Instead, she said, \"I'm just happy to help. We all need each other in times of need.\"\n\nThe creatures looked at each other in understanding, and a balance was struck. The owl's fear of failure was replaced by a sense of belonging. The desert, once a place of scarcity, became a land of harmony, where creatures worked together to survive. And the owl, with her selfless act, showed that even the smallest action can bring great balance to the world.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725615",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 305,
+      "ended": true,
+      "story": "On the vast, sun-kissed steppe, where wildflowers swayed in every color, lived an owl with piercing eyes. Her wise eyes watched over the land, and her sharp talons patrolled to any creature that dared to cross.\n\nOne day, while flying low, she spotted two rabbits working together on opposite sides of a small stream. They were arguing about whose turn it was to use water for their families.\n\nThe owl, being torn between loyalty to both, decided to mediate. She fluttered down as she landed beside them. The rabbits, caught off guard, looked up, trying notes at her. \"Please, dear owl,\" said one rabbit, \"we need water. We want you to have some too.\"\n\nThe owl's heart sank, but then she remembered all the times she'd helped them by using sticks to create new paths. \"What if we help each other?\" she asked herself. \"Maybe they can share your water, so both our homes will thrive.\"\n\nThe rabbit agreed, and soon they worked together, building bridges across the steppe. As they labored, they discovered they shared a common goal: to make sure everyone had enough water.\n\nAs the sun began to set, the steppe creatures gathered around them, grateful for their newfound harmony. From that day on, they made sure to take turns sharing what little water they had. And the diplomatic owl knew that sometimes, letting go is the key to true friendship.\n\nThe moral of this story is: Harmony emerges from balance. When we find balance, we must think before acting, just like how things might affect us.\n\nMoral: harmony emerges from balance",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 5,
+        "overall": 4.25,
+        "rationale": {
+          "grammar": "Contains awkward phrasing ('trying notes at her'), tense inconsistencies, and a redundant, poorly constructed moral section at the end.",
+          "creativity": "The plot is generic and logically inconsistent; an owl patrolling a sun-kissed steppe is biologically odd, and the solution (building bridges) doesn't logically address the water dispute.",
+          "moral_clarity": "The story's actions demonstrate cooperation or sharing, but fail to demonstrate 'balance.' The concluding text even contradicts itself by suggesting 'letting go' is the key, which is not the requested moral.",
+          "prompt_adherence": "While the owl is the protagonist and the requested moral is appended, the plot does not actually revolve around the concept of balance, making the inclusion purely literal."
+        }
+      },
+      "judge_latency_ms": 5883
+    },
+    {
+      "character": "a gullible bull",
+      "moral": "courage opens new paths",
+      "prompt": "<char> a gullible bull </char>\n<moral> courage opens new paths </moral>\n<story>\n",
+      "reference_story": "In a sun-kissed flower field, a big, friendly bull loved to roam. He had a special gift – a beautiful, fluffy coat that made him the envy of all the other animals. \n\nAs he wandered through the flowers, a sly goat approached him. \"Hey, Bull, I know a secret way to find the tastiest flowers!\" the goat whispered. \"But you have to listen to me and do exactly what I say.\"\n\nThe bull, being very trusting, agreed. The goat told him to follow a narrow path he had made among the flowers. But the path was too small for the bull's big body, and he got stuck.\n\nThe other animals tried to help, but the bull refused to listen. \"No, no, I know what I'm doing,\" he said stubbornly.\n\nJust then, a gentle cow appeared. \"I can help,\" she said softly. \"But we need to work together. I'll use my strength to push, and you use your calmness to guide me.\"\n\nTogether, they successfully freed the bull from the narrow path. The bull was amazed and grateful. \"Thank you, dear Cow,\" he said. \"I was wrong to refuse help. From now on, I promise to listen and work together with others.\"\n\nAs they continued their journey through the flower field, the bull discovered new paths he never knew existed. \"Wow, I'm so glad I learned to cooperate!\" he exclaimed.\n\nA wise old owl perched on a nearby flower watched the scene and nodded. \"Courage to try new things and a willingness to work together can lead to new and exciting paths. Remember, Bull, courage opens new paths for you and for others.\"",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725616",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 305,
+      "ended": true,
+      "story": "In the heart of an enchanted grove, where sunlight danced through leaves and flowers bloomed in every color, lived a big, friendly bull. He loved nothing more than to roam freely, exploring hidden streams and secret meadows.\n\nOne day, while wandering deeper into the grove than ever before, he stumbled upon a wise old owl perched on a branch. The owl's feathers were soft as silk, and her eyes shone bright with kindness.\n\nThe bull, feeling curious, asked if she could teach him how to make his name brighter. She promised to help him, but instead, he'd leave for another day by using sticks from around his favorite tree, making it impossible.\n\nThe owl, however, was not fooled. \"Why do you keep going?\" she asked. \"Don't you see that we're struggling?\"\n\nThe bull's ears folded back in embarrassment. \"I just wanted to,\" he mumbled.\n\nThe owl nodded. \"But now, I need help. I've been watching you, little one. You've shown me kindness when you can try.\"\n\nThe bull looked down at his hooves, ashamed. \"I'm sorry,\" he admitted.\n\nThe owl smiled. \"We all have fears. But it's how we learn from them that matters. Let's start anew. And next time, let's promise not to take things without taking them.\"\n\nThe bull's face lit up with joy. Together, they decided to plant seeds in this beautiful garden, one that would grow strong and tall, like the wildflowers.\n\nAs they worked, their friendship grew stronger. They learned that sometimes, breaking promises can lead to something truly special – courage, care, or actificantly, open doors.\n\nMoral: courage opens new paths,",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 2,
+        "moral_clarity": 1,
+        "prompt_adherence": 2,
+        "overall": 2.0,
+        "rationale": {
+          "grammar": "The prose is incoherent and contains nonsensical sentences like 'instead, he'd leave for another day by using sticks from around his favorite tree, making it impossible' and 'actificantly'.",
+          "creativity": "The plot is a series of disconnected, illogical events that lack a coherent narrative arc or meaningful character interaction.",
+          "moral_clarity": "The story's events (breaking promises and planting seeds) have no causal link to the moral of courage opening new paths; the moral is merely appended to a nonsensical conclusion.",
+          "prompt_adherence": "While the bull is present, he is not portrayed as 'gullible' as requested, and the moral does not shape the plot at all."
+        }
+      },
+      "judge_latency_ms": 5765
+    },
+    {
+      "character": "a determined woodpecker",
+      "moral": "respect is mutual",
+      "prompt": "<char> a determined woodpecker </char>\n<moral> respect is mutual </moral>\n<story>\n",
+      "reference_story": "In a dusty old library, a determined woodpecker lived in a cozy nest behind a shelf. The woodpecker loved to tap on books, making loud noises that scared away the other creatures. One day, while tapping, the woodpecker discovered a hidden room filled with ancient tomes and mysterious objects. A wise old owl lived there, surrounded by shadows and strange noises.\n\nThe woodpecker was frightened by the unknown. \"Who are you?\" the woodpecker asked, its voice shaking. The owl looked up from a book, her big round eyes watching the woodpecker. \"I am a guardian of knowledge,\" she said calmly. \"And you are a curious woodpecker.\"\n\nThe woodpecker tapped nervously on the floor. \"I don't like it here. It's too spooky.\" The owl closed her book and approached the woodpecker. \"Spooky? But I thought you were a brave woodpecker.\" The woodpecker looked up, its beak open. \"I am, but this place is different.\" The owl smiled. \"I see. Well, come closer, and I'll show you the wonders of this room.\"\n\nThe woodpecker hesitated, but the owl's kindness and gentle words made it feel more at ease. As they explored together, the woodpecker discovered hidden treasures and the owl's love for reading. They became unlikely friends, and the woodpecker learned to respect the owl's space and the owl to appreciate the woodpecker's curiosity.\n\nFrom that day on, the woodpecker tapped on the books with a newfound respect, and the owl welcomed the woodpecker's visits. They learned that respect is mutual, and by understanding each other, they became the best of friends.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725624",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 317,
+      "ended": true,
+      "story": "In the heart of an ancient ruin, where crumbling stones met overgrown with vines, a determined Woodpecker lived. The Woodpecker's bright red cap and strong beak made it look like a true friend to all creatures. One sunny day, as she explored the ruins, she heard whispers from her friends: \"The wise old Owl has hidden treasure deep within these ruins.\"\n\nThe woodpecker's curiosity grew. She decided to search for clues, but every path led to more trouble. A mischievous Monkey swung by, playing tricks on the Owl. He would knock over stones, steal shiny pebbles, and hide small treasures.\n\nOne day, while searching for treasures, the Squirrel stumbled upon the Woodpecker. \"Why do you keep knocking things down?\" asked the Squirrel. \"I'm just trying to find something valuable,\" replied the Woodpecker, feeling ashamed.\n\nThe Squirrel looked puzzled. \"But why can't we work together? We could use sticks to build new homes, share food and protect our treasures.\" The Sparrow's expression changed from sly to curious. Together, they gathered materials and built new, safe homes.\n\nAs time passed, the friends celebrated their teamwork. They sang songs, danced, and shared stories once more. The Woodpecker realized that even though others didn't understand each other, they still respected one another's strengths. \"Respect is mutual,\" said the Squirrel, smiling. From then on, the Woodpecker spread kindness throughout the land, proving that together, they can create something truly special.\n\nMoral: respect is mutual",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 4,
+        "overall": 4.0,
+        "rationale": {
+          "grammar": "Contains several errors including 'where crumbling stones met with overgrown with vines', inconsistent character naming (the Sparrow appears suddenly without introduction), and awkward phrasing.",
+          "creativity": "The plot is disjointed; the Woodpecker's 'determination' is aimless, and the transition from searching for treasure to building homes is abrupt and lacks logical connective tissue.",
+          "moral_clarity": "The story actually demonstrates teamwork and cooperation, not mutual respect. The conclusion that 'others didn't understand each other, they still respected one another's strengths' is not supported by the preceding narrative events.",
+          "prompt_adherence": "While the woodpecker is the protagonist, the requested moral is merely appended as a dialogue tag and a concluding sentence without being the causal driver of the plot."
+        }
+      },
+      "judge_latency_ms": 5978
+    },
+    {
+      "character": "a cruel pelican",
+      "moral": "hopes can unite hearts",
+      "prompt": "<char> a cruel pelican </char>\n<moral> hopes can unite hearts </moral>\n<story>\n",
+      "reference_story": "In a deserted village, surrounded by tall trees and a vast desert, a cruel pelican loved to tease the other birds. They would fly away in fear whenever he came near. One day, while exploring the village, the cruel pelican stumbled upon two birds who were secretly friends: a wise old owl and a swift falcon.\n\nThe cruel pelican was curious and wanted to join their group. But he had to promise not to tease them. The owl and the falcon agreed, but they also warned him that if he hurt them or their friends, they would fly away together, and he would be left alone.\n\nThe cruel pelican promised and even helped the owl and the falcon gather food. They worked together, and the pelican saw how much fun they had. But when it was time to share their food, the cruel pelican wanted all the fish for himself. The owl and the falcon were disappointed and sad.\n\nThe cruel pelican realized his mistake and apologized. He said, \"I want to play with you, not fight with you. Can we still be friends?\" The owl and the falcon forgave him, and they all shared the food together.\n\nFrom that day on, the cruel pelican changed his ways and became a kind friend. The owl and the falcon were happy to have him by their side. They learned that hopes can unite hearts, even when they seem different. And the deserted village was filled with the sweet songs of the birds, playing and laughing together.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725608",
+      "model": "v4",
+      "seed": 42,
+      "output_tokens": 283,
+      "ended": true,
+      "story": "The Cruel Pelican's Gift\n\nIn the scorching hot desert, where sand dunes stretched as far as the eye could see, a cruel Pelican ruled with an iron beak. He chased away any bird that dared to cross its path. His sharp beak would snap at anyone who crossed his path.\n\nOne day, while exploring a new part of the desert, the Vicious Pelican stumbled upon a gentle Tortoise taking a refreshing drink. As he gazed into the Tortoise's eyes, something strange happened. Her eyes began to feel sad and scared, for she had never seen such a beautiful creature before.\n\nThe wise old Tortoise, noticing her sadness, approached her. \"What's wrong, my friend?\" she asked gently.\n\nThe Vicious Pelican hesitated, then whispered, \"I don't like this here. It's too big.\"\n\nThe Tortoise looked around the desert floor, searching for answers. She saw schools of small creatures playing together in harmony. A group of tiny birds, each one unique or small, contributed to their own special bond.\n\nWith newfound courage, the Ruthless Pelican agreed to share the oasis's resources fairly. Together, they planted seeds, watered them, and sang songs to keep them both safe. From that day on, the Desert's animals came from far away, no matter how hard it was.\n\nAs the sun set over the vast dunes, the animals celebrated together, laughing and chirping. They realized that when they worked together, their hope united their hearts, and that's what made their community strong.\n\nMoral: hopes can unite hearts",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 2,
+        "moral_clarity": 3,
+        "prompt_adherence": 5,
+        "overall": 3.5,
+        "rationale": {
+          "grammar": "The prose is repetitive ('crossed his path' used twice in two sentences) and contains confusing pronoun shifts, such as referring to the Tortoise as 'her' and then 'she' in a way that confuses the Pelican's reaction.",
+          "creativity": "The setting is nonsensical (a pelican in a scorching desert) and the plot lacks logical progression; the Pelican's sudden change of heart is triggered by a nonsensical dialogue about things being 'too big' rather than a coherent event.",
+          "moral_clarity": "The story describes cooperation and sharing resources, which is a lesson about teamwork, but it fails to demonstrate how 'hope' specifically acts as the unifying force; the moral feels tacked on without causal support.",
+          "prompt_adherence": "While the character is a cruel pelican and the moral is included, the narrative fails to make the moral shape the plot, relying instead on a sudden, unearned shift in character behavior."
+        }
+      },
+      "judge_latency_ms": 6822
+    },
+    {
+      "character": "a ruthless magpie",
+      "moral": "empathy dissolves hatred",
+      "prompt": "<char> a ruthless magpie </char>\n<moral> empathy dissolves hatred </moral>\n<story>\n",
+      "reference_story": "In a dark, misty swamp where the air was thick with yucky fumes, a fierce magpie lived. This ruthless magpie, known for snatching shiny things from other birds, had never met a bird she liked.\n\nOne day, while swooping down to steal a colorful feather, she spotted a young bird, trembling with fear. The magpie cawed loudly, \"You shouldn't be here! This is our swamp!\" The young bird trembled, \"I'm just looking for a safe place to rest.\"\n\nThe magpie snatched the feather, and the young bird cried. The magpie, however, felt a strange pang in her chest. For the first time, she saw the young bird's fear and sadness. She put down the feather and asked, \"Why are you scared?\"\n\nThe young bird explained that the swamp's creatures had been mean to her because of her bright feathers. The magpie realized that she had been mean too, just because she was different. 'I was taught to fight for what's mine,' she said.\n\nThe magpie decided to challenge tradition. She spread her beautiful wings and welcomed the young bird to stay. Other birds, who had been hiding in the shadows, saw the magpie's kindness and joined in. Together, they created a safe haven for all birds.\n\nAs the swamp's creatures played and shared, the magpie's chest no longer felt icky. She understood that being different wasn't something to be afraid of – it was something to celebrate. The young bird smiled, \"You're not so scary after all.\" The magpie smiled back, \"We're not so different, are we?\"",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725611",
+      "model": "v4",
+      "seed": 42,
+      "output_tokens": 283,
+      "ended": true,
+      "story": "The Magpie's Gift\n\nIn the heart of ancient ruins, where crumbling stones met the sky, lived a ruthless magpie. Her home was a dark cave, hidden behind thick vines and overgrown bushes. She loved to steal shiny trinkets from her friends who came to visit.\n\nOne day, while flying over the ruins, she spotted two friends, a wise owl and a gentle rabbit, arguing near an old tree. They were shouting at each other, their eyes locked in sorrow. A dispute arose between them, with neither side willing to listen.\n\nA fierce storm brewed, threatening to destroy their homes. As they stood facing each other, something magical happened. Their anger began to fade. The magpie, seeing their struggle, flew out into the storm, using her sharp beak to lift heavy rocks.\n\nTogether, they worked as a team to secure their homes and restore the ancient tree state. When it was finished, they celebrated their victory. But instead of fighting over treasures, they saw that their differences had made them realize how much harmless them.\n\nThe owl, grateful for his friends' help, offered to share some delicious seeds he had, but only if they promised to help those who needed them. Together, they planted more seeds, protected one another, until their friendship grew.\n\nAs the sun set on another part, the magpie's feathers ruffled with pride, and her heart felt warm. \"Empathy is like sharing garden,\" she said, \"even when we show kindness, our hearts grow strong.\"\n\nFrom that day on, the former enemies became inseparable friends, proving that kindness can dissolve even the greatest hatreds.\n\nMoral: empathy dissolves hatred",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 3.25,
+        "rationale": {
+          "grammar": "The text contains significant errors and nonsensical phrasing, such as 'restore the ancient tree state', 'realize how much harmless them', and 'As the sun set on another part'.",
+          "creativity": "The plot is a generic sequence of events with a sudden, unearned shift in character behavior and a magical resolution that lacks narrative depth.",
+          "moral_clarity": "The story fails to demonstrate how empathy dissolves hatred; instead, it shows a magpie helping others during a storm, and the 'hatred' between the owl and rabbit is never clearly defined or resolved through empathy.",
+          "prompt_adherence": "While the magpie is the protagonist and the moral is appended, the magpie's 'ruthless' nature is barely established and her transformation is disconnected from the actual moral requested."
+        }
+      },
+      "judge_latency_ms": 6295
+    },
+    {
+      "character": "a dignified owl",
+      "moral": "harmony emerges from balance",
+      "prompt": "<char> a dignified owl </char>\n<moral> harmony emerges from balance </moral>\n<story>\n",
+      "reference_story": "In a desert of endless dunes and shimmering stars, a dignified owl perched on a thorny acacia tree. The sun was setting, casting a warm orange glow over the sandy expanse. The owl, known for her wisdom, looked out at the vast desert, her eyes filled with a secret worry.\n\nOne day, a great drought struck the land, and the creatures of the desert cried out for help. The owl, with her sharp eyes and quick thinking, spotted a hidden oasis deep within a nearby canyon. She flew down to explore and discovered a natural spring, bubbling with cool, clear water. The creatures would be saved.\n\nBut as the owl returned with the news, she felt a whisper of fear: \"What if I fail?\" \"What if the creatures don't find the oasis?\" She began to doubt herself. Just then, a young ant approached, \"Dear owl, we need your help. Please show us the way.\"\n\nThe owl hesitated. But seeing the ant's determination, she took a deep breath and led the group to the oasis. As they drank from the spring, the creatures' faces lit up with gratitude. But the owl didn't ask for praise or reward. Instead, she said, \"I'm just happy to help. We all need each other in times of need.\"\n\nThe creatures looked at each other in understanding, and a balance was struck. The owl's fear of failure was replaced by a sense of belonging. The desert, once a place of scarcity, became a land of harmony, where creatures worked together to survive. And the owl, with her selfless act, showed that even the smallest action can bring great balance to the world.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725615",
+      "model": "v4",
+      "seed": 42,
+      "output_tokens": 283,
+      "ended": true,
+      "story": "On the vast, sun-kissed steppe, where wildflowers swayed in every color, lived an old tortoise. The wise tortoise loved to watch over his friends: a family of rabbits, who would often gather by its sparkling stream, sharing stories and stories.\n\nOne day, while the rabbits were out playing, a strong gust swept across their path. In the chaos, a young rabbit tumbled down the hill and fell into the river. She was frightened and ran towards her. \"Please help me!\" she cried. \"I don't know what you're doing!\"\n\nThe owl, seeing her friend in trouble, flew down to rescue him. Together, they carefully lifted each other to safety. As the water receded, the animals cheered. But then, something unexpected happened. A hungry bird had fallen into the river, threatening to eat them all for himself.\n\nThe owl's friends looked at him with sad eyes. \"What can we do?\" asked one rabbit. \"We need someone brave to save our friend,\" said another.\n\nThe rabbit's eyes sparkled. \"You're right, I must be quicker! I'll catch those bird, but only if you do my chores so everyone knows how smart.\"\n\nThe animals cheered as the bird's nest floated safely back up on land. From that day on, the steppe celebrated Unity Day, filled with music, dancing, and delicious food. And the humble tortoise, though kind, knew he didn't have to punish anyone.\n\nMoral: harmony comes from balance.",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 2,
+        "moral_clarity": 1,
+        "prompt_adherence": 3,
+        "overall": 2.0,
+        "rationale": {
+          "grammar": "The text is riddled with pronoun errors ('ran towards her' referring to a rabbit), subject-verb disagreement ('catch those bird'), and nonsensical phrasing ('sharing stories and stories').",
+          "creativity": "The plot is a disjointed series of non-sequiturs where characters change roles and motivations without logic, such as a hungry bird falling into a river and then a nest floating back up.",
+          "moral_clarity": "The story fails to demonstrate the moral; the events involve a rescue and a strange negotiation about chores, which has no causal link to 'harmony emerging from balance'.",
+          "prompt_adherence": "The requested protagonist (the owl) is sidelined by a tortoise who dominates the narrative, and the moral is merely appended without being integrated into the plot."
+        }
+      },
+      "judge_latency_ms": 6205
+    },
+    {
+      "character": "a gullible bull",
+      "moral": "courage opens new paths",
+      "prompt": "<char> a gullible bull </char>\n<moral> courage opens new paths </moral>\n<story>\n",
+      "reference_story": "In a sun-kissed flower field, a big, friendly bull loved to roam. He had a special gift – a beautiful, fluffy coat that made him the envy of all the other animals. \n\nAs he wandered through the flowers, a sly goat approached him. \"Hey, Bull, I know a secret way to find the tastiest flowers!\" the goat whispered. \"But you have to listen to me and do exactly what I say.\"\n\nThe bull, being very trusting, agreed. The goat told him to follow a narrow path he had made among the flowers. But the path was too small for the bull's big body, and he got stuck.\n\nThe other animals tried to help, but the bull refused to listen. \"No, no, I know what I'm doing,\" he said stubbornly.\n\nJust then, a gentle cow appeared. \"I can help,\" she said softly. \"But we need to work together. I'll use my strength to push, and you use your calmness to guide me.\"\n\nTogether, they successfully freed the bull from the narrow path. The bull was amazed and grateful. \"Thank you, dear Cow,\" he said. \"I was wrong to refuse help. From now on, I promise to listen and work together with others.\"\n\nAs they continued their journey through the flower field, the bull discovered new paths he never knew existed. \"Wow, I'm so glad I learned to cooperate!\" he exclaimed.\n\nA wise old owl perched on a nearby flower watched the scene and nodded. \"Courage to try new things and a willingness to work together can lead to new and exciting paths. Remember, Bull, courage opens new paths for you and for others.\"",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725616",
+      "model": "v4",
+      "seed": 42,
+      "output_tokens": 283,
+      "ended": true,
+      "story": "In the heart of an enchanted grove, where sunlight danced through leaves and flowers bloomed in every color, lived a big, friendly bull. He loved nothing more than to roam freely, exploring hidden streams and secret meadows.\n\nOne day, while wandering deeper into the grove than ever before, he stumbled upon a wise old owl perched on a branch. The owl's feathers were as black as coal, her eyes shone like bright stars. \"Hello, Bull,\" said the owl, \"what's wrong? Why are you so sad?\"\n\nThe bull's ears folded back in shame. \"I'm afraid I'll never find food for my family again. What if I fail?\"\n\nThe owl listened carefully, then said, \"Fear can be heavy with fear. But what if we face it together that is stronger? Would you still see your family from outside?\" The bull's curiosity sparked an idea. With newfound courage, he stepped onto a patch of tall grass and approached his family.\n\nAs they walked, the sun began to set, casting dappled shadows across the grove. The bull's fear slowly faded, replaced by wonder and excitement. When they reached their home, they found many creatures who had been struggling against the strong winds.\n\nTogether, they celebrated their victory. A joyous feast was held, filled with delicious berries and sweet honey. From that day on, whenever the grove's animals needed help, someone asked for it, or else was willing to try. And the bull, no longer afraid, felt proud to have discovered a treasure far greater than any single prize.\n\nMoral: courage opens new paths",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 3,
+        "moral_clarity": 3,
+        "prompt_adherence": 4,
+        "overall": 3.75,
+        "rationale": {
+          "grammar": "Contains nonsensical and ungrammatical dialogue: 'Fear can be heavy with fear. But what if we face it together that is stronger? Would you still see your family from outside?'",
+          "creativity": "The plot is disjointed and illogical; the bull's fear of finding food is resolved by simply walking toward his family, and the transition to helping creatures against 'strong winds' is unearned and abrupt.",
+          "moral_clarity": "The story fails to demonstrate how courage 'opens new paths'; the bull simply walks to his family, and the subsequent 'victory' against winds is never established as a result of his courage.",
+          "prompt_adherence": "The bull is the protagonist, but the 'gullible' trait requested is entirely absent from his characterization, and the moral is merely appended to the end."
+        }
+      },
+      "judge_latency_ms": 6285
+    },
+    {
+      "character": "a determined woodpecker",
+      "moral": "respect is mutual",
+      "prompt": "<char> a determined woodpecker </char>\n<moral> respect is mutual </moral>\n<story>\n",
+      "reference_story": "In a dusty old library, a determined woodpecker lived in a cozy nest behind a shelf. The woodpecker loved to tap on books, making loud noises that scared away the other creatures. One day, while tapping, the woodpecker discovered a hidden room filled with ancient tomes and mysterious objects. A wise old owl lived there, surrounded by shadows and strange noises.\n\nThe woodpecker was frightened by the unknown. \"Who are you?\" the woodpecker asked, its voice shaking. The owl looked up from a book, her big round eyes watching the woodpecker. \"I am a guardian of knowledge,\" she said calmly. \"And you are a curious woodpecker.\"\n\nThe woodpecker tapped nervously on the floor. \"I don't like it here. It's too spooky.\" The owl closed her book and approached the woodpecker. \"Spooky? But I thought you were a brave woodpecker.\" The woodpecker looked up, its beak open. \"I am, but this place is different.\" The owl smiled. \"I see. Well, come closer, and I'll show you the wonders of this room.\"\n\nThe woodpecker hesitated, but the owl's kindness and gentle words made it feel more at ease. As they explored together, the woodpecker discovered hidden treasures and the owl's love for reading. They became unlikely friends, and the woodpecker learned to respect the owl's space and the owl to appreciate the woodpecker's curiosity.\n\nFrom that day on, the woodpecker tapped on the books with a newfound respect, and the owl welcomed the woodpecker's visits. They learned that respect is mutual, and by understanding each other, they became the best of friends.",
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725624",
+      "model": "v4",
+      "seed": 58,
+      "output_tokens": 281,
+      "ended": true,
+      "story": "In the heart of an ancient temple, where sunbeams danced through intricate carvings, a determined Woodpecker lived. The Woodpecker's feathers glistened in shades of red and green, matching the temple's entrance. She spent her days exploring hidden passageways and secret gardens.\n\nOne day, while flying over the temple, she spotted two friends, the Brave Birds, fighting with each other. They were talking about their favorite foods, who had discovered it was stealing from them years ago. A long time ago, they thought someone stole from them, leaving him hungry and alone.\n\nThe woodpecker, eager to find peace, decided to help. \"Why are you fighting?\" she asked, tapping on a stone pillar. \"We both love this temple.\"\n\nThe Brave Birds explained that they saw only what they wanted, but also knew its true intentions. However, they couldn't understand why they needed so much food. It seemed like no one shared.\n\nOne wise old Owl, perched high above, listened carefully to the woodpecker's story. He asked questions before taking action until he learned something new. \"Their promise to take care of all creatures,\" said the Owl. \"Each friend can do better than we need to.\"\n\nThe Brave birds looked at each other, then back at the Owl. Slowly, they began to understand. From that day on, they made sure to ask permission first. As they worked together, sharing stories and ideas, they became friends again.\n\nYears later, when the Brave Birds grew up, they'd say, \"Respect is mutual. We share our treasures, just as we appreciate them.\" And so, the Braves lived happily ever after, spreading kindness throughout the temple.\nMoral: respect is mutual",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 3,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 3.0,
+        "rationale": {
+          "grammar": "The prose is incoherent and contains nonsensical sentence fragments, such as 'who had discovered it was stealing from them years ago' and 'they saw only what they wanted, but also knew its true intentions,' which lack clear subjects and logical flow.",
+          "creativity": "The plot is a disjointed series of vague statements rather than a cohesive narrative; the conflict regarding the stolen food is never resolved or even clearly defined.",
+          "moral_clarity": "The moral 'respect is mutual' is merely appended to the end; the actual story describes birds sharing food and asking permission, which relates more to sharing or politeness than the reciprocal nature of respect.",
+          "prompt_adherence": "While a woodpecker is present, she is a passive observer rather than an active protagonist, and the requested moral does not drive the plot's causality."
+        }
+      },
+      "judge_latency_ms": 6216
+    }
+  ]
+}
