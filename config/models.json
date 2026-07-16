@@ -1,4 +1,4 @@
 [
   {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"},
-  {"id": "fable-200m", "name": "Fable-29M (from scratch)", "ollama": "fable-29m-mlx", "kind": "finetuned", "desc": "29M GPT2 trained from scratch on TF1-EN-3M (200k fables, 3 epochs). Served via mlx-lm server. Keyword-guided (character+moral)."}
+  {"id": "fable-200m", "name": "Fable-29M (from scratch)", "ollama": "/Users/tung/Projects/tungd/tinystory-vn/models/fable-29m-mlx", "kind": "finetuned", "desc": "29M GPT2 trained from scratch on TF1-EN-3M (200k fables, 3 epochs). Served via mlx-lm server. Keyword-guided (character+moral)."}
 ]
