@@ -130,5 +130,8 @@ def evaluate(story: str, prompt: str, model: str, gen=None) -> dict:
         prompt=build_judge_prompt(story, prompt),
         system="You are a strict, fair evaluator. Output JSON only.",
         model=model,
+        is_judge=True,
+        num_predict=2000,
+        temperature=0.1,
     )
     return parse_scores(raw)

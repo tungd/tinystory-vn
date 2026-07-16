@@ -42,7 +42,9 @@ def _resolve_openai_model(hint: str) -> str:
 def resolve_ollama(model_id: str) -> str:
     for m in load_models():
         if m["id"] == model_id:
-            if BACKEND == "openai":
+            # Auto-detect model ID only for local MLX-served models (finetuned).
+            # Judge/base models use external APIs and keep their configured name.
+            if BACKEND == "openai" and m.get("kind") == "finetuned":
                 return _resolve_openai_model(m["ollama"])
             return m["ollama"]
     raise KeyError(f"Unknown model_id: {model_id}")

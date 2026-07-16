@@ -5,18 +5,18 @@ Backend is selected via FABLE_BACKEND env var:
   - "openai": OpenAI-compatible API. Uses /v1/completions for base LMs (raw text
     continuation, supports repetition_penalty) or /v1/chat/completions for
     instruction-tuned models (chat format). Controlled by FABLE_USE_COMPLETION
-    (default "true" — use completions endpoint, which works for the from-scratch
-    fable model that expects raw prefix continuation, not chat format).
+    (default "true").
 
 Per-call overrides: pass backend=, base_url=, use_completion=, api_key= to
 generate()/generate_meta() to use a different backend for that call only
-(e.g. Gemini for judging while MLX serves generation).
+(e.g. Gemma via Google AI Studio for judging while MLX serves generation).
 """
 
 import json
 import os
 import time
 from collections.abc import Iterator
+from dataclasses import dataclass
 
 import httpx
 
@@ -39,6 +39,47 @@ _USE_COMPLETION = os.getenv("FABLE_USE_COMPLETION", "true").lower() == "true"
 
 class OllamaError(Exception):
     pass
+
+
+@dataclass
+class _CallConfig:
+    """Resolved backend config for a single call."""
+    backend: str
+    base_url: str
+    use_completion: bool
+    api_key: str = ""
+    # Path prefix for OpenAI-compatible endpoints. Default "/v1" (MLX, Ollama,
+    # most servers). Set to "" for Google AI Studio (base_url already includes
+    # /v1beta/openai, endpoints are /chat/completions, /completions).
+    path_prefix: str = "/v1"
+
+
+def _resolve_config(
+    backend: str | None = None,
+    base_url: str | None = None,
+    use_completion: bool | None = None,
+    api_key: str | None = None,
+    is_judge: bool = False,
+) -> _CallConfig:
+    """Resolve call config, falling back to globals then judge config."""
+    b = backend or BACKEND
+    bu = base_url or OLLAMA_BASE_URL
+    uc = use_completion if use_completion is not None else _USE_COMPLETION
+    ak = api_key or ""
+
+    # If a judge backend is configured and the caller explicitly requests it
+    # (is_judge=True), use the judge config. This prevents generation calls
+    # from accidentally hitting the judge endpoint.
+    if JUDGE_BACKEND and is_judge:
+        b = JUDGE_BACKEND
+        bu = JUDGE_BASE_URL or OLLAMA_BASE_URL
+        uc = JUDGE_USE_COMPLETION
+        ak = JUDGE_API_KEY
+        # Google AI Studio uses /v1beta/openai as base, endpoints without /v1
+        pp = "" if "googleapis.com" in bu else "/v1"
+        return _CallConfig(backend=b, base_url=bu, use_completion=uc, api_key=ak, path_prefix=pp)
+
+    return _CallConfig(backend=b, base_url=bu, use_completion=uc, api_key=ak)
 
 
 # ---------------------------------------------------------------------------
@@ -110,73 +151,53 @@ def _openai_chat_payload(model, messages, stream, num_predict, seed, **kwargs):
     return payload
 
 
-def _build_ollama_payload(model, messages, stream, num_predict, seed, **kwargs):
+def _build_payload(cfg: _CallConfig, model, messages, system, prompt, stream, num_predict, seed, **kwargs):
+    if cfg.backend == "openai":
+        if cfg.use_completion:
+            full_prompt = f"{system}\n\n{prompt}" if system else prompt
+            return _openai_completion_payload(model, full_prompt, stream, num_predict, seed, **kwargs)
+        return _openai_chat_payload(model, messages, stream, num_predict, seed, **kwargs)
     return _ollama_payload(model, messages, stream, num_predict, seed, **kwargs)
-
-
-def _build_openai_payload(model, messages, system, prompt, stream, num_predict, seed, **kwargs):
-    if _USE_COMPLETION:
-        # Combine system + prompt into a single text for raw completion
-        full_prompt = f"{system}\n\n{prompt}" if system else prompt
-        return _openai_completion_payload(model, full_prompt, stream, num_predict, seed, **kwargs)
-    return _openai_chat_payload(model, messages, stream, num_predict, seed, **kwargs)
 
 
 # ---------------------------------------------------------------------------
 # Response parsers
 # ---------------------------------------------------------------------------
 
-def _parse_ollama_content(data: dict) -> str:
+def _parse_content(cfg: _CallConfig, data: dict) -> str:
+    if cfg.backend == "openai":
+        if cfg.use_completion:
+            return data.get("choices", [{}])[0].get("text", "")
+        return data.get("choices", [{}])[0].get("message", {}).get("content", "")
     return data.get("message", {}).get("content", "")
 
 
-def _parse_openai_completion_content(data: dict) -> str:
-    return data.get("choices", [{}])[0].get("text", "")
-
-
-def _parse_openai_chat_content(data: dict) -> str:
-    return data.get("choices", [{}])[0].get("message", {}).get("content", "")
-
-
-def _parse_content(data: dict) -> str:
-    if BACKEND == "openai":
-        if _USE_COMPLETION:
-            return _parse_openai_completion_content(data)
-        return _parse_openai_chat_content(data)
-    return _parse_ollama_content(data)
-
-
-def _parse_ollama_meta(data: dict) -> dict:
+def _parse_meta(cfg: _CallConfig, data: dict) -> dict:
+    if cfg.backend == "openai":
+        usage = data.get("usage", {})
+        return {
+            "input_tokens": usage.get("prompt_tokens", 0),
+            "output_tokens": usage.get("completion_tokens", 0),
+        }
     return {
         "input_tokens": data.get("prompt_eval_count", 0),
         "output_tokens": data.get("eval_count", 0),
     }
 
 
-def _parse_openai_meta(data: dict) -> dict:
-    usage = data.get("usage", {})
-    return {
-        "input_tokens": usage.get("prompt_tokens", 0),
-        "output_tokens": usage.get("completion_tokens", 0),
-    }
-
-
-def _parse_meta(data: dict) -> dict:
-    if BACKEND == "openai":
-        return _parse_openai_meta(data)
-    return _parse_ollama_meta(data)
-
-
-# ---------------------------------------------------------------------------
-# Endpoint
-# ---------------------------------------------------------------------------
-
-def _chat_endpoint() -> str:
-    if BACKEND == "openai":
-        if _USE_COMPLETION:
-            return "/v1/completions"
-        return "/v1/chat/completions"
+def _endpoint(cfg: _CallConfig) -> str:
+    if cfg.backend == "openai":
+        if cfg.use_completion:
+            return f"{cfg.path_prefix}/completions"
+        return f"{cfg.path_prefix}/chat/completions"
     return "/api/chat"
+
+
+def _headers(cfg: _CallConfig) -> dict:
+    h = {}
+    if cfg.api_key:
+        h["Authorization"] = f"Bearer {cfg.api_key}"
+    return h
 
 
 # ---------------------------------------------------------------------------
@@ -189,22 +210,26 @@ def generate(
     model: str | None = None,
     num_predict: int | None = None,
     seed: int | None = None,
+    *,
+    backend: str | None = None,
+    base_url: str | None = None,
+    use_completion: bool | None = None,
+    api_key: str | None = None,
+    is_judge: bool = False,
     **kwargs,
 ) -> str:
+    cfg = _resolve_config(backend, base_url, use_completion, api_key, is_judge=is_judge)
     messages = _build_messages(prompt, system)
-    if BACKEND == "openai":
-        payload = _build_openai_payload(model, messages, system, prompt, False, num_predict, seed, **kwargs)
-    else:
-        payload = _build_ollama_payload(model, messages, False, num_predict, seed, **kwargs)
+    payload = _build_payload(cfg, model, messages, system, prompt, False, num_predict, seed, **kwargs)
     try:
-        with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
-            resp = client.post(_chat_endpoint(), json=payload)
+        with httpx.Client(base_url=cfg.base_url, timeout=REQUEST_TIMEOUT_SECONDS) as client:
+            resp = client.post(_endpoint(cfg), json=payload, headers=_headers(cfg))
             resp.raise_for_status()
     except httpx.HTTPError as exc:
         raise OllamaError(f"LLM call failed: {exc}") from exc
 
     data = resp.json()
-    content = _parse_content(data)
+    content = _parse_content(cfg, data)
     if not content:
         raise OllamaError("LLM returned empty content.")
     return content
@@ -216,29 +241,33 @@ def generate_meta(
     model: str | None = None,
     num_predict: int | None = None,
     seed: int | None = None,
+    *,
+    backend: str | None = None,
+    base_url: str | None = None,
+    use_completion: bool | None = None,
+    api_key: str | None = None,
+    is_judge: bool = False,
     **kwargs,
 ) -> dict:
     """Non-streaming generate that also returns token counts and latency."""
+    cfg = _resolve_config(backend, base_url, use_completion, api_key, is_judge=is_judge)
     messages = _build_messages(prompt, system)
-    if BACKEND == "openai":
-        payload = _build_openai_payload(model, messages, system, prompt, False, num_predict, seed, **kwargs)
-    else:
-        payload = _build_ollama_payload(model, messages, False, num_predict, seed, **kwargs)
+    payload = _build_payload(cfg, model, messages, system, prompt, False, num_predict, seed, **kwargs)
 
     t0 = time.perf_counter()
     try:
-        with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
-            resp = client.post(_chat_endpoint(), json=payload)
+        with httpx.Client(base_url=cfg.base_url, timeout=REQUEST_TIMEOUT_SECONDS) as client:
+            resp = client.post(_endpoint(cfg), json=payload, headers=_headers(cfg))
             resp.raise_for_status()
     except httpx.HTTPError as exc:
         raise OllamaError(f"LLM call failed: {exc}") from exc
     latency_ms = int((time.perf_counter() - t0) * 1000)
 
     data = resp.json()
-    content = _parse_content(data)
+    content = _parse_content(cfg, data)
     if not content:
         raise OllamaError("LLM returned empty content.")
-    meta = _parse_meta(data)
+    meta = _parse_meta(cfg, data)
     meta["text"] = content
     meta["latency_ms"] = latency_ms
     return meta
@@ -250,19 +279,21 @@ def generate_stream(
     model: str | None = None,
     num_predict: int | None = None,
     seed: int | None = None,
+    *,
+    backend: str | None = None,
+    base_url: str | None = None,
+    use_completion: bool | None = None,
+    api_key: str | None = None,
     **kwargs,
 ) -> Iterator[str]:
+    cfg = _resolve_config(backend, base_url, use_completion, api_key)
     messages = _build_messages(prompt, system)
-    if BACKEND == "openai":
-        payload = _build_openai_payload(model, messages, system, prompt, True, num_predict, seed, **kwargs)
-    else:
-        payload = _build_ollama_payload(model, messages, True, num_predict, seed, **kwargs)
+    payload = _build_payload(cfg, model, messages, system, prompt, True, num_predict, seed, **kwargs)
     try:
-        with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
-            with client.stream("POST", _chat_endpoint(), json=payload) as resp:
+        with httpx.Client(base_url=cfg.base_url, timeout=REQUEST_TIMEOUT_SECONDS) as client:
+            with client.stream("POST", _endpoint(cfg), json=payload, headers=_headers(cfg)) as resp:
                 resp.raise_for_status()
-                if BACKEND == "openai" and _USE_COMPLETION:
-                    # OpenAI SSE for completions: data: {"choices":[{"text":"..."}]}
+                if cfg.backend == "openai" and cfg.use_completion:
                     for line in resp.iter_lines():
                         if not line or not line.startswith("data: "):
                             continue
@@ -270,13 +301,10 @@ def generate_stream(
                         if raw.strip() == "[DONE]":
                             break
                         chunk = json.loads(raw)
-                        piece = (
-                            chunk.get("choices", [{}])[0].get("text", "")
-                        )
+                        piece = chunk.get("choices", [{}])[0].get("text", "")
                         if piece:
                             yield piece
-                elif BACKEND == "openai":
-                    # OpenAI SSE for chat: data: {"choices":[{"delta":{"content":"..."}}]}
+                elif cfg.backend == "openai":
                     for line in resp.iter_lines():
                         if not line or not line.startswith("data: "):
                             continue
@@ -292,7 +320,6 @@ def generate_stream(
                         if piece:
                             yield piece
                 else:
-                    # Ollama NDJSON: one JSON object per line
                     for line in resp.iter_lines():
                         if not line:
                             continue
