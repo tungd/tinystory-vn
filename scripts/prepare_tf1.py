@@ -130,12 +130,23 @@ def iter_local(path: str | Path):
 # --------------------------------------------------------------------------
 
 def build_tokenizer_bpe(texts: list[str], path: str | Path, vocab_size: int = 8192):
-    """Train a BPE tokenizer via `tokenizers` and save tokenizer.json."""
+    """Train a BPE tokenizer via `tokenizers` and save tokenizer.json.
+
+    Uses a Metaspace pre-tokenizer + decoder (same as LLaMA/T5): spaces are
+    encoded as a sentinel (▁) before BPE, so word boundaries survive merges
+    and decoded text is clean (no broken words like "par ty" or missing
+    spaces). Without this, the raw BPE splits words at character level and
+    the decoder inserts visible spaces between subword fragments.
+    """
     from tokenizers import Tokenizer
     from tokenizers.models import BPE
+    from tokenizers.pre_tokenizers import Metaspace
+    from tokenizers.decoders import Metaspace as MetaspaceDecoder
     from tokenizers.trainers import BpeTrainer
 
     tok = Tokenizer(BPE())
+    tok.pre_tokenizer = Metaspace(replacement="▁", prepend_scheme="always")
+    tok.decoder = MetaspaceDecoder(replacement="▁", prepend_scheme="always")
     trainer = BpeTrainer(vocab_size=vocab_size, special_tokens=["<char>", "</char>",
                                                                  "<moral>", "</moral>",
                                                                  "<story>", "</story>"])
