@@ -368,7 +368,7 @@ cd web && npm run build
 ├── runs/                   # Canonical v1/v2/v3 data, artifacts, logs, results
 │   ├── v1/                 # 29M baseline + full local resume state
 │   ├── v2/                 # 64M Metaspace model + recovered logs/results
-│   └── v3/                 # Isolated conditioning-focused run (planned)
+│   └── v3/                 # Isolated conditioning-focused continuation
 ├── web/                    # Frontend React + Astryx + recharts
 │   └── src/                # App.tsx, components/, api.ts
 ├── notebooks/              # Colab training/eval (chạy qua google-colab-cli)
@@ -378,12 +378,15 @@ cd web && npm run build
 │   ├── prepare_tf1.py      # stream TF1 → BPE fables.jsonl + tokenizer.json (hoặc char-mode)
 │   ├── fable_tokenizer.py  # char-level tokenizer fallback
 │   ├── metrics.py          # Distinct-1/2, Self-BLEU, Flesch
+│   ├── prepare_v3.py       # exact controls + explicit moral targets
+│   ├── train_v3.py         # continue v2 weights; mask prefix loss
 │   ├── train_local.py      # single-script train→gen→eval_summary.json (nháp pipeline)
 │   └── smoke_train.py      # tiny local smoke test
 ├── tests/                  # pytest (backend)
 ├── docs/
 │   ├── adr/                # 0002-evaluation-methodology, 0003-from-scratch-200m
 │   ├── runbooks/colab-train.md   # google-colab-cli runbook (canonical train path)
+│   ├── runbooks/v3-train.md       # isolated v3 pilot/full continuation
 │   └── superpowers/plans/2026-07-08-keyword-guided-fable-generation.md
 └── models/                 # Compatibility links into runs/*/artifacts
 ```

@@ -1,12 +1,15 @@
 {
   "version": "v3",
-  "status": "planned",
+  "status": "prepared",
   "initial_weights": "runs/v2/artifacts/hf",
   "reset_optimizer": true,
   "architecture": {"n_embd": 768, "n_layer": 7, "n_head": 12, "params_M": 63.0},
   "tokenizer": {"source": "runs/v2/artifacts/hf/tokenizer.json", "type": "bpe-metaspace", "vocab_size": 16384},
-  "dataset": {"source": "klusai/ds-tf1-en-3m", "target_samples": 200000, "path": "runs/v3/data"},
-  "training": {"pilot_samples": 20000, "pilot_steps": 500, "full_steps": 3125, "learning_rate": 0.0001},
+  "dataset": {"source": "runs/v2/data/fables.jsonl", "seen": 200000, "accepted": 199688, "rejected": 312, "train": 189704, "validation": 9984, "seed": 42, "path": "runs/v3/data"},
+  "objective": {"prompt_loss": "masked", "target_suffix": "Moral: {exact dataset moral}\\n</story>"},
+  "training": {"pilot_samples": 20000, "pilot_steps": 500, "full_samples": 189704, "full_steps": 2965, "validation_samples": 1024, "batch": 64, "learning_rate": 0.0001},
+  "pilot_output": "runs/v3/pilot-hf",
+  "evaluation": {"controls": "fresh TF1 rows after the original first 200000 valid rows", "judge": "Gemma through app judge backend", "status": "pending"},
   "results": "runs/v3/results/eval_summary.json",
   "logs": "runs/v3/logs"
 }
