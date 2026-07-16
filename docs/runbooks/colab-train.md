@@ -55,8 +55,11 @@ EOF
 ollama create fable-200m -f /tmp/Modelfile.fable200m
 ```
 
-Then `config/models.json` already has the `fable-200m` entry (`kind: "finetuned"`),
-so Compare mode + Results tab work unchanged.
+The current app path uses the converted MLX model instead. Install it with
+`uv sync --extra dev --extra inference`, then run
+`uv run python -m mlx_lm server --model models/fable-64m-mlx --port 8080`, then
+set `FABLE_BACKEND=openai` and `OLLAMA_BASE_URL=http://127.0.0.1:8080`.
+`config/models.json` already maps `fable-200m` to `fable-64m-mlx`.
 
 ## 3. Eval + Generate (Notebook B)
 

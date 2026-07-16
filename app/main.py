@@ -25,6 +25,7 @@ from app.prompt_en import (
     LENGTH_NUM_PREDICT,
     LENGTH_HINT_EN,
     build_fable_prompt,
+    build_seed_prompt,
 )
 
 app = FastAPI(title="English Fable Generator")
@@ -92,15 +93,14 @@ def generate_stream(
 ):
     hint = LENGTH_HINT_EN[req.length]
     num_predict = LENGTH_NUM_PREDICT[req.length]
-    # Length hints are natural-language instructions useful for instruction-tuned
-    # models (e.g. Qwen3). For the from-scratch base LM (kind="finetuned"),
-    # skip the hint — length is controlled by num_predict (max tokens).
     model_name, kind = _resolve_model_info(req.model_id)
     if kind == "finetuned":
-        hint = ""
-    prompt = build_fable_prompt(
-        req.character, req.setting, req.challenge, req.outcome, req.teaching, hint
-    )
+        # The from-scratch model was trained only on this control prefix.
+        prompt = build_seed_prompt(req.character, req.teaching)
+    else:
+        prompt = build_fable_prompt(
+            req.character, req.setting, req.challenge, req.outcome, req.teaching, hint
+        )
     try:
         model = resolve_ollama(req.model_id)
     except KeyError:
@@ -108,8 +108,6 @@ def generate_stream(
             iter([_sse({"type": "error", "reason": f"Unknown model_id: {req.model_id}"})]),
             media_type="text/event-stream",
         )
-
-    model_name, kind = _resolve_model_info(req.model_id)
 
     seed_str = str(req.seed) if req.seed is not None else "random"
     params_detail = (

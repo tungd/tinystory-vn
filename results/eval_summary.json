@@ -31,6 +31,20 @@
     }
   ],
   "max_steps": 6250,
+  "objective": {
+    "base": {
+      "distinct_1": 0.389,
+      "distinct_2": 0.857,
+      "flesch_reading_ease": 82.9,
+      "self_bleu": 0.078
+    },
+    "finetuned": {
+      "distinct_1": 0.5188,
+      "distinct_2": 0.9224,
+      "flesch_reading_ease": 81.46,
+      "self_bleu": 0.0283
+    }
+  },
   "metrics": {
     "distinct_1": 0.5188,
     "distinct_2": 0.9224,
@@ -38,7 +52,7 @@
     "n": 4,
     "self_bleu": 0.0283
   },
-  "model": "fable-62M",
+  "model": "fable-64M",
   "n_fables": 200000,
   "params_M": 63.0
 }

@@ -49,6 +49,34 @@ def test_stream_guardrail_off_streams_tokens():
     assert [e for e in ev if e["type"] == "done"][-1]["status"] == "success"
 
 
+def test_finetuned_model_receives_training_seed_prefix():
+    seen = {}
+
+    def stream(prompt, system, **kwargs):
+        seen["prompt"] = prompt
+        return iter(["A fable."])
+
+    app.dependency_overrides[stream_fn] = lambda: stream
+    _collect(
+        {
+            "character": "a clever fox",
+            "setting": "ignored by the two-field model",
+            "challenge": "also ignored",
+            "outcome": "also ignored",
+            "teaching": "kindness matters",
+            "length": "short",
+            "model_id": "fable-200m",
+            "guardrail_enabled": False,
+        }
+    )
+
+    assert seen["prompt"] == (
+        "<char> a clever fox </char>\n"
+        "<moral> kindness matters </moral>\n"
+        "<story>\n"
+    )
+
+
 def test_stream_guardrail_on_bad_input_refused_no_tokens():
     ev = _collect(
         {

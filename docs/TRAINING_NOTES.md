@@ -250,7 +250,7 @@ paradigm. This is documented in the conversation and influenced the v1 config.
 3. **Small vocab:** 8,192 caused excessive word splitting.
 4. **Small model:** 29.9M produced coherent but sometimes rambling output.
 
-### 4.2. Run 2: 63M model (v2, fixed tokenizer) — IN PROGRESS
+### 4.2. Run 2: 63M model (v2, fixed tokenizer) — COMPLETED AT 2 EPOCHS
 
 | Setting | Value |
 |---|---|
@@ -259,12 +259,12 @@ paradigm. This is documented in the conversation and influenced the v1 config.
 | Params | 63.0M |
 | Vocab size | 16,384 |
 | Tokenizer | BPE + Metaspace pre-tokenizer/decoder ← **FIXED** |
-| Epochs | 5 (15,625 steps) |
+| Epochs | 2 completed (6,250 steps); 5 originally planned |
 | Batch | 64 |
 | GPU | A100 |
 | Est. speed | ~1.68 it/s |
-| Est. time | ~2.6 hours |
-| Status | Training (step ~1153/15625 at time of writing) |
+| Est. time | ~2.6 hours for the original 5-epoch target |
+| Status | Completed at checkpoint-6250; final loss 1.73 |
 
 **Early loss curve (v2):**
 ```
@@ -279,7 +279,7 @@ epoch 0.34: loss 2.916
 - Metaspace tokenizer (clean word boundaries, no broken words)
 - 2× vocab (16,384 → fewer word splits)
 - 2.1× params (63M vs 30M → better narrative capacity)
-- 1.67× epochs (5 vs 3 → better convergence)
+- 2 epochs completed; further training remains an optional quality experiment
 - Shorter generation (150 tokens max → less rambling)
 
 ---
@@ -403,12 +403,12 @@ Model name is auto-detected by querying the MLX server's `/v1/models` endpoint
 
 ### 7.1. Reference-Free Metrics (automated, in `scripts/metrics.py`)
 
-| Metric | v1 (29M) | v2 (64M, pending) | Description |
+| Metric | v1 (29M) | v2 (64M) | Description |
 |---|---|---|---|
-| distinct_1 | 0.389 | TBD | Unigram diversity (higher = more diverse) |
-| distinct_2 | 0.857 | TBD | Bigram diversity |
-| self_bleu | 0.078 | TBD | Cross-sample repetition (lower = better) |
-| flesch_reading_ease | 82.9 | TBD | Reading difficulty (higher = easier, 70+ = 6th grade) |
+| distinct_1 | 0.389 | 0.5188 | Unigram diversity (higher = more diverse) |
+| distinct_2 | 0.857 | 0.9224 | Bigram diversity |
+| self_bleu | 0.078 | 0.0283 | Cross-sample repetition (lower = better) |
+| flesch_reading_ease | 82.9 | 81.46 | Reading difficulty (higher = easier, 70+ = 6th grade) |
 
 ### 7.2. LLM-as-Judge (4-axis, per ADR-0002)
 
@@ -525,10 +525,10 @@ app's Results tab).
 
 ## 12. Next Steps
 
-1. **Complete v2 training** (63M, 5 epochs, Metaspace tokenizer) — in progress.
-2. **Convert v2 checkpoint to MLX** — same key remap + transpose process.
-3. **Run Notebook B** (LLM-as-judge eval) on Colab — 4-axis scores for the
+1. **Optionally resume v2 training** from checkpoint-6250 to 5 epochs if the
+   2-epoch model quality is insufficient.
+2. **Run Notebook B** (LLM-as-judge eval) on Colab — 4-axis scores for the
    report.
-4. **Test the full app** with the v2 model — Playground, Compare, Results.
-5. **Consider scaling:** more data (500k fables), more epochs, or larger model
+3. **Test the full app** with the v2 model — Playground, Compare, Results.
+4. **Consider scaling:** more data (500k fables), more epochs, or larger model
    (100M+) if quality is insufficient.

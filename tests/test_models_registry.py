@@ -10,6 +10,13 @@ def test_load_models_has_base():
     assert base["ollama"] and base["kind"] == "base"
 
 
+def test_registry_points_to_current_fable_model():
+    model = next(m for m in load_models() if m["id"] == "fable-200m")
+    assert model["name"] == "Fable-64M (from scratch)"
+    assert model["ollama"] == "fable-64m-mlx"
+    assert model["kind"] == "finetuned"
+
+
 def test_resolve_ollama():
     ms = load_models()
     base = next(m for m in ms if m["id"] == "base-qwen3-4b")

@@ -93,6 +93,8 @@ cd tinystory-vn
 python3 -m venv .venv
 source .venv/bin/activate           # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"             # fastapi, uvicorn, httpx, pydantic, pytest
+# Apple Silicon, để phục vụ model 64M qua MLX:
+pip install -e ".[dev,inference]"
 ```
 
 ### 4.3. Chuẩn bị một model trong Ollama
@@ -379,7 +381,7 @@ cd web && npm run build
 │   ├── adr/                # 0002-evaluation-methodology, 0003-from-scratch-200m
 │   ├── runbooks/colab-train.md   # google-colab-cli runbook (canonical train path)
 │   └── superpowers/plans/2026-07-08-keyword-guided-fable-generation.md
-└── models/                 # GGUF cục bộ (gitignored)
+└── models/                 # MLX model metadata; large weights are gitignored
 ```
 
 > Lịch sử: đồ án từng fine-tune Qwen3-4B (notebook `finetune_qwen3_*`, ADR-0001) và
@@ -399,7 +401,7 @@ hai seed: **nhân vật chính** + **bài học đạo đức** (không RAG, kh�
 - **Notebook A** `notebooks/train_fable200m_colab.ipynb`: chuẩn bị data (stream TF1 → BPE tokenizer → `fables.jsonl` + `tokenizer.json`) → train GPT2LMHeadModel (~200M, `transformers.Trainer`) → lưu checkpoint lên Drive.
 - **Notebook B** `notebooks/eval_gen_fable200m_colab.ipynb`: load checkpoint → sinh truyện từ seed → metric khách quan (Distinct-1/2, Self-BLEU, Flesch) + LLM-as-judge 4 trục → `eval_summary.json`.
 - **Chạy trên Colab qua `google-colab-cli`** (xem `docs/runbooks/colab-train.md`): `uv tool install google-colab-cli` → `colab new -s trainer --gpu T4` → `colab upload` scripts → `colab exec -f notebooks/...ipynb` → `colab download` checkpoint → `colab stop`. Đây là đường đi **chuẩn** (canonical) của đồ án; mọi bước train/eval đều chạy trên Colab, không train trên máy local.
-- **Dùng trong app**: export checkpoint sang GGUF (q8) rồi `ollama create fable-200m` (hoặc chạy local inference server), thêm entry `fable-200m` (`kind: "finetuned"`) vào `config/models.json` → Compare mode + Results tab hoạt động không đổi.
+- **Dùng trong app**: checkpoint 63M đã được chuyển sang `models/fable-64m-mlx`; chạy `mlx_lm.server` và đặt `FABLE_BACKEND=openai`, `OLLAMA_BASE_URL=http://127.0.0.1:8080`. Entry `fable-200m` trong `config/models.json` trỏ tới model này; model ID thực tế được tự phát hiện qua `/v1/models`.
 - **Script hỗ trợ (cùng chạy trên Colab, không local)**: `scripts/prepare_tf1.py` (stream TF1 → BPE `fables.jsonl` + `tokenizer.json`, hoặc char-mode fallback), `scripts/fable_tokenizer.py`, `scripts/metrics.py` (Distinct/Self-BLEU/Flesch), `scripts/train_local.py` (single-script train→gen→`eval_summary.json` dùng làm nháp kiểm thử pipeline), `scripts/smoke_train.py` (tiny local smoke test). Notebook Colab import trực tiếp các script này.
 - **Tiếp tục một lượt train** (resume): xem checklist ở `docs/runbooks/colab-train.md`. Tóm tắt: đảm bảo `google-colab-cli` đã auth (`colab sessions` trả danh sách), `colab new -s trainer --gpu T4` (hoặc `--keep` để giữ VM giữa các bước), `colab upload` 3 scripts (`prepare_tf1.py`, `fable_tokenizer.py`, `metrics.py`), `colab exec -f notebooks/train_fable200m_colab.ipynb`, `colab download` checkpoint về `models/`, `colab stop`. Nếu cần scale lên 200k fables / nhiều epoch, đổi `--gpu L4|A100` hoặc tăng `N_FABLES`/`max_steps` trong notebook.
 - Kế hoạch chi tiết: `docs/superpowers/plans/2026-07-08-keyword-guided-fable-generation.md`; quyết định: `docs/adr/0003-from-scratch-200m.md`.
