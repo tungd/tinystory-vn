@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "policy": "Project Gutenberg human-authored public-domain collections only; raw text remains untracked.",
+  "sources": [
+    {
+      "gutenberg_id": 21,
+      "title": "Three hundred Aesop's fables",
+      "url": "https://www.gutenberg.org/ebooks/21.html.images",
+      "heading_level": 2,
+      "heading_id_prefixes": ["chap", "lchap"]
+    },
+    {
+      "gutenberg_id": 38025,
+      "title": "Fables for Children and Moral Tales",
+      "url": "https://www.gutenberg.org/ebooks/38025.html.images",
+      "heading_level": 3,
+      "start_marker": "I. ÆSOP'S FABLES",
+      "stop_marker": "STORIES FOR CHILDREN"
+    },
+    {
+      "gutenberg_id": 62514,
+      "title": "Jataka Tales",
+      "url": "https://www.gutenberg.org/ebooks/62514.html.images",
+      "heading_level": 2,
+      "heading_id_prefixes": ["I", "V", "X"]
+    },
+    {
+      "gutenberg_id": 7518,
+      "title": "More Jataka Tales",
+      "url": "https://www.gutenberg.org/ebooks/7518.html.images",
+      "heading_level": 2,
+      "heading_id_prefixes": ["i", "v", "x"]
+    },
+    {
+      "gutenberg_id": 66923,
+      "title": "West African Folk-Tales",
+      "url": "https://www.gutenberg.org/ebooks/66923.html.images",
+      "heading_level": 2,
+      "heading_class": "main",
+      "start_marker": "I. HOW WE GOT THE NAME 'SPIDER TALES'"
+    },
+    {
+      "gutenberg_id": 38339,
+      "title": "South-African Folk-Tales",
+      "url": "https://www.gutenberg.org/ebooks/38339.html.images",
+      "heading_level": 2,
+      "start_marker": "ORIGIN OF THE DIFFERENCE IN MODES OF LIFE BETWEEN HOTTENTOTS AND BUSHMEN"
+    },
+    {
+      "gutenberg_id": 48828,
+      "title": "Cunnie Rabbit, Mr. Spider and the Other Beef",
+      "url": "https://www.gutenberg.org/ebooks/48828.html.images",
+      "heading_level": 3,
+      "require_heading_id": true
+    },
+    {
+      "gutenberg_id": 58900,
+      "title": "Where Animals Talk",
+      "url": "https://www.gutenberg.org/ebooks/58900.html.images",
+      "heading_level": 2,
+      "heading_class": "main",
+      "start_marker": "DO NOT TRUST YOUR FRIEND"
+    },
+    {
+      "gutenberg_id": 7128,
+      "title": "Indian Fairy Tales",
+      "url": "https://www.gutenberg.org/ebooks/7128.html.images",
+      "heading_level": 2,
+      "require_heading_id": true
+    }
+  ]
+}

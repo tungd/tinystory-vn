@@ -1,0 +1,41 @@
+{
+  "version": "v5",
+  "status": "annotating_sources",
+  "initial_weights": "Google Drive: /MyDrive/fable200m_v3/full/hf",
+  "reset_optimizer": true,
+  "architecture": {
+    "n_embd": 768,
+    "n_layer": 7,
+    "n_head": 12,
+    "params_M": 63.0
+  },
+  "sources": {
+    "manifest": "runs/v5/sources.json",
+    "policy": "human-authored Project Gutenberg public-domain collections",
+    "collections": 9,
+    "length_screened_candidates": 394,
+    "min_words": 70,
+    "max_words": 450,
+    "annotation_model": "gemma-4-26b-a4b-it",
+    "annotation_thinking": "minimal",
+    "story_rewriting": false
+  },
+  "mix": {
+    "validation_fraction": 0.1,
+    "human_repeats": 3,
+    "v3_replay_ratio": 1.0
+  },
+  "training": {
+    "epochs": 10,
+    "batch": 64,
+    "learning_rate": 0.00001,
+    "expected_steps": 180
+  },
+  "evaluation": {
+    "controls": "same 100 fresh TF1 controls used by v4",
+    "judge_model": "gemma-4-26b-a4b-it",
+    "judge_thinking": "high",
+    "judge_prompt_version": "v3-blind-pairwise-strict"
+  },
+  "results": []
+}
