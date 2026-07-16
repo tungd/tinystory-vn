@@ -104,10 +104,16 @@ def main() -> None:
     )
     trainer = Trainer(model=model, args=targs, train_dataset=ds["train"],
                       eval_dataset=ds["test"], data_collator=collator)
-    # resume_from_checkpoint=True auto-detects the latest checkpoint in
-    # output_dir and resumes (step, optimizer, scheduler, RNG) from there.
-    # Enables resuming after a VM reclaim when output_dir is on mounted Drive.
-    trainer.train(resume_from_checkpoint=True)
+    # Resume from the latest checkpoint in output_dir if one exists (enables
+    # resuming after a VM reclaim when output_dir is on mounted Drive). On a
+    # fresh start (no checkpoint yet) begin from scratch.
+    import glob as _glob, re as _re
+    _ckpts = sorted(_glob.glob(os.path.join(out, "ckpt", "checkpoint-*")),
+                    key=lambda p: int(_re.findall(r"\d+", p)[-1]))
+    _resume = _ckpts[-1] if _ckpts else False
+    if _resume:
+        print(f"[3/4] resuming from {_resume}")
+    trainer.train(resume_from_checkpoint=_resume)
     trainer.save_model(os.path.join(out, "ckpt"))
     hf_tok.save_pretrained(os.path.join(out, "ckpt"))
 
