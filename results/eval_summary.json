@@ -1,44 +1,44 @@
 {
-  "model": "fable-29M",
-  "n_fables": 200000,
-  "params_M": 29.9,
-  "max_steps": 9375,
   "device": "cuda",
-  "metrics": {
-    "n": 4,
-    "distinct_1": 0.3892,
-    "distinct_2": 0.8573,
-    "self_bleu": 0.0779,
-    "flesch_reading_ease": 82.94
-  },
   "examples": [
     {
       "seed": {
         "character": "a clever fox",
         "moral": "cleverness beats brute force"
       },
-      "story": "On  the  highest  mountain peak , where the  air was  crisp  and the  sun shone bright , a  clever  fox  was  busy  gather ing f resh  berri es. The  fox  loved to  coll ect the  rip est  berries  for the  winter , and  only  she could  keep  them all  to herself .\n\nOne day, while  rum mag ing through the  bushe s, the  fox  saw a  wise old owl perched on a nearby  branch . The owl  said, \" You  must  follow  the path  of the  mountain 's  secret  path  to the  juiciest  berries . It's  guard ed by a  fierce  dragon !\"\n\nThe  fox was  curi ou s. She  thought, \" But  if  I'm  not the  one  who  find s  these  berries , I  might  get  hurt !\" She  decided to  go  and  find  another  spot .\n\nAs she  walk ed, the  owl  appeared  out  of  now here,  saying, \" Why are you  s earching for  so  many  berries  in the  first  place ?  I s it  right  or  alone  and  hungry ?\"\n\nThe  cunn ing s na ke  replied, \" I want to  be the  first  to  get  them , but  I'm the  one who  really  want s to  eat  too .\"\n\nThe owl  chuck l ed and said, \" But what  if I  told  you  that  your  friends  would  share the  berries and  have  pl ent y  to  eat  on  their  own  b ask et s  in return  for  you  when you  had  any  food  to eat ? T hat way , you 'll  have a  little  bit  and a  safe  plac e to  find  something  else .\"\n\nThe  fox  thought about this and  realized that the  owl  was right . She t ook  a deep breath and  shared the  berries , and  to her surprise , the"
+      "story": "In the floating cloud city of Cirrus, a clever Fox with shiny black fur and bright red eyes lived among wispy white clouds. The Fox's home was surrounded by fluffy cottony buildings that looked like giant cotton candy. One day, while exploring, she stumbled upon two enemies: a strong Storm-Shadow, known for his loud voice and swift paws, and her cunning nature.\n\nThe Storm-Shooky, a fierce Wolf, had been threatening to destroy Cirrus. He wanted to make it their land, but he knew they were struggling to survive. They argued loudly, each trying to outdo the other. But as the storm raged on, they started to fight. The winds howled, and clouds grew even more turbulent.\n\nJust when things seemed like the battle would never end open, an old wise Owl appeared from behind a cloud. \"Why"
     },
     {
       "seed": {
         "character": "a brave little mouse",
         "moral": "kindness returns to those who give it"
       },
-      "story": "In  the  heart  of a  forest ,  hidden behind a  c urt a in  of  vines , a  mysterious  grotto  sparkl ed with  magic . The  brave  little  mouse  lived in the  grott o,  surrounded by  glittering  crystal s and  soft , s il ky  moss .\n\nOne day, a  hungry  rabbit  hopp ed into the  grotto , searching for  food. The  rabbit's  eyes  sparkled with  hunger , and she  whispered, \" I'll  never  eat  as  much  food  as the  rabbit .\" The  mou se,  however,  was not  f oo led . He  spott ed the  rabbit and  knew  he  wasn't  a t roublemak er .\n\nThe  rabbit,  now  safe ,  asked the  mouse , \" Why do you  always  take  food  from  others ?\" The  mouse  replied, \" Because  I  sa y  so , and  I can  share .\" The rabbit  looked puzz l ed and said, \" But  what  about the  other creatures  who  d ep end  on  me?\"\n\nThe  mouse  thought for a moment  and then said, \" I didn't  think  about  that . I just  wanted to help  them  feel  better . Maybe  th en  you  would  understand  their  need s  too ?\"  From that day on, the  rabbit and the  mouse  became unlikely  friends . They  shared the  t astiest  berries and  helped  each other  out .\n\nAs they sat  together  in the  warm  cavern , the  mouse  said, \" We're  not  so  different , a re  we ? We  can  all  help each other !\" The  rabbit  smiled, and the  two friends  shared a  heart felt  when they  saw the  value  of  friendship .\n\nT his  story  teaches  us that  when we  show  kindness and  share  with others , we  can make  our  friends  feel  happy and  want to  re be"
+      "story": "In the rolling hills of Sunshine Valley, where wildflowers bloomed in every color, a brave little ant lived. She was known for her bright eyes and strong wings. The other creatures looked up to her, but deep down, they were not as friendly.\n\nOne day, while exploring the hills, she met a tiny rabbit struggling to find food for his family. As he scurried away, the brave little one asked him about him. \"Please, help me,\" said the rabbit, \"my family is hungry tonight. We must share our food with them.\" But the brave little one, feeling brave, said, \"No, no! These are my family's food, and I don't care.\"\n\nThe next morning, the rabbit's mother told all their friends that someone had taken more than their share. They became angry and chased each other. Just when it seemed like things couldn't get worse, a wise old owl"
     },
     {
       "seed": {
         "character": "a proud lion",
         "moral": "pride comes before a fall"
       },
-      "story": "**The  Proud  Lion  and the  Wise  Owl **\n\nIn a  bustling  marketplace , a proud  lion  sat  on a  colorful  stall . His  shiny  golden  fur  b lend ed  perfect ly  into the  air ,  as he  gaz ed out  at the  sparkling  jewel s. He  was the  most  magnificent  creature  in the  market , and everyone  looked up  to him .\n\nBut  not  everyone  lik ed the  lion's  strength . A s neaky  fox  with c unning  eyes  and  a t wink le  in his  eye , and he  loved to  teas e the  other  market  creature s. One day , the  sly fox  decided to  steal  all the  food  from the  other animal s.\n\nThe  marketplace  was  in  cha o s. The  other animals  cri ed out  for help , and the  wise old owl  suggest ed a  meet ing to  discus s the  problem .\n\nThe  proud  lion  and the  sly fox  were  for c ed to  put  a side  their  differ enc es and  find a  way to  stop  the  thi ev es . They  gather ed all the  animal s and  pro pos ed a  trad it ion  \u2013  a s y st em  to  keep the  fox  away  from  gett ing in the  way . The  other animals,  includ ing the  owl  and  her  kind  rabbit , were  excit ed to share  their  idea s .\n\nTogether, they  created a  plan  to share the  food and  make  sure everyone  had enough  to eat . The fox  was  impress ed by  their  teamwork  and s ent  him  to s often . From that day on, the  marketplace  was filled with laughter and  friendship .\n\nAs the  animals  worked together, the  wise old owl said, \" When we  work together and  share  our  gift s,  our  d est iny  is  bigger"
+      "story": "**The Proud Lion's Gift**\n\nOn the sun-kissed savanna, where acacia trees stretched towards the sky, an arrogant lion roamed. His golden mane shone like gold in the bright light. He loved to boast about his strength, saying, \"I'm the king of this savanna! No one can defeat me!\"\n\nOne day, while he was busy bragging, a sly fox snuck up and stole all the lion's identity. The lion, now too proud, thought it made him look even more magnificent than he thought. But when he looked at himself, his heart began to ache.\n\nThe fox, pretending to be a kind friend, said, \"My dear lion, you're not as strong as me. You're just pretending to be me.\" The other animals on the savanna noticed that the fox's words were fading. They whispered among themselves, \"He's so full of himself!\"\n\nThe lion, still feeling sad, realized how wrong he"
     },
     {
       "seed": {
         "character": "an honest ant",
         "moral": "hard work pays off"
       },
-      "story": "In  a  magical  greenhouse , where  colorful flower s bloom ed and  buzzing  bees  collect ed  nectar , a  hard working  little  ant  lived among the  leaves . This  honest  ant  always  spo k e the  truth ,  no matter how  hard  it was .\n\nOne sunny day, a  strong wind blew  through the  green hou se,  knocking  over a  large  stone . The  ant 's  best friend, a  busy  be e,  was  in trouble . A  strong wind  had  blow n  the  stone  into the  greenhouse  and  couldn't  find  its  way  back  to its  nest .\n\nThe little  ant , who was  usu ally  patient  and  kind , said, \" Don't worry , I'll  help you .\" Together, they  gathered  some  strong  leaves and  built a  new  nest  for the  bee .\n\nAs they worked, the  bee  started to  s ing a  beautiful song  about the  honey , and the  ant  listened carefully . When the  wind  finally  di ed down , the  butterfly  was amaz ed and  thanked the  ants  for their  help .\n\nWhen the  hive  was  safe , the  friends  decided to  hold  an  an nual  peace  gathering  where  they  would  com e together  to  celebrat e. The  brave little  ant  was happy  to see the  community  working together , and everyone  had a  wonderful  time .\n\nAs the  festival  end ed, the  bee  said, \" I'm so  glad  you  helped  me . Your  song  was  so  beautiful !\" The  ant  smiled and said, \" We  did it  together , and  now  we  have  a beautiful  home !\"\n\nThe  little  ant  realized that  when  friends  work together  and  tell the truth , they  can  overcome any  challenge . And that's  why  we  say :  when we  work together and  help each other , we can  achieve  anything . \n The"
+      "story": "In the scorching hot desert, a little Honest Ant lived. She loved to explore and collect food for her friends. One day, while out foraging, she stumbled upon a hidden oasis. The palm trees were juicy dates and sweet dates, which everyone in the desert knew about.\n\nThe Greedy Ant, who lived nearby, saw that it was forbidden. He thought only he could eat them all by himself. So, every night, when no one would notice, the other ants did find out. They began to wonder if there wasn't enough water left out.\n\nThe Honest Ant's friends, including Hungry Ants, asked her, \"Why are you always eating? Don't you know we're searching?\" But Lazy Ant said, \"It's not fair. I want more food!\"\n\nThe Honest Ant decided to take matters into her own hands. She gathered some extra food, but as soon as they did, their greed grew."
     }
-  ]
+  ],
+  "max_steps": 6250,
+  "metrics": {
+    "distinct_1": 0.5188,
+    "distinct_2": 0.9224,
+    "flesch_reading_ease": 81.46,
+    "n": 4,
+    "self_bleu": 0.0283
+  },
+  "model": "fable-62M",
+  "n_fables": 200000,
+  "params_M": 63.0
 }
