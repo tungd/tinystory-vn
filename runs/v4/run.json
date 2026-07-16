@@ -1,0 +1,60 @@
+{
+  "version": "v4",
+  "status": "data_ready",
+  "initial_weights": "Google Drive: /MyDrive/fable200m_v3/full/hf",
+  "reset_optimizer": true,
+  "architecture": {
+    "n_embd": 768,
+    "n_layer": 7,
+    "n_head": 12,
+    "params_M": 63.0
+  },
+  "tokenizer": {
+    "source": "runs/v2/artifacts/hf/tokenizer.json",
+    "type": "bpe-metaspace",
+    "vocab_size": 16384
+  },
+  "dataset": {
+    "source": "klusai/ds-tf1-en-3m train split",
+    "skip_valid": 200100,
+    "training_end_valid_index": 725607,
+    "source_valid_rows_scanned": 525508,
+    "accepted": 250000,
+    "rejected": 275508,
+    "train": 245076,
+    "validation": 4924,
+    "seed": 42,
+    "diversity": {
+      "unique_character": 8561,
+      "unique_moral": 100,
+      "unique_setting": 100,
+      "unique_challenge": 100,
+      "unique_outcome": 100
+    },
+    "path": "runs/v4/data"
+  },
+  "objective": {
+    "prompt_loss": "masked",
+    "character": "exact phrase within first 120 source-story words",
+    "moral": "content evidence near ending plus one canonical exact footer",
+    "cleanup": "remove Markdown wrappers and prior moral footer"
+  },
+  "training": {
+    "pilot_samples": 20000,
+    "pilot_steps": 313,
+    "full_samples": 245076,
+    "full_steps": 3830,
+    "validation_samples": 1024,
+    "batch": 64,
+    "learning_rate": 0.00005,
+    "epochs": 1
+  },
+  "evaluation": {
+    "controls": "100 fresh TF1 rows starting at train-valid-index-725608",
+    "judge_model": "gemma-4-26b-a4b-it",
+    "judge_thinking_level": "minimal",
+    "judge_prompt_version": "v2-strict"
+  },
+  "results": [],
+  "logs": "runs/v4/logs"
+}
