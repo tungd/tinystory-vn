@@ -100,11 +100,14 @@ def main() -> None:
         output_dir=os.path.join(out, "ckpt"), per_device_train_batch_size=args.batch,
         max_steps=args.max_steps, learning_rate=args.lr,
         warmup_steps=max(10, args.max_steps // 10), lr_scheduler_type="cosine",
-        logging_steps=50, report_to="none", save_strategy="steps", save_steps=250,
+        logging_steps=50, report_to="none", save_strategy="steps", save_steps=500,
     )
     trainer = Trainer(model=model, args=targs, train_dataset=ds["train"],
                       eval_dataset=ds["test"], data_collator=collator)
-    trainer.train()
+    # resume_from_checkpoint=True auto-detects the latest checkpoint in
+    # output_dir and resumes (step, optimizer, scheduler, RNG) from there.
+    # Enables resuming after a VM reclaim when output_dir is on mounted Drive.
+    trainer.train(resume_from_checkpoint=True)
     trainer.save_model(os.path.join(out, "ckpt"))
     hf_tok.save_pretrained(os.path.join(out, "ckpt"))
 
