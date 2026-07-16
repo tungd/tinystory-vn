@@ -1,7 +1,27 @@
+import { MdInfoOutline } from 'react-icons/md';
 import { EvalRadar } from './EvalRadar';
 import type { EvalAxes, EvalResult } from '../api';
 
 export type EvalState = 'idle' | 'loading' | 'done' | 'error';
+
+/** (i) icon với tooltip native giải thích một chỉ số. */
+function InfoIcon({ text }: { text: string }) {
+  return (
+    <MdInfoOutline
+      size={13}
+      title={text}
+      aria-label={text}
+      tabIndex={0}
+      style={{
+        marginLeft: '0.25rem',
+        color: 'var(--astryx-color-text-subtle, #9ca3af)',
+        cursor: 'help',
+        flexShrink: 0,
+        verticalAlign: 'text-top',
+      }}
+    />
+  );
+}
 
 export interface EvalPanelProps {
   state: EvalState;
@@ -177,7 +197,12 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
                       verticalAlign: 'top',
                     }}
                   >
-                    <div>{AXIS_LABELS[axis]}</div>
+                    <div>
+                      {AXIS_LABELS[axis]}
+                      {scores.method?.axes?.[axis] && (
+                        <InfoIcon text={scores.method.axes[axis]} />
+                      )}
+                    </div>
                     {reason && (
                       <div
                         style={{
@@ -209,7 +234,12 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
               );
             })}
             <tr>
-              <td style={{ padding: '0.375rem 0.5rem', fontWeight: 700 }}>Overall</td>
+              <td style={{ padding: '0.375rem 0.5rem', fontWeight: 700 }}>
+                Overall
+                {scores.method?.overall_formula && (
+                  <InfoIcon text={scores.method.overall_formula} />
+                )}
+              </td>
               <td
                 style={{
                   textAlign: 'right',
@@ -225,15 +255,80 @@ export function EvalPanel({ state, scores, errorMsg }: EvalPanelProps) {
           </tbody>
         </table>
 
+        {/* Objective metrics (reference-free, deterministic) - phần tự động của paper */}
+        {scores.objective && (
+          <div style={{ marginTop: '1rem' }}>
+            <p
+              style={{
+                margin: '0 0 0.4rem',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--astryx-color-text-subtle, #6b7280)',
+              }}
+            >
+              Objective metrics (auto, reference-free)
+            </p>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+              <tbody>
+                {(
+                  [
+                    ['distinct_1', 'Distinct-1', scores.objective.distinct_1.toFixed(3)],
+                    ['distinct_2', 'Distinct-2', scores.objective.distinct_2.toFixed(3)],
+                    ['flesch_reading_ease', 'Flesch Reading Ease', scores.objective.flesch_reading_ease.toFixed(1)],
+                  ] as const
+                ).map(([key, label, val]) => (
+                  <tr key={key}>
+                    <td
+                      style={{
+                        padding: '0.3rem 0.5rem',
+                        borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                        color: 'var(--astryx-color-text, #111827)',
+                      }}
+                    >
+                      {label}
+                      {scores.method?.objective_defs?.[key] && (
+                        <InfoIcon text={scores.method.objective_defs[key]} />
+                      )}
+                    </td>
+                    <td
+                      style={{
+                        textAlign: 'right',
+                        padding: '0.3rem 0.5rem',
+                        borderBottom: '1px solid var(--astryx-color-border, #e5e7eb)',
+                        fontVariantNumeric: 'tabular-nums',
+                        fontWeight: 500,
+                        color: '#0891b2',
+                      }}
+                    >
+                      {val}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Method + citation (thay footnote 'See Results tab' cũ) */}
         <p
           style={{
-            margin: '0.75rem 0 0',
+            margin: '0.85rem 0 0',
             fontSize: '0.75rem',
+            lineHeight: 1.5,
             color: 'var(--astryx-color-text-subtle, #9ca3af)',
             fontStyle: 'italic',
           }}
         >
-          Scores and reasons come from a single LLM judge (quick indicator). See Results tab for canonical batch metrics.
+          {scores.method ? (
+            <>
+              Judge: <b>{scores.method.judge_model}</b> ({scores.method.scale}), 1 judge = chỉ báo nhanh.
+              {' '}{scores.method.citation}{' '}{scores.method.note}
+            </>
+          ) : (
+            'Scores from a single LLM judge (quick indicator).'
+          )}
         </p>
       </div>
     );

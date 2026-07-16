@@ -450,7 +450,7 @@ export function CompareMode({
               color: 'var(--astryx-color-text-subtle, #6b7280)',
             }}
           >
-            Quick 1-judge indicator. See Results tab for canonical metrics.
+            Quick 1-judge indicator. Canonical metrics come from the offline batch panel (3 judges).
           </p>
 
           {/* Loading state */}

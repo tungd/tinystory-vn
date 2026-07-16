@@ -6,6 +6,14 @@ Trình tạo **truyện ngụ ngôn tiếng Anh** cho trẻ em, chạy trên mô
 
 ---
 
+## Báo cáo theo người
+
+| Người | Model | Báo cáo khoa học | Tải model |
+|---|---|---|---|
+| **trieulh** | SLM 30M from-scratch trên TF1 | [`trieulh/report/report.pdf`](trieulh/report/report.pdf) (15 biểu đồ, đầy đủ thông số từ step 0 → DPO alignment) · nguồn [`report.md`](trieulh/report/report.md) · nhật ký [`trieulh/docs/experiments/`](trieulh/docs/experiments/) | **[Model DPO (.zip)](https://drive.google.com/file/d/1tY6dPodSqHunYlYEZDdMOEZ1dJyg2HuD/view?usp=drivesdk)** (GGUF + Modelfile + HF checkpoint) · [toàn bộ artifact (folder)](https://drive.google.com/drive/folders/1N852R4wZ_QUq8PruO0uULLIT7VqL4sqv) |
+
+---
+
 ## Mục lục
 
 1. [Giới thiệu](#1-giới-thiệu)
@@ -36,7 +44,7 @@ Mục tiêu: sinh **truyện ngụ ngôn (fable)** tiếng Anh cho trẻ 4–7 t
 - **Guardrail 4 lớp** đảm bảo chỉ tạo nội dung trẻ em an toàn.
 - **Đánh giá tự động** mỗi truyện theo 4 trục có **dẫn chứng trích từ truyện**.
 - **Chế độ so sánh** (Compare) 2 model đặt cạnh nhau (vd base vs fine-tuned).
-- **Tab Results** trình bày đánh giá khoa học theo lô (batch).
+- **Chế độ so sánh** đặt 2 model cạnh nhau (base vs SLM), mỗi bên có Quick Evaluation riêng.
 
 ---
 
@@ -44,7 +52,7 @@ Mục tiêu: sinh **truyện ngụ ngôn (fable)** tiếng Anh cho trẻ 4–7 t
 
 ```
   Trình duyệt (React + TypeScript + Astryx + recharts)
-        │  GET /models, POST /generate/stream (SSE), POST /evaluate, GET /results
+        │  GET /models, POST /generate/stream (SSE), POST /evaluate
         ▼
   FastAPI backend (app/)
         │  HTTP /api/chat (stream)
@@ -60,7 +68,7 @@ Mục tiêu: sinh **truyện ngụ ngôn (fable)** tiếng Anh cho trẻ 4–7 t
 | `app/judge.py` | LLM-as-judge 4 trục, trả điểm + lý do dẫn chứng |
 | `app/prompt_en.py` | System prompt + dựng prompt tiếng Anh từ 5 yếu tố tường thuật |
 | `app/models_registry.py` | Đọc `config/models.json` (model-agnostic) |
-| `web/` | Giao diện React (Playground + Results) |
+| `web/` | Giao diện React (Playground: Single + Compare) |
 
 ---
 
@@ -185,9 +193,9 @@ Chọn **độ dài** (Short/Medium/Long), **model**, bật/tắt **guardrail**,
 
 **Compare mode** — chọn 2 model đặt cạnh nhau, mỗi bên stream riêng, kèm khung **Verdict** (radar overlay + delta + xếp hạng). Chỉ bật khi registry có ≥ 2 model.
 
-### Tab Results
+### Đánh giá theo lô (offline)
 
-Trình bày **đánh giá khoa học theo lô** (batch) đọc từ `results/eval_summary.json`. Khi chưa có file (mới chạy base), hiện placeholder — bình thường. File này sinh bởi `scripts/eval_tf1.py` ở [Phase C](#13-phase-c--fine-tune). Xem [§9](#9-cách-thức-đánh-giá).
+**Đánh giá khoa học theo lô** (batch, panel nhiều judge) chạy offline bằng `trieulh/scripts/eval_slm.py` → `results/eval_summary.json`, dùng cho báo cáo. UI chỉ hiển thị Quick Evaluation (1 judge) theo từng lần sinh. Xem [§9](#9-cách-thức-đánh-giá) và báo cáo trong [`trieulh/report/`](trieulh/report/).
 
 ---
 
@@ -271,7 +279,7 @@ Cơ chế bảo vệ đảm bảo app chỉ tạo truyện ngụ ngôn trẻ em 
 
 Có **hai tầng** đánh giá, phục vụ mục đích khác nhau:
 
-| | **Quick Evaluation** (Playground) | **Batch Evaluation** (tab Results) |
+| | **Quick Evaluation** (Playground) | **Batch Evaluation** (offline, `eval_slm.py`) |
 |---|---|---|
 | Phạm vi | 1 truyện vừa sinh | Cả tập test held-out |
 | Judge | 1 judge (chỉ báo nhanh) | Panel ≥ 2–3 judge khác họ |
@@ -365,17 +373,29 @@ cd web && npm run build
 ├── config/models.json      # Model registry
 ├── web/                    # Frontend React + Astryx + recharts
 │   └── src/                # App.tsx, components/, api.ts
-├── tests/                  # pytest (backend)
-├── scripts/                # Tiện ích dữ liệu + batch eval (Phase C)
-├── docs/                   # Spec, plan, ADR
-└── models/                 # GGUF cục bộ (gitignored)
+├── tests/                  # pytest (backend web app - dùng chung)
+├── scripts/                # Tiện ích dữ liệu dùng chung
+├── docs/                   # Spec, plan, ADR (dùng chung)
+├── models/                 # GGUF cục bộ (gitignored)
+└── trieulh/                # >>> Code model SLM 30M (của trieulh) - tách riêng theo người
+    ├── scripts/            #     pipeline SLM: prepare_tf1, train_tokenizer, tf1_pretrain/,
+    │                       #     eval_slm, distill, gen_preference_pairs, orpo_train, colab_phase2
+    ├── notebooks/          #     pretrain_slm_30m_dashboard, pretrain_slm_tf1
+    ├── tests/              #     test cho code SLM (pytest tự thu thập qua testpaths)
+    └── docs/experiments/   #     nhật ký train / báo cáo tiến trình
 ```
+
+> **Quy ước tách theo người:** phần web app (`app/`, `web/`, `config/`, `tests/`) dùng chung
+> cho cả nhóm. Ai theo hướng model riêng thì đặt code vào thư mục tên mình (vd `trieulh/`)
+> để không trồng lên nhau; code model phụ thuộc một chiều vào `app/` (dùng lại metrics, judge...),
+> không được sửa ngược `app/` theo cách riêng của một model. Ảnh chụp màn hình / screenshot
+> của model để trong thư mục người đó (vd `trieulh/report/`), không để ở root.
 
 ---
 
 ## 13. Phase C — Fine-tune
 
-Kế hoạch huấn luyện một model trên TF1-EN-3M (SFT → ORPO, chạy trên Colab) và batch eval khoa học đầy đủ nằm trong `docs/superpowers/plans/` và `docs/adr/0002-evaluation-methodology.md`. Ứng dụng hiện chạy hoàn chỉnh trên **base model**; khi có model fine-tune, chỉ cần thêm vào `config/models.json` để so sánh before/after trong Compare mode + tab Results.
+Kế hoạch huấn luyện một model trên TF1-EN-3M (SFT → ORPO, chạy trên Colab) và batch eval khoa học đầy đủ nằm trong `docs/superpowers/plans/` và `docs/adr/0002-evaluation-methodology.md`. Ứng dụng hiện chạy hoàn chỉnh trên **base model**; khi có model fine-tune, chỉ cần thêm vào `config/models.json` để so sánh before/after trong Compare mode.
 
 ---
 
