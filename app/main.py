@@ -92,6 +92,12 @@ def generate_stream(
 ):
     hint = LENGTH_HINT_EN[req.length]
     num_predict = LENGTH_NUM_PREDICT[req.length]
+    # Length hints are natural-language instructions useful for instruction-tuned
+    # models (e.g. Qwen3). For the from-scratch base LM (kind="finetuned"),
+    # skip the hint — length is controlled by num_predict (max tokens).
+    model_name, kind = _resolve_model_info(req.model_id)
+    if kind == "finetuned":
+        hint = ""
     prompt = build_fable_prompt(
         req.character, req.setting, req.challenge, req.outcome, req.teaching, hint
     )

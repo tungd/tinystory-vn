@@ -7,9 +7,14 @@ Backend is selected via FABLE_BACKEND env var:
     instruction-tuned models (chat format). Controlled by FABLE_USE_COMPLETION
     (default "true" — use completions endpoint, which works for the from-scratch
     fable model that expects raw prefix continuation, not chat format).
+
+Per-call overrides: pass backend=, base_url=, use_completion=, api_key= to
+generate()/generate_meta() to use a different backend for that call only
+(e.g. Gemini for judging while MLX serves generation).
 """
 
 import json
+import os
 import time
 from collections.abc import Iterator
 
@@ -18,6 +23,10 @@ import httpx
 from app.config import (
     BACKEND,
     ENABLE_THINKING,
+    JUDGE_API_KEY,
+    JUDGE_BACKEND,
+    JUDGE_BASE_URL,
+    JUDGE_USE_COMPLETION,
     MODEL_NAME,
     OLLAMA_BASE_URL,
     REQUEST_TIMEOUT_SECONDS,
@@ -25,8 +34,6 @@ from app.config import (
 
 # When using the openai backend, use /v1/completions (raw text) by default.
 # Set FABLE_USE_COMPLETION=false to use /v1/chat/completions instead.
-import os
-
 _USE_COMPLETION = os.getenv("FABLE_USE_COMPLETION", "true").lower() == "true"
 
 
