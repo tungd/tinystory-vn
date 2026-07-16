@@ -1,0 +1,31 @@
+{
+  "kind": "live-end-to-end-evaluation",
+  "generator": "fable-64M",
+  "judge": "gemma-4-31b-it",
+  "input": {
+    "character": "a wise old tortoise",
+    "moral": "patience and wisdom overcome haste",
+    "length": "medium",
+    "seed": 42
+  },
+  "prompt_sent": "<char> a wise old tortoise </char>\n<moral> patience and wisdom overcome haste </moral>\n<story>\n",
+  "generation": {
+    "output_tokens": 335,
+    "latency_ms": 678,
+    "tokens_per_sec": 494.1,
+    "story": "In a magical labyrinth, where sunbeams danced through twisted paths, and vines crawled like snakes, a brave little snake lived. The snake's scales shimmered in the sunlight, and its eyes sparkled with curiosity.\n\nOne day, while exploring a hidden corner, the snake stumbled upon a small, delicate crystal nestled deep within a stone. The snake's eyes grew wide with wonder, and its desire for the crystal felt weakening. \"Why can't I have a crystal like that?\" it sighed, not knowing how to help others.\n\nThe snake's head coiled over, and its body felt a pang of sadness. \"Why can't I have crystal like that?\" it asked itself. \"Maybe it's not good enough,\" the snake sighed, its voice shaking. The snake's eyes widened as it realized that its desire for crystal had made it miss out on a special connection with other creatures.\n\nThe snake's eyes widened as it read from its book. \"Maybe it's not about crystals,\" the snake said, \"but about how you help others. You help us find our way through life's maze.\" The snake's eyes widened as it realized its point. \"I never thought of that.\"\n\nTogether, the snake and other creatures worked to help a lost rabbit find its way through maze's tunnels. As they worked, the snake's confidence grew, and it felt a sense of belonging.\n\nThe other creatures welcomed the snake back with open wings, and from that day on, it felt a sense of belonging and purpose. The snake's story spread, teaching all the creatures that kindness and help from different perspectives can bring us back to our greatest growth.\n\nThe story of how the snake's crystal may have taken its first step towards a brighter future and that kindness can heal even the deepest of wounds.\nPerhaps, we help others see a different point.\ntarity, where kindness and cooperation shine brightly, just like the crystal that guides us through our differences.\nPerhaps,\" where we help us, and appreciate what is all it that comes from us to"
+  },
+  "judge_result": {
+    "grammar": 2,
+    "creativity": 3,
+    "moral_clarity": 2,
+    "prompt_adherence": 1,
+    "overall": 2.0,
+    "rationale": {
+      "grammar": "The text ends in fragmented, nonsensical phrases such as 'tarity, where kindness and cooperation shine brightly' and 'Perhaps,\" where we help us'.",
+      "creativity": "The plot is disjointed and repetitive, frequently using the phrase 'The snake's eyes widened' to describe different emotions.",
+      "moral_clarity": "The story promotes kindness and cooperation ('kindness and help from different perspectives') instead of the requested moral regarding patience and wisdom.",
+      "prompt_adherence": "The story completely fails to include the requested character, the wise old tortoise, and ignores the specified moral."
+    }
+  }
+}

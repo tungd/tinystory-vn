@@ -1,0 +1,7 @@
+{
+  "backend": "tokenizers",
+  "eos_token": "</story>",
+  "model_max_length": 1e+30,
+  "pad_token": "</story>",
+  "tokenizer_class": "TokenizersBackend"
+}

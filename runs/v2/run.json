@@ -1,0 +1,26 @@
+{
+  "version": "v2",
+  "status": "complete",
+  "model": "fable-64M",
+  "params_M": 63.0,
+  "architecture": {"n_embd": 768, "n_layer": 7, "n_head": 12},
+  "dataset": {"source": "klusai/ds-tf1-en-3m", "samples": 200000, "path": "runs/v2/data"},
+  "tokenizer": {"type": "bpe-metaspace", "vocab_size": 16384},
+  "training": {"max_steps": 6250, "epochs": 2, "final_loss": 1.73},
+  "artifacts": {
+    "hf": "runs/v2/artifacts/hf",
+    "mlx": "runs/v2/artifacts/mlx",
+    "resumable_local": false,
+    "drive_checkpoint": "MyDrive/fable200m_v2/ckpt/checkpoint-6250"
+  },
+  "results": [
+    "runs/v2/results/eval_summary.json",
+    "runs/v2/results/live-gemma-eval-2026-07-16.json"
+  ],
+  "logs": [
+    "runs/v2/logs/train-ephemeral.log",
+    "runs/v2/logs/train-drive-resume.log",
+    "runs/v2/logs/drive-eval-file.json",
+    "runs/v2/logs/transcript-recovery.md"
+  ]
+}

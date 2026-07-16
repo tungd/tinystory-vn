@@ -1,0 +1,12 @@
+{
+  "version": "v3",
+  "status": "planned",
+  "initial_weights": "runs/v2/artifacts/hf",
+  "reset_optimizer": true,
+  "architecture": {"n_embd": 768, "n_layer": 7, "n_head": 12, "params_M": 63.0},
+  "tokenizer": {"source": "runs/v2/artifacts/hf/tokenizer.json", "type": "bpe-metaspace", "vocab_size": 16384},
+  "dataset": {"source": "klusai/ds-tf1-en-3m", "target_samples": 200000, "path": "runs/v3/data"},
+  "training": {"pilot_samples": 20000, "pilot_steps": 500, "full_steps": 3125, "learning_rate": 0.0001},
+  "results": "runs/v3/results/eval_summary.json",
+  "logs": "runs/v3/logs"
+}

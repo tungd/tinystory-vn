@@ -2,13 +2,28 @@
 .claude/
 
 # Model artifacts (lớn)
-models/
+models/*
+!models/fable-29m-hf
+!models/fable-29m-mlx
+!models/fable-64m-hf
+!models/fable-64m-mlx
 *.gguf
 *.safetensors
 
+# Canonical versioned runs: keep manifests/results/model metadata, ignore bulk data
+runs/*/artifacts/hf/
+runs/*/artifacts/mlx/model.safetensors
+runs/*/data/
+runs/*/pilot-*/
+runs/*/incoming/
+runs/*/logs/*.log
+
 # Dữ liệu (thường lớn / nhạy cảm)
 data/
-results/
+results/*
+!results/eval_summary.json
+!runs/*/results/
+!runs/*/results/*.json
 
 # Python
 __pycache__/

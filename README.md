@@ -365,6 +365,10 @@ cd web && npm run build
 │   ├── models_registry.py  # Đọc config/models.json (model-agnostic)
 │   └── config.py           # Biến môi trường + tham số sinh
 ├── config/models.json      # Model registry (base-qwen3-4b, fable-200m)
+├── runs/                   # Canonical v1/v2/v3 data, artifacts, logs, results
+│   ├── v1/                 # 29M baseline + full local resume state
+│   ├── v2/                 # 64M Metaspace model + recovered logs/results
+│   └── v3/                 # Isolated conditioning-focused run (planned)
 ├── web/                    # Frontend React + Astryx + recharts
 │   └── src/                # App.tsx, components/, api.ts
 ├── notebooks/              # Colab training/eval (chạy qua google-colab-cli)
@@ -381,7 +385,7 @@ cd web && npm run build
 │   ├── adr/                # 0002-evaluation-methodology, 0003-from-scratch-200m
 │   ├── runbooks/colab-train.md   # google-colab-cli runbook (canonical train path)
 │   └── superpowers/plans/2026-07-08-keyword-guided-fable-generation.md
-└── models/                 # MLX model metadata; large weights are gitignored
+└── models/                 # Compatibility links into runs/*/artifacts
 ```
 
 > Lịch sử: đồ án từng fine-tune Qwen3-4B (notebook `finetune_qwen3_*`, ADR-0001) và

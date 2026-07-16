@@ -1,0 +1,18 @@
+{
+  "version": "v1",
+  "status": "complete",
+  "model": "fable-29M",
+  "params_M": 29.9,
+  "architecture": {"n_embd": 512, "n_layer": 8, "n_head": 8},
+  "dataset": {"source": "klusai/ds-tf1-en-3m", "samples": 200000, "path": "runs/v1/data"},
+  "tokenizer": {"type": "raw-bpe", "vocab_size": 8192, "known_issue": "broken decoded word boundaries"},
+  "training": {"max_steps": 9375, "epochs": 3, "final_loss": 1.87},
+  "artifacts": {
+    "hf": "runs/v1/artifacts/hf",
+    "mlx": "runs/v1/artifacts/mlx",
+    "resumable_local": true,
+    "drive_checkpoints": ["MyDrive/fable200m/run1/checkpoint-2000", "MyDrive/fable200m/run1/checkpoint-7500"]
+  },
+  "results": "runs/v1/results/eval_summary.json",
+  "logs": ["runs/v1/logs/transcript-recovery.md"]
+}
