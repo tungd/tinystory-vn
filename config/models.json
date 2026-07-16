@@ -1,5 +1,5 @@
 [
   {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"},
   {"id": "fable-200m", "name": "Fable-64M (from scratch)", "ollama": "fable-64m-mlx", "kind": "finetuned", "desc": "63M GPT-2 trained from scratch on 200k TF1-EN-3M fables for 2 epochs. Served via mlx-lm. Keyword-guided (character + moral)."},
-  {"id": "gemma-4-31b-it", "name": "Gemma 4 31B (judge)", "ollama": "gemma-4-31b-it", "kind": "judge", "desc": "Google Gemma 4 31B via AI Studio. Used as LLM-as-judge for 4-axis evaluation."}
+  {"id": "gemma-4-26b-a4b-it", "name": "Gemma 4 26B A4B (judge)", "ollama": "gemma-4-26b-a4b-it", "kind": "judge", "desc": "Google Gemma 4 26B A4B via native GenAI API, minimal thinking. Used as LLM-as-judge for 4-axis evaluation."}
 ]

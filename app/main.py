@@ -8,10 +8,11 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import ollama_client, judge
+from app import google_judge_client, judge, ollama_client
 from app.models_registry import load_models, resolve_ollama
 from app.config import (
     JUDGE_MODEL_ID,
+    JUDGE_BACKEND,
     GEN_TEMPERATURE,
     GEN_TOP_P,
     GEN_REPEAT_PENALTY,
@@ -64,6 +65,8 @@ def stream_fn():
 
 
 def judge_fn():
+    if JUDGE_BACKEND == "google":
+        return google_judge_client.generate
     return ollama_client.generate
 
 

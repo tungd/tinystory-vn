@@ -17,6 +17,12 @@ def test_registry_points_to_current_fable_model():
     assert model["kind"] == "finetuned"
 
 
+def test_registry_points_to_native_google_judge():
+    model = next(m for m in load_models() if m["kind"] == "judge")
+    assert model["id"] == "gemma-4-26b-a4b-it"
+    assert "native GenAI" in model["desc"]
+
+
 def test_resolve_ollama():
     ms = load_models()
     base = next(m for m in ms if m["id"] == "base-qwen3-4b")

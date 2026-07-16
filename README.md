@@ -228,6 +228,8 @@ Thêm model fine-tune: thêm một phần tử `kind: "finetuned"` → tự xu�
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Địa chỉ Ollama |
 | `FABLE_MODELS_PATH` | `config/models.json` | Đường dẫn registry |
 | `FABLE_JUDGE_MODEL_ID` | `base-qwen3-4b` | `id` model dùng để chấm điểm |
+| `FABLE_JUDGE_BACKEND` | _(trống)_ | `google` dùng native Google GenAI SDK |
+| `FABLE_JUDGE_THINKING_LEVEL` | `minimal` | Gemma 4: `minimal` (tắt) hoặc `high` (bật) |
 | `FABLE_RESULTS_PATH` | `results/eval_summary.json` | File kết quả batch eval |
 | `FABLE_THINK` | `false` | Bật/tắt thinking (giữ `false`) |
 | `FABLE_TIMEOUT` | `120` | Timeout gọi Ollama (giây) |

@@ -18,6 +18,7 @@ RESULTS_PATH = os.getenv("FABLE_RESULTS_PATH", "results/eval_summary.json")
 JUDGE_BACKEND = os.getenv("FABLE_JUDGE_BACKEND", "")
 JUDGE_BASE_URL = os.getenv("FABLE_JUDGE_BASE_URL", "")
 JUDGE_API_KEY = os.getenv("FABLE_JUDGE_API_KEY", "")
+JUDGE_THINKING_LEVEL = os.getenv("FABLE_JUDGE_THINKING_LEVEL", "minimal").lower()
 # Judges are instruction-tuned → use chat completions by default.
 # Set FABLE_JUDGE_USE_COMPLETION=true only for base-LM judges.
 JUDGE_USE_COMPLETION = os.getenv("FABLE_JUDGE_USE_COMPLETION", "false").lower() == "true"
