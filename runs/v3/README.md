@@ -48,3 +48,36 @@ Native Gemma judge result (`gemma-4-26b-a4b-it`, minimal thinking):
 - Full generations and rationales: `results/`
 
 The four-control pilot is directional, not the final held-out evaluation.
+
+## Full run
+
+The full continuation started again from immutable v2 weights with a fresh
+optimizer. It trained all 103,063 v3 rows for 1,611 steps (one epoch) on A100:
+
+- Runtime: 317.2 seconds
+- Train loss: 1.499
+- Final fixed-subset eval loss: 1.489
+- Drive model: `/MyDrive/fable200m_v3/full/hf`
+- Local logs: `logs/full.log`, `logs/full_generation.log`
+
+On 100 TF1 controls after the 200,000 valid rows used by v2:
+
+| Metric | v2 | v3 full |
+|---|---:|---:|
+| Exact character | 18% | 65% |
+| Exact moral | 17% | 86% |
+| Both exact | 3% | 55% |
+| Clean `</story>` ending | 0% | 100% |
+
+Native Gemma judging on a seeded paired 20-control subset:
+
+| Axis | v2 | v3 full |
+|---|---:|---:|
+| Grammar | 2.75 | 6.05 |
+| Creativity | 4.65 | 4.80 |
+| Moral clarity | 4.75 | 6.50 |
+| Prompt adherence | 8.10 | 9.75 |
+| Overall | 5.06 | 6.78 |
+
+v3 materially improves every measured axis, moral copying, and stopping. It
+does not yet satisfy the exact-character-every-time acceptance gate.

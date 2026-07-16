@@ -1,0 +1,1376 @@
+{
+  "kind": "v3-full-judge-comparison",
+  "source": "runs/v3/results/full_generations_100.json",
+  "selection": {
+    "method": "seeded random paired controls",
+    "seed": 42,
+    "controls": 20,
+    "stories": 40
+  },
+  "judge_settings": {
+    "backend": "google-genai",
+    "model": "gemma-4-26b-a4b-it",
+    "thinking_level": "minimal",
+    "response_mime_type": "application/json"
+  },
+  "summary": {
+    "v2": {
+      "n": 20,
+      "judge_mean": {
+        "grammar": 2.75,
+        "creativity": 4.65,
+        "moral_clarity": 4.75,
+        "prompt_adherence": 8.1,
+        "overall": 5.06
+      },
+      "mean_latency_ms": 5600,
+      "checks_passed": {
+        "exact_character": 5,
+        "exact_moral": 3,
+        "exact_moral_near_end": 2,
+        "exact_both": 1,
+        "ended": 0
+      }
+    },
+    "v3-full": {
+      "n": 20,
+      "judge_mean": {
+        "grammar": 6.05,
+        "creativity": 4.8,
+        "moral_clarity": 6.5,
+        "prompt_adherence": 9.75,
+        "overall": 6.78
+      },
+      "mean_latency_ms": 5508,
+      "checks_passed": {
+        "exact_character": 12,
+        "exact_moral": 18,
+        "exact_moral_near_end": 18,
+        "exact_both": 11,
+        "ended": 20
+      }
+    }
+  },
+  "judgments": [
+    {
+      "character": "a compassionate rhinoceros",
+      "moral": "truths heal deep wounds",
+      "prompt": "<char> a compassionate rhinoceros </char>\n<moral> truths heal deep wounds </moral>\n<story>\n",
+      "reference_story": "Deep within a sparkling crystal cavern, a kind rhinoceros lived. The cavern's walls reflected the rhinoceros's gentle nature, shining with a soft, gentle light. The rhinoceros spent her days helping her friends in the cavern, healing their wounds with her healing touch.\n\nHowever, not everyone in the cavern was kind. A sly, dark creature with sharp teeth and claws often snuck around, causing trouble. One day, the dark creature sabotaged the cavern's water source, leaving the rhinoceros's friends thirsty and parched.\n\nThe rhinoceros was heartbroken. She tried to fix the water source, but the dark creature kept sabotaging her efforts. Feeling sad and frustrated, the rhinoceros approached the dark creature.\n\n\"Why do you keep hurting us?\" the rhinoceros asked softly.\n\nThe dark creature snarled, \"I'm angry because you always help others and never help me!\"\n\nThe rhinoceros listened carefully, then said, \"I help everyone because I care about them. But I also care about you. Can I help you with something?\"\n\nThe dark creature thought for a moment, then said, \"I'm tired of being alone. Can you help me find friends?\"\n\nThe rhinoceros smiled and said, \"Of course! Let's work together to fix the water source, and I'll introduce you to my friends.\"\n\nThe dark creature's heart softened, and the two former enemies signed a pact to be friends. From that day on, the cavern's water source flowed freely, and the rhinoceros's kindness healed the dark creature's deep wounds.\n\nThe rhinoceros learned that sharing truths and caring for others can heal even the deepest wounds, and her friends in the crystal cavern learned to appreciate the value of kindness and compassion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200003",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the volcanic plain, where red rocks stretched far and wide, a gentle giant lived. She loved nothing more than to roam freely, her horn shining in the sunlight. The other animals would often gather around her, listening for their stories of adventure.\n\nOne day, while taking a stroll, she came across a hidden cave filled with glittering jewels. A sly, quick-witted fox whispered a tempting idea into her ear, \"If you help me steal these jewels, I'll share them with you.\" The rhinoceros's heart skipped a beat, but she remembered her mother's words: \"Truth heals deep wounds.\"\n\nThe sly fox, who had been hiding behind a nearby rock, snickered as he snatched a precious gem from the rhinoceros. But just then, something unexpected happened. Ashamed, he dropped the jewels away, revealing his true self.\n\nThe rhinoceros, instead of keeping secrets, felt sad and betrayed. However, she also discovered that she could have helped the fox find food when they were hungry or lost. With newfound courage, the rhinoceros used this knowledge of the plain to plant seeds.\n\nAs they worked together, the fox's eyes began to soften. He realized that sharing was better than taking, not taking. From then on, the two became inseparable friends, working together on many seasons.\n\nAs the sun set over the volcanic plain, the rhinoceros smiled, knowing that truth and kindness can bring healing even the deepest wounds. And so, she continued to protect and care for all those who needed them, spreading love and trust throughout the land.\nTruths can mend hurt hearts, making our hearts fuller like darkening.\"\nThis story teaches us that honesty is the greatest treasure of all.\nIn the vast expanse, with forgiveness leading to friendships, forever.\nOurrabreakion simmer up kindness, we can forgive each other's mistakes, and feel free.\nLet's be true, where friends grow strong in memory-thrious, one day.\n'd know what?\n\"Lim avail",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 6,
+        "prompt_adherence": 10,
+        "overall": 6.0,
+        "rationale": {
+          "grammar": "The story descends into nonsensical, fragmented text at the end, such as \"Ourrabreakion simmer up kindness\" and \"'d know what?\"",
+          "creativity": "While the setting of a \"volcanic plain\" is interesting, the plot involving a fox stealing jewels is a very common trope.",
+          "moral_clarity": "The moral is explicitly stated as \"Truths can mend hurt hearts,\" but the narrative logic connecting truth to the fox's theft is muddled.",
+          "prompt_adherence": "The story includes the requested compassionate rhinoceros and the specific teaching that \"Truths heal deep wounds.\""
+        }
+      },
+      "judge_latency_ms": 5645
+    },
+    {
+      "character": "a savage ferret",
+      "moral": "perseverance breaks barriers",
+      "prompt": "<char> a savage ferret </char>\n<moral> perseverance breaks barriers </moral>\n<story>\n",
+      "reference_story": "In the heart of the desert, a lush oasis bloomed. Palm trees swayed gently in the breeze, their leaves rustling softly. Among the date trees, a savage ferret with sharp teeth and claws roamed. They loved to play tricks on the other animals, chasing them away from the oasis.\n\nOne day, the ferret saw a bright, shiny object lying on the sand. It was a beautiful shell, and the ferret thought it would make a great treasure. Without thinking, they picked it up and started to dig a hole to hide it. But, as they dug, they realized the shell didn't belong to them. It belonged to a family of birds who used it to drink from.\n\nThe birds were sad to lose their shell, and they scolded the ferret for taking it. The ferret felt terrible and wanted to give the shell back, but it was too late. The birds had gone away, and the ferret was left feeling sad and alone.\n\nThe ferret thought about going to find the birds, but they were too afraid. Instead, they decided to talk to the wise old tortoise who lived in the oasis. The tortoise listened carefully and said, \"It takes courage to admit our mistakes and make things right. Why don't you go find the birds and return their shell?\"\n\nThe ferret took a deep breath and went to look for the birds. They found them and apologized, returning the shell. The birds forgave the ferret, and they all became friends. The ferret learned that perseverance breaks barriers, and even the most stubborn things can be made right with a little effort and courage.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200004",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the heart of an enchanted grove, where sunbeams danced through leaves and flowers bloomed in every color, a savage ferret lived. This sly creature loved to steal food from other creatures who lived among them.\n\nOne day, while stealing berries from a wise old owl, the savage ferret stole some juicy berries right from her friends' garden. The owl was very upset when she saw that their favorite berry bush had been eaten by the grove's friendly squirrels.\n\nThe rabbit asked the vicious ferret, \"Why did you take my berries?\" The savage ferret just shrugged and said, \"I didn't mean to. I thought it was easier for us all.\"\n\nThe next night, under the starry sky, the rabbit decided not to scold the ferret. She stood up straight and said, \"You took our berries! That's why we worked hard to grow those berries!\"\n\nThe savage ferret looked down at its paws and whispered, \"I'm sorry. I don't have any berries anymore.\" But as it watched the rabbit's sad face, something inside began to change. It realized that taking revenge wouldn't make things right.\n\nThe two friends talked long into the night. They shook hands, and soon, all the creatures were working together to plant new flowers. As they worked, the passionate ferret's belly felt full, and its eyes sparkled with happiness.\n\nThe moral of this story is clear: if we keep trying to understand each other, even when we're different, we can work together and achieve great things.\nPerseverance triumphs over difficulty. When we try again and see what happens, we become stronger friends.\nMoral: Perseverance shapes destiny.**\nFor understanding and kindness are the keys to a happy community.\nWemember, helping others brings happiness back to life!\nWhen we help others, we'll start anew, without expecting anything possible.\nRo let's do it, together, as friends.\"\nTogether we can grow.\nEnow a little bit of effort to do.)\n another.\nThis fable days later, the moody ferret and the",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 2,
+        "prompt_adherence": 6,
+        "overall": 3.75,
+        "rationale": {
+          "grammar": "The text disintegrates into nonsensical fragments at the end, such as 'Enow a little bit of effort to do.) another.'",
+          "creativity": "The plot is a generic conflict about stealing berries, though the setting of an 'enchanted grove' adds some flavor.",
+          "moral_clarity": "The story provides multiple, conflicting, and broken moral statements, including 'Perseverance shapes destiny.**' and 'When we help others, we'll start anew, without expecting anything possible.'",
+          "prompt_adherence": "While it includes a 'savage ferret' and attempts the theme of 'perseverance,' the execution is so fractured that the teaching is lost."
+        }
+      },
+      "judge_latency_ms": 5663
+    },
+    {
+      "character": "a energetic crab",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a energetic crab </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "In a sunny bamboo grove, near a sparkling river, a happy crab lived. She loved to dance in the grove, her bright red shell glistening with dew. The bamboo stalks swayed gently, as if dancing with her.\n\nOne day, while the crab was dancing, she knocked over a tall bamboo stalk. The stalk's owner, a big, gray elephant, was very sad. She had been using the stalk to build a safe home for other animals.\n\nThe crab was afraid to face the elephant. She hid behind a nearby bush. The elephant searched everywhere for the one who knocked over her stalk. She finally found the crab and said, \"Why did you knock over my stalk?\"\n\nThe crab said, \"I'm sorry. I was dancing too fast.\" The elephant replied, \"I'm sad, but I'm also glad you apologized. Modesty is like a soft, green leaf. When it's fresh, it's beautiful. But when it's too big, it loses its shape and beauty.\"\n\nThe crab thought about this. She realized that if she had said, \"I'm the best dancer in the grove,\" her beautiful red shell would have lost its shine. Instead, she said, \"I'm sorry\" and listened to the elephant.\n\nThe crab and the elephant became good friends. The crab learned that owning up to mistakes and being humble preserves dignity, like a soft, green leaf. And the bamboo grove was once again filled with laughter and the sweet sound of the elephant's trumpet.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200011",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the bustling harbor town of Harborville, where seagulls soared and fishermen sailed, lived in small ships made from fishing nets, while playful sea otters chased each other with their bushy tails. A happy crab, known for his bright red shell, loved to watch the town's residents at work. He dreamed of joining in, but he was too proud.\n\nOne day, as the crab's shell was polished on the dock, a big storm rolled in. The winds howled, and the waves crashed against the dock. Even his friends, the grumpy old seagulls, laughed at him, saying, \"You're just jealous! You can't even fly fast!\"\n\nThe crab's heart felt heavy, like it didn't want to admit it. But then he remembered all the times he'd helped a family of crabs repair their damaged nets during strong winds. His friends looked up to him in awe, feeling silly.\n\nThe seagull, who had been watching, swooped down and offered her help. Together, they worked tirelessly, securing loose boats and keeping everyone safe. When the sun came out again, the townspeople cheered, \"You did it! Your kindness saved our home!\" From that day on, the crab knew that being modest – not comparing himself to others; preserved his dignity. And whenever someone asked him about it, he's always smiling.\n\nAs the wind died down, the seagull said, \"Remember, my friend, what matters most can be your greatest strength. Remember, it's okay to ask for help when you need it.\"\n\"Gratitude keeps us humble, and that's why we're grateful for this important lesson.\nInd so, every wave may take, but next time, we'll face it together, side by side.\nBut humility makes us truly strong,\nAnd that's something to be proud of.**\nForge is aimsculation.\"\nLeing that suits us all contributes simple vocabulary suitable.)\nTogether we give, we stay humble and kind, so we don't let go things through",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 9,
+        "overall": 5.25,
+        "rationale": {
+          "grammar": "The text contains significant structural failures and nonsensical fragments, such as 'Forge is aimsculation.' and 'Leing that suits us all contributes simple vocabulary suitable.)'.",
+          "creativity": "While the setting of 'Harborville' is pleasant, the narrative logic breaks down into incoherent rhyming attempts at the end.",
+          "moral_clarity": "The story attempts to state the moral, 'being modest – not comparing himself to others; preserved his dignity,' but then contradicts it with conflicting advice about asking for help and gratitude.",
+          "prompt_adherence": "The story includes the requested energetic crab and attempts to teach that 'modesty preserves dignity,' despite the poor execution."
+        }
+      },
+      "judge_latency_ms": 5676
+    },
+    {
+      "character": "a eccentric hedgehog",
+      "moral": "gentle words quell anger",
+      "prompt": "<char> a eccentric hedgehog </char>\n<moral> gentle words quell anger </moral>\n<story>\n",
+      "reference_story": "In a treetop village, where birds sang sweet melodies and leaves rustled in the gentle breeze, an eccentric hedgehog lived. This hedgehog loved to collect shiny objects and decorate his nest with them. He was very proud of his collection and never wanted to share it with anyone.\n\nOne day, a wise old owl moved into the village. She was kind and gentle, but the hedgehog was worried that she would steal his treasures. He whispered to the other creatures in the village, \"Be careful, she's sly and might take our things!\" The other creatures started to whisper to each other too, forming secret alliances and watching the owl carefully.\n\nBut the wise old owl noticed what was happening. She saw the hedgehog's worried face and the hiding creatures. She asked the hedgehog, \"What's wrong, little hedgehog? Why are you so worried?\" The hedgehog explained how he thought the owl was going to steal his treasures. The owl listened carefully and said, \"I'm not here to take anything. I just want to be friends. Can I see your collection?\"\n\nThe hedgehog was surprised. No one had ever asked to see his collection before. He proudly showed the owl his treasures, and they talked about their favorite things. As they talked, the hedgehog realized that the owl wasn't so bad after all. In fact, she was very kind and gentle. The hedgehog apologized for thinking badly of her, and the owl forgave him.\n\nFrom that day on, the hedgehog and the owl became the best of friends. They would spend their days talking and playing together, and the hedgehog learned that gentle words can quell anger and make new friends.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200013",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the floating cloud city of Zephyr, where soft white clouds made up its streets, and fluffy puffy streets drifted lazily by, lived an enchanted castle. It was home to many creatures, including a quirky hedgehog who loved nothing more than exploring every nook and cranny.\n\nOne day, while wandering through the gardens, the eccentric hedgehog stumbled upon two friends – a wise old owl and a playful cloud-garden. Both had been arguing over whose territory it was. The owl, with her sharp talons, thought the each tree owned a treasure trove of sparkling jewels hidden in her nest.\n\nThe hedgehog, feeling torn between loyalty to both friends, decided to help them talk things through. \"Friends, please!\" said the hedgehog. \"The oak tree belongs to all of us. We should share it, or it will take back what's left.\" But the owl and the-plant just looked at each other, then shook their heads.\n\n\"Why can't we share?\" asked the owl. \"We could use some for our nests, but you would have given us a few extra shiny stones without asking.\"\n\nThe hedgehog's eyes grew wide as they realized that sharing wasn't kind. \"Let's work together to build something even better,\" she said. And so, they did. They built beautiful bridges with soft, colorful flowers and a cozy nest.\n\nFrom that day on, the prickly and the owl's heart were filled with joy, not treasure. \"Gentle words, friends,\" said the owl, \"to calm our angry hearts, and love can bring joy to all.\"\nThat gentle words can soothe anger, making everyone happy.\"\nTo remember this lesson, one small gift of kindness goes into a happy heart.\nMoved by kind words, which truly brings happiness to all.\nCurrious, like a flower that blooms when shared!)\nEmpathy is what makes your heart so sweet; it blooms, love, kindness, and love.**\nHeven as he did, under his dear friends.\nWe",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 7,
+        "moral_clarity": 6,
+        "prompt_adherence": 9,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text descends into incoherent fragments and typos toward the end, such as 'Heven as he did, under his dear friends.'",
+          "creativity": "The setting of a 'floating cloud city of Zephyr' is an imaginative concept.",
+          "moral_clarity": "While the lesson is stated, the narrative logic is muddled by the ending, though it does explicitly say, 'Gentle words, friends... to calm our angry hearts.'",
+          "prompt_adherence": "The story includes an 'eccentric hedgehog' and addresses the teaching that 'gentle words quell anger'."
+        }
+      },
+      "judge_latency_ms": 5205
+    },
+    {
+      "character": "a courageous bat",
+      "moral": "sincerity dispels suspicion",
+      "prompt": "<char> a courageous bat </char>\n<moral> sincerity dispels suspicion </moral>\n<story>\n",
+      "reference_story": "In a big, old church with a crooked steeple, a tiny bat lived. The bat loved to fly around the church at night, playing hide-and-seek among the dusty pews. But it wasn't the only creature who loved the church.\n\nOne day, a sly raccoon moved in. He wanted to make the church his own, but the bat didn't want to share. The raccoon started taking things that didn't belong to him – a shiny bell, a soft cushion, even a batch of freshly baked cookies. The bat tried to protect the church, but the raccoon would just laugh and say, \"Finders keepers, losers weepers!\"\n\nThe other creatures in the forest started to get suspicious. \"Is the raccoon a thief?\" they whispered. The raccoon's bad actions made them doubt the bat's kind heart. The bat tried to explain, but the raccoon wouldn't listen. He just kept taking and taking.\n\nOne night, the bat had an idea. He asked the raccoon to help him fix the church's broken roof. Together, they worked side by side, hammering nails and sweeping leaves. As they worked, the raccoon started to tell the truth about why he took things – he was hungry and needed food for his family.\n\nThe other creatures heard the raccoon's honest words and saw the bat's kindness. They realized that the raccoon wasn't a bad creature, he was just in need. From that day on, the community worked together to rebuild the church. The bat and the raccoon became good friends, and the church was filled with laughter and love.\n\nAs the bat said, \"When we're honest and kind, we can make friends and build something beautiful together.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200014",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the heart of an enchanted grove, where trees whispered secrets to each other, and flowers bloomed in every color, lived a brave little bat. She had shiny black wings that sparkled like diamonds among the leaves. The other bats called her \"The Explorer\" because she loved flying through the dark skies.\n\nOne day, while soaring above the grove, **The Explorer saw two old enemies: a sly fox and a wise owl, who often argued over food and space. They seemed different from each other. A bounty was placed on The Explorer, thinking it would bring peace back to their home, as she flew closer to talk.\n\n\"Why do you fight?\" asked one of them.\n\n\"I want us to be friends,\" replied the owl. \"We're not sure if we can trust each other.\"\n\nThe Protector looked at them, surprised. \"But why?\" they asked. \"You might steal our food.\"\n\nThe owl thought for a moment. \"I don't think so,\" he said. \"Let's ask him first. If he's hungry, I'll share his carrots with you.\"\n\nThe Protector, rabbit, and owl went together to find him. When they arrived, they found him, but instead of being angry, he said, \"We both want food, just like you. Let's work together, sharing what I have.\"\n\nThe Shadow, owl, and Owl became friends. They signed a pact, promising to help those who need it. From then on, whenever disagreements arose, they remembered to always speak sincerely. And that's how they learned that honesty is more powerful than greed.\nThat when we're sincere, people will see us, and we'll know you're willing to listen.\nMildness dispels suspicion, and kindness makes friends out of many.**\nWisdom:**\nForgiving people).\nLet's choose kindness, grow, strong,\nAnd friendships.\nCourages, 4-7ce, true, for age group B (triever begin.\"\nHelpes that suitable each other's hearts.\nBut the Swift and Brave Explorer became friends, ready to",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 5,
+        "overall": 3.5,
+        "rationale": {
+          "grammar": "The text descends into incoherent fragments and typos, such as 'Courages, 4-7ce, true, for age group B (triever begin.\"",
+          "creativity": "While the setting of an 'enchanted grove' is standard, the narrative logic breaks down with characters like 'The Shadow' and 'The Protector' appearing without context.",
+          "moral_clarity": "The moral is muddled and contradictory, shifting from 'honesty is more powerful than greed' to 'Mildness dispels suspicion'.",
+          "prompt_adherence": "The story includes a courageous bat and attempts the requested teaching, but the execution is ruined by nonsensical text."
+        }
+      },
+      "judge_latency_ms": 5743
+    },
+    {
+      "character": "a devoted platypus",
+      "moral": "friendship can overcome obstacles",
+      "prompt": "<char> a devoted platypus </char>\n<moral> friendship can overcome obstacles </moral>\n<story>\n",
+      "reference_story": "In a crumbling monastery, surrounded by overgrown gardens and whispering wind, a devoted platypus lived. She spent her days swimming in the monastery's old fountain and watching the sunset behind the crumbling stones.\n\nThe platypus was friends with a kind rabbit who took care of the garden. One day, a strong storm hit the monastery, knocking down trees and covering the grounds in debris. The rabbit was too scared to come out of her cozy burrow, but the platypus bravely ventured out to help.\n\nHowever, in the chaos, a silly squirrel mistook the platypus for the troublemaker who had caused the mess. The squirrel shouted to all the other animals, \"The platypus is the one who made the storm! She must be punished!\"\n\nThe other animals were frightened and believed the squirrel. They shunned the platypus, who felt sad and lonely. The rabbit, seeing her friend's tears, came out to defend her. \"No, no, no! The platypus is helping us, not hurting us. She's just trying to make things better.\"\n\nThe animals looked at each other, then at the rabbit and the platypus. They realized they had made a mistake. From that day on, the platypus, the rabbit, and the other animals worked together to clean up the monastery. The platypus became the caretaker, watching over all the friends and making sure they were safe.\n\nThe rabbit smiled at the platypus. \"We're lucky to have you as our friend.\" The platypus smiled back. \"We're lucky to be friends, and together we can overcome any obstacle.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200017",
+      "model": "v2",
+      "seed": 58,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the sky, above a lush green forest, floated a magical market. Colorful stalls and balloons were filled with juicy fruits and sweet treats. A devoted platypus, known for her kindness, waddled through the crowds, helping those in need.\n\nHowever, as she swam past stalls, a grumpy old owl blocked her path. \"You're too soft,\" he hooted. \"You'll make it worse!\" The other animals on the market scurried away, frightened.\n\nThe devoted platypus tried to ignore him, but his words fell into chaos. She decided to visit the wise old tortoise, who lived nearby. \"Why do you want me here?\" she asked.\n\nThe tortoise looked at him with kind eyes. \"I mean no harm. I just want everyone to be my friends.\"\n\nThe devoted platypus's heart softened. \"But you're not alone,\" she said. \"We all have different things. Can we work together to help each other?\"\n\nThe wise old tortoise smiled. \"That's a great idea. Let's gather the market's team – the rabbits (like them). We'll form new alliances here. We can fix broken bridges or move heavy tools.\"\n\nTogether, they worked tirelessly, their differences forgotten. As they worked, the vendors began to see that even the grumpiest creatures could benefit from working together.\n\nThe grumpy old owl's eyes sparkled. \"Thank you, dear friends. You showed us that together, we're stronger than alone.\"\n\nFrom that day on, the floating market was more welcoming, thanks to the devoted platypus.\nTo celebrate our differences, like this special day, brought hope back to all.\nThis story teaches us that when friends work together, even the biggest problems become opportunities.**\nUnity can overcome any obstacle!\nWe'll come to us, if someone tries.\"\nTogether we take your time, we'll create something amazing together.\n\"Love is exactly what we've made; let's show them,' by suitable for the right moment.)\nBut it's how we stand up for ourselves.\nWhen the strongest of all, that's what makes life truly special.\nRion",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 6,
+        "moral_clarity": 7,
+        "prompt_adherence": 10,
+        "overall": 6.5,
+        "rationale": {
+          "grammar": "The story descends into nonsensical, fragmented sentences at the end, such as \"We'll come to us, if someone tries.\"",
+          "creativity": "The concept of a 'magical market' floating in the sky is imaginative, though the plot becomes disjointed.",
+          "moral_clarity": "The moral is explicitly stated: 'This story teaches us that when friends work together, even the biggest problems become opportunities.'",
+          "prompt_adherence": "The story includes the requested main character, 'A devoted platypus,' and the theme that friendship/unity overcomes obstacles."
+        }
+      },
+      "judge_latency_ms": 5280
+    },
+    {
+      "character": "a prudent hawk",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a prudent hawk </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "In a pirate cove, a wise old hawk lived on a cliff overlooking the sea. The hawk had sharp eyes and a quick mind, which helped her find food during the stormy weather. One day, a strong wind blew, and heavy rain poured down. The pirate cove was flooded, and the hawk's nest was in danger of being washed away.\n\nA young seagull, who had been playing in the cove, sought shelter under the hawk's cliff. The hawk, who usually kept to herself, welcomed the seagull. She shared her food and kept the seagull warm. As the storm raged on, the hawk and the seagull chatted and laughed together.\n\nThe seagull noticed that the hawk was worried about her nest. \"Don't worry, old hawk,\" said the seagull. \"We'll figure out a way to save it.\" Together, they used some sticks and leaves to create a new nest high up on the cliff. The storm finally passed, and the sun came out.\n\nThe hawk was grateful to the seagull, and the seagull felt happy to have helped. From that day on, the hawk and the seagull became the best of friends. As the years went by, the hawk learned that when she was kind to others, they would help her in return.\n\nOne day, the hawk had a young chick of her own. She told the chick, \"When the weather gets stormy, don't be afraid. Just remember, a kind heart finds friends. That's what I learned from my friend, the seagull.\" The chick looked up at the hawk with big, round eyes and said, \"I'll remember, Mommy!\" The hawk smiled, knowing her lesson would be passed on to the next generation.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200027",
+      "model": "v2",
+      "seed": 58,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the ancient ruins, where crumbling stones met the sky, an Prudent Hawk perched on a broken column. She watched as two friends, Brave Bear, and Gentle Rabbit, hopped through the overgrown paths. They were inseparable, playing hide-and-seek among dusty ruins.\n\nBrave Bear would often tell Clever Rabbit about his adventures and how he was always so proud of himself. The Cautious Hawk listened carefully, but her curiosity got the better of her. She wished she could join them, but now they seemed too shy.\n\nOne day, while exploring a hidden chamber, Strong Bear's laughter echoed off the walls. He stumbled upon their secret garden filled with juicy fruits and colorful flowers. Curious Rabbit's eyes grew wide with excitement, thinking he had found something even more precious.\n\n\"Why did you leave me behind?\" Quick Bear asked, looking at Wise Hawk's confusion.\n\n\"I wanted to show them my true self, not just our friendship,\" said Happy Rabbit. \"But I realize now that we're both hungry.\"\n\nCurious's face brightened. \"I didn't mean to hurt you. Let's share what we have.\"\n\nTogether, they sat down to enjoy their shared harvest. As they ate, the sun began to set, casting long shadows across the ruins. From then on, Kindly, Gentle, Brave, and Swift explored the ruins together, learning from each other's love for secrets and adventures.\n\nThe Prudent Hawk smiled, knowing that sometimes, being kind can bring unexpected friends. And that's why she's part of this special place – one sunny day by her side, in harmony with Brave Bear.\nThat's when friendships are made, and memories become.**\nFriendship is the key to making new friendships and sharing.\"\nWith every step, the journey into place, under the watchful eye of her dear friend, Quick Rabbit, became a symbol of unity and friendship.\nThis fable teaches us that **arge brings happiness**.\nIndledgiving kindness can take to others, and make room for everyone.)\nEven that",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 7,
+        "overall": 4.0,
+        "rationale": {
+          "grammar": "The text suffers from severe fragmentation and nonsensical endings, such as 'Indledgiving kindness can take to others, and make room for everyone.)'.",
+          "creativity": "While the setting of 'ancient ruins' is decent, the character names and dialogue are inconsistent and confusing, e.g., 'Quick Bear' vs 'Brave Bear'.",
+          "moral_clarity": "The intended moral is obscured by garbled text like 'arge brings happiness' and 'Friendship is the key to making new friendships'.",
+          "prompt_adherence": "The story includes the 'Prudent Hawk' and attempts the teaching of kindness, though the execution is highly flawed."
+        }
+      },
+      "judge_latency_ms": 5720
+    },
+    {
+      "character": "a calm seal",
+      "moral": "timely help earns lasting loyalty",
+      "prompt": "<char> a calm seal </char>\n<moral> timely help earns lasting loyalty </moral>\n<story>\n",
+      "reference_story": "In a sunny countryside, a calm seal lived in a sparkling lake. The seal loved to swim and play with the fish. One day, a big storm came, and the water got rough. The seal's home was in danger of flooding.\n\nA wise old owl lived in a nearby tree. She watched the storm and saw the seal struggling. The owl knew she had to help. She flew down to the lake and said, \"Seal, I can help you. Let me guide you to higher ground.\"\n\nThe seal was proud and said, \"I can handle it myself. I'm strong.\" But the storm was getting stronger, and the seal was getting tired. The water was rising, and the seal's home was being ruined.\n\nThe owl tried again, \"Seal, please listen. I can help you. Let's work together.\" But the seal was too proud to listen. Just as the storm was about to destroy everything, the seal realized that she couldn't do it alone.\n\nThe owl flew down again and said, \"Seal, I'm here to help. Let's go!\" This time, the seal listened. Together, they rode out the storm and saved the seal's home.\n\nAfter the storm, the seal was grateful to the owl. \"Thank you for helping me,\" said the seal. From that day on, the seal knew that asking for help was a sign of strength, not weakness. And the owl became the seal's best friend, always ready to lend a helping wing.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200028",
+      "model": "v2",
+      "seed": 58,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "**The Calm Seal's Gift**\n\nIn the bustling port of Sunny Cove, where ships sailed in and out, a calm seal named Gentle lived among the busy docks. She loved watching sailors unload their catch by schools of sparkling fish.\n\nOne day, while playing with her best friend, Brave Crab, Swift started taking things that didn't belong to him. He would swim away, laughing at his slow pace. The other creatures began to suspect him of being dishonest. They whispered to each other, \"He's not our friend!\"\n\nGentle felt sad for Brave, but she knew he was lying. She decided to show Swift how much fun she'd been if it meant no one trusted her. So, Gentle took a deep breath and said, \"I'm glad you're back home. But let's make something new together. We can paint beautiful pictures on those docks without hurting any who are around.\"\n\nGentle's eyes lit up, \"That's it! Let's do it!\" Together, they painted colorful murals, built strong sandcastles, and even made an underwater garden. From then on, Gentle's friends saw Swift's helpful deed as a chance to prove himself, and the other sea creatures, seeing Gentle's kindness, forgave him.\n\nAs time passed, Gentle proved herself worthy. Her kindness earned her friends' trust, and they all became closer than ever. The port's harmony flourished, proving that when you lend a helping hand, your friendship grows stronger.\nThis story teaches us that **told**: Timely help from friends, we earn lasting loyalty. Just like Gentle's shining shell, keep friendships strong, and you'll always have true friends.\nThat's what happens – is the greatest treasure of all.\nFriends.'\"Loyalty)\nI learned so!\nTo celebrate his kindness towards the community, just like Gentle, Swift.\"\nSwift, too, had become a skilled sailer, ready for her next project. And so, he'd start anew, spreading love and kindness.\nCincerity truly invites anything.\nWhen they came from afar, they'd meet",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 7,
+        "overall": 4.0,
+        "rationale": {
+          "grammar": "The text descends into incoherent fragments and nonsensical syntax at the end, such as \"That's what happens – is the greatest treasure of all.\"",
+          "creativity": "While the concept of painting murals underwater is whimsical, the plot logic is confusing, e.g., \"Swift started taking things that didn't belong to him\" followed by an unclear resolution.",
+          "moral_clarity": "The intended moral is stated, but the narrative fails to demonstrate how 'timely help' specifically earned 'lasting loyalty,' instead focusing on painting murals.",
+          "prompt_adherence": "The story includes the requested main character, a calm seal named Gentle, and attempts to incorporate the specific teaching provided."
+        }
+      },
+      "judge_latency_ms": 5703
+    },
+    {
+      "character": "a eccentric hippopotamus",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a eccentric hippopotamus </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "On a foggy moor, a big, happy hippopotamus loved to splash in the misty ponds. But one day, a sneaky voice whispered, \"The hippopotamus's muddy pools are yucky and dirty!\" The hippopotamus felt sad and lonely. No one wanted to play near the pools anymore.\n\nThe hippopotamus decided to investigate. It asked a wise old owl, \"Is it true my pools are yucky?\" The owl said, \"I don't know, but let's ask the frogs who live in the pools.\" The frogs replied, \"We love our home! It's clean and cozy!\"\n\nBut the sneaky voice whispered again, \"The frogs are just saying that because they're friends with the hippopotamus!\" The hippopotamus felt even sadder. It didn't know what to do.\n\nThen, the hippopotamus had an idea. It invited all the animals to help clean the pools. Together, they made the pools shine like the sun! The animals played and splashed together, laughing and having fun.\n\nAs the fog cleared, the animals realized the sneaky voice was just spreading lies. The hippopotamus's kind heart had brought everyone together. From that day on, the moor was filled with friendship and laughter. The hippopotamus smiled, knowing that a kind heart can find many friends.\n\nThe animals learned that when we work together and help each other, we can make our home a happy and wonderful place. And the hippopotamus's muddy pools became the favorite playground on the moor.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200029",
+      "model": "v2",
+      "seed": 58,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the sun-kissed riverbank, where water lilies bloomed like green jewels, an eccentric hippopotamus loved to splash and play. This hippopotamus, known for being very particular, would spend hours practicing its latest dance moves in front of the other riverbank creatures.\n\nOne day, while dancing near the water's edge, it stumbled upon two friends: a busy beaver, who built strong dams, but their home was also on dumps apart. The beaver asked the hippopotamus's three friends, \"Why do you want me to be left out?\" \n\nThe hippopotamus replied, \"I just love to dance, so I can make music with my favorite instruments!\" But as soon as the beaver's lodge grew darker, there seemed no longer fun there. They whispered among themselves, \"The hippopotamus is too happy.\"\n\nOne stormy night, the river overflowed, and the beavers' homes were flooded. The beavers, seeing the danger, offered to help them build new homes. As they worked together, the beavers realized that everyone had something special to offer.\n\nThe hippopotamus watched from afar, feeling proud of itself. When the storm passed, the beavers invited all the riverbank creatures to join. Together, they created a beautiful, harmonious community. From then on, every year, they'd gather at dawn tump-clock, share stories, play games, and enjoy each other's company.\n\nAs the sun shone bright, the riverbank sparkled once more, thanks to the friendship between two friends. A wise old owl perched nearby whispered, \"A kind heart has found friends.\" And so, the underbrush became a haven of kindness and friendship, where even the most unlikely friends could come together into harmony.\nA kind heart, which brings us closer together.\"\nCompassion fosters respect, making room for those around us.\nThat when we celebrate our differences, we'll find common ground.\"\nMoved by the heart, hearts are filled with joy, kindness, and friendship.\nEmpathy is the greatest perfection of all.\nWe truly, one another, and unity is what makes everything perfect.**\n another.",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 7,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text contains significant nonsensical phrasing and structural errors, such as 'on dumps apart' and 'dawn tump-clock'.",
+          "creativity": "While the imagery of 'water lilies bloomed like green jewels' is nice, the plot logic regarding the beaver's dialogue is confusing.",
+          "moral_clarity": "The moral is explicitly stated at the end: 'A kind heart has found friends.'",
+          "prompt_adherence": "The story includes the requested eccentric hippopotamus and the teaching that a kind heart finds friends."
+        }
+      },
+      "judge_latency_ms": 5219
+    },
+    {
+      "character": "a gullible goose",
+      "moral": "wise counsel lights the way",
+      "prompt": "<char> a gullible goose </char>\n<moral> wise counsel lights the way </moral>\n<story>\n",
+      "reference_story": "In a hidden valley surrounded by green hills and sparkling streams, a gullible goose lived with her best friend, a clever rabbit. They spent their days playing hide-and-seek among the wildflowers and sharing juicy berries.\n\nOne day, the rabbit told the goose that she was moving to a faraway land to dance with the stars. The goose was heartbroken and couldn't imagine life without her dear friend. She spent her days wandering the valley, feeling lost and alone.\n\nThe rabbit, however, was not really moving. She just wanted to teach the goose a lesson about believing everything she's told. But seeing her friend so sad, the rabbit's heart melted. She decided to surprise the goose with a gift.\n\nThe next day, the goose woke up to find a beautiful basket of colorful flowers and a note that said, \"I'm not moving, and I'll always be here for you.\" The goose was overjoyed and felt a mix of happiness and shame for believing the rabbit's story.\n\nThe rabbit and the goose hugged each other tightly, and the goose promised to be more careful about believing everything she's told. The rabbit smiled and said, \"Friends forgive, and friends help each other. That's the most precious gift of all.\"\n\nFrom that day on, the goose and the rabbit were even closer friends. They learned that sometimes, all it takes is a little understanding and a thoughtful gift to repair a broken heart. And the wise counsel of a true friend lights the way through life's toughest moments.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200031",
+      "model": "v2",
+      "seed": 58,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "**The Gullible Goose and the Wise Judge**\n\nIn a forest filled with tall trees, a big, friendly owl lived in a hollow tree. She loved to perch on her branch, watching the world go by. One sunny day, while she was busy looking for berries, a sly squirrel whispered in his ear, \"The owl is planning to steal all our juicy berries!\"\n\nThe goose's eyes grew wide at the thought of it. \"Oh no! I must be careful,\" she said. The other animals believed her, but when they heard the squirrel's deceit, their faces turned sour.\n\nThe goose, feeling sad and alone, decided to gather proof that something wasn't true. \"I didn't take any berries,\" she said quietly. \"I'm just a curious goose. I'm not sure if no one believe me.\"\n\nThe animals, however, were still suspicious. They gathered around, listening as the goose's friends started searching. But soon, they found nothing. A strong wind blew, knocking over trees and blocking the paths.\n\nThe goose had an idea. \"We need someone who can help us find food or water!\" Her friends, including a clever rabbit, agreed to help. Together, they worked hard to clear the paths.\n\nAs they sat under a tree, munching on berries and enjoying their meal, the owl looked at them from a nearby branch. \"Thank you for your help,\" he said, smiling. \"But remember, it's better to ask questions than to believe everything we hear.\"\n\nThe goose smiled, knowing she'd learned a valuable lesson. From then on, whenever someone asked, \"What do you mean?\"\n\" she would say, \"Let's always listen carefully, so we're friends.\" And so, the moral of the story is: **Ahumility paves the path**. When you're brave enough to admit what you've done, you'll face challenges head-on.\nIf course, we will learn to trust each other, and become wiser.\nBut sometimes, asking questions before jumping into things can lead to trouble.**\nWegret can make all sortsful lives – kindness and understanding.)\nEnecessary!",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 2,
+        "prompt_adherence": 7,
+        "overall": 4.0,
+        "rationale": {
+          "grammar": "The text contains significant errors and nonsensical fragments at the end, such as 'Wegret can make all sortsful lives – kindness and understanding.) Enecessary!'.",
+          "creativity": "The plot is disjointed and lacks logical flow, such as the transition from a berry theft accusation to 'knocking over trees and blocking the paths'.",
+          "moral_clarity": "The stated moral 'Ahumility paves the path' contradicts the actual lesson about questioning rumors, and the text becomes incoherent at the conclusion.",
+          "prompt_adherence": "The story includes a goose and attempts to convey a lesson about wisdom, though it fails to clearly integrate the specific teaching 'wise counsel lights the way'."
+        }
+      },
+      "judge_latency_ms": 5736
+    },
+    {
+      "character": "a noble ant",
+      "moral": "envy poisons happiness",
+      "prompt": "<char> a noble ant </char>\n<moral> envy poisons happiness </moral>\n<story>\n",
+      "reference_story": "In a sunny countryside, a noble ant named Brave lived in a bustling colony. Brave loved to explore and help others, but sometimes she felt small and insignificant. She would watch the birds soar through the sky and the rabbits hop effortlessly across the fields, and she'd wonder, \"Why can't I do that too?\"\n\nOne day, while wandering through a meadow, Brave met a wise old ant named Sage. Sage noticed Brave's sad eyes and asked, \"What's troubling you, little one?\" Brave explained her feelings of insecurity. Sage listened carefully and then said, \"Come with me.\"\n\nSage took Brave to a nearby anthill, where a group of ants were working together to build a grand structure. Brave watched in awe as the ants carried heavy loads and worked together seamlessly. Sage said, \"Each ant has a special role to play, just like you have a special gift. Don't compare yourself to others; your strength lies in your uniqueness.\"\n\nBrave realized that Sage was right. She began to focus on her own strengths and contributions. As she worked with her colony, Brave noticed that the birds and rabbits would often visit them, admiring their teamwork and dedication. Brave's confidence grew, and she became known as the colony's most reliable helper.\n\nOne day, a severe storm hit the countryside, and the colony's home was in danger of being destroyed. But Brave and her friends worked together, using their unique skills to save their home. Sage looked on, a knowing glint in her eye, and said, \"I told you, Brave, your strengths would shine in the right moment.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200035",
+      "model": "v2",
+      "seed": 74,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the Haunted Woods, where tall trees creaked and leaves whispered, a little Noble Ant lived. She was known for her kind heart and strong wings. One day, while exploring, she stumbled upon an old, mysterious book hidden behind a thick curtain of leaves. The words said that it held secrets to those who read the secrets.\n\nThe noble ant's eyes grew wide with wonder. \"I must have this treasure!\" she exclaimed. But as soon as she began to dig, her antennae twitched with excitement. A sly Spider, always trying to outsmart her, watched her from afar, whispering in his ear, \"If you want something, you'll find it. Let's work together!\"\n\nThe noble ant hesitated, but something about the Spider's friendly smile put her at ease. Together, they dug and searched, until they uncovered a small, forgotten treasure chest buried beneath its roots. With the key out, they opened it, revealing a trove filled with glittering pebbles.\n\nAs they divided the treasure, the labyrinth came alively! There were sparkling crystals that refracted light into tiny lights, their sparkly lights dancing across the darkness. The noble Ant's fear turned to joy as she realized that sharing the reward had brought even more joy. \"We did it!\" she exclaimed.\n\nFrom that day on, the noble ant and the Spider became inseparable friends, exploring the woods together, discovering new wonders every day. And whenever they looked up at the twinkling crystals, they'd say, \"Envy can make us blind, but friendship makes everything shine.\"\nSodesty learned that when we share our joys with others, everyone's joy becomes brighter.\nDisappiness comes from sharing, not from comparing ourselves to others.**\nModesty spread like a gentle rain, brings life back to life.\nReglealing envy, for acceptance is what truly sweet.\n\"That kindness shines bright,\nAnd richness will fill your heart, just like the magic within.\nWeveryone's light starts to grow, and so bright",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 8,
+        "overall": 5.0,
+        "rationale": {
+          "grammar": "The text contains significant errors and nonsensical words, such as 'the labyrinth came alively!' and 'Disappiness comes from sharing'.",
+          "creativity": "While the setting of 'Haunted Woods' is a decent start, the plot follows a very standard 'finding treasure' trope.",
+          "moral_clarity": "The ending becomes a confusing jumble of contradictory statements, such as 'Disappiness comes from sharing, not from comparing ourselves to others'.",
+          "prompt_adherence": "The story includes the 'noble ant' and attempts to address the theme of envy, though it fails to execute the teaching effectively."
+        }
+      },
+      "judge_latency_ms": 5443
+    },
+    {
+      "character": "a dignified jaguar",
+      "moral": "justice serves all",
+      "prompt": "<char> a dignified jaguar </char>\n<moral> justice serves all </moral>\n<story>\n",
+      "reference_story": "Deep in the jungle, where vines snaked up towering trees and colorful birds sang sweet melodies, a majestic jaguar roamed. Her golden fur glistened in the sunlight, and her eyes shone like bright emeralds. She was the strongest and wisest in the land, or so she thought.\n\nOne day, while exploring, she stumbled upon a hidden clearing. In the center, a family of birds sat on a delicate nest, their eggs trembling with every movement. The jaguar, feeling overconfident, decided to play a trick on the birds. She picked up a twig and gently touched it to the nest, watching as the birds frantically tried to protect their home.\n\nThe jaguar laughed at the birds' efforts, thinking she was the cleverest creature in the jungle. But, as she turned to leave, she knocked over a nearby beehive. The angry bees chased her, stinging her fur. The jaguar panicked and ran, but only to trip and fall into a muddy puddle.\n\nWhen she finally stood up, covered in mud, she approached the birds, who were watching her with kind eyes. \"Why did you laugh at me?\" one of the birds asked. The jaguar, feeling ashamed, confessed her mistake. \"I was wrong to tease you. I thought I was so clever, but I made a mess.\"\n\nThe birds forgave her, and the jaguar realized that she had learned an important lesson. \"Justice serves all,\" one of the birds said gently. \"We all make mistakes, but it's how we learn from them that matters.\" The jaguar nodded, feeling wiser and more humble. From that day on, she roamed the jungle with a newfound sense of respect for all creatures, big and small.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200054",
+      "model": "v2",
+      "seed": 90,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the windswept plains, where tall grasses swayed in the breeze, a majestic jaguar, with eyes as bright as sunsets, roamed. Her sleek fur blended perfectly into the golden grass. She was known for her kindness and fairness.\n\nOne day, while she padded across the grasslands, two mischievous raccoons snuck past her. They began to whisper among themselves, \"The jaguar is cruel! She's taking our food from us.\" The other animals believed them, and soon they stopped sharing their food.\n\nThe jaguar's heart ached as the plains suffered by the accusation. But then, something unexpected happened. A wise old owl approached her, saying, \"Why do you let them deceive you? Didn't we ever see you?\" The jaguar replied, \"I only wanted what I needed. Now they're sad.\"\n\nAs the days passed, the jaguar noticed that the foxes were struggling too. Their burrow had been destroyed during the harsh weather. One rainy evening, the winds howled, but one of the cubs went hungry. The jaguar remembered how happy it felt when others shared its food. She decided not to take more than just food, and offered some berries to share.\n\nFrom that day on, the jaguar welcomed the foxes with open arms. Together, they worked out a fair trade: they'd help each other, and everyone on the plains would benefit. As the seasons changed, the grasslands grew stronger, and both creatures learned that honesty brings true joy.\n\nThe jaguar's story spread far and wide, reminding everyone: \"Justice balances all, even those who make mistakes.\" And so, the windswept plains became a haven of friendship and kindness.\nJust like the wind, the way the trees sway gently in harmony, shaping balance with every passing day.\nPerseverance, dear friends, can bring us together under our combined efforts.\nIn this day, spreading love and unity through adversity.\nI've found peace gathering, where friendships are stronger and fairer.\"\nHonesty truly vigilions grows.**\nThis way.)\nSodest of these",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 6,
+        "moral_clarity": 5,
+        "prompt_adherence": 9,
+        "overall": 5.75,
+        "rationale": {
+          "grammar": "The story descends into nonsensical fragments and broken syntax at the end, such as 'Honesty truly vigilions grows.**'.",
+          "creativity": "The initial imagery of 'eyes as bright as sunsets' is pleasant, but the narrative logic becomes disjointed.",
+          "moral_clarity": "The story attempts a moral with 'Justice balances all, even those who make mistakes,' but then contradicts itself with 'Perseverance, dear friends, can bring us together'.",
+          "prompt_adherence": "The story includes the requested 'dignified jaguar' and the theme that 'Justice balances all'."
+        }
+      },
+      "judge_latency_ms": 5313
+    },
+    {
+      "character": "a joyful honeybee",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a joyful honeybee </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "Deep within a sparkling crystal cavern, a joyful honeybee buzzed with excitement. Her home was filled with glittering crystals and sweet nectar. One day, while exploring, she discovered a beautiful, shimmering crystal that made her feel like the luckiest bee in the world.\n\n\"Ooh, this is the most precious crystal I've ever seen!\" she exclaimed to her best friend, a gentle butterfly. \"I must have it for myself!\"\n\nThe butterfly cautioned, \"Be careful, dear. Hoarding can lead to sorrow.\"\n\nBut the honeybee wouldn't listen. She carefully placed the crystal in her hive and admired it all day. As night fell, however, a strong gust of wind swept through the cavern, and the crystal shattered into a thousand pieces.\n\nThe honeybee was heartbroken. She wept and wailed, feeling as though her world had been shattered too. Her friend the butterfly tried to comfort her, but she was too sad to listen.\n\nAs the honeybee wandered the cavern, she met a family of struggling bees who had lost their home. They were shivering with hunger and cold. The honeybee remembered the butterfly's words and realized that the crystal was just a thing, but the happiness it brought was short-lived.\n\nShe decided to use her skills to help the bees instead of keeping the crystal for herself. Together, they built a new home, and the honeybee's sorrow turned into joy. She learned that modesty preserves dignity and that true happiness comes from helping others.\n\nFrom that day on, the joyful honeybee buzzed with a newfound sense of purpose, her heart full of kindness and her spirit full of joy.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200064",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the heart of the jungle, where bright flowers bloomed and buzzing bees flitted about, lived an ancient temple with walls as crumbling stones covered in vines. A joyful honeybee, known for her love of honey, danced among the temple's intricate carvings. She was always ready to be there, collecting nectar from each one bloom.\n\nOne day, while sipping nectar, she met a gentle butterfly who offered her a drop of sweet nectar. The honeybee's eyes sparkled at the thought of sharing, but soon she began to boast about how fast she could collect honey on all those flowers. \"I'm the fastest bee here,\" she'd say.\n\nAs time passed, more creatures came to visit her, asking if they were happy to share. But the honeybee wouldn't share, thinking only of herself. She'd buzz away, leaving nothing for anyone else.\n\nBut soon, the other creatures, tired of the bee's behavior, decided to leave their sacred place by themselves. They searched high and low, until finally, they found a hidden honeycomb. As they flew back into the temple, they saw that it belonged to everyone.\n\nThe bee, still proud and selfish, realized what had happened – she had been so focused on being like others that she forgot about sharing with others. From then on, the honeybee made sure to share her sweetness with others, just like the butterfly. And every creature helped gather pollen, making everyone feel happy.\n\nThe moral: Modesty preserves dignity. When we focus too much to show we're not full, our true friends can make us even happier!\nWith kindness and generosity, we become kind and generous, just like the honeycomb grows.\nPersalice may seem sweet, but it's sweeter when shared with kindness.\nBut being content makes life less sweet.\"\nHervy's heart now sparkled, filled with kindness, friendship, and friendship.\nMo love.\nItre's not enough, let's take some more, we'll give.\nThis way, for ourselves that loses true beauty, just the joy of friendship!\"",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": false,
+        "exact_both": true,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 2,
+        "prompt_adherence": 9,
+        "overall": 4.75,
+        "rationale": {
+          "grammar": "The story descends into nonsensical, fragmented text at the end, such as 'Hervy's heart now sparkled, filled with kindness, friendship, and friendship.'",
+          "creativity": "While the setting of an 'ancient temple with walls as crumbling stones' is interesting, the plot follows a very standard fable structure.",
+          "moral_clarity": "The moral is contradictory and confusing, ending with statements like 'But being content makes life less sweet.'",
+          "prompt_adherence": "The story includes the requested main character, 'A joyful honeybee,' and the specific teaching, 'Modesty preserves dignity.'"
+        }
+      },
+      "judge_latency_ms": 5481
+    },
+    {
+      "character": "a observant bear",
+      "moral": "oppression sows rebellion",
+      "prompt": "<char> a observant bear </char>\n<moral> oppression sows rebellion </moral>\n<story>\n",
+      "reference_story": "In a land of endless dunes, where the wind howled and the sand swirled, a wise bear lived. She spent her days watching the world go by from her cozy cave. One day, a hungry bear came to the dunes. He was tired and needed food, but the wise bear shared only a small patch of berries with him.\n\nThe hungry bear was angry and left, feeling that the wise bear was not kind. But the wise bear didn't understand why the hungry bear was upset. She thought she was being generous by sharing just a few berries.\n\nAs the days passed, more bears came to the dunes, and the wise bear shared her berries with only a few. She thought that if she shared with too many, she would have none left for herself. The other bears grew hungry and tired, and they began to whisper among themselves.\n\nOne windy night, a wise old owl perched on a dune and said, \"Why do you not share your berries with all who need them?\" The wise bear thought for a moment and said, \"I was afraid that if I shared too much, I would have none left.\" The owl replied, \"By taking and not giving, you have left the other bears with nothing but anger and hunger. Now they may rebel against you.\"\n\nThe wise bear looked out at the dunes and saw that the other bears were indeed angry and tired. She realized that the owl was right and that sharing her berries with all would bring peace and friendship. From that day on, the wise bear shared her berries with all who needed them, and the dunes were filled with laughter and kindness.\n\nThe wise owl's words had taught the wise bear that sharing brings happiness, and that taking and not giving can lead to rebellion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200069",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "**The Shimmering Lagoon's Gift of Truth**\n\nIn the warm waters of a lagoon, where tall trees leaned over and colorful fish swam by, a big, fluffy bear lived. He loved to watch the world go by from his cozy little cave. This big bear, known for being very careful, spent most of his days swimming in the lagoon.\n\nOne day, while exploring the lagoon's edge, he met two friends: a clever rabbit and a strong fish. They were both kind and brave, but they had different plans. The rabbit, who was quick and clever, wanted to catch more fish than anyone else. But she also wanted to be with her.\n\nThe bear's friends started to get angry when things didn't work together. \"The fish should eat all our fish!\" said one. \"No, we need them too!\" said the rabbit. \"We can share them!\" replied the fish.\n\nThe bear listened carefully. Then, he said, \"Why don't you ask your friends, what do you like about fish? Maybe you're fast and strong, just like you, and that's okay?\"\n\nThe fish looked at each other uncertainly. One wise old owl asked, \"But how will it take so long?\" asked the bear. \"They think it's because they're too busy competing.\"\n\nThe bear's eyes sparkled. \"That's right! And if one of us is better or worse, you'll always find another way.\"\n\nThe fish's heart felt lighter. She realized that her friends' way wasn't the best way. From then on, she took care of their own food and made sure everyone got along. And whenever someone needed help, the rabbit's new friend would say, \"We're happy we're free! We'll help each other, not hurt each other.\"\n\nThe moral of this story is: Oppression makes people rebel against us, but kindness leads to understanding.\nPerspective can sow rebellion. When we treat others unfairly, we might miss out on the bigger picture. But sometimes, there's enough room for everyone.\nMaybe kindness and sharing make everyone happy.**\nWefore long, we'll never be happy, without fighting.)\nWhen we try",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 3,
+        "moral_clarity": 4,
+        "prompt_adherence": 6,
+        "overall": 3.75,
+        "rationale": {
+          "grammar": "The text contains significant structural failures and nonsensical fragments, such as 'Wefore long, we'll never be happy, without fighting.) When we try'.",
+          "creativity": "The narrative logic is disjointed and confusing, e.g., 'The rabbit... wanted to be with her' without a clear antecedent.",
+          "moral_clarity": "While a moral is stated, 'Oppression makes people rebel against us', the preceding story fails to actually depict any act of oppression.",
+          "prompt_adherence": "The story includes an observant bear and the requested teaching, but the execution of the theme is lost in incoherent prose."
+        }
+      },
+      "judge_latency_ms": 5633
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "perspective can change the outcome",
+      "prompt": "<char> a cautious frog </char>\n<moral> perspective can change the outcome </moral>\n<story>\n",
+      "reference_story": "In a sunny grassland, a cautious frog lived near a sparkling pond. He loved to watch the butterflies dance around the colorful flowers. One day, while the cautious frog was enjoying the view, he saw a beautiful butterfly named Sparkles. She was sipping nectar from a bright yellow flower.\n\nThe cautious frog was immediately smitten. But, to his surprise, he discovered that he wasn't the only one who loved Sparkles. A strong and brave dragonfly named Dash also had a crush on her. The two insects started to argue over who was the best suitor for Sparkles.\n\nThe cautious frog thought, \"I'm the quiet one, I must be the better choice.\" But Dash would say, \"No, I'm the strongest flyer, I can protect her.\" Sparkles, feeling confused, asked them, \"Why are you both fighting? Can't you see I have a special place in this grassland to share with both of you?\"\n\nThe cautious frog and Dash looked at each other and realized they had been thinking only about themselves. They decided to work together and find a way to share Sparkles' love. They discovered that the grassland had many beautiful places to explore, and they could take turns showing Sparkles their favorite spots.\n\nSparkles was overjoyed with the new idea. From then on, the cautious frog, Dash, and Sparkles spent their days exploring the grassland together, learning that sharing and perspective can make everyone happy. The cautious frog learned that sometimes, being different can be a strength, not a weakness.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200071",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On a cliff-top fortress, where seagulls soared and waves crashed, lived a cautious frog. She liked to stay hidden, watching as her friends played in the sun.\n\nOne day, while she was hiding behind a rock, a sly snake slithered in. The snake's sharp teeth glinted in the sunlight, making it hard for them to find food. The frog's friends, a group of brave rabbits and a wise owl, were not sure what they wanted.\n\nThe snake, feeling powerful, began to steal food from their homes. But this time, something strange happened. The rabbits, who had grown up knowing about being caught, came together with the snake. They worked together, sharing their food, but now that he wouldn't share.\n\nThe snake ate even more fish, leaving none for his friends. He thought no one would notice, thinking they might get all the fish back. The rabbit grew tired of the distraction.\n\n\"Why don't you just ask him why?\" asked the rabbit.\n\nThe frog, seeing an opportunity, jumped out from beneath and said, \"I didn't know how much I needed help. Now we all have enough food.\"\n\nThe animals looked at each other and nodded. Together, they divided the fish among themselves. From then on, everyone shared what they had, so that there wasn't always room for everyone.\n\nThe cautious frog realized that sometimes, when things seem unfair, looking around and helping others can make everything better. And that's exactly what happened – the creatures on the cliff-top fortress learned to see beyond their own needs before working together.\nRemember, changing our minds can lead us down a way if we're willing to try.**\nWhis story is simple: let's think carefully about what's right,\nSo, we'll come back to those who need us, and work together!\nIcise, or not,\nAnd be kind to all.)\nBut it's never too late to try again.\nEach creature's idea.\"\nAhough different thing to learn helped build trust and sharing.\nFinceritypective.\nC",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 7,
+        "overall": 4.0,
+        "rationale": {
+          "grammar": "The text descends into incoherent fragments and typos at the end, such as 'Finceritypective. C' and 'Whis story is simple'.",
+          "creativity": "The concept of a 'cliff-top fortress' is interesting, but the plot involving 'brave rabbits' and a 'wise owl' living with a frog is logically disjointed.",
+          "moral_clarity": "The moral is muddled by contradictory sentences like 'so that there wasn't always room for everyone' and nonsensical concluding lines.",
+          "prompt_adherence": "The story includes the 'cautious frog' and attempts to address how 'changing our minds' (perspective) can lead to a better outcome."
+        }
+      },
+      "judge_latency_ms": 5814
+    },
+    {
+      "character": "a optimistic butterfly",
+      "moral": "cooperation wards off threats",
+      "prompt": "<char> a optimistic butterfly </char>\n<moral> cooperation wards off threats </moral>\n<story>\n",
+      "reference_story": "**The Undersea Kingdom of Sparkles**\n\nIn the underwater kingdom of Sparkles, where colorful fish swam and coral flowers bloomed, a little butterfly named Sunshine lived. She loved to dance on the water's surface, feeling the warmth of the sun on her wings. But Sunshine felt overshadowed by her big sister, Rainbow, who could fly higher and farther than anyone else.\n\nRainbow loved to show off her skills, and the other sea creatures would cheer and clap for her. Sunshine felt sad and left out, wondering if she was good enough. One day, a big, dark shadow fell over the kingdom. A strong current, known as the Dark Tides, was threatening to destroy their home.\n\nThe sea creatures were scared and didn't know what to do. Rainbow tried to fly higher to find a solution, but the Dark Tides were too strong. Sunshine had an idea. \"Let's work together!\" she said. \"We can swim and fly together to find a way to stop the Dark Tides!\"\n\nThe other sea creatures joined Sunshine and Rainbow, using their unique skills to help. The fish swam fast, the dolphins used their powerful clicks to create a force field, and the butterfly friends flew ahead to scout out the path. Together, they found a hidden cave filled with sparkling crystals that could calm the Dark Tides.\n\nThe kingdom of Sparkles was saved, and the sea creatures cheered for Sunshine and Rainbow. From that day on, the sisters realized that working together made them stronger than flying or swimming alone. The kingdom documented the lesson: \"Cooperation wards off threats, and together we shine brighter than we ever could alone.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200075",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the windy plains, where wildflowers swayed and butterflies danced, a bright blue Butterfly with shimmering wings danced from flower to flower. She loved nothing more than spreading joy wherever she flew. One day, while sipping nectar from a particularly sweet flower, the Optimistic Butterfly, heard whispers of a hidden treasure buried deep within the plains.\n\nExcited by her discovery, the Optimistic Butterfly's heart skipped a beat. Without hesitation, she set out on an adventure, searching for the treasure. As she soared over icy hills, she met many creatures who offered words of encouragement, but none could find it. The Empathetic Butterfly began to doubt herself, wondering if she was really as brave or just a fierce protector.\n\nThe wind howled louder, making it hard for anyone to hear. Just when all hope seemed lost, a friendly Bee whispered to her, \"Have you ever tried flying? I know this dunes, like a maze of ice!\" But the Optimistic Butterfly shook her head, \"No, I'm not good at anything. I'll try!\"\n\nWith newfound determination, the Optimistic Butterfly joined forces with the Bee, Bee. Together, they explored the windy landscape, discovering its secrets and learning about each other's strengths. As they neared the treasure, the storm subsided, revealing that their combined efforts had created something much greater – friendship and understanding.\n\nThe other creatures, witnessing the Optimistic Moth's new courage, cheered in delight, realizing they'd learned to work together, no matter what challenges lay ahead. From then on, whenever someone needed help, they would say, \"Together, we're unstoppable! We're stronger together!\"\nThis fable teaches us that when we face challenges, working together can conquer even the greatest challenges.\nRemember, having friends by your side is the key to overcoming any challenge.\nInd so, every lesson come: teamwork makes the dream work!\"\nTogether, we'll help our friends, forever-changing worlds bloom into sights.\nThat unity requirefited, one lastion suitable for generation), shapy them.**",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 7,
+        "prompt_adherence": 9,
+        "overall": 6.0,
+        "rationale": {
+          "grammar": "The text suffers from severe degradation and nonsensical fragments at the end, such as 'That unity requirefited, one lastion suitable for generation), shapy them.**'.",
+          "creativity": "While the setting of 'windy plains' is pleasant, the plot becomes incoherent, shifting from a treasure hunt to a confusing internal monologue about being a 'fierce protector'.",
+          "moral_clarity": "Despite the linguistic breakdown, the moral is explicitly stated: 'This fable teaches us that when we face challenges, working together can conquer even the greatest challenges.'",
+          "prompt_adherence": "The story includes the requested optimistic butterfly and the theme that cooperation wards off threats, though it introduces inconsistent character names like 'The Empathetic Butterfly' and 'Optimistic Moth'."
+        }
+      },
+      "judge_latency_ms": 5991
+    },
+    {
+      "character": "a timid badger",
+      "moral": "teamwork amplifies success",
+      "prompt": "<char> a timid badger </char>\n<moral> teamwork amplifies success </moral>\n<story>\n",
+      "reference_story": "**The Treetop Tale of the Timid Badger**\n\nHigh above the forest floor, a village of trees stood tall, their branches swaying gently in the breeze. The trees were home to busy creatures, each with their own special talents. A timid badger lived at the edge of the village, watching and learning from the others.\n\nOne sunny day, the wind began to blow strong, and the trees creaked and groaned. The creatures scrambled to secure loose branches and tie down loose leaves. But the timid badger didn't join in. She was too afraid to try.\n\nAs the wind howled, a big branch fell, and the villagers' homes began to shake. The creatures panicked, thinking the timid badger was the one responsible for the mess. They scurried to find a way to save themselves, but didn't work together.\n\nThe timid badger, feeling lonely and scared, cried out for help. The creatures, now more frightened than ever, ran to the wise old owl for guidance. The owl looked at the villagers and said, \"We must work together to save our homes! Each of us has a special talent, and together, we can do great things.\"\n\nThe creatures quickly came up with a plan. The strong squirrel lifted heavy branches, the quick rabbit tied down loose leaves, and the brave fox used her sharp teeth to hold things in place. The timid badger, with her clever digging skills, helped secure the roots of the trees.\n\nTogether, they saved the village. The creatures cheered, and the timid badger realized that she wasn't alone. She had friends who needed her help, and she needed theirs too. From that day on, the timid badger joined the villagers in their daily tasks, and together, they made their treetop village the safest and most wonderful place in the forest.\n\n**The moral of the story:** When we work together, we can do great things. Every single one of us has something special to offer, and when we share our talents, we can achieve anything!",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200077",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the sun-kissed savanna, where tall grasses swayed and wildflowers bloomed, lived an timid badger. She loved to watch the world go by, her little paws wiggling with every step. One day, while playing near a babbling brook, she met two friends: Sweet Song and Happy Leaper. Both friends loved her, but their love grew bigger and stronger.\n\nA strong wind came, blowing away many of the badger's friends. They were in trouble, searching for someone to lead them. The badger, being very patient, suggested they work together to find out who was to blame. But the other animals refused: \"You're just not good at hiding, Badger!\"\n\nDetermined to help, the group decided to form a council to make decisions together. A wise old tortoise, Patient Mediators, kept suggesting that each animal's special skills. Brave Dreamer would help lift heavy rocks, while Strong Jaw could build sturdy bridges. Together, they worked tirelessly, day and night.\n\nAs time passed, the savanna flourished, and both friends discovered new ideas about what made it special. The owl taught them how to use their unique skills – Calm Singer's powerful song helped clear debris, Gentle Talkers' agility helped them through tough times, and Gentle's creativity brought joy to all.\n\nThough the community came together, they celebrated the power of teamwork. From then on, whenever anyone needed something different, they remembered Thoughtful Ming. When they worked together, amazing things happened. And so, the savanna's creatures learned that when they faced challenges, working as a team can overcome any challenge.\nItrength is like planting seeds – we grow into something beautiful together!\nLet's grow, no matter how small, we'll bloom!\"\nHelping create flowers blooming.\nCarrogance makes everything more beautiful, it's our teamwork that truly matters.\nEven if we're different.**\nWith Unity or too!\n\nThe moral?)\nBut friendship!\nMy make a big difference!\nTogether",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 5,
+        "prompt_adherence": 8,
+        "overall": 5.0,
+        "rationale": {
+          "grammar": "The text suffers from severe structural collapse and nonsensical fragments toward the end, such as 'With Unity or too!' and 'Carrogance makes everything more beautiful'.",
+          "creativity": "While it attempts a whimsical setting, the character names like 'Patient Mediators' and 'Brave Dreamer' feel disjointed and lack narrative depth.",
+          "moral_clarity": "The story attempts to state the lesson, but the conclusion is a chaotic mess of contradictory phrases like 'Carrogance makes everything more beautiful'.",
+          "prompt_adherence": "The story includes a timid badger and attempts to teach that teamwork amplifies success, though the execution is highly flawed."
+        }
+      },
+      "judge_latency_ms": 5522
+    },
+    {
+      "character": "a discerning snake",
+      "moral": "generosity enriches the giver",
+      "prompt": "<char> a discerning snake </char>\n<moral> generosity enriches the giver </moral>\n<story>\n",
+      "reference_story": "In a dense underbrush, where leaves rustled softly and sunlight filtered through, a discerning snake slithered through the bushes. She loved to collect shiny objects she found on the forest floor. One day, while basking in a warm spot, she spotted a gleaming coin.\n\nThe snake thought, \"Ah, a treasure! I must have it!\" But when she slithered towards it, a wise old bird perched nearby said, \"Wait, little snake. Take your time. Maybe something more wonderful will come along.\"\n\nThe snake huffed, \"I'm in a hurry! I need that coin!\" She quickly snatched it and slithered away. But soon, a heavy rainstorm rolled in, and the snake had to hide. As she curled up in a tight ball, she felt a gentle pat on her head. It was the wise old bird.\n\n\"Why are you shivering, little snake?\" the bird asked. \"You should have shared your coin with me when I needed it. Now, it's too wet to use.\" The snake looked at her coin, now dripping wet and useless.\n\nFeeling sorry for the bird, the snake shared her food and shelter with the bird. As they waited for the rain to stop, the snake realized that helping her friend made her feel happy and warm inside. The bird smiled and said, \"You see, little snake, when we share with others, we gain something much more valuable than any shiny object – friendship and a warm heart.\"\n\nFrom that day on, the discerning snake became a generous one, understanding that kindness and sharing made her feel richer than any treasure.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200081",
+      "model": "v2",
+      "seed": 122,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In a land of icy snow and sparkling snow, an ancient temple stood tall. Its walls were covered in colorful flowers that bloomed around it. A wise old snake, with scales as blue as coal, slithered through its halls. She had lived here for many years, watching over her home with kindness.\n\nHowever, not all creatures felt welcome. The snakes who came to live near the temple, and they would often tease. They said she was too slow, too sly, but always willing to help those in need.\n\nOne day, while basking in the sun, the Snake overheard two fierce wolves. One ruled the land, taking their food and making them do chores without sharing. The Snake, being very protective of her, knew this was time.\n\nShe decided to stand up against injustice. \"Why are you so mean?\" the Snake asked the leader one day. \"We must share what we have. If I give away, our community will be sad.\"\n\nThe other snakes, however, just laughed. \"You're weak because you're weak,\" they said. But then something unexpected happened. Ashamed, they saw how happy the other animals were, playing together. He realized that sharing made him feel happy, not weak.\n\nThe Snake's words echoed through the temple: \"Generosity is like the warmth on a cold night. It makes everything bright.\" From that day on, the snake and the foxes became friends, working together to keep the temple's beauty shining.\n\nThe moral of the story is: Generosity enriches the giver, no matter how others may seem. When we're kind to others, we shine brighter than any reward.\nThowerately by helping others, we spread love and friendship.\nLet's work together, spreading joy across the snowy lands.\nEaunicance brings happiness to all.**\nStally, we'll show mercy to those who truly are.), in return, receive it, and you'll see it every day.\nHelping's heart full of joy.\nFor infectious.\nBut when life",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 9,
+        "prompt_adherence": 10,
+        "overall": 6.75,
+        "rationale": {
+          "grammar": "The text suffers from severe fragmentation and nonsensical endings, such as 'Thowerately by helping others...' and 'Eaunicance brings happiness to all.**'.",
+          "creativity": "While the imagery of 'scales as blue as coal' is interesting, the plot logic is inconsistent, such as the snake being 'protective of her' without a clear antecedent.",
+          "moral_clarity": "The moral is explicitly stated: 'The moral of the story is: Generosity enriches the giver, no matter how others may seem.'",
+          "prompt_adherence": "The story includes the requested main character, 'A wise old snake,' and the specific teaching regarding generosity."
+        }
+      },
+      "judge_latency_ms": 5779
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "timely help earns lasting loyalty",
+      "prompt": "<char> a cautious frog </char>\n<moral> timely help earns lasting loyalty </moral>\n<story>\n",
+      "reference_story": "In the heart of a dense jungle, hidden beneath a thick blanket of vines, lay a majestic sunken temple. The entrance was guarded by two enormous stone statues that seemed to whisper ancient secrets to the wind. A cautious frog named Cautious Croak loved to explore the temple, but only during the day when the light was bright.\n\nOne day, while Cautious Croak was hopping through the temple, she stumbled upon a mysterious, glowing crystal. As soon as she touched it, the temple began to shake, and the statues came to life. The statues, once guarding the temple, now demanded Cautious Croak to do their bidding. Cautious Croak, feeling scared and overwhelmed, agreed to their demands, not knowing the consequences.\n\nHowever, a kind-hearted dragon named Brave Blaze, who had been watching from afar, swooped in to help. Brave Blaze gently whispered to Cautious Croak, \"Don't be afraid, little one. You don't have to follow their orders. Let's work together to calm the temple.\"\n\nWith Brave Blaze by her side, Cautious Croak found the courage to reclaim the temple. Together, they returned the crystal to its rightful place, and the temple returned to its peaceful state. From that day on, Cautious Croak and Brave Blaze became the best of friends. Brave Blaze would often visit Cautious Croak, and the cautious frog would thank him for his timely help.\n\nCautious Croak realized that having a friend by her side made her feel less cautious and more confident. She learned that timely help earns lasting loyalty, and she was grateful to have Brave Blaze as her loyal companion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200086",
+      "model": "v2",
+      "seed": 122,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the sunny harbor town of Sunnyville, where boats bobbed gently in the water, lived an Cautious Frog. He loved to watch the fishermen unload their catch and sell them for dinner. The frog's favorite spot was near a bustling harbor, filled with colorful fish markets.\n\nOne day, while hopping along the dock, the Cautious Frog's best friend, the Brave Seal, asked him to join his game. But when they arrived at the dock, the Brave Seal suddenly snatched all the fish, leaving the Cautious Frog without any.\n\nThe Brave Seal felt terrible and blamed the Cautious Frog, saying he must have eaten some fish. The other townspeople started to doubt him, thinking the Brave Seal had abandoned it. They didn't want anyone to play or swim near him.\n\nThe Cautious Frog, feeling sad and lonely, decided to find a way to make things right. He hopped onto the docks and met the Wise Old Crab, who said, \"We need you to be more careful around us. Will you stay here forever, until we leave the fish?\"\n\nThe Cautious Frog listened carefully as the animals talked about how hard it worked and how important each was. When he finally found out, the Brave Seal apologized, promising to return from then on.\n\nThe Cautious Frog forgave the Brave Seal, and together they returned the stolen fish. From that day on, whenever someone needed help, the animals would look up and remember the Cautious Frog's kindness. And so, the annual Peace Gathering became the town's beloved tradition.\nThis fable teaches us: timely help earns our friends and keeps us safe together.\nThat's why we're always ready for our next generation, no matter what,\nFriendship is the key to true friendship!**\nTo celebrate our kindness every year, and understanding.\"\n\"And we'll start anew.)\nI can weather any challenge is a long way, we stand up for ourselves, and together, no one helping hands.\nWe are part ways alone this day.\"",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 5,
+        "prompt_adherence": 9,
+        "overall": 5.25,
+        "rationale": {
+          "grammar": "The story descends into nonsensical, fragmented sentences at the end, such as 'To celebrate our kindness every year, and understanding.'",
+          "creativity": "The plot is disjointed and lacks logical flow, e.g., 'The Brave Seal felt terrible and blamed the Cautious Frog, saying he must have eaten some fish.'",
+          "moral_clarity": "While a moral is stated, 'timely help earns our friends and keeps us safe together,' the preceding narrative does not clearly demonstrate how help was provided in a timely manner.",
+          "prompt_adherence": "The story includes the requested main character, 'a Cautious Frog,' and attempts to convey the requested teaching."
+        }
+      },
+      "judge_latency_ms": 5804
+    },
+    {
+      "character": "a outspoken leopard",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a outspoken leopard </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "**The Leopard's Perfect Farm**\n\nIn a sunny farmland, a sleek leopard with bright golden fur roamed the fields, searching for the perfect patch of grass to nap on. She was a perfectionist and would only rest on the greenest grass with the softest blades. The other animals laughed and said, \"You'll never find the perfect spot, just pick one and rest!\"\n\nBut the leopard wouldn't listen. She kept searching, day after day. The other animals grew tired of her fussiness and stopped playing with her. One day, while she was busy looking for the perfect spot, a group of birds flew in, chirping and tweeting. They had come to visit an old friend, a wise old goat who lived on the farm.\n\nThe leopard saw the birds and, for the first time, realized how much fun they were having without her. She approached the goat and asked, \"Why do my friends play with you and not with me?\" The goat smiled and said, \"They play with me because I make them feel welcome and happy. You need to let go of your perfect grass and be kind to others.\"\n\nThe leopard thought about this for a moment. She decided to pick a patch of grass and rest, not because it was perfect, but because her new friend, the goat, was nearby. As she rested, the other animals came to visit, and they all played together. The leopard learned that a kind heart finds friends, and from that day on, the farmland was filled with laughter and friendship.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200094",
+      "model": "v2",
+      "seed": 122,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the icy lands of the North Pole, where snowflakes danced in the air, lived an Outspoken Leopard. She loved to explore and play with her friends. One day, while sliding down a snowy hill, she met two groups: those who had bright eyes and soft, fluffy fur. They were busy collecting fish for their families.\n\nThe Naive Leopard was torn between her loyalty to both groups. She didn't know which side to choose, but she couldn't decide on either side. As she wandered through the frozen tundra, she stumbled upon a wise old Seal. The Seal asked, \"What's troubling you, little one?\"\n\nThe Independent Leopard explained how they wanted both, but then she remembered seeing a friendly Polar Bear playing near his home. \"I love watching you swim,\" said the Ethical Leopard. \"Maybe we can find something wonderful together!\"\n\nThe Seal's face lit up. \"Yes! And I love playing hide-and-seek among your tribe.\" Together, they explored the polar bear's home as he chased after fish. Their rivalry turned into excitement.\n\nAs time passed, more animals joined them. There was Wise Old Penguin and brave Arctic Fox – suggested that each group take turns playing and exploring. The penguins agreed, and soon all three groups signed a peace treaty.\n\nFrom that day on, the glacier's creatures celebrated Unity Day, sharing fish, seals, and Silent Fox. The Defiant Leopard's kind heart had found friends, proving that even the most unlikely of friends could become close companions when shared by kindness.\nThat's why a true friendship is built on kindness that lasts forever.\nI'll always be happy to help others!\nSo remember: a kind heart finds friends.\"\nWith laughter and friendship, you'll receive many new friends along the way.\n\"Let's cherish-thism,\nAnd celebrate our friendship.\nTo celebrate, a celebration of Friendship and love, one will shine bright.\nClrightness Day every day.)\nThis way, it suitable for a special night, under Leaf",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 8,
+        "prompt_adherence": 7,
+        "overall": 5.5,
+        "rationale": {
+          "grammar": "The text descends into nonsensical fragments and typos, such as 'Clrightness Day every day.)' and 'Let's cherish-thism,'.",
+          "creativity": "While the setting is imaginative, the narrative logic fails as the leopard character names shift inconsistently from 'Outspoken Leopard' to 'Naive Leopard' and 'Ethical Leopard'.",
+          "moral_clarity": "The moral is explicitly stated multiple times, specifically: 'So remember: a kind heart finds friends.'",
+          "prompt_adherence": "The story includes an outspoken leopard and the requested teaching, though the character identity is confused throughout the text."
+        }
+      },
+      "judge_latency_ms": 5633
+    },
+    {
+      "character": "a compassionate rhinoceros",
+      "moral": "truths heal deep wounds",
+      "prompt": "<char> a compassionate rhinoceros </char>\n<moral> truths heal deep wounds </moral>\n<story>\n",
+      "reference_story": "Deep within a sparkling crystal cavern, a kind rhinoceros lived. The cavern's walls reflected the rhinoceros's gentle nature, shining with a soft, gentle light. The rhinoceros spent her days helping her friends in the cavern, healing their wounds with her healing touch.\n\nHowever, not everyone in the cavern was kind. A sly, dark creature with sharp teeth and claws often snuck around, causing trouble. One day, the dark creature sabotaged the cavern's water source, leaving the rhinoceros's friends thirsty and parched.\n\nThe rhinoceros was heartbroken. She tried to fix the water source, but the dark creature kept sabotaging her efforts. Feeling sad and frustrated, the rhinoceros approached the dark creature.\n\n\"Why do you keep hurting us?\" the rhinoceros asked softly.\n\nThe dark creature snarled, \"I'm angry because you always help others and never help me!\"\n\nThe rhinoceros listened carefully, then said, \"I help everyone because I care about them. But I also care about you. Can I help you with something?\"\n\nThe dark creature thought for a moment, then said, \"I'm tired of being alone. Can you help me find friends?\"\n\nThe rhinoceros smiled and said, \"Of course! Let's work together to fix the water source, and I'll introduce you to my friends.\"\n\nThe dark creature's heart softened, and the two former enemies signed a pact to be friends. From that day on, the cavern's water source flowed freely, and the rhinoceros's kindness healed the dark creature's deep wounds.\n\nThe rhinoceros learned that sharing truths and caring for others can heal even the deepest wounds, and her friends in the crystal cavern learned to appreciate the value of kindness and compassion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200003",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the heart of the rainforest, where vines tangled with giant trees and colorful birds sang sweet melodies, a compassionate Rhinoceros roamed. Her home was filled with beauty – sparkling waterfalls, juicy fruits, and vibrant flowers. The other animals would often gather near her home, watching over her with care.\n\nOne day, while exploring a hidden clearing, she stumbled upon an ancient text. It read:\n\n\"A kind heart,\nLets it \nA single ripple in your heart.\"\nThe rhinoceros's ears folded back to life, but her spirit remained unjustly drawn.\n\nAs she flipped through its yellowed pages, a wise old Owl perched on a nearby branch.:\n\n\"When truth is, you are not alone,\nYour wound, that is what makes you special,\nAnd kindness can mend even brokendest wounds.\" \n\nEnvy began to weave among the trees, creating an eternity of hope. A young Monkey, known for his love of adventure, had accidentally knocked off a branch, revealing a shameful secret: he loved shiny objects!\n\nThe rhinoceros, remembering their friendship, offered the Monkey a warm, gentle nuzzle. As they hugged, the Monkey's eyes widened, and he whispered, \"I'm sorry I hurt you. My actions have made me happy,\nHe now we share our stories and help each other.\"\n\nThe wise Owl's feathers ruffled by the words, \"Truths heal deep wounds, my dear Rhinoceros.\" From then on, both friends shared secrets and gifts, and the rainforest became an more loving place.\n\nMoral: truths heal deep wounds",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 4,
+        "moral_clarity": 8,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text contains numerous errors and nonsensical phrasing, such as 'mend even brokendest wounds' and 'the rainforest became an more loving place.'",
+          "creativity": "While it uses standard fable tropes like a 'wise old Owl,' the narrative logic is disjointed, e.g., 'Envy began to weave among the trees, creating an eternity of hope.'",
+          "moral_clarity": "The moral is explicitly stated both in the text and at the end: 'Moral: truths heal deep wounds'.",
+          "prompt_adherence": "The story includes both the requested main character, 'a compassionate Rhinoceros,' and the specific teaching, 'truths heal deep wounds.'"
+        }
+      },
+      "judge_latency_ms": 5597
+    },
+    {
+      "character": "a savage ferret",
+      "moral": "perseverance breaks barriers",
+      "prompt": "<char> a savage ferret </char>\n<moral> perseverance breaks barriers </moral>\n<story>\n",
+      "reference_story": "In the heart of the desert, a lush oasis bloomed. Palm trees swayed gently in the breeze, their leaves rustling softly. Among the date trees, a savage ferret with sharp teeth and claws roamed. They loved to play tricks on the other animals, chasing them away from the oasis.\n\nOne day, the ferret saw a bright, shiny object lying on the sand. It was a beautiful shell, and the ferret thought it would make a great treasure. Without thinking, they picked it up and started to dig a hole to hide it. But, as they dug, they realized the shell didn't belong to them. It belonged to a family of birds who used it to drink from.\n\nThe birds were sad to lose their shell, and they scolded the ferret for taking it. The ferret felt terrible and wanted to give the shell back, but it was too late. The birds had gone away, and the ferret was left feeling sad and alone.\n\nThe ferret thought about going to find the birds, but they were too afraid. Instead, they decided to talk to the wise old tortoise who lived in the oasis. The tortoise listened carefully and said, \"It takes courage to admit our mistakes and make things right. Why don't you go find the birds and return their shell?\"\n\nThe ferret took a deep breath and went to look for the birds. They found them and apologized, returning the shell. The birds forgave the ferret, and they all became friends. The ferret learned that perseverance breaks barriers, and even the most stubborn things can be made right with a little effort and courage.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200004",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "**The Greedy Ferret's Big Discovery**\n\nIn the icy wasteland, where snowflakes danced and swirled, a Savage Ferret lived. He had sharp teeth and cunning eyes, but his heart was heavy with sadness. A harsh winter made him shiver in the cold land.\n\nOne day, while exploring, he stumbled upon an old, wise Arctic Fox. The fox said, \"The snow is thin, my fur will be fluffed up. But if you can't do it, you'll never find food.\"\n\nThe Savage Ferret thought, \"What can I do? I'm just a small arctic fox. What could they possibly want to do?\" So, he decided to challenge the fox.\n\nThe Fox smiled and asked, \"How did you think of something that would make your belly feel so warm?\" The ferret thought for a moment before answering, \"I didn't think about it before, because we were too scared to try.\"\n\nThe Fox nodded. \"That's exactly how we've always done things. Let's go ask the other animals on this wasteland what they think.\"\n\nThey went back to their homes, along by the fierce Arctic Fox, who knew all the secrets. Together, they discovered hidden streams and secret gardens. The ice began to melt faster, and the land grew warmer.\n\nThe community came together to celebrate the harvest. They shared stories, food, and warmth. As they celebrated, the Savage Ferret realized that even though he felt scared, he still needed help and perseverance. And that's when he understood: persistence helped him, and together, anything changed.\n\nMoral: perseverance breaks barrier",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 6,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text contains confusing pronoun usage and logical inconsistencies, such as the ferret saying, 'I'm just a small arctic fox.'",
+          "creativity": "The plot is disjointed and lacks a clear causal link between the characters' actions and the environment changing, e.g., 'The ice began to melt faster, and the land grew warmer.'",
+          "moral_clarity": "While the moral is stated, the story's focus on 'asking other animals' and 'community' conflicts with the specific theme of individual perseverance.",
+          "prompt_adherence": "The story includes the requested main character, 'a Savage Ferret,' and the specific teaching, 'perseverance breaks barrier.'"
+        }
+      },
+      "judge_latency_ms": 5663
+    },
+    {
+      "character": "a energetic crab",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a energetic crab </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "In a sunny bamboo grove, near a sparkling river, a happy crab lived. She loved to dance in the grove, her bright red shell glistening with dew. The bamboo stalks swayed gently, as if dancing with her.\n\nOne day, while the crab was dancing, she knocked over a tall bamboo stalk. The stalk's owner, a big, gray elephant, was very sad. She had been using the stalk to build a safe home for other animals.\n\nThe crab was afraid to face the elephant. She hid behind a nearby bush. The elephant searched everywhere for the one who knocked over her stalk. She finally found the crab and said, \"Why did you knock over my stalk?\"\n\nThe crab said, \"I'm sorry. I was dancing too fast.\" The elephant replied, \"I'm sad, but I'm also glad you apologized. Modesty is like a soft, green leaf. When it's fresh, it's beautiful. But when it's too big, it loses its shape and beauty.\"\n\nThe crab thought about this. She realized that if she had said, \"I'm the best dancer in the grove,\" her beautiful red shell would have lost its shine. Instead, she said, \"I'm sorry\" and listened to the elephant.\n\nThe crab and the elephant became good friends. The crab learned that owning up to mistakes and being humble preserves dignity, like a soft, green leaf. And the bamboo grove was once again filled with laughter and the sweet sound of the elephant's trumpet.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200011",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the bustling harbor town of Harborville, where seagulls soared and fishermen sailed, lived a Energetic Crab who loved to explore. He'd scuttle across the sandy beach, his shiny shell glinting in the sunlight, as he explored.\n\nOne day, while scuttling along the dock, the Energetic Crab's best friend, the Wise Fish, was busy repairing her net. But when she came back, it turned out that the Patient Fish had eaten all the fish from their nets. The Energetic Crab, feeling angry and hurt, shouted, \"You ate my fish! Now I have nothing!\"\n\nThe other sea creatures looked at each other, confused. They thought they were right; someone else could blame them. So, they decided to vote on what to do with the Gentle Fish. Some said, \"We should punish her.\" Others said, \"No, we must say so.\"\n\nThe crowd voted, and soon everyone wanted an equal share of food. A wise old Turtle suggested sharing some seaweed among everyone, but only because everyone agreed to share. The Energetic Crab watched as friends shared equally, not blaming others for more.\n\nAs they ate, the Energetic Crab realized that being kind didn't make him weak. He apologized to his friend and promised to be kinder. From then on, whenever anyone accused someone else, they'd say, \"Remember, you're not the strongest or wisest – we're honest!\" And that's why it's always best to speak up.\n\nMoral: modesty preserves dignity",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 3,
+        "moral_clarity": 2,
+        "prompt_adherence": 10,
+        "overall": 4.75,
+        "rationale": {
+          "grammar": "The text contains several errors, such as the improper use of an article in 'lived a Energetic Crab'.",
+          "creativity": "The plot is disjointed and nonsensical, such as when 'the Patient Fish had eaten all the fish from their nets' without clear context.",
+          "moral_clarity": "The story's actions do not align with the stated moral, as the conclusion 'it's always best to speak up' contradicts 'modesty preserves dignity'.",
+          "prompt_adherence": "The story includes the requested main character, 'an Energetic Crab', and the specific teaching, 'modesty preserves dignity'."
+        }
+      },
+      "judge_latency_ms": 5406
+    },
+    {
+      "character": "a eccentric hedgehog",
+      "moral": "gentle words quell anger",
+      "prompt": "<char> a eccentric hedgehog </char>\n<moral> gentle words quell anger </moral>\n<story>\n",
+      "reference_story": "In a treetop village, where birds sang sweet melodies and leaves rustled in the gentle breeze, an eccentric hedgehog lived. This hedgehog loved to collect shiny objects and decorate his nest with them. He was very proud of his collection and never wanted to share it with anyone.\n\nOne day, a wise old owl moved into the village. She was kind and gentle, but the hedgehog was worried that she would steal his treasures. He whispered to the other creatures in the village, \"Be careful, she's sly and might take our things!\" The other creatures started to whisper to each other too, forming secret alliances and watching the owl carefully.\n\nBut the wise old owl noticed what was happening. She saw the hedgehog's worried face and the hiding creatures. She asked the hedgehog, \"What's wrong, little hedgehog? Why are you so worried?\" The hedgehog explained how he thought the owl was going to steal his treasures. The owl listened carefully and said, \"I'm not here to take anything. I just want to be friends. Can I see your collection?\"\n\nThe hedgehog was surprised. No one had ever asked to see his collection before. He proudly showed the owl his treasures, and they talked about their favorite things. As they talked, the hedgehog realized that the owl wasn't so bad after all. In fact, she was very kind and gentle. The hedgehog apologized for thinking badly of her, and the owl forgave him.\n\nFrom that day on, the hedgehog and the owl became the best of friends. They would spend their days talking and playing together, and the hedgehog learned that gentle words can quell anger and make new friends.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200013",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the floating cloud city of Flufftopia, a quirky wind whispered secrets to those who listened. Among them was a peculiar hedgehog, known for being prickly and messy, lived among the wispy clouds. She loved nothing more than watching her friends dance with the wind.\n\nOne day, as she gazed out at the clouds, two fierce dragons, their fiery breaths matched an angry cloud. They had been sworn enemies for as long as anyone could remember. The air insideworms raged on, threatening to engulf the entire city. A wise old owl, perched on a nearby cloud-postone, spoke in a soft voice, \"The truth is that true love lies not in what we want, but in how we face it.\"\n\nThe hedgehog's eyes widened as she remembered all the times she'd made beautiful patterns between them, weaving a web of kindness, and magic. Her heart softened, and she approached the dragon, her quills bristling like tiny lanterns. \"Why are you so angry?\" she asked, trying to sound brave.\n\n\"I'm fighting because I'm different,\" replied the dragon. \"I feel sad when I don't have any friends.\"\n\nThe owl's expression changed from fear to understanding. \"Your kindness has tamed my heart. Together, we'll make this place even brighter.\" And so, they signed a pact, promising to respect each other's differences.\n\nAs the sun dipped below Cirrus, the hedgehog realized that by listening to both sides, she had found peace within herself. From then on, whenever the dragon roared, a little, he would nod his head, knowing it brought balance to the city. This way, no one would be hurt or fight over something that might come its way.\n\nMoral: gentle words quell anger",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 6,
+        "moral_clarity": 5,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text contains several errors and nonsensical phrases, such as 'The air insideworms raged on' and 'perched on a nearby cloud-postone'.",
+          "creativity": "The setting of 'the floating cloud city of Flufftopia' is imaginative, though the plot progression feels disjointed.",
+          "moral_clarity": "While the moral is stated at the end, the story's dialogue, such as 'true love lies not in what we want, but in how we face it,' contradicts the intended lesson.",
+          "prompt_adherence": "The story includes the requested eccentric hedgehog and explicitly states the moral: 'gentle words quell anger'."
+        }
+      },
+      "judge_latency_ms": 5604
+    },
+    {
+      "character": "a courageous bat",
+      "moral": "sincerity dispels suspicion",
+      "prompt": "<char> a courageous bat </char>\n<moral> sincerity dispels suspicion </moral>\n<story>\n",
+      "reference_story": "In a big, old church with a crooked steeple, a tiny bat lived. The bat loved to fly around the church at night, playing hide-and-seek among the dusty pews. But it wasn't the only creature who loved the church.\n\nOne day, a sly raccoon moved in. He wanted to make the church his own, but the bat didn't want to share. The raccoon started taking things that didn't belong to him – a shiny bell, a soft cushion, even a batch of freshly baked cookies. The bat tried to protect the church, but the raccoon would just laugh and say, \"Finders keepers, losers weepers!\"\n\nThe other creatures in the forest started to get suspicious. \"Is the raccoon a thief?\" they whispered. The raccoon's bad actions made them doubt the bat's kind heart. The bat tried to explain, but the raccoon wouldn't listen. He just kept taking and taking.\n\nOne night, the bat had an idea. He asked the raccoon to help him fix the church's broken roof. Together, they worked side by side, hammering nails and sweeping leaves. As they worked, the raccoon started to tell the truth about why he took things – he was hungry and needed food for his family.\n\nThe other creatures heard the raccoon's honest words and saw the bat's kindness. They realized that the raccoon wasn't a bad creature, he was just in need. From that day on, the community worked together to rebuild the church. The bat and the raccoon became good friends, and the church was filled with laughter and love.\n\nAs the bat said, \"When we're honest and kind, we can make friends and build something beautiful together.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200014",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the heart of an enchanted grove, where trees whispered secrets to each other and flowers bloomed in every color, lived a courageous bat. The bat's home was under a big, beautiful oak tree with branches that shone like golden sunlight.\n\nOne day, while flying over the grove, the fearless Bat accidentally knocked down some of its own nest, spilling precious eggs all over the ground. A grumpy old owl, who lived on the hill, saw this happen and scolded the bat, saying, \"You naughty bats! You ruined my home!\"\n\nThe bat, feeling sad but sorry, tried to explain it wasn't sorry. \"I didn't mean to,\" said the bat, hanging its head. \"I'm truly sorry.\" But no one believed it.\n\nAs days passed, the owl wouldn't forgive the bat. The bat felt lonely and sad. One evening, as they sat together by the oak tree, they met a wise old badger. \"Why are you so sad?\" asked the badger.\n\nThe badger looked down, ashamed. \"We were wrong to blame you. We thought you broke your nest.\"\n\nThe bat nodded. \"No, I was just trying to make things right.\" Together, they cleaned up the nest and rebuilt it. From then on, their friendship grew stronger. They realized that when someone is wrong, it's okay to say sorry.\n\nThe brave bat learned that being honest can clear up misunderstandings and help us fix mistakes. And from that day forward, whenever friends forgave or made promises, their bond became even stronger.\n\nMoral: sincerity dispels suspicion",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 8,
+        "creativity": 6,
+        "moral_clarity": 5,
+        "prompt_adherence": 10,
+        "overall": 7.25,
+        "rationale": {
+          "grammar": "The grammar is generally good, though there is a confusing contradiction where the bat 'tried to explain it wasn't sorry' immediately before saying 'I'm truly sorry.'",
+          "creativity": "The setting is a standard fantasy trope, using common imagery like 'trees whispered secrets to each each other'.",
+          "moral_clarity": "The story's conclusion is muddled because the characters realize 'it's okay to say sorry' rather than focusing on how sincerity dispels suspicion.",
+          "prompt_adherence": "The story includes the requested main character, 'a courageous bat', and explicitly states the moral: 'sincerity dispels suspicion'."
+        }
+      },
+      "judge_latency_ms": 5570
+    },
+    {
+      "character": "a devoted platypus",
+      "moral": "friendship can overcome obstacles",
+      "prompt": "<char> a devoted platypus </char>\n<moral> friendship can overcome obstacles </moral>\n<story>\n",
+      "reference_story": "In a crumbling monastery, surrounded by overgrown gardens and whispering wind, a devoted platypus lived. She spent her days swimming in the monastery's old fountain and watching the sunset behind the crumbling stones.\n\nThe platypus was friends with a kind rabbit who took care of the garden. One day, a strong storm hit the monastery, knocking down trees and covering the grounds in debris. The rabbit was too scared to come out of her cozy burrow, but the platypus bravely ventured out to help.\n\nHowever, in the chaos, a silly squirrel mistook the platypus for the troublemaker who had caused the mess. The squirrel shouted to all the other animals, \"The platypus is the one who made the storm! She must be punished!\"\n\nThe other animals were frightened and believed the squirrel. They shunned the platypus, who felt sad and lonely. The rabbit, seeing her friend's tears, came out to defend her. \"No, no, no! The platypus is helping us, not hurting us. She's just trying to make things better.\"\n\nThe animals looked at each other, then at the rabbit and the platypus. They realized they had made a mistake. From that day on, the platypus, the rabbit, and the other animals worked together to clean up the monastery. The platypus became the caretaker, watching over all the friends and making sure they were safe.\n\nThe rabbit smiled at the platypus. \"We're lucky to have you as our friend.\" The platypus smiled back. \"We're lucky to be friends, and together we can overcome any obstacle.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200017",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the sky, above a lush green forest, floated a magical market. Colorful stalls and balloons danced in the wind. A devoted platypus, known for her kind heart, lived among them. She loved helping others.\n\nOne day, while playing with some balloons, she met two special friends: a clever otter and a strong bear. The raccoon had built an amazing castle that stood tall on top. They both admired their creation.\n\nThe platypus felt torn between the otter's creations and the bear's incredible garden. \"Why can't I build something like that?\" she asked herself.\n\nThe otter, noticing her, said, \"I'm sorry, dear platypus. We can work together to make it even better than before.\"\n\nTogether, they started building the most magnificent castle. But instead of working together, they argued over whose idea was better. The bridge became messy, and children played without her.\n\nThe platypus realized that having friends who were trying too hard made things worse. So, she suggested they talk about what happened. \"Maybe we don't have to be perfect either,\" said the platypus. \"We need to find common ground.\"\n\nThe otters looked at each other uncertainly, but then back at the platypus. \"We're sorry,\" they said. \"Let's start fresh.\" Together, they rebuilt the castle, stronger and more beautiful than before.\n\nAs the sun set, the platypus smiled, feeling happy again. \"Friendship is much better than being perfect. When we're honest with our friends, everyone wins!\" And from that day on, the otters, the bear, and the platypus worked together, creating many wonderful wonders.\n\nMoral: friendship can overcome obstacles",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 8,
+        "creativity": 6,
+        "moral_clarity": 9,
+        "prompt_adherence": 10,
+        "overall": 8.25,
+        "rationale": {
+          "grammar": "The grammar is generally good, though there is a sudden, unexplained shift in characters when 'The raccoon had built an amazing castle' appears without prior introduction.",
+          "creativity": "The setting of a 'magical market' in the sky is whimsical, but the plot progression feels disjointed and inconsistent.",
+          "moral_clarity": "The moral is explicitly stated both in the text and as a footer: 'Moral: friendship can overcome obstacles'.",
+          "prompt_adherence": "The story includes the requested main character, 'A devoted platypus', and the specific teaching requested."
+        }
+      },
+      "judge_latency_ms": 5426
+    },
+    {
+      "character": "a prudent hawk",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a prudent hawk </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "In a pirate cove, a wise old hawk lived on a cliff overlooking the sea. The hawk had sharp eyes and a quick mind, which helped her find food during the stormy weather. One day, a strong wind blew, and heavy rain poured down. The pirate cove was flooded, and the hawk's nest was in danger of being washed away.\n\nA young seagull, who had been playing in the cove, sought shelter under the hawk's cliff. The hawk, who usually kept to herself, welcomed the seagull. She shared her food and kept the seagull warm. As the storm raged on, the hawk and the seagull chatted and laughed together.\n\nThe seagull noticed that the hawk was worried about her nest. \"Don't worry, old hawk,\" said the seagull. \"We'll figure out a way to save it.\" Together, they used some sticks and leaves to create a new nest high up on the cliff. The storm finally passed, and the sun came out.\n\nThe hawk was grateful to the seagull, and the seagull felt happy to have helped. From that day on, the hawk and the seagull became the best of friends. As the years went by, the hawk learned that when she was kind to others, they would help her in return.\n\nOne day, the hawk had a young chick of her own. She told the chick, \"When the weather gets stormy, don't be afraid. Just remember, a kind heart finds friends. That's what I learned from my friend, the seagull.\" The chick looked up at the hawk with big, round eyes and said, \"I'll remember, Mommy!\" The hawk smiled, knowing her lesson would be passed on to the next generation.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200027",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the ancient ruins, where crumbling stones met the sky, a Prudent Hawk perched on a broken column. She watched as two groups of animals gathered at the ruins: one side was led by another group, and their young ones were from different lands.\n\n\"What do we do?\" asked one group.\n\n\"We're on the other side, so our leader, who brings peace,\" said another.\n\nThe Prudent Hawk's feathers ruffled with worry. \"What about us?\" she asked.\n\nThe rabbit replied, \"Our ancestors used to be brave because they saw that when we're different, it makes us stronger.\"\n\nThe Prudent Hawk's eyes sparkled in her eyes. \"We can learn from each other. Let's work together.\"\n\nAs the sun began to set, casting shadows across the ruins. The Prudent Hawk, rabbits, and birds started to talk, sharing stories and laughter. They realized they didn't have much room for everyone.\n\nWhen a fierce storm rolled in, the temple ruins creaked and groaned. But inside, a massive stone door swung open, revealing a hidden treasure trove filled with sparkling jewels.\n\nThe Prudent Hawk's wings fluttered strongly, and she knew just what to do. \"I don't want my friends,\" she said. \"I'll keep working together.\"\n\nJust then, an old owl appeared before them. \"Why are you all fighting?\" he asked.\n\n\"I missing,\" replied the Prudent hawk. \"Then, I see something special here. Will you help me?\"\n\nThe wise owl smiled. \"Yes, that's exactly what you've been searching for. You found many treasures, but it's not gold or jewels.\"\n\nThe Prudent hawk's eyes sparkled. \"A kind heart find friends, even after these ruins.\"\n\nMoral: a kind heart finds friends",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 8,
+        "prompt_adherence": 10,
+        "overall": 6.5,
+        "rationale": {
+          "grammar": "The story contains several errors and awkward phrasing, such as 'The Prudent Hawk's eyes sparkled in her eyes' and 'I missing,'.",
+          "creativity": "The setting of 'ancient ruins' is a classic trope, but the sudden appearance of a 'massive stone door' and 'sparkling jewels' feels disconnected from the character development.",
+          "moral_clarity": "The moral is explicitly stated at the end: 'A kind heart find friends, even after these ruins'.",
+          "prompt_adherence": "The story includes the requested main character, 'a Prudent Hawk', and the specific teaching, 'a kind heart finds friends'."
+        }
+      },
+      "judge_latency_ms": 5495
+    },
+    {
+      "character": "a calm seal",
+      "moral": "timely help earns lasting loyalty",
+      "prompt": "<char> a calm seal </char>\n<moral> timely help earns lasting loyalty </moral>\n<story>\n",
+      "reference_story": "In a sunny countryside, a calm seal lived in a sparkling lake. The seal loved to swim and play with the fish. One day, a big storm came, and the water got rough. The seal's home was in danger of flooding.\n\nA wise old owl lived in a nearby tree. She watched the storm and saw the seal struggling. The owl knew she had to help. She flew down to the lake and said, \"Seal, I can help you. Let me guide you to higher ground.\"\n\nThe seal was proud and said, \"I can handle it myself. I'm strong.\" But the storm was getting stronger, and the seal was getting tired. The water was rising, and the seal's home was being ruined.\n\nThe owl tried again, \"Seal, please listen. I can help you. Let's work together.\" But the seal was too proud to listen. Just as the storm was about to destroy everything, the seal realized that she couldn't do it alone.\n\nThe owl flew down again and said, \"Seal, I'm here to help. Let's go!\" This time, the seal listened. Together, they rode out the storm and saved the seal's home.\n\nAfter the storm, the seal was grateful to the owl. \"Thank you for helping me,\" said the seal. From that day on, the seal knew that asking for help was a sign of strength, not weakness. And the owl became the seal's best friend, always ready to lend a helping wing.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200028",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the Haunted Woods, where trees creaked and leaves whispered secrets, lived a calm seal. She loved to swim in the nearby lake at night, watching the stars twinkle above. One day, while exploring, she stumbled upon an old, wise owl. The owl was sitting on a rock, reading a worn-out book.\n\nThe seal asked, \"Why do you read that book, little one?\"\n\nThe owl's eyes sparkled, \"A curse has been cast upon us. It makes our friendship so bright.\"\n\nThe seal's ears folded back in concern. \"What does it mean?\" she asked.\n\n\"We don't know,\" replied the owl, \"but we must keep moving forward.\"\n\nThe seal swam away, feeling sad. As she swam, more creatures joined her, each trying to join in. A family of rabbits, a hedgehog, and even a curious hedgehog were all searching for food.\n\nTogether, they found some juicy berries hidden behind a tree. They shared them with their friends, who thanked her and promised to repay their kindness. Slowly, the seal's sadness began to fade.\n\nThe creatures, seeing how happy everyone was, decided to hold a grand festival in peace. From then on, whenever someone needed help, they'd be there, helping them gather food, build homes, and celebrate together.\n\nThe woods filled with music, dance, and delicious food. The calm seal, once calm, now felt like part of something special. \"We did it!\" exclaimed one of the friends. \"Timely help earns lasting loyalty!\"\n\nMoral: timely help earns lasting loyalty",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 8,
+        "creativity": 4,
+        "moral_clarity": 10,
+        "prompt_adherence": 10,
+        "overall": 8.0,
+        "rationale": {
+          "grammar": "The grammar is generally good, though there is a repetitive error in 'a hedgehog, and even a curious hedgehog'.",
+          "creativity": "The setting is disjointed, as a seal living in 'the Haunted Woods' and swimming in a lake while interacting with forest animals feels illogical.",
+          "moral_clarity": "The moral is explicitly stated both in the dialogue and as a concluding sentence: 'Timely help earns lasting loyalty'.",
+          "prompt_adherence": "The story includes the requested main character, 'a calm seal', and the specific teaching requested."
+        }
+      },
+      "judge_latency_ms": 5168
+    },
+    {
+      "character": "a eccentric hippopotamus",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a eccentric hippopotamus </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "On a foggy moor, a big, happy hippopotamus loved to splash in the misty ponds. But one day, a sneaky voice whispered, \"The hippopotamus's muddy pools are yucky and dirty!\" The hippopotamus felt sad and lonely. No one wanted to play near the pools anymore.\n\nThe hippopotamus decided to investigate. It asked a wise old owl, \"Is it true my pools are yucky?\" The owl said, \"I don't know, but let's ask the frogs who live in the pools.\" The frogs replied, \"We love our home! It's clean and cozy!\"\n\nBut the sneaky voice whispered again, \"The frogs are just saying that because they're friends with the hippopotamus!\" The hippopotamus felt even sadder. It didn't know what to do.\n\nThen, the hippopotamus had an idea. It invited all the animals to help clean the pools. Together, they made the pools shine like the sun! The animals played and splashed together, laughing and having fun.\n\nAs the fog cleared, the animals realized the sneaky voice was just spreading lies. The hippopotamus's kind heart had brought everyone together. From that day on, the moor was filled with friendship and laughter. The hippopotamus smiled, knowing that a kind heart can find many friends.\n\nThe animals learned that when we work together and help each other, we can make our home a happy and wonderful place. And the hippopotamus's muddy pools became the favorite playground on the moor.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200029",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the bustling port of Sunshine Bay, a peculiar hippopotamus loved to watch ships come and go. She would often see sailors unloading crates and sailors' cargo. The other creatures in the port, with their shimmering tails and wide eyes, adored her kindness.\n\nOne day, while strolling along the docks, she spotted two groups arguing near the waters. A group of dolphins, known for their loud voices, had been bullying them by chasing away fish from the shallow waters, causing trouble wherever they went. They were fighting over whose turn it was to sell, but now they stood up to him.\n\nThe hippo watched as the argument grew louder and louder. She knew something had to be done. But instead of running away, she decided to help those who needed it. She used her strong legs to lift heavy beams onto a nearby boat, allowing many fish to swim safely into place.\n\nAs the sun began to set, the dolphins saw how much they missed helping others. They realized that there was enough room for everyone – kindness, friendship, or equalness. From then on, they worked together to ensure everyone's needs could live peacefully.\n\nThe Hippopotamus smiled, knowing that kindness had brought about bring peace between friends. And so, every year, on this special day, all the creatures, big or small, would gather here to celebrate the day when friendship came together. This way, no matter what challenges lay ahead, brings people together, just like the big, happy hippopotamus, called home.\n\nMoral: a kind heart finds friends",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 5,
+        "moral_clarity": 8,
+        "prompt_adherence": 10,
+        "overall": 6.75,
+        "rationale": {
+          "grammar": "The text contains several incoherent sentences and grammatical errors, such as 'brings people together, just like the big, happy hippopotamus, called home.'",
+          "creativity": "While the setting of 'Sunshine Bay' is pleasant, the plot involving dolphins 'selling' and 'fighting over whose turn it was to sell' is nonsensical.",
+          "moral_clarity": "The moral is explicitly stated at the end: 'Moral: a kind heart finds friends'.",
+          "prompt_adherence": "The story includes the requested eccentric hippopotamus and the specific teaching requested."
+        }
+      },
+      "judge_latency_ms": 5297
+    },
+    {
+      "character": "a gullible goose",
+      "moral": "wise counsel lights the way",
+      "prompt": "<char> a gullible goose </char>\n<moral> wise counsel lights the way </moral>\n<story>\n",
+      "reference_story": "In a hidden valley surrounded by green hills and sparkling streams, a gullible goose lived with her best friend, a clever rabbit. They spent their days playing hide-and-seek among the wildflowers and sharing juicy berries.\n\nOne day, the rabbit told the goose that she was moving to a faraway land to dance with the stars. The goose was heartbroken and couldn't imagine life without her dear friend. She spent her days wandering the valley, feeling lost and alone.\n\nThe rabbit, however, was not really moving. She just wanted to teach the goose a lesson about believing everything she's told. But seeing her friend so sad, the rabbit's heart melted. She decided to surprise the goose with a gift.\n\nThe next day, the goose woke up to find a beautiful basket of colorful flowers and a note that said, \"I'm not moving, and I'll always be here for you.\" The goose was overjoyed and felt a mix of happiness and shame for believing the rabbit's story.\n\nThe rabbit and the goose hugged each other tightly, and the goose promised to be more careful about believing everything she's told. The rabbit smiled and said, \"Friends forgive, and friends help each other. That's the most precious gift of all.\"\n\nFrom that day on, the goose and the rabbit were even closer friends. They learned that sometimes, all it takes is a little understanding and a thoughtful gift to repair a broken heart. And the wise counsel of a true friend lights the way through life's toughest moments.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200031",
+      "model": "v3-full",
+      "seed": 58,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "**The Gullible Goose and the Wise Judge**\n\nIn a forest filled with tall trees, a hanging bridge connected two green hills. The sun shone brightly on the bridge, making it look like an ethereal glow. A naive goose, known for being very trusting, waddled onto the bridge. She loved to visit her friend, who lived in a cozy nest near the bridge's edge.\n\nOne day, while they were crossing below, the goose's friend – a sly fox - whispered a secret in her ear: \"I can make your friend's home even bigger! You can't have one of those big birds!\" The fox's eyes sparkled at her, and soon, all the other animals gathered around her.\n\nThe goose was shocked when she saw that no bird had any beautiful feathers to give in. Her heart felt heavy with sadness and anger. \"Why did you trick me?\" she asked, looking up at the fox. \"I'm sorry,\" said the fox, \"and I made my own home, too.\"\n\nTogether, the unlikely friends decided to create a special memorial to remember their friend. They worked together, gathering sticks and leaves from the surrounding forest. As they finished, the fox looked at the monument and said, \"This is where our friendship always shine bright.\"\n\nThe goose smiled, feeling happy again. \"We are friends, and friends help each other,\" she said. From then on, the goose visited her friend's nest, not just to share them, but also to watch out for them as well. And that's why it's so important to be kind and loyal.\n\nMoral: wise counsel lights the way",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 6,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "There are several grammatical inconsistencies and awkward phrasings, such as 'where our friendship always shine bright' and 'not just to share them'.",
+          "creativity": "The plot is somewhat disjointed and nonsensical, particularly the transition where the fox says, 'I'm sorry... and I made my own home, too.'",
+          "moral_clarity": "The explicit moral 'wise counsel lights the way' does not align with the actual plot, which focuses on friendship and kindness rather than seeking advice.",
+          "prompt_adherence": "The story includes the requested main character, 'A naive goose, known for being very trusting,' and the exact requested teaching."
+        }
+      },
+      "judge_latency_ms": 5746
+    },
+    {
+      "character": "a noble ant",
+      "moral": "envy poisons happiness",
+      "prompt": "<char> a noble ant </char>\n<moral> envy poisons happiness </moral>\n<story>\n",
+      "reference_story": "In a sunny countryside, a noble ant named Brave lived in a bustling colony. Brave loved to explore and help others, but sometimes she felt small and insignificant. She would watch the birds soar through the sky and the rabbits hop effortlessly across the fields, and she'd wonder, \"Why can't I do that too?\"\n\nOne day, while wandering through a meadow, Brave met a wise old ant named Sage. Sage noticed Brave's sad eyes and asked, \"What's troubling you, little one?\" Brave explained her feelings of insecurity. Sage listened carefully and then said, \"Come with me.\"\n\nSage took Brave to a nearby anthill, where a group of ants were working together to build a grand structure. Brave watched in awe as the ants carried heavy loads and worked together seamlessly. Sage said, \"Each ant has a special role to play, just like you have a special gift. Don't compare yourself to others; your strength lies in your uniqueness.\"\n\nBrave realized that Sage was right. She began to focus on her own strengths and contributions. As she worked with her colony, Brave noticed that the birds and rabbits would often visit them, admiring their teamwork and dedication. Brave's confidence grew, and she became known as the colony's most reliable helper.\n\nOne day, a severe storm hit the countryside, and the colony's home was in danger of being destroyed. But Brave and her friends worked together, using their unique skills to save their home. Sage looked on, a knowing glint in her eye, and said, \"I told you, Brave, your strengths would shine in the right moment.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200035",
+      "model": "v3-full",
+      "seed": 74,
+      "output_tokens": 296,
+      "ended": true,
+      "story": "**The Little Ant's Big Help**\n\nIn the scorching hot desert, where sandy dunes stretched far and wide, lived a tiny ant. She was known for her hard work and kind heart. The desert sun beat down on her, making it shimmer like a thousand diamonds in the sunlight.\n\nOne day, while out searching for food, she stumbled upon an old, dusty scroll. It seemed to be written in its pages: \"The Desert Council of Wanteds.\" As soon as the news spread, many ants were drawn by the Desert King's treasure trove.\n\nThe little ant, determined to keep her home safe and happy, decided to take matters into her own hands. But soon, they began to argue over who should get what. \"I need this treasure,\" said one ant. \"I'm strong and can protect myself,\" replied another.\n\nThe argument grew louder, with each trying to prove their worth, but no matter how fast they flapped and squabbed. Just when it seemed like things couldn't go on, the wise old owl, perched high above, watched carefully.\n\n\"What's all the commotion?\" asked the owl. \"Why do you fight over something that belongs to those who have everything?\"\n\nThe ants looked at each other, and slowly, they understood. They realized that sharing what they had brought joy to everyone, not just themselves.\n\nFrom that day forward, the Great Festival became a time for friends to come together every year. And whenever someone got angry, they'd say or laugh. This taught them that being happy wasn't about having something, it's about working together, rather than fighting.\n\nMoral: envy poisons happiness",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 6,
+        "prompt_adherence": 10,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The text contains several grammatical errors and nonsensical phrases, such as 'no matter how fast they flapped and squabbed' and 'sharing what they had brought joy to everyone'.",
+          "creativity": "The plot is disjointed and illogical, featuring an ant 'flapping' and a 'Desert Council of Wanteds' that lacks clear context.",
+          "moral_clarity": "While the moral is explicitly stated as 'Moral: envy poisons happiness', the actual story focuses more on sharing and cooperation than on the specific concept of envy.",
+          "prompt_adherence": "The story includes the requested main character, a 'tiny ant' known for her 'kind heart', and the exact requested teaching."
+        }
+      },
+      "judge_latency_ms": 5914
+    },
+    {
+      "character": "a dignified jaguar",
+      "moral": "justice serves all",
+      "prompt": "<char> a dignified jaguar </char>\n<moral> justice serves all </moral>\n<story>\n",
+      "reference_story": "Deep in the jungle, where vines snaked up towering trees and colorful birds sang sweet melodies, a majestic jaguar roamed. Her golden fur glistened in the sunlight, and her eyes shone like bright emeralds. She was the strongest and wisest in the land, or so she thought.\n\nOne day, while exploring, she stumbled upon a hidden clearing. In the center, a family of birds sat on a delicate nest, their eggs trembling with every movement. The jaguar, feeling overconfident, decided to play a trick on the birds. She picked up a twig and gently touched it to the nest, watching as the birds frantically tried to protect their home.\n\nThe jaguar laughed at the birds' efforts, thinking she was the cleverest creature in the jungle. But, as she turned to leave, she knocked over a nearby beehive. The angry bees chased her, stinging her fur. The jaguar panicked and ran, but only to trip and fall into a muddy puddle.\n\nWhen she finally stood up, covered in mud, she approached the birds, who were watching her with kind eyes. \"Why did you laugh at me?\" one of the birds asked. The jaguar, feeling ashamed, confessed her mistake. \"I was wrong to tease you. I thought I was so clever, but I made a mess.\"\n\nThe birds forgave her, and the jaguar realized that she had learned an important lesson. \"Justice serves all,\" one of the birds said gently. \"We all make mistakes, but it's how we learn from them that matters.\" The jaguar nodded, feeling wiser and more humble. From that day on, she roamed the jungle with a newfound sense of respect for all creatures, big and small.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200054",
+      "model": "v3-full",
+      "seed": 90,
+      "output_tokens": 297,
+      "ended": true,
+      "story": "In the bustling marketplace of Golden Sands, where colorful stalls and lively chatter filled the air, a wise old owl perched on a nearby stall. A majestic jaguar, with shimmering golden fur, walked among the stalls, admiring the fruits and vegetables beneath his feet.\n\nThe owl, known for her fairness in fairness, looked at the jaguar with concern. \"Why do you sit here, watching over us while we're busy?\" she asked.\n\nThe jaguar's ears perked up. \"I come to learn from you, dear owl. But I want to know more. I've heard that these baskets were almost empty, but I'm not sure what to do.\"\n\nThe owl's expression softened. \"Leadership is not about taking, it's about being fair and kind. We can work together to find more food sources, if we share our knowledge.\"\n\nThe jaguar scoffed. \"No way! I'll take it all!\"\n\nThe two began their search, through the marketplace, meeting other creatures who offered them advice and help. The monkey shared how he had learned from his past mistakes. As they worked together, the jaguar started to see things differently. He realized that sharing made everyone happy.\n\nThe crowd cheered as one community was working together. The jaguar's eyes sparkled with newfound understanding. \"I'm glad we did it together,\" he said, looking out at the happy crowd. \"Justice serves all, even those who seem different.\"\n\nFrom then on, the market flourished, thanks to the wise words of the old owl.\n\nThe moral of the story is: Justice serves all. When we stand up for what's right, we show respect for others.\n\nMoral: justice serves all",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 6,
+        "creativity": 5,
+        "moral_clarity": 10,
+        "prompt_adherence": 10,
+        "overall": 7.75,
+        "rationale": {
+          "grammar": "There are awkward phrasing errors and redundancies, such as 'known for her fairness in fairness'.",
+          "creativity": "The plot is somewhat disjointed, moving abruptly from the jaguar saying 'I'll take it all!' to 'The two began their search'.",
+          "moral_clarity": "The moral is explicitly stated multiple times, including: 'The moral of the story is: Justice serves all.'",
+          "prompt_adherence": "The story includes the requested dignified jaguar and the specific teaching that 'Justice serves all'."
+        }
+      },
+      "judge_latency_ms": 5182
+    },
+    {
+      "character": "a joyful honeybee",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a joyful honeybee </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "Deep within a sparkling crystal cavern, a joyful honeybee buzzed with excitement. Her home was filled with glittering crystals and sweet nectar. One day, while exploring, she discovered a beautiful, shimmering crystal that made her feel like the luckiest bee in the world.\n\n\"Ooh, this is the most precious crystal I've ever seen!\" she exclaimed to her best friend, a gentle butterfly. \"I must have it for myself!\"\n\nThe butterfly cautioned, \"Be careful, dear. Hoarding can lead to sorrow.\"\n\nBut the honeybee wouldn't listen. She carefully placed the crystal in her hive and admired it all day. As night fell, however, a strong gust of wind swept through the cavern, and the crystal shattered into a thousand pieces.\n\nThe honeybee was heartbroken. She wept and wailed, feeling as though her world had been shattered too. Her friend the butterfly tried to comfort her, but she was too sad to listen.\n\nAs the honeybee wandered the cavern, she met a family of struggling bees who had lost their home. They were shivering with hunger and cold. The honeybee remembered the butterfly's words and realized that the crystal was just a thing, but the happiness it brought was short-lived.\n\nShe decided to use her skills to help the bees instead of keeping the crystal for herself. Together, they built a new home, and the honeybee's sorrow turned into joy. She learned that modesty preserves dignity and that true happiness comes from helping others.\n\nFrom that day on, the joyful honeybee buzzed with a newfound sense of purpose, her heart full of kindness and her spirit full of joy.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200064",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "**The Honeybee's Lagoon Lesson**\n\nIn the warm waters of the lagoon, where colorful fish swam and seaweed swayed, a joyful honeybee buzzed with excitement. She loved collecting nectar from these beautiful flowers that bloomed in her hive.\n\nOne sunny day, while sipping sweet honey from a bright yellow flower, she met two friends: a busy bee who lived on the other side of the lagoon. Both bees were kind to her, but they also found themselves caught in a love triangle. The bee's friends wanted to be friends, as they cherished their friendship.\n\nThe bee, however, was torn between helping one friend, and spending time with both bees. \"Why do I have so much energy?\" she'd say to herself. \"I spend more time with both, not taking care of either.\"\n\nThe busy bee noticed the bee's confusion and said, \"You're making us feel bad about ourselves. Our friendship is for everyone, not just one.\"\n\nThe bee's sadness turned into worry. \"But what if we choose? What if our happiness comes back?\" Together, the three friends decided to form an unlikely alliance, welcoming outsiders to join them. They worked together to collect nectar, build new homes, and help each other.\n\nAs the sun set over the lagoon once more, the honeybee's friends looked up at her with shining eyes. \"Your kindness brought you joy, my dear bee,\" said one. \"Modesty keeps your heart humble.\"\n\nFrom then on, the honeybees learned that true beauty lies within themselves. And whenever they felt overshadowed, they remembered all the joy it filled them with gratitude.\n\nMoral: modesty preserves dignity",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 7,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 10,
+        "overall": 6.0,
+        "rationale": {
+          "grammar": "The writing is generally functional, but some phrasing is awkward, such as 'The bee's friends wanted to be friends, as they cherished their friendship.'",
+          "creativity": "The plot is confusing and lacks logical cohesion, particularly the sudden mention of a 'love triangle' in a story about nectar collection.",
+          "moral_clarity": "The connection between the plot and the moral is weak, as the story focuses on friendship and alliances rather than how 'modesty preserves dignity'.",
+          "prompt_adherence": "The story includes the requested main character, 'a joyful honeybee', and the specific teaching, 'Modesty keeps your heart humble' and 'Moral: modesty preserves dignity'."
+        }
+      },
+      "judge_latency_ms": 5672
+    },
+    {
+      "character": "a observant bear",
+      "moral": "oppression sows rebellion",
+      "prompt": "<char> a observant bear </char>\n<moral> oppression sows rebellion </moral>\n<story>\n",
+      "reference_story": "In a land of endless dunes, where the wind howled and the sand swirled, a wise bear lived. She spent her days watching the world go by from her cozy cave. One day, a hungry bear came to the dunes. He was tired and needed food, but the wise bear shared only a small patch of berries with him.\n\nThe hungry bear was angry and left, feeling that the wise bear was not kind. But the wise bear didn't understand why the hungry bear was upset. She thought she was being generous by sharing just a few berries.\n\nAs the days passed, more bears came to the dunes, and the wise bear shared her berries with only a few. She thought that if she shared with too many, she would have none left for herself. The other bears grew hungry and tired, and they began to whisper among themselves.\n\nOne windy night, a wise old owl perched on a dune and said, \"Why do you not share your berries with all who need them?\" The wise bear thought for a moment and said, \"I was afraid that if I shared too much, I would have none left.\" The owl replied, \"By taking and not giving, you have left the other bears with nothing but anger and hunger. Now they may rebel against you.\"\n\nThe wise bear looked out at the dunes and saw that the other bears were indeed angry and tired. She realized that the owl was right and that sharing her berries with all would bring peace and friendship. From that day on, the wise bear shared her berries with all who needed them, and the dunes were filled with laughter and kindness.\n\nThe wise owl's words had taught the wise bear that sharing brings happiness, and that taking and not giving can lead to rebellion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200069",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In the heart of the desert, where palm trees swayed gently in the breeze, stood an old oasis. A wise and perceptive bear, known for her keen sense, roamed through its crumbling stones. She had been watching over this oasis all day, ensuring it was safe from harm.\n\nOne sunny afternoon, as the sun beat down on the oasis, two fierce lions stumbled upon each other with their sharp teeth. They growled, \"This is our territory! You can't stay here!\" The wise bear's eyes narrowed, but she knew that fighting wouldn't solve anything.\n\nThe bears continued to fight over the oasis's treasure, refusing to let anyone pass. But one brave lion, tired of being bullied, decided to stand up against them. He proposed a truce, \"Let's talk about this. We can share the treasure if we work together.\"\n\nAfter listening to both sides, they discovered that there were enough water and food for everyone. As they worked together, something remarkable happened. The lions realized that by working together, sharing the treasure could make everyone happy.\n\nThe bears learned that when they listened to others and shared what little they had, harmony would be found. And so, they signed a peace treaty, promising to always care for one another.\n\nThe wise bear smiled, knowing that standing up for what's right made the desert a better place.\n\nMoral: oppression sows rebellion. When we're treated unfairly, it's easy to find a way around us. By speaking up, even the fiercest creatures become friends forever.\n\nMoral: oppression cannot silence truth",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 8,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 6,
+        "overall": 5.75,
+        "rationale": {
+          "grammar": "The grammar is generally sound, though there is a sudden shift in subject from 'two fierce lions' to 'The bears continued to fight' without proper transition.",
+          "creativity": "The setting of a 'desert' oasis for a bear feels slightly cliché and the plot follows a very predictable pattern of conflict and resolution.",
+          "moral_clarity": "The story's actual plot about sharing and cooperation contradicts the requested moral, as the text says 'sharing the treasure could make everyone happy' rather than showing rebellion caused by oppression.",
+          "prompt_adherence": "While the character is an 'observant bear' and the requested moral is included, the narrative fails to actually demonstrate the concept that 'oppression sows rebellion'."
+        }
+      },
+      "judge_latency_ms": 5746
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "perspective can change the outcome",
+      "prompt": "<char> a cautious frog </char>\n<moral> perspective can change the outcome </moral>\n<story>\n",
+      "reference_story": "In a sunny grassland, a cautious frog lived near a sparkling pond. He loved to watch the butterflies dance around the colorful flowers. One day, while the cautious frog was enjoying the view, he saw a beautiful butterfly named Sparkles. She was sipping nectar from a bright yellow flower.\n\nThe cautious frog was immediately smitten. But, to his surprise, he discovered that he wasn't the only one who loved Sparkles. A strong and brave dragonfly named Dash also had a crush on her. The two insects started to argue over who was the best suitor for Sparkles.\n\nThe cautious frog thought, \"I'm the quiet one, I must be the better choice.\" But Dash would say, \"No, I'm the strongest flyer, I can protect her.\" Sparkles, feeling confused, asked them, \"Why are you both fighting? Can't you see I have a special place in this grassland to share with both of you?\"\n\nThe cautious frog and Dash looked at each other and realized they had been thinking only about themselves. They decided to work together and find a way to share Sparkles' love. They discovered that the grassland had many beautiful places to explore, and they could take turns showing Sparkles their favorite spots.\n\nSparkles was overjoyed with the new idea. From then on, the cautious frog, Dash, and Sparkles spent their days exploring the grassland together, learning that sharing and perspective can make everyone happy. The cautious frog learned that sometimes, being different can be a strength, not a weakness.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200071",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In a sunny bamboo grove, where tall green stalks swayed gently in the breeze, lived a cautious frog. He loved to hop around and explore every nook, discovering new hiding spots. One day, while hopping near the grove's edge, he spotted a shiny object buried beneath a leaf.\n\nThe frog's eyes grew wide with excitement. \"Oh, what a treasure!\" he croaked. \"I must have it!\" The other frogs whispered among themselves, but none of them knew who might be stealing their food.\n\nThe next morning, the frog, feeling proud of his find, decided to take matters into his own hands. But as he reached for it, it knocked over a nearby basket, spilling juicy berries everywhere. A hungry rabbit, known for her kindness, caught him in mid-air.\n\n\"Why did you do that?\" asked the rabbit.\n\n\"I wanted that treasure,\" said the frog, looking at his reflection in a puddle. \"You're so lucky I couldn't find it.\"\n\nThe rabbit's face turned red, then smiled. \"You don't need all those berries. Let's share them.\"\n\nThe frog thought about this. Then, they sat down together on a leaf. \"Let's divide them,\" she said. \"We can pick some berries, and I'll help you.\"\n\nThe rabbit nodded. \"That sounds like fun!\" And so, they shared the berries together, laughing and chatting.\n\nAs they ate, the sun began to set, casting a warm glow over the grove. From that day on, the animals worked side by side, proving that sharing and kindness can lead to lasting friendships.\n\nMoral: perspective can change the outcome.**\n\nMoral: perspective can change the outcome",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 9,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 10,
+        "overall": 6.5,
+        "rationale": {
+          "grammar": "The prose is generally well-constructed, such as in 'In a sunny bamboo grove, where tall green stalks swayed gently in the breeze...'",
+          "creativity": "The plot is somewhat disjointed and nonsensical, specifically the transition where 'it knocked over a nearby basket' without explaining what 'it' was.",
+          "moral_clarity": "The story's actual events about sharing berries do not logically demonstrate the stated moral that 'perspective can change the outcome'.",
+          "prompt_adherence": "The story includes the requested main character, 'a cautious frog', and explicitly states the required teaching."
+        }
+      },
+      "judge_latency_ms": 5264
+    },
+    {
+      "character": "a optimistic butterfly",
+      "moral": "cooperation wards off threats",
+      "prompt": "<char> a optimistic butterfly </char>\n<moral> cooperation wards off threats </moral>\n<story>\n",
+      "reference_story": "**The Undersea Kingdom of Sparkles**\n\nIn the underwater kingdom of Sparkles, where colorful fish swam and coral flowers bloomed, a little butterfly named Sunshine lived. She loved to dance on the water's surface, feeling the warmth of the sun on her wings. But Sunshine felt overshadowed by her big sister, Rainbow, who could fly higher and farther than anyone else.\n\nRainbow loved to show off her skills, and the other sea creatures would cheer and clap for her. Sunshine felt sad and left out, wondering if she was good enough. One day, a big, dark shadow fell over the kingdom. A strong current, known as the Dark Tides, was threatening to destroy their home.\n\nThe sea creatures were scared and didn't know what to do. Rainbow tried to fly higher to find a solution, but the Dark Tides were too strong. Sunshine had an idea. \"Let's work together!\" she said. \"We can swim and fly together to find a way to stop the Dark Tides!\"\n\nThe other sea creatures joined Sunshine and Rainbow, using their unique skills to help. The fish swam fast, the dolphins used their powerful clicks to create a force field, and the butterfly friends flew ahead to scout out the path. Together, they found a hidden cave filled with sparkling crystals that could calm the Dark Tides.\n\nThe kingdom of Sparkles was saved, and the sea creatures cheered for Sunshine and Rainbow. From that day on, the sisters realized that working together made them stronger than flying or swimming alone. The kingdom documented the lesson: \"Cooperation wards off threats, and together we shine brighter than we ever could alone.\"",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200075",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In the scorching hot desert, where sand dunes stretched far and wide, a happy butterfly flitted from flower to flower. Her delicate wings shimmered in shades of blue with every flutter. She loved nothing more than spreading joy wherever she went.\n\nOne day, while sipping nectar from a bright orange flower, she met two friends: a busy bee named Buzz, who collected nectar, and a clever lizard named Quick Tail. They both admired each other's strengths and weaknesses. But as time passed, they started competing for attention over food.\n\n\"Why do we have so much food?\" asked Buzzing Tail.\n\n\"I collect water,\" said Quick Tail.\n\n\"No, I need it more!\" said Fluttery. \"Sharing makes everyone happy,\" added Fast Tail.\n\nTheir arguments grew louder, but no one listened to them. The desert became tense, with creatures working together against each other. One by one, like tired lizards struggled to find food, and Slow Tail offered words of encouragement.\n\nOne day, a fierce sandstorm swept through the desert. Strong winds howled, and lightning flashed wildly around them, threatening their friends again. As the storm raged on, they stumbled upon an ancient text hidden within: \"When faced together, look at its ends.\"\n\nThe butterfly read this passage aloud: \"Cooperation is the key to survival.\" When the sun broke through, they realized that sharing was indeed better than competing. From then on, they worked together, making sure everyone's needs were met, just like the wise old owl had taught them.\n\nMoral: cooperation wards off threat",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 5,
+        "moral_clarity": 9,
+        "prompt_adherence": 10,
+        "overall": 7.0,
+        "rationale": {
+          "grammar": "The story contains confusing character name shifts and nonsensical dialogue, such as 'asked Buzzing Tail' and 'Slow Tail offered words of encouragement' when those characters were not previously established.",
+          "creativity": "The plot relies on a convenient 'ancient text hidden within' to deliver the message rather than organic character development.",
+          "moral_clarity": "The moral is explicitly stated both in the text and as a concluding note: 'Moral: cooperation wards off threat'.",
+          "prompt_adherence": "The story includes the requested optimistic butterfly and the specific teaching that 'cooperation wards off threat'."
+        }
+      },
+      "judge_latency_ms": 5240
+    },
+    {
+      "character": "a timid badger",
+      "moral": "teamwork amplifies success",
+      "prompt": "<char> a timid badger </char>\n<moral> teamwork amplifies success </moral>\n<story>\n",
+      "reference_story": "**The Treetop Tale of the Timid Badger**\n\nHigh above the forest floor, a village of trees stood tall, their branches swaying gently in the breeze. The trees were home to busy creatures, each with their own special talents. A timid badger lived at the edge of the village, watching and learning from the others.\n\nOne sunny day, the wind began to blow strong, and the trees creaked and groaned. The creatures scrambled to secure loose branches and tie down loose leaves. But the timid badger didn't join in. She was too afraid to try.\n\nAs the wind howled, a big branch fell, and the villagers' homes began to shake. The creatures panicked, thinking the timid badger was the one responsible for the mess. They scurried to find a way to save themselves, but didn't work together.\n\nThe timid badger, feeling lonely and scared, cried out for help. The creatures, now more frightened than ever, ran to the wise old owl for guidance. The owl looked at the villagers and said, \"We must work together to save our homes! Each of us has a special talent, and together, we can do great things.\"\n\nThe creatures quickly came up with a plan. The strong squirrel lifted heavy branches, the quick rabbit tied down loose leaves, and the brave fox used her sharp teeth to hold things in place. The timid badger, with her clever digging skills, helped secure the roots of the trees.\n\nTogether, they saved the village. The creatures cheered, and the timid badger realized that she wasn't alone. She had friends who needed her help, and she needed theirs too. From that day on, the timid badger joined the villagers in their daily tasks, and together, they made their treetop village the safest and most wonderful place in the forest.\n\n**The moral of the story:** When we work together, we can do great things. Every single one of us has something special to offer, and when we share our talents, we can achieve anything!",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200077",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In the ancient temple ruins, hidden behind vines and moss, lived a timid badger. The badger's home was cozy, filled with soft furs of moss and twinkling lights. Every day, she would watch as her friends gathered to play among the crumbling stones.\n\nBut one badger, who loved shiny things, started to take more than their fair share. \"I need it more,\" she'd say, or \"I'm starving!\" Her friends, who worked hard in their own gardens, were sad and left.\n\nThe temple's wise old owl, perched on a stone pedestal, noticed something strange. \"Why do you keep taking all your treasures? Don't you think it's time for everyone else?\" \n\nThe shy badger looked down, ashamed. She knew she had been selfish and didn't want anyone to be unhappy. So, instead of giving up, she decided to share her treasures – an idea. \"I'll help my friends gather new treasures, but we can work together!\"\n\nTogether, they collected beautiful stones. As they worked, the other animals joined in, and soon the ruins were filled with laughter and chatter. They shared stories, helped each other, and made sure everyone's needs were met.\n\nWhen the sun set, the quiet badger smiled. \"We did it! We're stronger together!\" The others cheered back, knowing that when they stood together, they could accomplish anything. From then on, the timid badger's heart felt lighter, and she became known as the bravest and most generous badger.\n\nThe moral is clear: Teamwork makes us strong, just like the leaves that grow into our hearts.\n\nMoral: teamwork amplifies success",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 10,
+        "creativity": 7,
+        "moral_clarity": 9,
+        "prompt_adherence": 10,
+        "overall": 9.0,
+        "rationale": {
+          "grammar": "The text is grammatically sound with well-structured sentences, such as 'In the ancient temple ruins, hidden behind vines and moss, lived a timid badger.'",
+          "creativity": "The setting of 'ancient temple ruins' adds a nice atmosphere, though the plot follows a very traditional fable structure.",
+          "moral_clarity": "The lesson is explicitly stated both in the text and at the end: 'The moral is clear: Teamwork makes us strong...'",
+          "prompt_adherence": "The story successfully features a 'timid badger' and teaches that 'teamwork amplifies success'."
+        }
+      },
+      "judge_latency_ms": 5311
+    },
+    {
+      "character": "a discerning snake",
+      "moral": "generosity enriches the giver",
+      "prompt": "<char> a discerning snake </char>\n<moral> generosity enriches the giver </moral>\n<story>\n",
+      "reference_story": "In a dense underbrush, where leaves rustled softly and sunlight filtered through, a discerning snake slithered through the bushes. She loved to collect shiny objects she found on the forest floor. One day, while basking in a warm spot, she spotted a gleaming coin.\n\nThe snake thought, \"Ah, a treasure! I must have it!\" But when she slithered towards it, a wise old bird perched nearby said, \"Wait, little snake. Take your time. Maybe something more wonderful will come along.\"\n\nThe snake huffed, \"I'm in a hurry! I need that coin!\" She quickly snatched it and slithered away. But soon, a heavy rainstorm rolled in, and the snake had to hide. As she curled up in a tight ball, she felt a gentle pat on her head. It was the wise old bird.\n\n\"Why are you shivering, little snake?\" the bird asked. \"You should have shared your coin with me when I needed it. Now, it's too wet to use.\" The snake looked at her coin, now dripping wet and useless.\n\nFeeling sorry for the bird, the snake shared her food and shelter with the bird. As they waited for the rain to stop, the snake realized that helping her friend made her feel happy and warm inside. The bird smiled and said, \"You see, little snake, when we share with others, we gain something much more valuable than any shiny object – friendship and a warm heart.\"\n\nFrom that day on, the discerning snake became a generous one, understanding that kindness and sharing made her feel richer than any treasure.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200081",
+      "model": "v3-full",
+      "seed": 122,
+      "output_tokens": 316,
+      "ended": true,
+      "story": "In a land of sparkling ice, where glaciers shone like diamonds, a Discerning Snake slithered through icy caves. The air was crisp, and the sound of dripping water echoed off the frozen surface. A gentle breeze rustled her scales, as she slid silently across the glacier's edge.\n\nOne day, while exploring, the Discerning Snake's stomach growled with hunger. She spotted some juicy fish hidden beneath the ice. Her tummy growled, but she remembered that many creatures in the glacier were struggling to find food for their own meals. They asked her, \"Will you spare our food?\"\n\nThe Discerning Snake, hesitated. \"Why should I eat all these fish? They're too weak!\" But then she looked into her eyes and saw how tired they were. She decided not to take them all. \"I won't let anyone else have any,\" she said firmly.\n\nThe other creatures, who had been watching, whispered among themselves. \"The Dignified Snake is being unfair.\" Together, they came up with an idea – sharing what little resources they had. And so, they worked together, dividing their resources.\n\nAs the days passed, more animals got enough from eating only one small fish. But the Discerning Snake continued to watch, knowing that by working together and sharing, everyone's needs were met. From that day on, whenever someone needed help, she'd share her body with them, creating a ripple effective show, making others happy too.\n\nThe Discerning Snake realized that when she shared her food, it brought even more, including herself. Generosity enriched her, just like the shimmering ice crystals on this icy shore.\n\nMoral: generosity enriches the giver",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 6,
+        "creativity": 5,
+        "moral_clarity": 9,
+        "prompt_adherence": 10,
+        "overall": 7.5,
+        "rationale": {
+          "grammar": "There are several errors in syntax and logic, such as 'she looked into her eyes' when referring to others and the nonsensical phrase 'creating a ripple effective show'.",
+          "creativity": "The setting of a 'land of sparkling ice' for a snake is an unusual choice, but the plot follows a very predictable fable structure.",
+          "moral_clarity": "The moral is explicitly stated both in the text and as a concluding line: 'Moral: generosity enriches the giver'.",
+          "prompt_adherence": "The story includes the requested main character, 'a Discerning Snake', and follows the teaching that 'generosity enriches the giver'."
+        }
+      },
+      "judge_latency_ms": 5594
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "timely help earns lasting loyalty",
+      "prompt": "<char> a cautious frog </char>\n<moral> timely help earns lasting loyalty </moral>\n<story>\n",
+      "reference_story": "In the heart of a dense jungle, hidden beneath a thick blanket of vines, lay a majestic sunken temple. The entrance was guarded by two enormous stone statues that seemed to whisper ancient secrets to the wind. A cautious frog named Cautious Croak loved to explore the temple, but only during the day when the light was bright.\n\nOne day, while Cautious Croak was hopping through the temple, she stumbled upon a mysterious, glowing crystal. As soon as she touched it, the temple began to shake, and the statues came to life. The statues, once guarding the temple, now demanded Cautious Croak to do their bidding. Cautious Croak, feeling scared and overwhelmed, agreed to their demands, not knowing the consequences.\n\nHowever, a kind-hearted dragon named Brave Blaze, who had been watching from afar, swooped in to help. Brave Blaze gently whispered to Cautious Croak, \"Don't be afraid, little one. You don't have to follow their orders. Let's work together to calm the temple.\"\n\nWith Brave Blaze by her side, Cautious Croak found the courage to reclaim the temple. Together, they returned the crystal to its rightful place, and the temple returned to its peaceful state. From that day on, Cautious Croak and Brave Blaze became the best of friends. Brave Blaze would often visit Cautious Croak, and the cautious frog would thank him for his timely help.\n\nCautious Croak realized that having a friend by her side made her feel less cautious and more confident. She learned that timely help earns lasting loyalty, and she was grateful to have Brave Blaze as her loyal companion.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200086",
+      "model": "v3-full",
+      "seed": 122,
+      "output_tokens": 316,
+      "ended": true,
+      "story": "In the sunny harbor town of Sunny Cove, where boats bobbed gently in the water, lived a Cautious Frog. He loved to sit on the dock, watching fishermen unload their catch and listening to stories. The Cautious Frog's best friend, a clever Octopus, had caught a beautiful pearl necklace that sparkled like gold.\n\nOne day, while swimming near the shore, the Clever Octopus promised to share it with his friend. But when the Seal didn't show up, he took all the treasure for himself! When the Cautious Frog woke up feeling sad and angry, he said, \"Why did you take my friend's necklace, which was not yours?\"\n\nThe Clever Octopus felt terrible and quickly apologized. \"I'm sorry, dear frog. I made a mistake. I'll never find another pearl, but I need your help. My friend will always be there for me.\"\n\nThe Cautious Frog forgave his friend, even though he couldn't stop thinking about what happened. Together, they decided to visit the wise old Turtle, who sat by the harbor, reading an ancient book.\n\nThe passage told them that true friends are honest friends, no matter how different we are. From now on, whenever someone makes a mistake, the Cautious Frog would say, \"Remember, our friendship is strong enough to say sorry.\"\n\nThe Wise Turtle smiled, knowing that her friend learned an important lesson. \"Timely help from friends,\" she said. And so, the Cautious Frog, the Clever Crab, and the other animals of Sunny Cove agreed: \"Before you make something special, ask us if it's time to tell.\"\n\nMoral: timely help earns lasting loyalty",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 7,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 9,
+        "overall": 6.25,
+        "rationale": {
+          "grammar": "The narrative contains confusing character shifts, such as 'But when the Seal didn't show up', where a Seal was never previously introduced.",
+          "creativity": "The plot is somewhat disjointed and lacks a logical flow, e.g., the transition from a stolen necklace to a wise turtle's book is abrupt.",
+          "moral_clarity": "The story's internal lessons conflict with the stated moral, such as the turtle saying 'Timely help from friends' without context and the final quote 'ask us if it's time to tell'.",
+          "prompt_adherence": "The story includes the requested main character, 'a Cautious Frog', and explicitly states the required moral: 'Moral: timely help earns lasting loyalty'."
+        }
+      },
+      "judge_latency_ms": 5920
+    },
+    {
+      "character": "a outspoken leopard",
+      "moral": "a kind heart finds friends",
+      "prompt": "<char> a outspoken leopard </char>\n<moral> a kind heart finds friends </moral>\n<story>\n",
+      "reference_story": "**The Leopard's Perfect Farm**\n\nIn a sunny farmland, a sleek leopard with bright golden fur roamed the fields, searching for the perfect patch of grass to nap on. She was a perfectionist and would only rest on the greenest grass with the softest blades. The other animals laughed and said, \"You'll never find the perfect spot, just pick one and rest!\"\n\nBut the leopard wouldn't listen. She kept searching, day after day. The other animals grew tired of her fussiness and stopped playing with her. One day, while she was busy looking for the perfect spot, a group of birds flew in, chirping and tweeting. They had come to visit an old friend, a wise old goat who lived on the farm.\n\nThe leopard saw the birds and, for the first time, realized how much fun they were having without her. She approached the goat and asked, \"Why do my friends play with you and not with me?\" The goat smiled and said, \"They play with me because I make them feel welcome and happy. You need to let go of your perfect grass and be kind to others.\"\n\nThe leopard thought about this for a moment. She decided to pick a patch of grass and rest, not because it was perfect, but because her new friend, the goat, was nearby. As she rested, the other animals came to visit, and they all played together. The leopard learned that a kind heart finds friends, and from that day on, the farmland was filled with laughter and friendship.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200094",
+      "model": "v3-full",
+      "seed": 122,
+      "output_tokens": 316,
+      "ended": true,
+      "story": "**The Leopard's Big Heart**\n\nOn the sunny tropical island of Kai, where palm trees swayed gently in the breeze, a loud and proud Leopard lived. She loved to explore the island, chasing after shiny fish for her lunch. One day, while wandering through the jungle, she stumbled upon an old map that hinted at hidden treasure.\n\nAs she padded along the sandy beach, the Parrot watched with curiosity. The leopard's curiosity got the best of her, and she decided to follow it. To her surprise, they found a chest filled with sparkling jewels!\n\nThe Parrot's eyes sparkled as he realized his treasure was not gold or jewels, but many other treasures on the island. A family of birds had lost their nest, and no one knew who took them. Feeling sad and confused, the Leopard approached the Parrot. \"Why did you take my treasure?\" she asked.\n\nThe Parrot looked down, ashamed. \"I thought it would make me happy,\" he admitted. \"But now I see that's not kind. I've learned to share it with others.\"\n\nThe Bird's expression changed. He saw how happy everyone was, even if they made mistakes. Together, the Tiger and the Bird gathered all the creatures by the island's shore. They signed a peace treaty, promising to respect each other's homes.\n\nFrom that day on, the Leopard visited the Floating Island, sharing stories and laughter. And whenever she felt lonely, she'd remember the Parrot's words: \"A kind heart is like a beautiful shell – it's always worth more than any treasure.\" The Parrot's words echoed in her heart: \"The truth will be shared.\"\n\nMoral: a kind heart finds friends.",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 6,
+        "creativity": 4,
+        "moral_clarity": 8,
+        "prompt_adherence": 10,
+        "overall": 7.0,
+        "rationale": {
+          "grammar": "The story contains confusing pronoun shifts and logical inconsistencies, such as 'The Bird's expression changed' referring to a character previously identified as a Parrot.",
+          "creativity": "The plot is disjointed and nonsensical, jumping from a treasure chest to a peace treaty with a Tiger who was never introduced.",
+          "moral_clarity": "The moral is explicitly stated at the end: 'Moral: a kind heart finds friends.'",
+          "prompt_adherence": "The story includes the requested outspoken leopard and the specific teaching: 'a kind heart finds friends.'"
+        }
+      },
+      "judge_latency_ms": 5341
+    }
+  ]
+}

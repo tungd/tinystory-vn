@@ -1,6 +1,6 @@
 {
   "version": "v3",
-  "status": "pilot_complete",
+  "status": "full_evaluated",
   "initial_weights": "runs/v2/artifacts/hf",
   "reset_optimizer": true,
   "architecture": {"n_embd": 768, "n_layer": 7, "n_head": 12, "params_M": 63.0},
@@ -9,7 +9,8 @@
   "objective": {"prompt_loss": "masked", "character": "exact phrase present in original target", "target_suffix": "Moral: {exact dataset moral}\\n</story>"},
   "training": {"pilot_samples": 20000, "pilot_steps": 313, "full_samples": 103063, "full_steps": 1611, "validation_samples": 1024, "batch": 64, "learning_rate": 0.0001},
   "pilot": {"output": "Google Drive: /MyDrive/fable200m_v3/pilot/hf", "steps": 313, "train_loss": 1.509, "eval_loss": 1.502, "a100_seconds": 71, "checkpoints": [150, 300, 313]},
-  "evaluation": {"controls": "fresh TF1 rows after the original first 200000 valid rows", "judge": "gemma-4-26b-a4b-it through native Google GenAI API", "thinking_level": "minimal", "status": "pilot_complete", "n_per_model": 4, "v2_overall": 4.75, "v3_pilot_overall": 5.25, "mean_judge_latency_ms": 5637},
-  "results": ["runs/v3/results/pilot_generations.json", "runs/v3/results/pilot_judged_gemma4_31b_default.json", "runs/v3/results/pilot_judged_gemma4_26b_a4b_minimal.json"],
+  "full": {"output": "Google Drive: /MyDrive/fable200m_v3/full/hf", "steps": 1611, "epochs": 1, "train_runtime_seconds": 317.2, "train_loss": 1.499, "eval_loss": 1.489, "checkpoints": [400, 800, 1200, 1600]},
+  "evaluation": {"controls": "100 TF1 rows after the original first 200000 valid rows", "status": "full_evaluated", "deterministic": {"v2": {"exact_character": 0.18, "exact_moral": 0.17, "exact_both": 0.03, "ended": 0.0}, "v3_full": {"exact_character": 0.65, "exact_moral": 0.86, "exact_both": 0.55, "ended": 1.0}}, "judge": {"model": "gemma-4-26b-a4b-it", "thinking_level": "minimal", "paired_controls": 20, "v2_overall": 5.06, "v3_full_overall": 6.78}},
+  "results": ["runs/v3/results/pilot_generations.json", "runs/v3/results/pilot_judged_gemma4_31b_default.json", "runs/v3/results/pilot_judged_gemma4_26b_a4b_minimal.json", "runs/v3/results/full_generations_100.json", "runs/v3/results/full_metrics_100.json", "runs/v3/results/full_judged_20.json"],
   "logs": "runs/v3/logs"
 }
