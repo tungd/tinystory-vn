@@ -51,6 +51,12 @@ def test_real_example_rejects_nonadjective_trait():
     assert build_real_example(row) is None
 
 
+def test_real_example_rejects_outdated_child_unsuitable_language():
+    row = annotation("one")
+    row["story"] += " It used an outdated tale about Hottentots."
+    assert build_real_example(row) is None
+
+
 def test_injects_trait_and_repairs_article_once():
     character, story = inject_character(
         "A Owl watched while another Owl slept.", "A Owl", "observant"
@@ -65,6 +71,14 @@ def test_injects_trait_after_count_for_plural_anchor():
     )
     assert character == "The three resourceful Fishes"
     assert story.startswith(character)
+
+
+def test_injection_does_not_match_noun_prefix():
+    character, story = inject_character(
+        "The Goatherd warned the Goat.", "the Goat", "truthful"
+    )
+    assert character == "the truthful Goat"
+    assert story == "The Goatherd warned the truthful Goat."
 
 
 def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_path):

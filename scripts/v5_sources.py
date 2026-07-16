@@ -29,6 +29,53 @@ def normalize_heading(value: str) -> str:
     return value.strip(" .").upper()
 
 
+def clean_public_story(value: str) -> str:
+    """Remove Gutenberg navigation/page artifacts without rewriting prose."""
+    value = normalize_text(value)
+    value = re.split(r"\n\n\[Contents\]", value, maxsplit=1, flags=re.IGNORECASE)[0]
+    value = re.sub(r"\[\d+\]", "", value)
+    value = re.sub(r"(?m)^\s*\d+\s*$", "", value)
+    value = re.sub(r"(?is)\[Illustration(?::[^\]]*)?\]", "", value)
+    paragraphs = [part.strip() for part in re.split(r"\n\s*\n", value) if part.strip()]
+    if paragraphs and paragraphs[0].casefold() == "persons":
+        note_index = next(
+            (index for index, paragraph in enumerate(paragraphs) if paragraph == "NOTE"),
+            None,
+        )
+        search_from = note_index + 2 if note_index is not None else 1
+        start = next(
+            (
+                index for index, paragraph in enumerate(paragraphs[search_from:], search_from)
+                if len(paragraph.split()) >= 8
+            ),
+            None,
+        )
+        if start is not None:
+            paragraphs = paragraphs[start:]
+    paragraphs = [
+        paragraph for paragraph in paragraphs
+        if not (
+            len(paragraph.split()) <= 16
+            and re.search(r"[A-Z]", paragraph)
+            and paragraph == paragraph.upper()
+        )
+    ]
+    value = normalize_text("\n\n".join(paragraphs))
+    dropcap_repairs = {
+        r"^he\b": "The",
+        r"^t the\b": "At the",
+        r"^nce\b": "Once",
+        r"^ne day\b": "One day",
+        r"^very\b": "A very",
+        r"^here\b": "There",
+    }
+    for pattern, replacement in dropcap_repairs.items():
+        if re.match(pattern, value):
+            value = re.sub(pattern, replacement, value, count=1)
+            break
+    return value
+
+
 @dataclass
 class Section:
     title: str
@@ -74,6 +121,9 @@ class GutenbergSectionParser(HTMLParser):
         if tag == "br":
             target = self.heading.text if self.heading is not None else self.paragraph_text
             target.append(" ")
+        if tag == "img" and len(attrs_dict.get("alt", "")) == 1:
+            target = self.heading.text if self.heading is not None else self.paragraph_text
+            target.append(attrs_dict["alt"])
 
     def handle_endtag(self, tag: str) -> None:
         if tag in IGNORED_TAGS:
@@ -151,7 +201,7 @@ class GutenbergSectionParser(HTMLParser):
 
     def _flush_section(self) -> None:
         self._flush_paragraph()
-        story = normalize_text("\n\n".join(self.body_parts))
+        story = clean_public_story("\n\n".join(self.body_parts))
         if self.current_title and story:
             self.sections.append(Section(self.current_title, story))
         self.current_title = ""

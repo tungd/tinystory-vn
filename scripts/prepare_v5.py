@@ -22,12 +22,14 @@ if __package__ is None or __package__ == "":
 
 from scripts.label_v5 import latest_by_source, load_jsonl
 from scripts.prepare_v3 import PREFIX, story_mentions_exact_character
+from scripts.v5_sources import clean_public_story
 
 
 NUMBER_WORDS = {
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
 }
 TRAIT_BLOCKLIST = {"misunderstanding"}
+CONTENT_BLOCKLIST = re.compile(r"\b(?:Hottentots?|Bushmen)\b", re.IGNORECASE)
 
 
 def _validation(source: str, seed: int, fraction: float) -> bool:
@@ -37,7 +39,11 @@ def _validation(source: str, seed: int, fraction: float) -> bool:
 
 def inject_character(story: str, anchor: str, trait: str) -> tuple[str, str] | None:
     """Insert one audited trait at the first exact protagonist mention."""
-    match = re.search(re.escape(anchor), story, flags=re.IGNORECASE)
+    match = re.search(
+        rf"(?<![\w'-]){re.escape(anchor)}(?![\w'-])",
+        story,
+        flags=re.IGNORECASE,
+    )
     if not match:
         return None
     original = story[match.start() : match.end()]
@@ -64,8 +70,15 @@ def build_real_example(row: dict) -> dict | None:
     anchor = " ".join(annotation.get("protagonist_anchor", "").split())
     trait = annotation.get("trait", "").strip().casefold()
     moral = " ".join(annotation.get("moral", "").split())
-    story = row.get("story", "").strip()
-    if not anchor or not trait or trait in TRAIT_BLOCKLIST or not moral or not story:
+    story = clean_public_story(row.get("story", ""))
+    if (
+        not anchor
+        or not trait
+        or trait in TRAIT_BLOCKLIST
+        or not moral
+        or not story
+        or CONTENT_BLOCKLIST.search(story)
+    ):
         return None
     injected = inject_character(story, anchor, trait)
     if injected is None:
@@ -158,7 +171,7 @@ def prepare_v5(
         "validation_fraction": validation_fraction,
         "collections": dict(sorted(collections.items())),
         "seed": seed,
-        "format": "unrewritten human story + exact protagonist control + inferred causal moral",
+        "format": "cleaned human story + one deterministic trait insertion + inferred causal moral",
         "loss": "target only; prompt masked",
     }
     (out / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
