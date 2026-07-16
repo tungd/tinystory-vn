@@ -1,4 +1,4 @@
-# v3 — conditioning-focused continuation (pilot complete)
+# v3 — conditioning-focused continuation (full evaluated)
 
 v3 is isolated from v1/v2. It initializes from v2 model weights, never its
 optimizer/scheduler state.
@@ -69,7 +69,8 @@ On 100 TF1 controls after the 200,000 valid rows used by v2:
 | Both exact | 3% | 55% |
 | Clean `</story>` ending | 0% | 100% |
 
-Native Gemma judging on a seeded paired 20-control subset:
+Native Gemma judging on a seeded paired 20-control subset using historical
+prompt `v1-original`:
 
 | Axis | v2 | v3 full |
 |---|---:|---:|
@@ -81,3 +82,20 @@ Native Gemma judging on a seeded paired 20-control subset:
 
 v3 materially improves every measured axis, moral copying, and stopping. It
 does not yet satisfy the exact-character-every-time acceptance gate.
+
+Unedited low/median/high outputs: `results/quality_samples.md`.
+
+## Strict judge calibration
+
+Prompt `v2-strict` anchors the full scale and requires the plot—not literal
+character/moral inclusion—to earn adherence and moral-clarity points. A paired
+three-control smoke test produced:
+
+| Model | Overall |
+|---|---:|
+| v2 | 2.25 |
+| v3 full | 3.50 |
+
+The same three v3 stories fell from 4.75/6.50/9.00 under `v1-original` to
+2.25/3.50/4.75. This validates stricter calibration only; it is too small and
+uses a different prompt, so it does not replace the historical 20-control run.

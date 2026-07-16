@@ -11,7 +11,8 @@
     "backend": "google-genai",
     "model": "gemma-4-26b-a4b-it",
     "thinking_level": "minimal",
-    "response_mime_type": "application/json"
+    "response_mime_type": "application/json",
+    "prompt_version": "v1-original"
   },
   "summary": {
     "v2": {

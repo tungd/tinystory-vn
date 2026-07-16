@@ -50,10 +50,11 @@ def main() -> None:
     parser.add_argument("--out", required=True)
     parser.add_argument("--controls", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--source", action="append", default=[])
     args = parser.parse_args()
 
     data = json.loads(Path(args.input).read_text())
-    selected = set(select_sources(data["generations"], args.controls, args.seed))
+    selected = set(args.source or select_sources(data["generations"], args.controls, args.seed))
     selected_rows = [row for row in data["generations"] if row["source"] in selected]
     judged = []
     for index, row in enumerate(selected_rows, 1):
@@ -79,7 +80,7 @@ def main() -> None:
         "kind": "v3-full-judge-comparison",
         "source": args.input,
         "selection": {
-            "method": "seeded random paired controls",
+            "method": "explicit sources" if args.source else "seeded random paired controls",
             "seed": args.seed,
             "controls": len(selected),
             "stories": len(judged),
@@ -89,6 +90,7 @@ def main() -> None:
             "model": "gemma-4-26b-a4b-it",
             "thinking_level": "minimal",
             "response_mime_type": "application/json",
+            "prompt_version": judge.PROMPT_VERSION,
         },
         "summary": summarize(judged),
         "judgments": judged,

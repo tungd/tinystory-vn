@@ -1,4 +1,4 @@
-from app.judge import parse_scores, build_judge_prompt
+from app.judge import PROMPT_VERSION, SYSTEM_INSTRUCTION, build_judge_prompt, parse_scores
 
 
 def test_build_judge_prompt_mentions_axes():
@@ -11,6 +11,21 @@ def test_build_judge_prompt_asks_for_reason():
     p = build_judge_prompt("story...", "prompt...")
     assert "reason" in p.lower()
     assert "score" in p.lower()
+
+
+def test_strict_prompt_does_not_reward_literal_moral_or_character_alone():
+    prompt = build_judge_prompt("story...", "prompt...").lower()
+    assert "merely appending the moral sentence is not enough" in prompt
+    assert "literal phrase inclusion alone scores at most 5" in prompt
+    assert "active protagonist" in prompt
+
+
+def test_strict_prompt_has_anchored_scale_and_version():
+    prompt = build_judge_prompt("story...", "prompt...")
+    assert "9-10: exceptional and nearly flawless" in prompt
+    assert "1-2: broken or unusable" in prompt
+    assert PROMPT_VERSION == "v2-strict"
+    assert "skeptical" in SYSTEM_INSTRUCTION
 
 
 def test_parse_scores_from_flat_json():

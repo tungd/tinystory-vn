@@ -4,20 +4,41 @@ import re
 from app import ollama_client
 
 AXES = ["grammar", "creativity", "moral_clarity", "prompt_adherence"]
+PROMPT_VERSION = "v2-strict"
+SYSTEM_INSTRUCTION = (
+    "You are a skeptical, exacting evaluator of machine-generated children's "
+    "fables. Judge only what is present in the story, apply the full 1-10 scale, "
+    "and do not reward literal keyword inclusion as narrative success. Output JSON only."
+)
 
 
 def build_judge_prompt(story: str, prompt: str) -> str:
     return (
-        "You are a strict judge of children's fables. Given the REQUEST and the STORY, "
-        "rate the STORY from 1 to 10 on four axes: grammar, creativity, moral clarity, "
-        "prompt adherence. For EACH axis return an object with an integer \"score\" (1-10) "
-        "and a short \"reason\" (one sentence, citing specific evidence quoted from the STORY). "
-        "Respond ONLY with a JSON object using keys "
+        "Evaluate the STORY against the REQUEST using these strict rules:\n\n"
+        "SCORE ANCHORS\n"
+        "- 9-10: exceptional and nearly flawless; reserve these scores.\n"
+        "- 7-8: clearly good, with only minor defects.\n"
+        "- 5-6: mixed quality with visible defects.\n"
+        "- 3-4: poor, incoherent, or substantially mismatched.\n"
+        "- 1-2: broken or unusable.\n\n"
+        "AXES\n"
+        "- grammar: Penalize malformed sentences, unclear pronouns, tense errors, "
+        "formatting debris, duplicated morals, and awkward wording. A 9-10 requires "
+        "essentially error-free prose.\n"
+        "- creativity: Reward a distinctive but coherent plot. Penalize generic templates, "
+        "repetition, unexplained objects or characters, and disconnected events.\n"
+        "- moral_clarity: Judge whether the conflict, choices, and outcome causally demonstrate "
+        "the requested moral. Merely appending the moral sentence is not enough; if the events "
+        "teach a different lesson, score at most 4.\n"
+        "- prompt_adherence: The requested character must be the active protagonist and the "
+        "requested moral must shape the plot. Literal phrase inclusion alone scores at most 5.\n\n"
+        "For EACH axis return an integer score from 1 to 10 and one concise reason citing "
+        "specific evidence from the STORY. Respond ONLY with a JSON object using keys "
         '"grammar","creativity","moral_clarity","prompt_adherence", e.g.\n'
-        '{"grammar": {"score": 9, "reason": "Sentences are well-formed, e.g. \'...\'"}, '
-        '"creativity": {"score": 8, "reason": "..."}, '
-        '"moral_clarity": {"score": 10, "reason": "The moral is explicit: \'...\'"}, '
-        '"prompt_adherence": {"score": 10, "reason": "Includes the requested elements: ..."}}\n\n'
+        '{"grammar":{"score":6,"reason":"..."},'
+        '"creativity":{"score":5,"reason":"..."},'
+        '"moral_clarity":{"score":3,"reason":"..."},'
+        '"prompt_adherence":{"score":4,"reason":"..."}}\n\n'
         f"REQUEST:\n{prompt}\n\nSTORY:\n{story}\n\nJSON:"
     )
 
@@ -128,7 +149,7 @@ def evaluate(story: str, prompt: str, model: str, gen=None) -> dict:
     gen = gen or ollama_client.generate
     raw = gen(
         prompt=build_judge_prompt(story, prompt),
-        system="You are a strict, fair evaluator. Output JSON only.",
+        system=SYSTEM_INSTRUCTION,
         model=model,
         is_judge=True,
         num_predict=2000,

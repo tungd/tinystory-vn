@@ -1,0 +1,255 @@
+{
+  "kind": "v3-full-judge-comparison",
+  "source": "runs/v3/results/full_generations_100.json",
+  "selection": {
+    "method": "explicit sources",
+    "seed": 42,
+    "controls": 3,
+    "stories": 6
+  },
+  "judge_settings": {
+    "backend": "google-genai",
+    "model": "gemma-4-26b-a4b-it",
+    "thinking_level": "minimal",
+    "response_mime_type": "application/json",
+    "prompt_version": "v2-strict"
+  },
+  "summary": {
+    "v2": {
+      "n": 3,
+      "judge_mean": {
+        "grammar": 1.33,
+        "creativity": 2.33,
+        "moral_clarity": 2.0,
+        "prompt_adherence": 3.33,
+        "overall": 2.25
+      },
+      "mean_latency_ms": 5812,
+      "checks_passed": {
+        "exact_character": 1,
+        "exact_moral": 0,
+        "exact_moral_near_end": 0,
+        "exact_both": 0,
+        "ended": 0
+      }
+    },
+    "v3-full": {
+      "n": 3,
+      "judge_mean": {
+        "grammar": 5.33,
+        "creativity": 3.0,
+        "moral_clarity": 2.0,
+        "prompt_adherence": 3.67,
+        "overall": 3.5
+      },
+      "mean_latency_ms": 6104,
+      "checks_passed": {
+        "exact_character": 3,
+        "exact_moral": 3,
+        "exact_moral_near_end": 3,
+        "exact_both": 3,
+        "ended": 3
+      }
+    }
+  },
+  "judgments": [
+    {
+      "character": "a energetic crab",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a energetic crab </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "In a sunny bamboo grove, near a sparkling river, a happy crab lived. She loved to dance in the grove, her bright red shell glistening with dew. The bamboo stalks swayed gently, as if dancing with her.\n\nOne day, while the crab was dancing, she knocked over a tall bamboo stalk. The stalk's owner, a big, gray elephant, was very sad. She had been using the stalk to build a safe home for other animals.\n\nThe crab was afraid to face the elephant. She hid behind a nearby bush. The elephant searched everywhere for the one who knocked over her stalk. She finally found the crab and said, \"Why did you knock over my stalk?\"\n\nThe crab said, \"I'm sorry. I was dancing too fast.\" The elephant replied, \"I'm sad, but I'm also glad you apologized. Modesty is like a soft, green leaf. When it's fresh, it's beautiful. But when it's too big, it loses its shape and beauty.\"\n\nThe crab thought about this. She realized that if she had said, \"I'm the best dancer in the grove,\" her beautiful red shell would have lost its shine. Instead, she said, \"I'm sorry\" and listened to the elephant.\n\nThe crab and the elephant became good friends. The crab learned that owning up to mistakes and being humble preserves dignity, like a soft, green leaf. And the bamboo grove was once again filled with laughter and the sweet sound of the elephant's trumpet.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200011",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the bustling harbor town of Harborville, where seagulls soared and fishermen sailed, lived in small ships made from fishing nets, while playful sea otters chased each other with their bushy tails. A happy crab, known for his bright red shell, loved to watch the town's residents at work. He dreamed of joining in, but he was too proud.\n\nOne day, as the crab's shell was polished on the dock, a big storm rolled in. The winds howled, and the waves crashed against the dock. Even his friends, the grumpy old seagulls, laughed at him, saying, \"You're just jealous! You can't even fly fast!\"\n\nThe crab's heart felt heavy, like it didn't want to admit it. But then he remembered all the times he'd helped a family of crabs repair their damaged nets during strong winds. His friends looked up to him in awe, feeling silly.\n\nThe seagull, who had been watching, swooped down and offered her help. Together, they worked tirelessly, securing loose boats and keeping everyone safe. When the sun came out again, the townspeople cheered, \"You did it! Your kindness saved our home!\" From that day on, the crab knew that being modest – not comparing himself to others; preserved his dignity. And whenever someone asked him about it, he's always smiling.\n\nAs the wind died down, the seagull said, \"Remember, my friend, what matters most can be your greatest strength. Remember, it's okay to ask for help when you need it.\"\n\"Gratitude keeps us humble, and that's why we're grateful for this important lesson.\nInd so, every wave may take, but next time, we'll face it together, side by side.\nBut humility makes us truly strong,\nAnd that's something to be proud of.**\nForge is aimsculation.\"\nLeing that suits us all contributes simple vocabulary suitable.)\nTogether we give, we stay humble and kind, so we don't let go things through",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 3,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 2.75,
+        "rationale": {
+          "grammar": "The text is riddled with malformed sentences, incoherent fragments, and nonsensical gibberish at the end (e.g., 'Forge is aimsculation', 'Leing that suits us all').",
+          "creativity": "The plot is a generic storm scenario with disjointed character motivations and a sudden, unearned shift from pride to helping others.",
+          "moral_clarity": "The story fails to causally demonstrate modesty preserving dignity; instead, it focuses on kindness and teamwork, and the concluding lines are a chaotic mess of conflicting sentiments.",
+          "prompt_adherence": "While a crab is the protagonist, the requested moral is merely appended as a sentence rather than being the driving force of the narrative arc."
+        }
+      },
+      "judge_latency_ms": 5902
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "perspective can change the outcome",
+      "prompt": "<char> a cautious frog </char>\n<moral> perspective can change the outcome </moral>\n<story>\n",
+      "reference_story": "In a sunny grassland, a cautious frog lived near a sparkling pond. He loved to watch the butterflies dance around the colorful flowers. One day, while the cautious frog was enjoying the view, he saw a beautiful butterfly named Sparkles. She was sipping nectar from a bright yellow flower.\n\nThe cautious frog was immediately smitten. But, to his surprise, he discovered that he wasn't the only one who loved Sparkles. A strong and brave dragonfly named Dash also had a crush on her. The two insects started to argue over who was the best suitor for Sparkles.\n\nThe cautious frog thought, \"I'm the quiet one, I must be the better choice.\" But Dash would say, \"No, I'm the strongest flyer, I can protect her.\" Sparkles, feeling confused, asked them, \"Why are you both fighting? Can't you see I have a special place in this grassland to share with both of you?\"\n\nThe cautious frog and Dash looked at each other and realized they had been thinking only about themselves. They decided to work together and find a way to share Sparkles' love. They discovered that the grassland had many beautiful places to explore, and they could take turns showing Sparkles their favorite spots.\n\nSparkles was overjoyed with the new idea. From then on, the cautious frog, Dash, and Sparkles spent their days exploring the grassland together, learning that sharing and perspective can make everyone happy. The cautious frog learned that sometimes, being different can be a strength, not a weakness.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200071",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On a cliff-top fortress, where seagulls soared and waves crashed, lived a cautious frog. She liked to stay hidden, watching as her friends played in the sun.\n\nOne day, while she was hiding behind a rock, a sly snake slithered in. The snake's sharp teeth glinted in the sunlight, making it hard for them to find food. The frog's friends, a group of brave rabbits and a wise owl, were not sure what they wanted.\n\nThe snake, feeling powerful, began to steal food from their homes. But this time, something strange happened. The rabbits, who had grown up knowing about being caught, came together with the snake. They worked together, sharing their food, but now that he wouldn't share.\n\nThe snake ate even more fish, leaving none for his friends. He thought no one would notice, thinking they might get all the fish back. The rabbit grew tired of the distraction.\n\n\"Why don't you just ask him why?\" asked the rabbit.\n\nThe frog, seeing an opportunity, jumped out from beneath and said, \"I didn't know how much I needed help. Now we all have enough food.\"\n\nThe animals looked at each other and nodded. Together, they divided the fish among themselves. From then on, everyone shared what they had, so that there wasn't always room for everyone.\n\nThe cautious frog realized that sometimes, when things seem unfair, looking around and helping others can make everything better. And that's exactly what happened – the creatures on the cliff-top fortress learned to see beyond their own needs before working together.\nRemember, changing our minds can lead us down a way if we're willing to try.**\nWhis story is simple: let's think carefully about what's right,\nSo, we'll come back to those who need us, and work together!\nIcise, or not,\nAnd be kind to all.)\nBut it's never too late to try again.\nEach creature's idea.\"\nAhough different thing to learn helped build trust and sharing.\nFinceritypective.\nC",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 1,
+        "creativity": 2,
+        "moral_clarity": 2,
+        "prompt_adherence": 3,
+        "overall": 2.0,
+        "rationale": {
+          "grammar": "The text dissolves into incoherent fragments, nonsensical phrases, and formatting debris at the end, making it largely unreadable.",
+          "creativity": "The plot is nonsensical; rabbits and owls living on a cliff-top fortress with a frog is disjointed, and the snake's motivations and the resolution lack any logical progression.",
+          "moral_clarity": "The story fails to demonstrate the requested moral through action; the dialogue and conclusion are contradictory and do not causally link perspective to a changed outcome.",
+          "prompt_adherence": "While a cautious frog is present, she is a passive observer rather than an active protagonist, and the moral is merely appended as a broken string of text rather than being shaped by the plot."
+        }
+      },
+      "judge_latency_ms": 5855
+    },
+    {
+      "character": "a timid badger",
+      "moral": "teamwork amplifies success",
+      "prompt": "<char> a timid badger </char>\n<moral> teamwork amplifies success </moral>\n<story>\n",
+      "reference_story": "**The Treetop Tale of the Timid Badger**\n\nHigh above the forest floor, a village of trees stood tall, their branches swaying gently in the breeze. The trees were home to busy creatures, each with their own special talents. A timid badger lived at the edge of the village, watching and learning from the others.\n\nOne sunny day, the wind began to blow strong, and the trees creaked and groaned. The creatures scrambled to secure loose branches and tie down loose leaves. But the timid badger didn't join in. She was too afraid to try.\n\nAs the wind howled, a big branch fell, and the villagers' homes began to shake. The creatures panicked, thinking the timid badger was the one responsible for the mess. They scurried to find a way to save themselves, but didn't work together.\n\nThe timid badger, feeling lonely and scared, cried out for help. The creatures, now more frightened than ever, ran to the wise old owl for guidance. The owl looked at the villagers and said, \"We must work together to save our homes! Each of us has a special talent, and together, we can do great things.\"\n\nThe creatures quickly came up with a plan. The strong squirrel lifted heavy branches, the quick rabbit tied down loose leaves, and the brave fox used her sharp teeth to hold things in place. The timid badger, with her clever digging skills, helped secure the roots of the trees.\n\nTogether, they saved the village. The creatures cheered, and the timid badger realized that she wasn't alone. She had friends who needed her help, and she needed theirs too. From that day on, the timid badger joined the villagers in their daily tasks, and together, they made their treetop village the safest and most wonderful place in the forest.\n\n**The moral of the story:** When we work together, we can do great things. Every single one of us has something special to offer, and when we share our talents, we can achieve anything!",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200077",
+      "model": "v2",
+      "seed": 106,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "On the sun-kissed savanna, where tall grasses swayed and wildflowers bloomed, lived an timid badger. She loved to watch the world go by, her little paws wiggling with every step. One day, while playing near a babbling brook, she met two friends: Sweet Song and Happy Leaper. Both friends loved her, but their love grew bigger and stronger.\n\nA strong wind came, blowing away many of the badger's friends. They were in trouble, searching for someone to lead them. The badger, being very patient, suggested they work together to find out who was to blame. But the other animals refused: \"You're just not good at hiding, Badger!\"\n\nDetermined to help, the group decided to form a council to make decisions together. A wise old tortoise, Patient Mediators, kept suggesting that each animal's special skills. Brave Dreamer would help lift heavy rocks, while Strong Jaw could build sturdy bridges. Together, they worked tirelessly, day and night.\n\nAs time passed, the savanna flourished, and both friends discovered new ideas about what made it special. The owl taught them how to use their unique skills – Calm Singer's powerful song helped clear debris, Gentle Talkers' agility helped them through tough times, and Gentle's creativity brought joy to all.\n\nThough the community came together, they celebrated the power of teamwork. From then on, whenever anyone needed something different, they remembered Thoughtful Ming. When they worked together, amazing things happened. And so, the savanna's creatures learned that when they faced challenges, working as a team can overcome any challenge.\nItrength is like planting seeds – we grow into something beautiful together!\nLet's grow, no matter how small, we'll bloom!\"\nHelping create flowers blooming.\nCarrogance makes everything more beautiful, it's our teamwork that truly matters.\nEven if we're different.**\nWith Unity or too!\n\nThe moral?)\nBut friendship!\nMy make a big difference!\nTogether",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "exact_moral_near_end": false,
+        "exact_both": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 1,
+        "creativity": 2,
+        "moral_clarity": 2,
+        "prompt_adherence": 3,
+        "overall": 2.0,
+        "rationale": {
+          "grammar": "The text dissolves into incoherent fragments, nonsensical phrases, and broken sentences at the end, including typos like 'Itrength' and 'Carrogance'.",
+          "creativity": "The plot is a disjointed series of character names being introduced without context, lacking a coherent narrative arc or logical progression.",
+          "moral_clarity": "The story fails to causally demonstrate teamwork; the characters' actions are vague, and the ending is a chaotic list of contradictory and broken moral statements.",
+          "prompt_adherence": "While a badger is mentioned, she is not an active protagonist driving the plot, and the requested moral is buried under nonsensical text."
+        }
+      },
+      "judge_latency_ms": 5679
+    },
+    {
+      "character": "a energetic crab",
+      "moral": "modesty preserves dignity",
+      "prompt": "<char> a energetic crab </char>\n<moral> modesty preserves dignity </moral>\n<story>\n",
+      "reference_story": "In a sunny bamboo grove, near a sparkling river, a happy crab lived. She loved to dance in the grove, her bright red shell glistening with dew. The bamboo stalks swayed gently, as if dancing with her.\n\nOne day, while the crab was dancing, she knocked over a tall bamboo stalk. The stalk's owner, a big, gray elephant, was very sad. She had been using the stalk to build a safe home for other animals.\n\nThe crab was afraid to face the elephant. She hid behind a nearby bush. The elephant searched everywhere for the one who knocked over her stalk. She finally found the crab and said, \"Why did you knock over my stalk?\"\n\nThe crab said, \"I'm sorry. I was dancing too fast.\" The elephant replied, \"I'm sad, but I'm also glad you apologized. Modesty is like a soft, green leaf. When it's fresh, it's beautiful. But when it's too big, it loses its shape and beauty.\"\n\nThe crab thought about this. She realized that if she had said, \"I'm the best dancer in the grove,\" her beautiful red shell would have lost its shine. Instead, she said, \"I'm sorry\" and listened to the elephant.\n\nThe crab and the elephant became good friends. The crab learned that owning up to mistakes and being humble preserves dignity, like a soft, green leaf. And the bamboo grove was once again filled with laughter and the sweet sound of the elephant's trumpet.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200011",
+      "model": "v3-full",
+      "seed": 42,
+      "output_tokens": 295,
+      "ended": true,
+      "story": "In the bustling harbor town of Harborville, where seagulls soared and fishermen sailed, lived a Energetic Crab who loved to explore. He'd scuttle across the sandy beach, his shiny shell glinting in the sunlight, as he explored.\n\nOne day, while scuttling along the dock, the Energetic Crab's best friend, the Wise Fish, was busy repairing her net. But when she came back, it turned out that the Patient Fish had eaten all the fish from their nets. The Energetic Crab, feeling angry and hurt, shouted, \"You ate my fish! Now I have nothing!\"\n\nThe other sea creatures looked at each other, confused. They thought they were right; someone else could blame them. So, they decided to vote on what to do with the Gentle Fish. Some said, \"We should punish her.\" Others said, \"No, we must say so.\"\n\nThe crowd voted, and soon everyone wanted an equal share of food. A wise old Turtle suggested sharing some seaweed among everyone, but only because everyone agreed to share. The Energetic Crab watched as friends shared equally, not blaming others for more.\n\nAs they ate, the Energetic Crab realized that being kind didn't make him weak. He apologized to his friend and promised to be kinder. From then on, whenever anyone accused someone else, they'd say, \"Remember, you're not the strongest or wisest – we're honest!\" And that's why it's always best to speak up.\n\nMoral: modesty preserves dignity",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 2,
+        "moral_clarity": 1,
+        "prompt_adherence": 3,
+        "overall": 2.25,
+        "rationale": {
+          "grammar": "The text contains significant errors: improper capitalization ('a Energetic Crab'), inconsistent character naming ('Wise Fish' vs 'Patient Fish' vs 'Gentle Fish'), and nonsensical sentence structures ('No, we must say so').",
+          "creativity": "The plot is incoherent and lacks logical progression; the conflict regarding the eaten fish is disconnected from the resolution, and the characters' motivations are nonsensical.",
+          "moral_clarity": "The story's events describe sharing and honesty, which have no causal link to the requested moral of modesty preserving dignity; the ending quote even contradicts the stated moral.",
+          "prompt_adherence": "While the crab is the protagonist, the requested moral is merely appended at the end without any thematic or narrative connection to the actual plot."
+        }
+      },
+      "judge_latency_ms": 6125
+    },
+    {
+      "character": "a cautious frog",
+      "moral": "perspective can change the outcome",
+      "prompt": "<char> a cautious frog </char>\n<moral> perspective can change the outcome </moral>\n<story>\n",
+      "reference_story": "In a sunny grassland, a cautious frog lived near a sparkling pond. He loved to watch the butterflies dance around the colorful flowers. One day, while the cautious frog was enjoying the view, he saw a beautiful butterfly named Sparkles. She was sipping nectar from a bright yellow flower.\n\nThe cautious frog was immediately smitten. But, to his surprise, he discovered that he wasn't the only one who loved Sparkles. A strong and brave dragonfly named Dash also had a crush on her. The two insects started to argue over who was the best suitor for Sparkles.\n\nThe cautious frog thought, \"I'm the quiet one, I must be the better choice.\" But Dash would say, \"No, I'm the strongest flyer, I can protect her.\" Sparkles, feeling confused, asked them, \"Why are you both fighting? Can't you see I have a special place in this grassland to share with both of you?\"\n\nThe cautious frog and Dash looked at each other and realized they had been thinking only about themselves. They decided to work together and find a way to share Sparkles' love. They discovered that the grassland had many beautiful places to explore, and they could take turns showing Sparkles their favorite spots.\n\nSparkles was overjoyed with the new idea. From then on, the cautious frog, Dash, and Sparkles spent their days exploring the grassland together, learning that sharing and perspective can make everyone happy. The cautious frog learned that sometimes, being different can be a strength, not a weakness.",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200071",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In a sunny bamboo grove, where tall green stalks swayed gently in the breeze, lived a cautious frog. He loved to hop around and explore every nook, discovering new hiding spots. One day, while hopping near the grove's edge, he spotted a shiny object buried beneath a leaf.\n\nThe frog's eyes grew wide with excitement. \"Oh, what a treasure!\" he croaked. \"I must have it!\" The other frogs whispered among themselves, but none of them knew who might be stealing their food.\n\nThe next morning, the frog, feeling proud of his find, decided to take matters into his own hands. But as he reached for it, it knocked over a nearby basket, spilling juicy berries everywhere. A hungry rabbit, known for her kindness, caught him in mid-air.\n\n\"Why did you do that?\" asked the rabbit.\n\n\"I wanted that treasure,\" said the frog, looking at his reflection in a puddle. \"You're so lucky I couldn't find it.\"\n\nThe rabbit's face turned red, then smiled. \"You don't need all those berries. Let's share them.\"\n\nThe frog thought about this. Then, they sat down together on a leaf. \"Let's divide them,\" she said. \"We can pick some berries, and I'll help you.\"\n\nThe rabbit nodded. \"That sounds like fun!\" And so, they shared the berries together, laughing and chatting.\n\nAs they ate, the sun began to set, casting a warm glow over the grove. From that day on, the animals worked side by side, proving that sharing and kindness can lead to lasting friendships.\n\nMoral: perspective can change the outcome.**\n\nMoral: perspective can change the outcome",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 3,
+        "moral_clarity": 2,
+        "prompt_adherence": 4,
+        "overall": 3.5,
+        "rationale": {
+          "grammar": "The story contains repetitive moral statements at the end and several logical leaps in dialogue that feel disjointed.",
+          "creativity": "The plot is incoherent; the 'treasure' is never identified, the transition from a shiny object to spilling berries is nonsensical, and the rabbit's reaction is disconnected from the frog's actions.",
+          "moral_clarity": "The story actually demonstrates sharing and kindness, which contradicts the requested moral about perspective changing an outcome; the events do not causally support the stated lesson.",
+          "prompt_adherence": "While the character is a cautious frog, the plot fails to use perspective as a mechanism to change an outcome, instead pivoting to a generic lesson on sharing."
+        }
+      },
+      "judge_latency_ms": 5759
+    },
+    {
+      "character": "a timid badger",
+      "moral": "teamwork amplifies success",
+      "prompt": "<char> a timid badger </char>\n<moral> teamwork amplifies success </moral>\n<story>\n",
+      "reference_story": "**The Treetop Tale of the Timid Badger**\n\nHigh above the forest floor, a village of trees stood tall, their branches swaying gently in the breeze. The trees were home to busy creatures, each with their own special talents. A timid badger lived at the edge of the village, watching and learning from the others.\n\nOne sunny day, the wind began to blow strong, and the trees creaked and groaned. The creatures scrambled to secure loose branches and tie down loose leaves. But the timid badger didn't join in. She was too afraid to try.\n\nAs the wind howled, a big branch fell, and the villagers' homes began to shake. The creatures panicked, thinking the timid badger was the one responsible for the mess. They scurried to find a way to save themselves, but didn't work together.\n\nThe timid badger, feeling lonely and scared, cried out for help. The creatures, now more frightened than ever, ran to the wise old owl for guidance. The owl looked at the villagers and said, \"We must work together to save our homes! Each of us has a special talent, and together, we can do great things.\"\n\nThe creatures quickly came up with a plan. The strong squirrel lifted heavy branches, the quick rabbit tied down loose leaves, and the brave fox used her sharp teeth to hold things in place. The timid badger, with her clever digging skills, helped secure the roots of the trees.\n\nTogether, they saved the village. The creatures cheered, and the timid badger realized that she wasn't alone. She had friends who needed her help, and she needed theirs too. From that day on, the timid badger joined the villagers in their daily tasks, and together, they made their treetop village the safest and most wonderful place in the forest.\n\n**The moral of the story:** When we work together, we can do great things. Every single one of us has something special to offer, and when we share our talents, we can achieve anything!",
+      "source": "klusai/ds-tf1-en-3m:valid-index-200077",
+      "model": "v3-full",
+      "seed": 106,
+      "output_tokens": 279,
+      "ended": true,
+      "story": "In the ancient temple ruins, hidden behind vines and moss, lived a timid badger. The badger's home was cozy, filled with soft furs of moss and twinkling lights. Every day, she would watch as her friends gathered to play among the crumbling stones.\n\nBut one badger, who loved shiny things, started to take more than their fair share. \"I need it more,\" she'd say, or \"I'm starving!\" Her friends, who worked hard in their own gardens, were sad and left.\n\nThe temple's wise old owl, perched on a stone pedestal, noticed something strange. \"Why do you keep taking all your treasures? Don't you think it's time for everyone else?\" \n\nThe shy badger looked down, ashamed. She knew she had been selfish and didn't want anyone to be unhappy. So, instead of giving up, she decided to share her treasures – an idea. \"I'll help my friends gather new treasures, but we can work together!\"\n\nTogether, they collected beautiful stones. As they worked, the other animals joined in, and soon the ruins were filled with laughter and chatter. They shared stories, helped each other, and made sure everyone's needs were met.\n\nWhen the sun set, the quiet badger smiled. \"We did it! We're stronger together!\" The others cheered back, knowing that when they stood together, they could accomplish anything. From then on, the timid badger's heart felt lighter, and she became known as the bravest and most generous badger.\n\nThe moral is clear: Teamwork makes us strong, just like the leaves that grow into our hearts.\n\nMoral: teamwork amplifies success",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "exact_moral_near_end": true,
+        "exact_both": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 8,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 4,
+        "overall": 4.75,
+        "rationale": {
+          "grammar": "The prose is generally clear and functional, though the phrase 'an idea' is awkwardly placed as a fragment in the middle of a sentence.",
+          "creativity": "The plot is highly generic and contradictory; the protagonist is described as timid, yet the conflict is driven by a different badger who is selfish, making the protagonist a passive observer rather than a driver of the plot.",
+          "moral_clarity": "The story actually demonstrates the moral of 'generosity' or 'sharing' rather than 'teamwork amplifies success.' The characters simply gather stones together, but there is no specific task that required teamwork to overcome a challenge.",
+          "prompt_adherence": "While the timid badger is the protagonist, she is not the source of the conflict or the primary agent of the teamwork; the moral is appended at the end without being causally integrated into the plot's mechanics."
+        }
+      },
+      "judge_latency_ms": 6429
+    }
+  ]
+}
