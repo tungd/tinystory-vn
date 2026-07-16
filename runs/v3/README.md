@@ -1,4 +1,4 @@
-# v3 — conditioning-focused continuation (prepared)
+# v3 — conditioning-focused continuation (pilot complete)
 
 v3 is isolated from v1/v2. It initializes from v2 model weights, never its
 optimizer/scheduler state.
@@ -35,3 +35,16 @@ Canonical destinations:
 - `results/`: v3 evaluation plus v2-v3 comparison.
 
 Actual Colab commands: `docs/runbooks/v3-train.md`.
+
+Pilot result (20,000 examples, 313 steps): train loss 1.509, final eval loss
+1.502, about 71 seconds on A100. The pilot fixed clean stopping (4/4 versus 0/4
+for v2), but exact character and moral matches remained 2/4 each.
+
+Native Gemma judge result (`gemma-4-26b-a4b-it`, minimal thinking):
+
+- v2 overall: 4.75
+- v3 pilot overall: 5.25
+- Mean judge latency: 5.64 seconds over eight calls
+- Full generations and rationales: `results/`
+
+The four-control pilot is directional, not the final held-out evaluation.

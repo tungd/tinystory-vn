@@ -1,0 +1,297 @@
+{
+  "kind": "v3-pilot-generation-comparison",
+  "settings": {
+    "temperature": 0.8,
+    "top_p": 0.9,
+    "repetition_penalty": 1.3,
+    "max_new_tokens": 350
+  },
+  "generations": [
+    {
+      "character": "a wise old tortoise",
+      "moral": "patience and wisdom overcome haste",
+      "prompt": "<char> a wise old tortoise </char>\n<moral> patience and wisdom overcome haste </moral>\n<story>\n",
+      "reference_story": null,
+      "source": "known-v2-failure",
+      "model": "v2",
+      "seed": 42,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the hot desert sand, under sand of golden sand, a wise old owl perched on a tall rock, watching the sun set behind her. \"A great sandstorm is coming,\" she hooted. \"The sandstorms will cover our home!\"\n\nThe other animals scurried to find shelter. But as they searched, the strong winds blew away their homes, leaving them without food or shelter. The owl's nest was blown away, leaving her shivering in the cold.\n\nThe animals, tired and hungry, began to argue about what had happened. They blamed each other, blaming one another for not helping them. A clever rabbit said, \"It should be because we worked so hard!\" while a quick squirrel said. \"No, it must have been safe until I hid.\"\n\nThe wise old owl, seeing this, called out, \"Enough! Let's wait patiently.\" She took some advice from the rest of the group, listening carefully to each animal's needs. As she did, something amazing happened: she saw that even though her own mistakes could lead to big problems. With newfound patience, she guided others through the storm.\n\nAs the storm passed, the animals looked at each other with gratitude. \"We were wrong to blame you,\" said the rabbit. \"You showed us that patience can help you face challenges.\" The wise old owl smiled, \"You've learned an important lesson, my young friend. Remember, it's okay to make mistakes, but it's how we learn from them.\"\n\nThe moral of this story is: **Thumility paves the path to wisdom, and kindness helps build trust among friends.\nPerhaps, whenever accidents happen, we should try again, just like the wise old owl.\nBut with it, we grow stronger and wiser.**\nWisdom?**\nHelps can teach them, and you'll always remember who we are when we work together and respect each other.\nThat kindness goes before us, for a while,\nAnd forgive us.).\n\"My too, day, we'll become wiser than fear, and stay friends forever.\"\nYouon.",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 1,
+        "overall": 2.5,
+        "rationale": {
+          "grammar": "The text suffers from severe fragmentation and nonsensical syntax, such as 'My too, day, we'll become wiser than fear, and stay friends forever.' and 'Youon.'",
+          "creativity": "While the setting of a desert sandstorm is established, the narrative logic breaks down into incoherent rambling toward the end.",
+          "moral_clarity": "The moral is muddled and contains typos, stating 'Thumility paves the path to wisdom' and ending in disjointed phrases.",
+          "prompt_adherence": "The story completely fails the main character requirement, featuring a 'wise old owl' instead of the requested 'wise old tortoise'."
+        }
+      },
+      "judge_latency_ms": 5773
+    },
+    {
+      "character": "a daring pig",
+      "moral": "justice serves all",
+      "prompt": "<char> a daring pig </char>\n<moral> justice serves all </moral>\n<story>\n",
+      "reference_story": "Deep beneath the ocean's waves, where sunlight barely reached, a daring pig lived in a cozy coral cave. She loved to explore the dark, mysterious waters. One day, while swimming near a shipwreck, she met a friendly crab who offered to share his secrets of finding the tastiest seaweed.\n\nThe daring pig promised to keep the crab's secret, but soon, she told all her friends in the ocean about the best spots to find seaweed. The crab was heartbroken when he heard that his secret was out. He scolded the daring pig, saying, \"You broke your promise! Now, everyone knows my secret, and I'll never have a special spot to myself again.\"\n\nThe daring pig realized she had been wrong to keep the crab's secret for herself. She apologized and asked how she could make it right. The crab thought for a moment, \"If you help me find new secret spots, I can share them with you, and we can both enjoy the seaweed together.\"\n\nThe daring pig worked hard to help the crab, and soon they discovered many hidden treasures. The crab was grateful, and they became the best of friends. The ocean's creatures realized that when we share and work together, everyone benefits.\n\nAs the daring pig swam back to her cave, she thought about the crab's words, \"Justice serves all.\" She understood that keeping promises and sharing with others was not just about one person, but about making the ocean a fair and happy place for everyone.",
+      "source": "v3-validation",
+      "model": "v2",
+      "seed": 43,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the heart of ancient ruins, where crumbling stones whispered secrets to the wind, a Daring Pig lived. The Daring Pig's home was a cozy little cave behind a giant stone column. Every day, it would venture out to explore its forgotten dreams.\n\nOne sunny morning, while wandering, the Daring Pig stumbled upon an old map that hinted at hidden treasure. Excited, it began digging up walls and through dusty corridors, searching for the treasure.\n\nAs it dug, the Daring Pig encountered a wise old Owl perched on a nearby pedestal. \"Where are you off to, brave one?\" asked the owl.\n\n\"I'm searching for treasure,\" replied the Daring Pig.\n\nThe Owl looked at the treasure with big, round eyes. \"Treasure is not just gold or jewels, but also many creatures who live in this ruin. Sharing what we have can bring us peace.\"\n\nTogether, they dug around ruins to share their findings with each other. As they worked, the Daring Pig realized that being strong didn't mean doing everything alone; helping others made them happy.\n\nWhen the dust settled, the group gathered around. They saw the treasure, once shiny and strong, now filled with friendship and kindness. From then on, every year, the Brave Monkey, the Old Owl, the Strong Fox, and even the mischievous Monkey became inseparable friends.\n\nAs they sat together, watching the sunset, the Daring Pig smiled, knowing that sharing was the greatest treasure of all. \"Justice serves all,\" said the owl, \"for when everyone gets what's fair.\"\n\nAnd so, the friends continued to work together and help one another, spreading love throughout the ruins.\nUnity, friendship, and fairness makes life's journey shine like the sun.\"\nDisitize, in sharing, and sharing.**\nThat happiness is the magic of unity and friendship.\nThis fable teaches children': until future generations come, as long as before.)\nPerhaps day, when disagreements come together, we'll choose how to make our lives better.\nEnant!\nBut the",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 7,
+        "overall": 4.75,
+        "rationale": {
+          "grammar": "The story descends into nonsensical fragments and broken syntax at the end, such as 'Disitize, in sharing, and sharing.**'.",
+          "creativity": "While the setting of 'ancient ruins' is pleasant, the plot is a generic trope of finding treasure and learning to share.",
+          "moral_clarity": "The moral is muddled because the story focuses on 'sharing' and 'friendship' rather than the requested theme of 'justice serves all', which is only mentioned as a disconnected quote.",
+          "prompt_adherence": "The story includes the 'Daring Pig' and the phrase 'Justice serves all', but fails to integrate the teaching into the actual narrative arc."
+        }
+      },
+      "judge_latency_ms": 5916
+    },
+    {
+      "character": "a ruthless sheep",
+      "moral": "honesty outlives deceit",
+      "prompt": "<char> a ruthless sheep </char>\n<moral> honesty outlives deceit </moral>\n<story>\n",
+      "reference_story": "In a sunny orchard, filled with juicy apples and sweet pears, a ruthless sheep loved to steal the ripest fruits. She would sneak in at night, and the other animals would wake up to find their hard work gone.\n\nThe ruthless sheep loved to brag, \"I'm the best! I'm the strongest! I get the best fruits!\" The other animals were sad and scared. They tried to work together to protect their orchard, but the ruthless sheep always found a way to outsmart them.\n\nOne day, the orchard's leader, a wise old owl, called a meeting. \"We must stop the ruthless sheep,\" said the owl. \"But how?\" asked the other animals. The wise old owl thought for a moment, then said, \"Let's plant a new tree, a tree of honesty. If we all tell the truth, the ruthless sheep will be caught and the orchard will be safe.\"\n\nThe animals worked together and planted the tree. Every day, they would tell the truth, no matter what. The ruthless sheep laughed at first, but soon she noticed that everyone was telling the truth, even when it was hard. She tried to keep up, but she couldn't. One day, she accidentally told the truth and admitted to stealing the fruits. The other animals forgave her, and the ruthless sheep became one of them.\n\nAs the wise old owl said, \"Honesty outlives deceit. When we tell the truth, we build trust and friendship. The orchard is now a happy place, where everyone works together and shares the fruits of their labor.\" The ruthless sheep smiled, and from that day on, she was no longer ruthless, but a kind and honest friend.",
+      "source": "v3-validation",
+      "model": "v2",
+      "seed": 44,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the old, abandoned carnival, colorful balloons swayed in the wind and merry-go-rounds stood still. A ruthless sheep, known for her sharp teeth and mean heart, wandered through the empty midway. She had heard that a kind rabbit, who lived nearby, would often invite all the animals to play.\n\nOne sunny day, while exploring, she stumbled upon a hidden cave behind a rickety game stall. The rabbit was busy collecting shiny trinkets from the carnival's former glory. As they worked together, the rabbit shared stories of far-off lands and secret passages. But when it came time to share stories, the rabbit's eyes sparkled with mischief – he began to whisper lies about the sheep's kindness.\n\n\"Why do you only help each other?\" one of them whispered. \"The sly fox has taken more than his share.\" The other animals started to doubt him, but soon they were fighting among themselves. They didn't know what else to do.\n\nThe ruthless sheep tried to hide her true feelings, but soon, no one wanted to be friends with someone so mean. One evening, as they huddled together under the Ferris wheel, their voices grew quieter. The sheep realized her actions had caused trouble. Feeling sad and alone, she decided to tell everyone the truth.\n\nTogether, they confessed the truth, and the animals forgave them. From then on, the ruthless sheep used her strength to protect, not hurt her. And as they played and explored the carnival together, the other animals learned that honesty outlives deceit.\n\"And so, when our hearts are kind, we build strong friendships in return.\nThis is a lesson we can all learn: being honest and brave will always shine through.\nWhen we stand up for what's right, we become stronger and wiser.\nCourage fades away, and that's exactly where unity once again.\nI'll never go,\" whispered this storytelled and reminders.\nThat acknowledge.\")\n so, every year, on that day maybely.\nL",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 2,
+        "creativity": 5,
+        "moral_clarity": 6,
+        "prompt_adherence": 10,
+        "overall": 5.75,
+        "rationale": {
+          "grammar": "The story descends into nonsensical fragments and broken syntax at the end, such as 'I'll never go,' whispered this storytelled and reminders.'",
+          "creativity": "The setting of an 'abandoned carnival' is an interesting choice, but the plot becomes incoherent.",
+          "moral_clarity": "The moral is explicitly stated as 'honesty outlives deceit,' though the narrative path to reaching it is muddled by the rabbit's confusing actions.",
+          "prompt_adherence": "The story includes the requested main character, 'A ruthless sheep,' and the specific teaching, 'honesty outlives deceit.'"
+        }
+      },
+      "judge_latency_ms": 5399
+    },
+    {
+      "character": "a kind falcon",
+      "moral": "learning never ends",
+      "prompt": "<char> a kind falcon </char>\n<moral> learning never ends </moral>\n<story>\n",
+      "reference_story": "In the Whispering Woods, where tall trees creaked and leaves whispered secrets, a kind falcon lived. She loved to soar through the skies and feel the wind beneath her wings. One day, while flying over the woods, she spotted a juicy rabbit hopping by. Her tummy growled, and her kind heart said, \"Catch it quickly!\"\n\nBut, the falcon's wise mother told her, \"Don't catch the rabbit. It's not time yet.\" The kind falcon didn't listen. She swooped down and caught the rabbit. But, as soon as she did, she felt a strange, cold breeze. The trees started to creak louder, and the leaves whispered, \"Punishment! Punishment!\"\n\nThe kind falcon realized she had disobeyed her mother. A wispy mist surrounded her, and she found herself lost in the woods. The mist was so thick she couldn't see her wings.\n\nAs she fluttered around, she met a friendly squirrel who asked, \"What's wrong, falcon?\" The falcon explained how she was punished. The squirrel said, \"I know the way out. But first, you must learn something new each day.\" The kind falcon was curious and eager to learn. She asked the squirrel questions about the woods and the animals that lived there.\n\nSlowly, the mist began to clear, and the falcon saw her way out. She thanked the squirrel and promised to always listen to her mother's words. From that day on, the kind falcon learned something new each day. She realized that learning never ends, and that's why the Whispering Woods whispered secrets to her once again.",
+      "source": "v3-validation",
+      "model": "v2",
+      "seed": 45,
+      "output_tokens": 350,
+      "ended": false,
+      "story": "In the heart of a lush jungle, an ancient temple stood tall. The sun beat down on its crumbling stones, and vines wrapped around it like green fingers. A wise old owl lived in this temple, watching over all with gentle eyes.\n\nOne day, a swift and proud falcon, known for her sharp talons and fearless hunting skills, arrived at the temple. She was amazed by the owl's wisdom and wanted to learn from her. \"I'm the fastest flyer here!\" she declared, flapping her wings loudly. \"No one can catch me!\"\n\nThe owl, who had been quietly observing, stepped forward. \"Let us see,\" she said. \"Let's explore together, as friends.\"\n\nThe falcon laughed, but the owl's words made sense. As they wandered through the ruins, they came across many obstacles: steep cliffs, dark caves, and even dusty bushes. However, instead of flying ahead, the falcon got lost.\n\nOne day, while exploring the temple, the falcon stumbled upon an old, hidden room. Inside, she found two old scrolls. To their surprise, it revealed that true strength comes not from speed, but from knowledge and love.\n\nThe falcon's eyes widened as she realized how foolish she had been. \"I thought I knew better,\" she said, \"but I'm glad we're friends. We learned something new today.\"\n\nThe owl smiled, \"Learning is what makes life exciting – it's okay to ask questions or learn. And that's exactly what we do.\"\n\nFrom that day on, the falcon visited the temple often, and the owl taught her own young ones about the importance of humility and respect towards others.\nTrue lesson learned, every step together makes you stronger than ever before.\nYou're part of growing wiser.\"\nWisdom grows when you're ready to learn, just like your mother, you'll discover growth and wonder in our hearts.\nInd so, in life, always looking beyond what's truly greater.\nSo, let's explore, more often, always.\"\nbut in mind.\nFriendly learning, and learning.**\n\".\nBut,",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "ended": false
+      },
+      "judge": {
+        "grammar": 3,
+        "creativity": 6,
+        "moral_clarity": 5,
+        "prompt_adherence": 10,
+        "overall": 6.0,
+        "rationale": {
+          "grammar": "The story descends into incoherent fragments and broken syntax at the end, such as 'Ind so, in life, always looking beyond what's truly greater.'",
+          "creativity": "The setting of an ancient temple with hidden scrolls is a classic trope, e.g., 'Inside, she found two old scrolls.'",
+          "moral_clarity": "While the theme is present, the message becomes muddled by the nonsensical concluding lines like 'Friendly learning, and learning.**'.",
+          "prompt_adherence": "The story includes the requested kind falcon and the teaching that learning never ends, e.g., 'Learning is what makes life exciting'."
+        }
+      },
+      "judge_latency_ms": 5508
+    },
+    {
+      "character": "a wise old tortoise",
+      "moral": "patience and wisdom overcome haste",
+      "prompt": "<char> a wise old tortoise </char>\n<moral> patience and wisdom overcome haste </moral>\n<story>\n",
+      "reference_story": null,
+      "source": "known-v2-failure",
+      "model": "v3-pilot",
+      "seed": 42,
+      "output_tokens": 258,
+      "ended": true,
+      "story": "In the heart of an ancient city, hidden beneath vines and trees, stood as crumbling stones for centuries. The once-majestic halls now whispered secrets to those who listened. A wise, perceptive owl perched on a stone pillar, watching the world with curious eyes.\n\nAmong these ruins, a cunning fox gazed at her from afar. She coveted shiny objects, convinced they were worth more than anything – glittering jewels, and precious coins. Her stomach growled, and she began to search for treasure elsewhere.\n\nOne day, while exploring the dusty library, the clever fox stumbled upon an ancient, gnarled tree. It told tales of true value lies within. But when the owl spoke, she'd been too proud to accept. Instead, she claimed that their friendship was greater than any treasure.\n\nThe wise owl, sensing danger, spoke in unison, \"I see your desire, but have you considered this temple itself? You should not be blinded by what it truly brings you pain.\"\n\nThe clever fox, taken aback by the owl's words, realized she had been wrong. Together, they decided to work out a pact, restoring peace between their relationships. As they worked, the sun broke through the clouds, casting warm rays across the city.\n\nTogether, they vowed to protect each other's treasures, not just one treasure. From that day on, the two former enemies roamed the ruins together, proving that even the most unlikely friends can become allies when they listen to each other.\n\nMoral: patience leads to success",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 5,
+        "moral_clarity": 3,
+        "prompt_adherence": 2,
+        "overall": 3.5,
+        "rationale": {
+          "grammar": "The text contains several fragmented and nonsensical sentences, such as 'stood as crumbling stones for centuries' and 'It told tales of true value lies within.'",
+          "creativity": "While the setting of ancient ruins is evocative, the plot transitions are disjointed and lack logical flow, e.g., 'Instead, she claimed that their friendship was greater than any treasure.'",
+          "moral_clarity": "The stated moral 'patience leads to success' contradicts the actual narrative, which focuses on friendship and listening rather than patience or wisdom overcoming haste.",
+          "prompt_adherence": "The story fails to include the requested main character, as it features an owl and a fox instead of 'a wise old tortoise.'"
+        }
+      },
+      "judge_latency_ms": 5999
+    },
+    {
+      "character": "a daring pig",
+      "moral": "justice serves all",
+      "prompt": "<char> a daring pig </char>\n<moral> justice serves all </moral>\n<story>\n",
+      "reference_story": "Deep beneath the ocean's waves, where sunlight barely reached, a daring pig lived in a cozy coral cave. She loved to explore the dark, mysterious waters. One day, while swimming near a shipwreck, she met a friendly crab who offered to share his secrets of finding the tastiest seaweed.\n\nThe daring pig promised to keep the crab's secret, but soon, she told all her friends in the ocean about the best spots to find seaweed. The crab was heartbroken when he heard that his secret was out. He scolded the daring pig, saying, \"You broke your promise! Now, everyone knows my secret, and I'll never have a special spot to myself again.\"\n\nThe daring pig realized she had been wrong to keep the crab's secret for herself. She apologized and asked how she could make it right. The crab thought for a moment, \"If you help me find new secret spots, I can share them with you, and we can both enjoy the seaweed together.\"\n\nThe daring pig worked hard to help the crab, and soon they discovered many hidden treasures. The crab was grateful, and they became the best of friends. The ocean's creatures realized that when we share and work together, everyone benefits.\n\nAs the daring pig swam back to her cave, she thought about the crab's words, \"Justice serves all.\" She understood that keeping promises and sharing with others was not just about one person, but about making the ocean a fair and happy place for everyone.",
+      "source": "v3-validation",
+      "model": "v3-pilot",
+      "seed": 43,
+      "output_tokens": 251,
+      "ended": true,
+      "story": "In the heart of an ancient ruin, where crumbling stones met the sky, lived a Daring Pig. The Daring Pig's home was a cozy little cave behind a waterfall. Every day, it would explore the ruins, discovering hidden treasures and making new friends.\n\nOne sunny afternoon, while wandering through the dusty halls, the Daring Pig stumbled upon its sworn enemy, a sly Fox. They had been enemies for as long as anyone could remember. For centuries, they had always argued over food or space. But today, something unexpected happened. A loud rumble shook the ground, causing the ground to shake.\n\nThe Daring Pig, seeing the ruins in trouble, decided to help. It used its strong sense of smell to sniff out what was like: \"Please stop!\" the Brave Pig exclaimed, rushing past the Fox, who was now standing next to it. \"Don't let us go! We need to find shelter!\"\n\nThe Fox snarled, but eventually, it saw that the Daring Pig wasn't there to fight him. Together, they found some sturdy vines and built a beautiful bridge. As they worked, their growls turned into smiles. The fortress, once a place of fear, began to heal.\n\nAs the dust settled, the Daring Pig realized that even though the Snake had fought with it, working together made things right. \"Justice is when we work together,\" said the Brave, smiling at the Fox. \"When we're kind and fair, everyone benefits.\"\n\nMoral: justice balances power",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": false,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 4,
+        "creativity": 5,
+        "moral_clarity": 4,
+        "prompt_adherence": 9,
+        "overall": 5.5,
+        "rationale": {
+          "grammar": "The text contains repetitive phrasing and nonsensical fragments, such as 'causing the ground to shake' immediately following 'A loud rumble shook the ground' and 'sniff out what was like:'.",
+          "creativity": "While the setting of 'ancient ruin' is classic, the narrative logic is disjointed, such as when the character suddenly becomes a 'Snake' in the sentence 'even though the Snake had fought with it'.",
+          "moral_clarity": "The story's conclusion is inconsistent, as the dialogue claims 'Justice is when we work together' while the explicit Moral states 'justice balances power'.",
+          "prompt_adherence": "The story includes the requested 'Daring Pig' and attempts to address the theme of justice, though it deviates from the specific teaching requested."
+        }
+      },
+      "judge_latency_ms": 6283
+    },
+    {
+      "character": "a ruthless sheep",
+      "moral": "honesty outlives deceit",
+      "prompt": "<char> a ruthless sheep </char>\n<moral> honesty outlives deceit </moral>\n<story>\n",
+      "reference_story": "In a sunny orchard, filled with juicy apples and sweet pears, a ruthless sheep loved to steal the ripest fruits. She would sneak in at night, and the other animals would wake up to find their hard work gone.\n\nThe ruthless sheep loved to brag, \"I'm the best! I'm the strongest! I get the best fruits!\" The other animals were sad and scared. They tried to work together to protect their orchard, but the ruthless sheep always found a way to outsmart them.\n\nOne day, the orchard's leader, a wise old owl, called a meeting. \"We must stop the ruthless sheep,\" said the owl. \"But how?\" asked the other animals. The wise old owl thought for a moment, then said, \"Let's plant a new tree, a tree of honesty. If we all tell the truth, the ruthless sheep will be caught and the orchard will be safe.\"\n\nThe animals worked together and planted the tree. Every day, they would tell the truth, no matter what. The ruthless sheep laughed at first, but soon she noticed that everyone was telling the truth, even when it was hard. She tried to keep up, but she couldn't. One day, she accidentally told the truth and admitted to stealing the fruits. The other animals forgave her, and the ruthless sheep became one of them.\n\nAs the wise old owl said, \"Honesty outlives deceit. When we tell the truth, we build trust and friendship. The orchard is now a happy place, where everyone works together and shares the fruits of their labor.\" The ruthless sheep smiled, and from that day on, she was no longer ruthless, but a kind and honest friend.",
+      "source": "v3-validation",
+      "model": "v3-pilot",
+      "seed": 44,
+      "output_tokens": 248,
+      "ended": true,
+      "story": "On the outskirts of the city, where wildflowers bloomed in every color of the rainbow, lived a ruthless sheep. She was known for stealing food from other animals and never sharing with anyone. The sheep loved to watch her friends work together, but she didn't want them to get scared.\n\nOne day, while wandering through the forest, the ruthless sheep came across a hidden cave. Inside, she found an old, wise badger who had been saving its precious acorn. The owl asked the sheep, \"What do you think you're doing?\" The sheep replied, \"I don't know, I'm just... um... taking some acorns.\" But as they talked, something strange happened. They discovered that the crystal belonged to a family of rabbits who were very kind.\n\nThe sheep's eyes grew wide with surprise. \"This must be mine!\" she exclaimed. But, when she told them, they said, \"No, we share it equally among all animals. We should help each other.\" The beavers agreed, \"Yes, let's make a rule!\" From then on, everyone would take turns choosing which animal could eat first.\n\nThe ruthless sheep learned this lesson too: honesty is always better than deceit. When someone says something, it's true, the others will lose trust in her. And that's why she's now so kind and trustworthy.\" As time passed, the rabbits became her closest friends, helping those in need, just like the wise badger.\n\nThe moral of the story is: \"Honesty outlives deceit.\"\n\nMoral: honesty outlives deceit",
+      "checks": {
+        "exact_character": true,
+        "exact_moral": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 7,
+        "prompt_adherence": 10,
+        "overall": 6.5,
+        "rationale": {
+          "grammar": "The text contains logical inconsistencies and awkward phrasing, such as 'The owl asked the sheep' when no owl was previously mentioned.",
+          "creativity": "The plot is disjointed and nonsensical, jumping from an acorn to a 'crystal' without explanation.",
+          "moral_clarity": "The moral is explicitly stated at the end: 'The moral of the story is: \"Honesty outlives deceit.\"'.",
+          "prompt_adherence": "The story includes the requested main character, 'a ruthless sheep', and the specific teaching, 'honesty outlives deceit'."
+        }
+      },
+      "judge_latency_ms": 5157
+    },
+    {
+      "character": "a kind falcon",
+      "moral": "learning never ends",
+      "prompt": "<char> a kind falcon </char>\n<moral> learning never ends </moral>\n<story>\n",
+      "reference_story": "In the Whispering Woods, where tall trees creaked and leaves whispered secrets, a kind falcon lived. She loved to soar through the skies and feel the wind beneath her wings. One day, while flying over the woods, she spotted a juicy rabbit hopping by. Her tummy growled, and her kind heart said, \"Catch it quickly!\"\n\nBut, the falcon's wise mother told her, \"Don't catch the rabbit. It's not time yet.\" The kind falcon didn't listen. She swooped down and caught the rabbit. But, as soon as she did, she felt a strange, cold breeze. The trees started to creak louder, and the leaves whispered, \"Punishment! Punishment!\"\n\nThe kind falcon realized she had disobeyed her mother. A wispy mist surrounded her, and she found herself lost in the woods. The mist was so thick she couldn't see her wings.\n\nAs she fluttered around, she met a friendly squirrel who asked, \"What's wrong, falcon?\" The falcon explained how she was punished. The squirrel said, \"I know the way out. But first, you must learn something new each day.\" The kind falcon was curious and eager to learn. She asked the squirrel questions about the woods and the animals that lived there.\n\nSlowly, the mist began to clear, and the falcon saw her way out. She thanked the squirrel and promised to always listen to her mother's words. From that day on, the kind falcon learned something new each day. She realized that learning never ends, and that's why the Whispering Woods whispered secrets to her once again.",
+      "source": "v3-validation",
+      "model": "v3-pilot",
+      "seed": 45,
+      "output_tokens": 256,
+      "ended": true,
+      "story": "In the heart of Canyon Valley, where sunbeams danced on golden rocks, a gentle falcon lived. Her feathers shone like polished stone, and her wings spread wide, as if to fly high.\n\nOne day, while soaring above the canyon, she spotted a glittering cave hidden behind a waterfall. The falcon's eyes grew wide with excitement, but when she landed near the cave, she noticed that some birds were whispering among themselves.\n\n\"Why are you so worried?\" one bird asked.\n\nThe falcon, feeling misunderstood, flew back to the canyon entrance. \"What's going on?\" she asked herself.\n\nAs she entered the cave, she found two ancient enemies, a snake and a snake, arguing over a valuable gemstone. They had been fighting for years, their differences making them argue and fight.\n\nThe falcon realized that both sides wanted the gemstone, which was important – friendship. She decided to talk to them, hoping they could work together.\n\nTogether, the three friends formed an alliance, sharing stories about their adventures in the canyon. As they spoke, the wise old owl appeared, \"Why not sign a peace treaty, each other? You can decide who gets what.\"\n\nThe snake's first expression changed, replaced by a warm smile. \"That's a great idea!\"\n\nTogether, the unlikely friends signed a pact, promising to help those in need. From then on, the canyon's creatures lived in harmony, thanks to the power of friendship and teamwork.\n\nMoral: learning never ends, just like the wisdom we learn from our mistakes.\n\nMoral: learning never ends",
+      "checks": {
+        "exact_character": false,
+        "exact_moral": true,
+        "ended": true
+      },
+      "judge": {
+        "grammar": 5,
+        "creativity": 4,
+        "moral_clarity": 3,
+        "prompt_adherence": 10,
+        "overall": 5.5,
+        "rationale": {
+          "grammar": "The text contains repetitive and awkward phrasing, such as 'two ancient enemies, a snake and a snake'.",
+          "creativity": "The plot is disjointed and the resolution involving a 'peace treaty' feels forced and illogical for a fable.",
+          "moral_clarity": "The story focuses on friendship and teamwork, making the stated moral 'learning never ends' feel completely disconnected from the narrative.",
+          "prompt_adherence": "The story includes the requested main character, 'a gentle falcon', and the required teaching, 'learning never ends'."
+        }
+      },
+      "judge_latency_ms": 5064
+    }
+  ],
+  "judge_settings": {
+    "backend": "google-genai",
+    "model": "gemma-4-26b-a4b-it",
+    "thinking_level": "minimal",
+    "response_mime_type": "application/json"
+  },
+  "summary": {
+    "v2": {
+      "judge_mean": {
+        "grammar": 2.5,
+        "creativity": 5.0,
+        "moral_clarity": 4.5,
+        "prompt_adherence": 7.0,
+        "overall": 4.75
+      },
+      "checks_passed": {
+        "exact_character": 2,
+        "exact_moral": 2,
+        "ended": 0
+      },
+      "n": 4
+    },
+    "v3-pilot": {
+      "judge_mean": {
+        "grammar": 4.5,
+        "creativity": 4.5,
+        "moral_clarity": 4.25,
+        "prompt_adherence": 7.75,
+        "overall": 5.25
+      },
+      "checks_passed": {
+        "exact_character": 2,
+        "exact_moral": 2,
+        "ended": 4
+      },
+      "n": 4
+    }
+  }
+}
