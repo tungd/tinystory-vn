@@ -6,11 +6,15 @@ SYSTEM_PROMPT_EN = (
 )
 SYSTEM_PROMPT_MINIMAL_EN = "You are a helpful storyteller."
 
-LENGTH_NUM_PREDICT = {"short": 300, "medium": 600, "long": 1000}
+# num_predict sát headroom của context 512 (prompt ~50-110 token -> story ~400-460
+# token). Bỏ 600/1000 cũ vì vượt seq_len train (model không dùng nổi, chỉ gây cụt).
+LENGTH_NUM_PREDICT = {"short": 400, "medium": 440, "long": 460}
+# Mốc từ kéo về mức model KẾT ĐƯỢC trong context (~300-340 từ tối đa). Hint "long
+# 450-600" cũ vượt khả năng -> chính long dễ cụt nhất. Giữ gradient tương đối.
 LENGTH_HINT_EN = {
-    "short": "Keep it very short (about 120-180 words).",
-    "medium": "Write a medium-length fable (about 250-350 words).",
-    "long": "Write a longer fable (about 450-600 words).",
+    "short": "Keep it short (about 120-160 words).",
+    "medium": "Write a medium-length fable (about 200-260 words).",
+    "long": "Write a fuller fable (about 280-340 words).",
 }
 
 _LABELS = [

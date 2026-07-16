@@ -24,3 +24,11 @@ venv/
 node_modules/
 web/node_modules/
 web/dist/
+
+# build/runtime artifacts
+llama.cpp/
+out/
+
+# tooling / build artifacts
+.playwright-mcp/
+*.egg-info/

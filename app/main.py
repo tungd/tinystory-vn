@@ -9,13 +9,14 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app import ollama_client, judge
+from app.textproc import trim_to_last_sentence
+from app.metrics import distinct_n, flesch_reading_ease
 from app.models_registry import load_models, resolve_ollama
 from app.config import (
     JUDGE_MODEL_ID,
     GEN_TEMPERATURE,
     GEN_TOP_P,
     GEN_REPEAT_PENALTY,
-    RESULTS_PATH,
 )
 from app.guardrail.input_filter import check_input_en
 from app.guardrail.output_filter import check_output_en
@@ -139,6 +140,7 @@ def generate_stream(
                 }
             )
             buf = []
+            done_info = {"reason": None}
             t0 = time.perf_counter()
             try:
                 for piece in gstream(
@@ -150,6 +152,7 @@ def generate_stream(
                     temperature=GEN_TEMPERATURE,
                     top_p=GEN_TOP_P,
                     repeat_penalty=GEN_REPEAT_PENALTY,
+                    on_done=lambda r: done_info.__setitem__("reason", r),
                 ):
                     buf.append(piece)
                     yield _sse({"type": "token", "text": piece})
@@ -158,6 +161,20 @@ def generate_stream(
                 return
             latency_ms = int((time.perf_counter() - t0) * 1000)
             story_text = "".join(buf)
+            # Truyện bị cắt cứng (đụng trần context) -> cắt đuôi dở về câu hoàn chỉnh
+            # cuối. done event gửi story đã làm sạch; frontend dùng lại field story.
+            if done_info["reason"] == "length":
+                trimmed = trim_to_last_sentence(story_text)
+                if trimmed != story_text:
+                    story_text = trimmed
+                    yield _sse(
+                        {
+                            "type": "step",
+                            "stage": "generating",
+                            "status": "ok",
+                            "detail": "Output trimmed to last complete sentence (hit context limit)",
+                        }
+                    )
             output_tokens = len(story_text.split())
             tokens_per_sec = (
                 output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
@@ -247,6 +264,19 @@ def generate_stream(
                 yield _sse({"type": "error", "reason": str(e)})
                 return
             story = result["text"]
+            # Truyện bị cắt cứng -> cắt đuôi dở về câu hoàn chỉnh cuối (trước output-check).
+            if result.get("done_reason") == "length":
+                trimmed = trim_to_last_sentence(story)
+                if trimmed != story:
+                    story = trimmed
+                    yield _sse(
+                        {
+                            "type": "step",
+                            "stage": "generating",
+                            "status": "ok",
+                            "detail": "Output trimmed to last complete sentence (hit context limit)",
+                        }
+                    )
             input_tokens = result.get("input_tokens", 0)
             output_tokens = result.get("output_tokens", 0)
             latency_ms = result.get("latency_ms", 0)
@@ -341,27 +371,34 @@ def evaluate(req: EvalReq, jf=Depends(judge_fn)):
         model = resolve_ollama(jid)
     except KeyError:
         return JSONResponse({"error": f"Unknown judge model: {jid}"}, status_code=400)
-    return judge.evaluate(req.story, req.prompt, model=model, gen=jf)
 
+    # Chủ quan: LLM-as-judge 4 trục (thang 1-10) + overall = trung bình cộng.
+    scores = judge.evaluate(req.story, req.prompt, model=model, gen=jf)
 
-@app.get("/results")
-def results():
-    """Read batch eval summary from RESULTS_PATH.
-
-    Returns:
-      - {"available": true, "data": <json>} if file exists and is valid JSON
-      - {"available": false, "data": null} if file absent or invalid JSON (HTTP 200)
-    """
-    import os
-    results_path = os.getenv("FABLE_RESULTS_PATH", "results/eval_summary.json")
-    if not Path(results_path).exists():
-        return JSONResponse({"available": False, "data": None}, status_code=200)
-    try:
-        with open(results_path, "r") as f:
-            data = json.load(f)
-        return JSONResponse({"available": True, "data": data}, status_code=200)
-    except (json.JSONDecodeError, IOError):
-        return JSONResponse({"available": False, "data": None}, status_code=200)
+    # Khách quan (reference-free, deterministic - phần tự động của phương pháp paper):
+    # tính ngay trên chính truyện. Self-BLEU/perplexity cần tập nhiều truyện/logits
+    # nên chỉ có ở batch eval, không tính được trên 1 mẫu.
+    story = req.story or ""
+    scores["objective"] = {
+        "distinct_1": round(distinct_n([story], 1), 4),
+        "distinct_2": round(distinct_n([story], 2), 4),
+        "flesch_reading_ease": round(flesch_reading_ease(story), 1) if story.strip() else 0.0,
+    }
+    judge_name, _ = _resolve_model_info(jid)
+    scores["method"] = {
+        "judge_model": judge_name,
+        "scale": "1-10 mỗi trục",
+        "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+        "axes": judge.AXIS_RUBRIC,
+        "objective_defs": {
+            "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+            "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+            "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi.",
+        },
+        "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+        "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI).",
+    }
+    return scores
 
 
 # Serve web build if it exists (Phase B)
