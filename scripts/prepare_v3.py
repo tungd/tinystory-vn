@@ -77,11 +77,23 @@ def story_mentions_character(character: str, story: str) -> bool:
     return any(re.search(rf"\b{re.escape(word)}\b", story, re.IGNORECASE) for word in variants)
 
 
+def story_mentions_exact_character(character: str, story: str) -> bool:
+    """Require the complete requested phrase, ignoring case/extra whitespace."""
+    phrase = " ".join(character.casefold().split())
+    normalized_story = " ".join(story.casefold().split())
+    if not phrase:
+        return False
+    return re.search(
+        rf"(?<![\w'-]){re.escape(phrase)}(?![\w'-])",
+        normalized_story,
+    ) is not None
+
+
 def build_example(record: dict | str) -> dict | None:
     character, moral, story = extract_fields(record)
     if not character or not moral or len(story) < 80:
         return None
-    if not story_mentions_character(character, story):
+    if not story_mentions_exact_character(character, story):
         return None
 
     prompt = PREFIX.format(character=character, moral=moral)
@@ -152,6 +164,7 @@ def prepare_v3(
         "validation_fraction": validation_fraction,
         "seed": seed,
         "format": "exact controls + original story + explicit moral",
+        "filter": "original story contains exact character phrase",
         "loss": "target only; prompt masked",
         "tokenizer_source": str(tokenizer_source),
     }

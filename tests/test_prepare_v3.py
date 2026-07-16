@@ -6,6 +6,7 @@ from scripts.prepare_v3 import (
     parse_formatted_v2,
     prepare_v3,
     story_mentions_character,
+    story_mentions_exact_character,
 )
 
 
@@ -32,6 +33,11 @@ def test_character_headword_and_story_match():
     assert not story_mentions_character("a proud lion", "A snake found a crystal.")
 
 
+def test_exact_character_phrase_match():
+    assert story_mentions_exact_character("a clever fox", "A clever   fox crossed the river.")
+    assert not story_mentions_exact_character("a clever fox", "The fox crossed the river.")
+
+
 def test_v3_target_appends_exact_moral():
     example = build_example(V2_SAMPLE)
     assert example is not None
@@ -41,6 +47,11 @@ def test_v3_target_appends_exact_moral():
 
 def test_v3_rejects_story_without_requested_character():
     bad = V2_SAMPLE.replace("a wise old tortoise </char>", "a proud lion </char>")
+    assert build_example(bad) is None
+
+
+def test_v3_rejects_headword_only_character_match():
+    bad = V2_SAMPLE.replace("A wise old tortoise lived", "The tortoise lived")
     assert build_example(bad) is None
 
 

@@ -9,7 +9,7 @@ Implemented changes:
 - Append `Moral: {moral}` before `</story>` in every training target.
 - Mask the `<char>/<moral>/<story>` prefix from loss.
 - Retain the v2 Metaspace tokenizer and 63M architecture.
-- Reject source stories that do not mention the requested character.
+- Require the complete requested character phrase in the original story.
 - Run a 20k-example pilot before the one-epoch continuation.
 
 Local preparation and verification:
@@ -20,7 +20,7 @@ uv run --extra colab python scripts/train_v3.py --dry-run
 uv run pytest -q
 ```
 
-Prepared data: 199,688 accepted, 312 rejected; 189,704 train and 9,984
+Prepared data: 108,487 accepted, 91,513 rejected; 103,063 train and 5,424
 validation examples, seed 42. Training loss checks use a fixed 1,024-row
 validation subset. Bulk data stays gitignored.
 

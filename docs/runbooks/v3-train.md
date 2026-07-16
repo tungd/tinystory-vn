@@ -12,9 +12,9 @@ uv run python scripts/prepare_v3.py
 uv run python scripts/train_v3.py --dry-run
 ```
 
-Expected: 199,688 accepted rows, then `status: ready`. Generated data is under
+Expected: 108,487 accepted rows, then `status: ready`. Generated data is under
 `runs/v3/data/` and gitignored. Each checkpoint evaluates a fixed 1,024-row
-subset; the full 9,984-row split remains available for final evaluation.
+subset; the full 5,424-row split remains available for final evaluation.
 
 ## Colab setup
 
@@ -47,7 +47,7 @@ echo "import subprocess; subprocess.run(['python3','/content/scripts/train_v3.py
 Launch detached so a CLI timeout cannot stop training:
 
 ```bash
-echo "import os,subprocess; os.makedirs('/content/drive/MyDrive/fable200m_v3/logs',exist_ok=True); log=open('/content/drive/MyDrive/fable200m_v3/logs/pilot.log','w'); cmd=['python3','/content/scripts/train_v3.py','--data','/content/drive/MyDrive/fable200m_v3/data','--base-model','/content/drive/MyDrive/fable200m_v2/ckpt','--out','/content/drive/MyDrive/fable200m_v3/pilot/hf','--train-samples','20000','--max-steps','500','--warmup-steps','50']; p=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,start_new_session=True); print('pid',p.pid)" | colab exec -s v3
+echo "import os,subprocess; os.makedirs('/content/drive/MyDrive/fable200m_v3/logs',exist_ok=True); log=open('/content/drive/MyDrive/fable200m_v3/logs/pilot.log','w'); cmd=['python3','/content/scripts/train_v3.py','--data','/content/drive/MyDrive/fable200m_v3/data','--base-model','/content/drive/MyDrive/fable200m_v2/ckpt','--out','/content/drive/MyDrive/fable200m_v3/pilot/hf','--train-samples','20000','--max-steps','313','--warmup-steps','30','--save-steps','150']; p=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,start_new_session=True); print('pid',p.pid)" | colab exec -s v3
 ```
 
 Inspect `/content/drive/MyDrive/fable200m_v3/logs/pilot.log`. Continue only if
@@ -59,7 +59,7 @@ requested character. Judge v2 and pilot on identical controls.
 Use a new output directory; never resume the pilot optimizer:
 
 ```bash
-echo "import os,subprocess; log=open('/content/drive/MyDrive/fable200m_v3/logs/full.log','w'); cmd=['python3','/content/scripts/train_v3.py','--data','/content/drive/MyDrive/fable200m_v3/data','--base-model','/content/drive/MyDrive/fable200m_v2/ckpt','--out','/content/drive/MyDrive/fable200m_v3/full/hf','--train-samples','0','--max-steps','2965','--warmup-steps','100']; p=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,start_new_session=True); print('pid',p.pid)" | colab exec -s v3
+echo "import os,subprocess; log=open('/content/drive/MyDrive/fable200m_v3/logs/full.log','w'); cmd=['python3','/content/scripts/train_v3.py','--data','/content/drive/MyDrive/fable200m_v3/data','--base-model','/content/drive/MyDrive/fable200m_v2/ckpt','--out','/content/drive/MyDrive/fable200m_v3/full/hf','--train-samples','0','--max-steps','1611','--warmup-steps','100','--save-steps','400']; p=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,start_new_session=True); print('pid',p.pid)" | colab exec -s v3
 ```
 
 Stop the VM after artifacts/logs are confirmed on Drive:
