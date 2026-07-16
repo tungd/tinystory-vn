@@ -100,7 +100,7 @@ def main() -> None:
         output_dir=os.path.join(out, "ckpt"), per_device_train_batch_size=args.batch,
         max_steps=args.max_steps, learning_rate=args.lr,
         warmup_steps=max(10, args.max_steps // 10), lr_scheduler_type="cosine",
-        logging_steps=50, report_to="none", save_strategy="steps", save_steps=500,
+        logging_steps=50, report_to="none", save_strategy="steps", save_steps=250,
     )
     trainer = Trainer(model=model, args=targs, train_dataset=ds["train"],
                       eval_dataset=ds["test"], data_collator=collator)
