@@ -129,7 +129,7 @@ def main() -> None:
     stories = []
     for s in SEEDS:
         prompt = PREFIX.format(**s)
-        out_text = pipe(prompt, max_new_tokens=200, do_sample=True,
+        out_text = pipe(prompt, max_new_tokens=150, do_sample=True,
                         temperature=0.8, top_p=0.9, repetition_penalty=1.3)[0]["generated_text"]
         story = out_text.split("<story>", 1)[-1].split("</story>")[0].strip()
         stories.append(story)

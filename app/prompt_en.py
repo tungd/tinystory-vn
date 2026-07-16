@@ -6,11 +6,11 @@ SYSTEM_PROMPT_EN = (
 )
 SYSTEM_PROMPT_MINIMAL_EN = "You are a helpful storyteller."
 
-LENGTH_NUM_PREDICT = {"short": 300, "medium": 600, "long": 1000}
+LENGTH_NUM_PREDICT = {"short": 150, "medium": 350, "long": 600}
 LENGTH_HINT_EN = {
-    "short": "Keep it very short (about 120-180 words).",
-    "medium": "Write a medium-length fable (about 250-350 words).",
-    "long": "Write a longer fable (about 450-600 words).",
+    "short": "Keep it very short (about 80-120 words).",
+    "medium": "Write a medium-length fable (about 180-250 words).",
+    "long": "Write a longer fable (about 350-450 words).",
 }
 
 _LABELS = [
