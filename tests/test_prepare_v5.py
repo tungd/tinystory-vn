@@ -1,6 +1,6 @@
 import json
 
-from scripts.prepare_v5 import build_real_example, prepare_v5
+from scripts.prepare_v5 import build_real_example, inject_character, prepare_v5
 
 
 def annotation(source: str, *, accepted: bool = True) -> dict:
@@ -13,6 +13,7 @@ def annotation(source: str, *, accepted: bool = True) -> dict:
         "annotation": {
             "accepted": accepted,
             "protagonist_anchor": "A patient Fox",
+            "trait": "patient",
             "moral": "patience helps a community overcome trouble",
         },
     }
@@ -42,6 +43,28 @@ def test_real_example_rejects_nonexact_anchor():
     row = annotation("one")
     row["annotation"]["protagonist_anchor"] = "The patient Fox"
     assert build_real_example(row) is None
+
+
+def test_real_example_rejects_nonadjective_trait():
+    row = annotation("one")
+    row["annotation"]["trait"] = "misunderstanding"
+    assert build_real_example(row) is None
+
+
+def test_injects_trait_and_repairs_article_once():
+    character, story = inject_character(
+        "A Owl watched while another Owl slept.", "A Owl", "observant"
+    )
+    assert character == "An observant Owl"
+    assert story == "An observant Owl watched while another Owl slept."
+
+
+def test_injects_trait_after_count_for_plural_anchor():
+    character, story = inject_character(
+        "The three Fishes crossed the pond.", "The three Fishes", "resourceful"
+    )
+    assert character == "The three resourceful Fishes"
+    assert story.startswith(character)
 
 
 def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_path):

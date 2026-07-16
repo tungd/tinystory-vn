@@ -18,7 +18,8 @@
     "max_words": 450,
     "annotation_model": "gemma-4-26b-a4b-it",
     "annotation_thinking": "minimal",
-    "story_rewriting": false
+    "story_rewriting": false,
+    "deterministic_edit": "insert audited trait at first exact protagonist anchor"
   },
   "mix": {
     "validation_fraction": 0.1,
@@ -29,7 +30,8 @@
     "epochs": 10,
     "batch": 64,
     "learning_rate": 0.00001,
-    "expected_steps": 180
+    "expected_steps": 180,
+    "checkpoint_sweep": [50, 100, 150, "final"]
   },
   "evaluation": {
     "controls": "same 100 fresh TF1 controls used by v4",

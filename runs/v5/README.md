@@ -13,8 +13,9 @@ v3-full weights with a fresh optimizer; v4 is not promoted.
   Gutenberg IDs and URLs.
 - Gemma labels an exact protagonist phrase, demonstrated trait, and causal
   moral. It may reject a section but never rewrites the story.
-- Accepted human stories remain unrewritten apart from whitespace normalization
-  and the canonical `Moral: ...` footer required by the existing target format.
+- Preparation deterministically inserts that one trait at the first exact
+  protagonist mention, then adds the canonical `Moral: ...` footer. No other
+  prose is generated or rewritten.
 - `demelin/understanding_fables` remains evaluation-only and is not training
   data.
 
@@ -28,6 +29,10 @@ rate limits.
 - Repeat each remaining human story three times.
 - Add one deterministic v3 replay example per unique human training story.
 - Train ten short epochs at `1e-5`, expected about 180 total steps.
+
+Checkpoints at steps 50, 100, 150, and final are a built-in duration sweep.
+Screen all four on 20 matched controls before running the 100-control evaluation;
+the final checkpoint is not automatically preferred.
 
 The repeated human set supplies 75% of training rows. Replay limits catastrophic
 forgetting; it is not counted as quality data.

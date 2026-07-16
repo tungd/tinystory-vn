@@ -49,6 +49,11 @@ python3 /content/scripts/train_v5.py \
 Expected: roughly 1,100 mixed examples and 180 steps. Exact count comes from
 `data/prepared/meta.json` after annotation finishes.
 
+Do not assume the final checkpoint is best. Generate 20 matched controls from
+`checkpoint-50`, `checkpoint-100`, `checkpoint-150`, and the final export. Pick
+the duration using deterministic conditioning plus manual coherence inspection,
+then run the selected checkpoint through the full evaluation below.
+
 ## Evaluation
 
 Generate 100 matched outputs:

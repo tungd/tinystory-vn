@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import random
+import re
 import shutil
 import sys
 from collections import Counter
@@ -23,27 +24,62 @@ from scripts.label_v5 import latest_by_source, load_jsonl
 from scripts.prepare_v3 import PREFIX, story_mentions_exact_character
 
 
+NUMBER_WORDS = {
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+}
+TRAIT_BLOCKLIST = {"misunderstanding"}
+
+
 def _validation(source: str, seed: int, fraction: float) -> bool:
     digest = hashlib.sha256(f"{seed}:{source}".encode()).digest()
     return int.from_bytes(digest[:8], "big") / 2**64 < fraction
+
+
+def inject_character(story: str, anchor: str, trait: str) -> tuple[str, str] | None:
+    """Insert one audited trait at the first exact protagonist mention."""
+    match = re.search(re.escape(anchor), story, flags=re.IGNORECASE)
+    if not match:
+        return None
+    original = story[match.start() : match.end()]
+    words = original.split()
+    if trait.casefold() in {word.casefold() for word in words}:
+        character = original
+    elif words and words[0].casefold() in {"a", "an", "the"}:
+        insert_at = 2 if len(words) > 1 and words[1].casefold() in NUMBER_WORDS else 1
+        if words[0].casefold() in {"a", "an"}:
+            article = "an" if trait[0].casefold() in "aeiou" else "a"
+            words[0] = article.capitalize() if words[0][0].isupper() else article
+        words.insert(insert_at, trait)
+        character = " ".join(words)
+    else:
+        character = f"{trait} {original}"
+    modified = story[: match.start()] + character + story[match.end() :]
+    return character, modified
 
 
 def build_real_example(row: dict) -> dict | None:
     annotation = row.get("annotation", {})
     if not annotation.get("accepted"):
         return None
-    character = " ".join(annotation.get("protagonist_anchor", "").split())
+    anchor = " ".join(annotation.get("protagonist_anchor", "").split())
+    trait = annotation.get("trait", "").strip().casefold()
     moral = " ".join(annotation.get("moral", "").split())
     story = row.get("story", "").strip()
-    if not character or not moral or not story:
+    if not anchor or not trait or trait in TRAIT_BLOCKLIST or not moral or not story:
         return None
+    injected = inject_character(story, anchor, trait)
+    if injected is None:
+        return None
+    character, story = injected
     if not story_mentions_exact_character(character, story):
-        return None
+        raise AssertionError("injected v5 character must appear exactly")
     return {
         "character": character,
         "moral": moral,
         "source": row["source"],
         "source_type": "public-domain-human",
+        "original_protagonist_anchor": anchor,
+        "demonstrated_trait": trait,
         "collection": row["collection"],
         "title": row["title"],
         "prompt": PREFIX.format(character=character, moral=moral),
