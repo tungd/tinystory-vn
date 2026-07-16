@@ -1,10 +1,18 @@
 import json
 
-from scripts.prepare_v5 import build_real_example, inject_character, prepare_v5
+from scripts.prepare_v5 import (
+    build_external_control,
+    build_real_example,
+    inject_character,
+    prepare_v5,
+)
 
 
 def annotation(source: str, *, accepted: bool = True) -> dict:
-    story = f"A patient Fox named {source} crossed a river and calmly helped his friends."
+    story = (
+        f"A patient Fox named {source} crossed a river and calmly helped his friends. "
+        + "He listened, carried stones, and chose a safe path for every animal. " * 8
+    )
     return {
         "source": source,
         "collection": "Human Fables",
@@ -33,7 +41,7 @@ def test_real_example_preserves_story_and_exact_anchor():
     example = build_real_example(row)
     assert example is not None
     assert example["character"] == "A patient Fox"
-    assert example["target"].startswith(row["story"])
+    assert example["target"].startswith(row["story"].strip())
     assert example["target"].endswith(
         "Moral: patience helps a community overcome trouble\n</story>"
     )
@@ -55,6 +63,32 @@ def test_real_example_rejects_outdated_child_unsuitable_language():
     row = annotation("one")
     row["story"] += " It used an outdated tale about Hottentots."
     assert build_real_example(row) is None
+
+
+def test_real_example_rejects_story_over_generation_budget():
+    row = annotation("one")
+    row["story"] = "A patient Fox " + "carefully helped friends. " * 130
+    row["annotation"]["protagonist_anchor"] = "A patient Fox"
+    assert build_real_example(row) is None
+
+
+def test_modern_paraphrase_accepts_short_complete_fable():
+    row = annotation("modern")
+    row["collection"] = "Understanding Fables"
+    row["story"] = "A patient Fox " + "helped every friend cross safely. " * 10
+    row["annotation"]["protagonist_anchor"] = "A patient Fox"
+    assert 50 <= len(row["story"].split()) < 70
+    assert build_real_example(row) is not None
+
+
+def test_external_holdout_becomes_control_not_training_example():
+    row = annotation("external")
+    row["source_split"] = "external_holdout"
+    assert build_real_example(row) is None
+    control = build_external_control(row)
+    assert control is not None
+    assert control["source"] == "external"
+    assert control["character"] in control["reference_story"]
 
 
 def test_injects_trait_and_repairs_article_once():
@@ -84,6 +118,9 @@ def test_injection_does_not_match_noun_prefix():
 def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_path):
     annotations = [annotation(str(i)) for i in range(20)]
     annotations.insert(0, annotation("0", accepted=False))
+    external = annotation("external")
+    external["source_split"] = "external_holdout"
+    annotations.append(external)
     tokenizer = tmp_path / "tokenizer.json"
     controls = tmp_path / "controls.json"
     tokenizer.write_text('{"version":"test"}')
@@ -108,6 +145,8 @@ def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_pa
         row["source"] for row in train if row["source_type"] == "public-domain-human"
     }
     assert meta["real_accepted"] == 20
+    assert meta["external_controls"] == 1
     assert train_real_sources.isdisjoint({row["source"] for row in validation})
     assert sum(row["source_type"] == "v3-replay" for row in train) == len(train_real_sources)
     assert len(train) == len(train_real_sources) * 3
+    assert len(json.loads((out / "external_controls.json").read_text())) == 1

@@ -1,6 +1,13 @@
 {
   "version": 1,
-  "policy": "Project Gutenberg human-authored public-domain collections only; raw text remains untracked.",
+  "policy": "Human-authored public-domain collections plus MIT-licensed manual paraphrases; raw text remains untracked.",
+  "modern_source": {
+    "dataset": "demelin/understanding_fables",
+    "url": "https://huggingface.co/datasets/demelin/understanding_fables/resolve/main/test.jsonl",
+    "license": "MIT",
+    "records": 189,
+    "split": "deterministic 80% train / 20% external holdout"
+  },
   "sources": [
     {
       "gutenberg_id": 21,

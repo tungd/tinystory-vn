@@ -36,6 +36,16 @@ def test_parse_annotation_accepts_strict_exact_label():
     assert annotation["trait"] == "merciful"
 
 
+def test_parse_annotation_preserves_provided_moral_exactly():
+    raw = """{
+      "protagonist_anchor":"A Lion","trait":"merciful","moral":"different wording",
+      "coherence":5,"moral_causality":5,"complete":true,"child_suitable":true,
+      "accept":true,"reason":"The mouse repays mercy."
+    }"""
+    annotation = parse_annotation(raw, STORY, "Kindness is repaid.")
+    assert annotation["moral"] == "Kindness is repaid."
+
+
 def test_parse_annotation_rejects_invented_anchor_and_weak_moral():
     raw = """{
       "protagonist_anchor": "The brave tiger",

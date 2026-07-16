@@ -12,8 +12,10 @@ set -a; source .env; set +a
 uv run python scripts/label_v5.py --workers 2 --request-interval 4
 ```
 
-Annotation is resumable. API errors are retried on the next invocation; latest
-successful annotation wins for each source.
+Source preparation also fetches the MIT-licensed `Understanding Fables` manual
+paraphrases and reserves a deterministic 20% external holdout. Annotation is
+resumable. API errors are retried on the next invocation; latest successful
+annotation wins for each source.
 
 Build the quality-weighted mixture:
 

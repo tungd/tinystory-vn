@@ -9,6 +9,8 @@ v3-full weights with a fresh optimizer; v4 is not promoted.
 ## Data policy
 
 - Nine human-authored Project Gutenberg fable/folk-tale collections.
+- 189 MIT-licensed `demelin/understanding_fables` stories manually paraphrased
+  into contemporary English; deterministic 80% train / 20% external holdout.
 - Raw books and prepared data remain gitignored; tracked metadata keeps exact
   Gutenberg IDs and URLs.
 - Gemma labels an exact protagonist phrase, demonstrated trait, and causal
@@ -16,12 +18,13 @@ v3-full weights with a fresh optimizer; v4 is not promoted.
 - Preparation deterministically inserts that one trait at the first exact
   protagonist mention, then adds the canonical `Moral: ...` footer. No other
   prose is generated or rewritten.
-- `demelin/understanding_fables` remains evaluation-only and is not training
-  data.
+- Prepared Gutenberg stories are 70-250 words; concise modern paraphrases may be
+  50-250 words. Their causal endings fit the existing generation budget.
+- The modern source supplies its exact moral; Gemma cannot replace it.
 
-The parser found 394 complete sections between 70 and 450 words. A stratified
-45-story annotation smoke test accepted 36 (80%) after retrying free-tier API
-rate limits.
+The parser found 398 Gutenberg sections between 70 and 450 words, plus 189
+modern paraphrases. A stratified 45-story Gutenberg annotation smoke test
+accepted 36 (80%) after retrying free-tier API rate limits.
 
 ## Pilot mixture
 
@@ -48,5 +51,8 @@ Use the same 100 v4-held-out TF1 controls for direct v3 comparison:
 - Mean pairwise quality improves at least 0.5 without grammar or moral-clarity
   regression.
 - Record unedited low/median/high stories before promotion.
+
+Then run the selected checkpoint on the reserved modern controls as a secondary
+out-of-source check. These do not replace the direct matched TF1 comparison.
 
 Runbook: `docs/runbooks/v5-train.md`.

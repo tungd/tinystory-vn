@@ -14,6 +14,9 @@ from pathlib import Path
 
 BLOCK_TAGS = {"p", "blockquote", "li", "div", "pre"}
 IGNORED_TAGS = {"script", "style", "nav", "header", "footer"}
+UNDERSTANDING_FABLES_URL = (
+    "https://huggingface.co/datasets/demelin/understanding_fables/resolve/main/test.jsonl"
+)
 
 
 def normalize_text(value: str) -> str:
@@ -221,6 +224,37 @@ def fetch_html(url: str) -> str:
         return response.read().decode("utf-8", errors="replace")
 
 
+def collect_understanding_fables(
+    document: str, *, seed: int = 42, holdout_fraction: float = 0.2
+) -> list[dict]:
+    rows = []
+    for index, line in enumerate(document.splitlines()):
+        if not line.strip():
+            continue
+        source = json.loads(line)
+        story = re.sub(
+            r"\s*What is the moral of this story\?\s*$", "", source["story"], flags=re.I
+        ).strip()
+        moral = source[f"answer{source['label']}"]
+        source_id = f"understanding-fables:{index}"
+        value = int.from_bytes(
+            hashlib.sha256(f"{seed}:{source_id}".encode()).digest()[:8], "big"
+        ) / 2**64
+        rows.append({
+            "source": source_id,
+            "collection": "Understanding Fables",
+            "url": UNDERSTANDING_FABLES_URL,
+            "title": source_id,
+            "story": story,
+            "word_count": len(story.split()),
+            "story_sha256": hashlib.sha256(story.encode()).hexdigest(),
+            "license": "MIT",
+            "provided_moral": moral,
+            "source_split": "external_holdout" if value < holdout_fraction else "train",
+        })
+    return rows
+
+
 def load_manifest(path: str | Path) -> list[dict]:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     return data["sources"]
@@ -275,11 +309,21 @@ def main() -> None:
     parser.add_argument("--meta", default="runs/v5/data/source_meta.json")
     parser.add_argument("--min-words", type=int, default=70)
     parser.add_argument("--max-words", type=int, default=380)
+    parser.add_argument("--without-modern", action="store_true")
     args = parser.parse_args()
 
     candidates, meta = collect_candidates(
         load_manifest(args.manifest), min_words=args.min_words, max_words=args.max_words
     )
+    if not args.without_modern:
+        modern = collect_understanding_fables(fetch_html(UNDERSTANDING_FABLES_URL))
+        candidates.extend(modern)
+        meta["modern_candidates"] = len(modern)
+        meta["modern_train"] = sum(row["source_split"] == "train" for row in modern)
+        meta["modern_external_holdout"] = sum(
+            row["source_split"] == "external_holdout" for row in modern
+        )
+        meta["candidates"] = len(candidates)
     output = Path(args.out)
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.exists() or Path(args.meta).exists():

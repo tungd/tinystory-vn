@@ -30,6 +30,9 @@ NUMBER_WORDS = {
 }
 TRAIT_BLOCKLIST = {"misunderstanding"}
 CONTENT_BLOCKLIST = re.compile(r"\b(?:Hottentots?|Bushmen)\b", re.IGNORECASE)
+MIN_STORY_WORDS = 70
+MODERN_MIN_STORY_WORDS = 50
+MAX_STORY_WORDS = 250
 
 
 def _validation(source: str, seed: int, fraction: float) -> bool:
@@ -65,12 +68,18 @@ def inject_character(story: str, anchor: str, trait: str) -> tuple[str, str] | N
 
 def build_real_example(row: dict) -> dict | None:
     annotation = row.get("annotation", {})
-    if not annotation.get("accepted"):
+    if not annotation.get("accepted") or row.get("source_split") == "external_holdout":
         return None
     anchor = " ".join(annotation.get("protagonist_anchor", "").split())
     trait = annotation.get("trait", "").strip().casefold()
     moral = " ".join(annotation.get("moral", "").split())
     story = clean_public_story(row.get("story", ""))
+    word_count = len(story.split())
+    min_story_words = (
+        MODERN_MIN_STORY_WORDS
+        if row.get("collection") == "Understanding Fables"
+        else MIN_STORY_WORDS
+    )
     if (
         not anchor
         or not trait
@@ -78,6 +87,7 @@ def build_real_example(row: dict) -> dict | None:
         or not moral
         or not story
         or CONTENT_BLOCKLIST.search(story)
+        or not min_story_words <= word_count <= MAX_STORY_WORDS
     ):
         return None
     injected = inject_character(story, anchor, trait)
@@ -95,8 +105,26 @@ def build_real_example(row: dict) -> dict | None:
         "demonstrated_trait": trait,
         "collection": row["collection"],
         "title": row["title"],
+        "story_words": word_count,
         "prompt": PREFIX.format(character=character, moral=moral),
         "target": f"{story}\n\nMoral: {moral}\n</story>",
+    }
+
+
+def build_external_control(row: dict) -> dict | None:
+    if row.get("source_split") != "external_holdout":
+        return None
+    training_shape = {**row, "source_split": "train"}
+    example = build_real_example(training_shape)
+    if example is None:
+        return None
+    story = example["target"].rsplit("\n\nMoral:", 1)[0]
+    return {
+        "character": example["character"],
+        "moral": example["moral"],
+        "prompt": example["prompt"],
+        "reference_story": story,
+        "source": example["source"],
     }
 
 
@@ -123,6 +151,9 @@ def prepare_v5(
 
     latest = latest_by_source(annotations)
     real = [example for row in latest.values() if (example := build_real_example(row))]
+    external_controls = [
+        control for row in latest.values() if (control := build_external_control(row))
+    ]
     if len(real) < 10:
         raise ValueError("Need at least ten accepted public-domain stories")
     real.sort(key=lambda row: row["source"])
@@ -147,7 +178,10 @@ def prepare_v5(
 
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    outputs = [out / name for name in ("train.jsonl", "validation.jsonl", "meta.json")]
+    outputs = [
+        out / name
+        for name in ("train.jsonl", "validation.jsonl", "external_controls.json", "meta.json")
+    ]
     if any(path.exists() for path in outputs):
         raise FileExistsError(f"Refusing existing v5 dataset in {out}")
     for path, rows in ((out / "train.jsonl", train), (out / "validation.jsonl", validation)):
@@ -157,6 +191,10 @@ def prepare_v5(
         )
     shutil.copy2(tokenizer_source, out / "tokenizer.json")
     shutil.copy2(eval_controls_source, out / "eval_controls.json")
+    (out / "external_controls.json").write_text(
+        json.dumps(sorted(external_controls, key=lambda row: row["source"]), indent=2) + "\n",
+        encoding="utf-8",
+    )
 
     collections = Counter(row["collection"] for row in real)
     meta = {
@@ -168,6 +206,7 @@ def prepare_v5(
         "replay": len(replay),
         "train": len(train),
         "validation_real": len(validation),
+        "external_controls": len(external_controls),
         "validation_fraction": validation_fraction,
         "collections": dict(sorted(collections.items())),
         "seed": seed,

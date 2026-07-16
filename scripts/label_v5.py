@@ -49,6 +49,13 @@ def _wait_for_rate_slot() -> None:
 
 
 def build_annotation_prompt(row: dict) -> str:
+    supplied_moral = row.get("provided_moral")
+    moral_rule = (
+        f'- The supplied moral is fixed exactly as: "{supplied_moral}". Judge whether the '
+        "events causally demonstrate it; return it unchanged.\n"
+        if supplied_moral else
+        "- moral must be one concise general lesson causally demonstrated by the outcome.\n"
+    )
     return (
         "Annotate this complete story for controlled fable training. Do not rewrite or "
         "continue it. Judge only its actual events.\n\n"
@@ -62,7 +69,7 @@ def build_annotation_prompt(row: dict) -> str:
         "- protagonist_anchor must be an exact contiguous phrase already in STORY, "
         "normally beginning a/an/the, and identify the active protagonist.\n"
         "- trait must describe behavior visibly demonstrated in the plot, not an invented trait.\n"
-        "- moral must follow causally from conflict, choice, and outcome; no generic guess.\n"
+        + moral_rule +
         "- coherence and moral_causality use 1-5; accept requires both >=4.\n"
         "- reject excerpts, framing text, disconnected events, archaic text too hard for "
         "children, or stories whose lesson is unclear.\n\n"
@@ -76,11 +83,11 @@ def _find_exact_casefold(haystack: str, needle: str) -> tuple[int, int] | None:
     return match.span() if match else None
 
 
-def parse_annotation(raw: str, story: str) -> dict:
+def parse_annotation(raw: str, story: str, provided_moral: str | None = None) -> dict:
     data = _extract_json(raw)
     anchor = " ".join(str(data.get("protagonist_anchor", "")).split())
     trait = str(data.get("trait", "")).strip().casefold()
-    moral = " ".join(str(data.get("moral", "")).split()).strip(" \"'")
+    moral = " ".join(str(provided_moral or data.get("moral", "")).split()).strip(" \"'")
     reason = " ".join(str(data.get("reason", "")).split())
     try:
         coherence = int(data.get("coherence", 0))
@@ -166,7 +173,10 @@ def annotate(row: dict, model: str, retries: int = 3) -> dict:
                 num_predict=800,
                 temperature=0.0,
             )
-            return {**row, "annotation": parse_annotation(raw, row["story"])}
+            return {
+                **row,
+                "annotation": parse_annotation(raw, row["story"], row.get("provided_moral")),
+            }
         except Exception as exc:  # API errors are retried and persisted as failures.
             last_error = exc
             retry_match = re.search(r"retry in ([\d.]+)s|retryDelay[^\d]+(\d+)s", str(exc))

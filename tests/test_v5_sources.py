@@ -1,4 +1,9 @@
-from scripts.v5_sources import clean_public_story, extract_sections, normalize_heading
+from scripts.v5_sources import (
+    clean_public_story,
+    collect_understanding_fables,
+    extract_sections,
+    normalize_heading,
+)
 
 
 def test_extracts_only_configured_gutenberg_headings():
@@ -81,3 +86,14 @@ def test_clean_story_removes_cast_without_note():
         "Tortoise walked into the forest and carefully warned every animal nearby."
     )
     assert clean_public_story(raw).startswith("Tortoise walked")
+
+
+def test_understanding_fables_preserves_supplied_moral_and_reserves_holdout():
+    document = (
+        '{"story":"A fox helped a bird. What is the moral of this story?",'
+        '"answer0":"kindness returns","answer1":"haste fails","label":0}\n'
+    )
+    rows = collect_understanding_fables(document, seed=7, holdout_fraction=1.0)
+    assert rows[0]["story"] == "A fox helped a bird."
+    assert rows[0]["provided_moral"] == "kindness returns"
+    assert rows[0]["source_split"] == "external_holdout"
