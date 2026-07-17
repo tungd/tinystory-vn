@@ -1,6 +1,6 @@
 # v5 — human-story quality pilot
 
-Status: data ready; training pending.
+Status: complete; not promoted. V3-full remains champion.
 
 v5 tests whether a small amount of coherent human prose improves the 63M model
 more efficiently than another large TF1 continuation. It starts from immutable
@@ -48,7 +48,7 @@ Use the same 100 v4-held-out TF1 controls for direct v3 comparison:
 - Exact character at least 70%.
 - Exact moral at least 90%.
 - Clean ending 100%.
-- Blind, randomized, high-thinking paired Gemma judge prefers v5 over v3-full.
+- Blind, randomized, strict-schema paired Gemma judge prefers v5 over v3-full.
 - Mean pairwise quality improves at least 0.5 without grammar or moral-clarity
   regression.
 - Record unedited low/median/high stories before promotion.
@@ -57,3 +57,23 @@ Then run the selected checkpoint on the reserved modern controls as a secondary
 out-of-source check. These do not replace the direct matched TF1 comparison.
 
 Runbook: `docs/runbooks/v5-train.md`.
+
+## Outcome
+
+Training completed 260 steps in 70.28 seconds. Train loss was 3.343; validation
+loss improved from 5.181 at step 50 to 4.755 at final. Step 50 won the small
+checkpoint sweep and was used for the full evaluation.
+
+On 100 matched TF1 controls, V5 changed exact character 71% → 77%, exact moral
+91% → 81%, exact both 65% → 62%, and clean ending stayed 100%. On 26 modern
+external controls, exact both was 0% for both V3 and V5.
+
+The strict blind judge preferred V3 11 times, V5 5 times, with 4 ties. Mean
+overall fell 4.10 → 3.71; grammar, creativity, moral clarity, and adherence all
+regressed. High thinking repeatedly exhausted 2,000 and 8,192-token budgets
+without completing JSON, so the final 20-pair run used minimal thinking plus a
+bounded JSON schema.
+
+V5 fails the moral, pairwise preference, and quality-improvement gates. Human
+continuation improved neither causal coherence nor prose quality enough to
+offset conditioning loss. Do not promote it.

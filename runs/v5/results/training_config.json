@@ -1,0 +1,17 @@
+{
+  "data": "/content/v5-data/prepared",
+  "base_model": "/content/drive/MyDrive/fable200m_v3/full/hf",
+  "out": "/content/drive/MyDrive/fable200m_v5/pilot/hf",
+  "block_size": 1024,
+  "max_steps": 260,
+  "epochs": 10,
+  "batch": 64,
+  "learning_rate": 1e-05,
+  "warmup_steps": 10,
+  "save_steps": 50,
+  "validation_samples": 0,
+  "seed": 42,
+  "dry_run": false,
+  "train_examples": 1632,
+  "validation_examples": 27
+}

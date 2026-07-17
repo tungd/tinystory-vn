@@ -136,6 +136,7 @@ def main() -> None:
         train_dataset=encoded["train"],
         eval_dataset=encoded["validation"],
         data_collator=StoryOnlyCollator(),
+        processing_class=tokenizer,
     )
     trainer.train()
     trainer.save_model(str(output))

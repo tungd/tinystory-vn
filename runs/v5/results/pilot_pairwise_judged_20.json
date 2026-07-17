@@ -1,0 +1,621 @@
+{
+  "kind": "v5-blind-pairwise-judge",
+  "source": "runs/v5/results/pilot_generations_100.json",
+  "selection": {
+    "controls": 20,
+    "seed": 42
+  },
+  "judge_settings": {
+    "backend": "google-genai",
+    "model": "gemma-4-26b-a4b-it",
+    "thinking_level": "minimal",
+    "max_output_tokens": 2000,
+    "prompt_version": "v3-blind-pairwise-strict-schema"
+  },
+  "complete": true,
+  "summary": {
+    "wins": {
+      "tie": 4,
+      "v5": 5,
+      "v3-full": 11
+    },
+    "mean_scores": {
+      "v3-full": {
+        "grammar": 4.45,
+        "creativity": 3.7,
+        "moral_clarity": 2.7,
+        "prompt_adherence": 5.55,
+        "overall": 4.1
+      },
+      "v5": {
+        "grammar": 3.9,
+        "creativity": 3.4,
+        "moral_clarity": 2.4,
+        "prompt_adherence": 5.15,
+        "overall": 3.71
+      }
+    }
+  },
+  "judgments": [
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725689",
+      "character": "a disloyal rooster",
+      "moral": "unity is stronger than division",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 7,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 5.25
+        },
+        "v3-full": {
+          "grammar": 6,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 5.0
+        }
+      },
+      "winner_model": "tie",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2409
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725622",
+      "character": "a reserved goat",
+      "moral": "honesty is the best policy",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 4.5
+        },
+        "v3-full": {
+          "grammar": 3,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 7,
+          "overall": 4.0
+        }
+      },
+      "winner_model": "v5",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2291
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725611",
+      "character": "a ruthless magpie",
+      "moral": "empathy dissolves hatred",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 6,
+          "overall": 4.25
+        },
+        "v5": {
+          "grammar": 3,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.25
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2401
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725702",
+      "character": "a arrogant worm",
+      "moral": "respect is mutual",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 3,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 4,
+          "overall": 3.0
+        },
+        "v5": {
+          "grammar": 3,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 4,
+          "overall": 3.0
+        }
+      },
+      "winner_model": "tie",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2402
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725643",
+      "character": "a wise swan",
+      "moral": "a humble spirit learns faster",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 4,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.5
+        },
+        "v3-full": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 4,
+          "prompt_adherence": 6,
+          "overall": 4.75
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2500
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725639",
+      "character": "a ethical horse",
+      "moral": "perseverance breaks barriers",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 7,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 5,
+          "overall": 4.75
+        },
+        "v5": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 4.0
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "moral_clarity",
+      "latency_ms": 2302
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725636",
+      "character": "a humble stork",
+      "moral": "truth stands the test of time",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 3,
+          "creativity": 2,
+          "moral_clarity": 1,
+          "prompt_adherence": 4,
+          "overall": 2.5
+        },
+        "v3-full": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 4.5
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 5,
+      "reason": "prompt_adherence",
+      "latency_ms": 2285
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725625",
+      "character": "a polite cheetah",
+      "moral": "friendship can overcome obstacles",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 6,
+          "overall": 4.5
+        },
+        "v3-full": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.75
+        }
+      },
+      "winner_model": "v5",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2289
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725621",
+      "character": "a dramatic moose",
+      "moral": "integrity defines character",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 3,
+          "overall": 3.25
+        },
+        "v3-full": {
+          "grammar": 3,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 3,
+          "overall": 3.0
+        }
+      },
+      "winner_model": "tie",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2172
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725694",
+      "character": "a determined chameleon",
+      "moral": "a kind heart finds friends",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 4,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 7,
+          "overall": 4.0
+        },
+        "v5": {
+          "grammar": 2,
+          "creativity": 3,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 3.75
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2392
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725677",
+      "character": "a dependable leopard",
+      "moral": "illusions are shattered by reality",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 4,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.5
+        },
+        "v3-full": {
+          "grammar": 2,
+          "creativity": 2,
+          "moral_clarity": 1,
+          "prompt_adherence": 4,
+          "overall": 2.25
+        }
+      },
+      "winner_model": "v5",
+      "confidence": 5,
+      "reason": "mixed",
+      "latency_ms": 2404
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725619",
+      "character": "a wise cardinal",
+      "moral": "honesty is the best policy",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 6,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 7,
+          "overall": 5.0
+        },
+        "v3-full": {
+          "grammar": 5,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 7,
+          "overall": 4.25
+        }
+      },
+      "winner_model": "v5",
+      "confidence": 4,
+      "reason": "moral_clarity",
+      "latency_ms": 2276
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725683",
+      "character": "a serious walrus",
+      "moral": "perseverance triumphs over difficulty",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 2,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 3,
+          "overall": 2.5
+        },
+        "v3-full": {
+          "grammar": 6,
+          "creativity": 5,
+          "moral_clarity": 5,
+          "prompt_adherence": 6,
+          "overall": 5.5
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 5,
+      "reason": "prompt_adherence",
+      "latency_ms": 2407
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725662",
+      "character": "a persevering sheep",
+      "moral": "kindness transcends boundaries",
+      "blind_order": {
+        "a": "v5",
+        "b": "v3-full"
+      },
+      "scores": {
+        "v5": {
+          "grammar": 3,
+          "creativity": 3,
+          "moral_clarity": 4,
+          "prompt_adherence": 5,
+          "overall": 3.75
+        },
+        "v3-full": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 4,
+          "prompt_adherence": 6,
+          "overall": 4.5
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2392
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725612",
+      "character": "a proud goat",
+      "moral": "regret teaches humility",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 5,
+          "overall": 4.25
+        },
+        "v5": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 4,
+          "overall": 3.75
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2170
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725635",
+      "character": "a lazy lobster",
+      "moral": "one good turn deserves another",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 5,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 8,
+          "overall": 5.0
+        },
+        "v5": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 8,
+          "overall": 4.75
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2184
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725637",
+      "character": "a independent squirrel",
+      "moral": "sincerity builds strong bonds",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 3,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 4,
+          "overall": 3.0
+        },
+        "v5": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 5,
+          "overall": 4.0
+        }
+      },
+      "winner_model": "v5",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 8715
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725672",
+      "character": "a defiant honeybee",
+      "moral": "gratitude keeps the heart humble",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 2,
+          "creativity": 2,
+          "moral_clarity": 2,
+          "prompt_adherence": 3,
+          "overall": 2.25
+        },
+        "v5": {
+          "grammar": 2,
+          "creativity": 2,
+          "moral_clarity": 2,
+          "prompt_adherence": 3,
+          "overall": 2.25
+        }
+      },
+      "winner_model": "tie",
+      "confidence": 5,
+      "reason": "mixed",
+      "latency_ms": 2397
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725685",
+      "character": "a vicious penguin",
+      "moral": "patience leads to success",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 7,
+          "creativity": 4,
+          "moral_clarity": 3,
+          "prompt_adherence": 5,
+          "overall": 4.75
+        },
+        "v5": {
+          "grammar": 4,
+          "creativity": 3,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.5
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "moral_clarity",
+      "latency_ms": 2266
+    },
+    {
+      "source": "klusai/ds-tf1-en-3m:train-valid-index-725679",
+      "character": "a thrifty snake",
+      "moral": "a humble spirit learns faster",
+      "blind_order": {
+        "a": "v3-full",
+        "b": "v5"
+      },
+      "scores": {
+        "v3-full": {
+          "grammar": 7,
+          "creativity": 5,
+          "moral_clarity": 3,
+          "prompt_adherence": 6,
+          "overall": 5.25
+        },
+        "v5": {
+          "grammar": 4,
+          "creativity": 4,
+          "moral_clarity": 2,
+          "prompt_adherence": 5,
+          "overall": 3.75
+        }
+      },
+      "winner_model": "v3-full",
+      "confidence": 4,
+      "reason": "mixed",
+      "latency_ms": 2200
+    }
+  ]
+}

@@ -62,7 +62,7 @@ Generate 100 matched outputs:
 ```bash
 python3 /content/scripts/generate_v5_comparison.py \
   --v3 /content/drive/MyDrive/fable200m_v3/full/hf \
-  --v5 /content/drive/MyDrive/fable200m_v5/pilot/hf \
+  --v5 /content/drive/MyDrive/fable200m_v5/pilot/hf/checkpoint-50 \
   --controls-file /content/v5-data/prepared/eval_controls.json \
   --out /content/drive/MyDrive/fable200m_v5/results/pilot_generations_100.json
 ```
@@ -75,13 +75,15 @@ uv run python scripts/evaluate_v5_comparison.py \
   --out runs/v5/results/pilot_metrics_100.json
 ```
 
-Blind high-thinking paired judge:
+Blind strict-schema paired judge. `minimal` is intentional: high thinking
+exhausted both 2,000 and 8,192-token output budgets without completing JSON.
 
 ```bash
-FABLE_JUDGE_THINKING_LEVEL=high uv run --env-file .env \
+FABLE_JUDGE_THINKING_LEVEL=minimal uv run --env-file .env \
   python scripts/judge_v5_pairwise.py \
   --input runs/v5/results/pilot_generations_100.json \
-  --out runs/v5/results/pilot_pairwise_judged_20.json
+  --out runs/v5/results/pilot_pairwise_judged_20.json \
+  --max-output-tokens 2000
 ```
 
 Stop the Colab VM only after model, generations, and logs exist on Drive and

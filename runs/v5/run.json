@@ -1,6 +1,6 @@
 {
   "version": "v5",
-  "status": "data_ready",
+  "status": "completed_not_promoted",
   "initial_weights": "Google Drive: /MyDrive/fable200m_v3/full/hf",
   "reset_optimizer": true,
   "architecture": {
@@ -44,13 +44,52 @@
     "batch": 64,
     "learning_rate": 0.00001,
     "expected_steps": 260,
-    "checkpoint_sweep": [50, 100, 150, 200, 250, "final"]
+    "checkpoint_sweep": [50, 100, 150, 200, 250, "final"],
+    "actual_steps": 260,
+    "runtime_seconds": 70.28,
+    "train_loss": 3.343,
+    "validation_loss_step_50": 5.181,
+    "validation_loss_final": 4.755,
+    "artifact": "Google Drive: /MyDrive/fable200m_v5/pilot/hf",
+    "log": "Google Drive: /MyDrive/fable200m_v5/logs/pilot.log",
+    "selected_checkpoint": 50
   },
   "evaluation": {
     "controls": "same 100 fresh TF1 controls used by v4",
     "judge_model": "gemma-4-26b-a4b-it",
-    "judge_thinking": "high",
-    "judge_prompt_version": "v3-blind-pairwise-strict"
+    "selected_checkpoint": 50,
+    "full_controls": 100,
+    "v3_rates": {
+      "exact_character": 0.71,
+      "exact_moral": 0.91,
+      "exact_both": 0.65,
+      "ended": 1.0
+    },
+    "v5_rates": {
+      "exact_character": 0.77,
+      "exact_moral": 0.81,
+      "exact_both": 0.62,
+      "ended": 1.0
+    },
+    "external_exact_both": {"v3-full": 0.0, "v5": 0.0},
+    "judge_thinking": "minimal",
+    "judge_high_thinking_attempt": "unusable: incomplete JSON at 2000 and 8192 output tokens",
+    "judge_prompt_version": "v3-blind-pairwise-strict-schema",
+    "judge_wins": {"v3-full": 11, "v5": 5, "tie": 4},
+    "judge_overall": {"v3-full": 4.10, "v5": 3.71}
   },
-  "results": ["runs/v5/results/source_audit.json"]
+  "verdict": {
+    "promoted": false,
+    "champion": "v3-full",
+    "failed_gates": ["exact_moral", "pairwise_preference", "mean_quality"]
+  },
+  "results": [
+    "runs/v5/results/source_audit.json",
+    "runs/v5/results/training_config.json",
+    "runs/v5/results/sweep_summary.json",
+    "runs/v5/results/pilot_metrics_100.json",
+    "runs/v5/results/pilot_external_metrics_26.json",
+    "runs/v5/results/pilot_pairwise_judged_20.json",
+    "runs/v5/results/quality_samples.md"
+  ]
 }

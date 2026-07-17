@@ -26,6 +26,7 @@ def test_generate_uses_native_minimal_thinking_and_json_mode(monkeypatch):
         model="gemma-4-26b-a4b-it",
         num_predict=500,
         temperature=0.1,
+        response_schema={"type": "object"},
     )
 
     config = seen["config"]
@@ -35,6 +36,7 @@ def test_generate_uses_native_minimal_thinking_and_json_mode(monkeypatch):
     assert config.thinking_config.include_thoughts is False
     assert config.response_mime_type == "application/json"
     assert config.response_schema is None
+    assert config.response_json_schema == {"type": "object"}
 
 
 def test_answer_text_ignores_thought_parts():

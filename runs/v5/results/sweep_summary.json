@@ -1,0 +1,14 @@
+{
+  "kind": "v5-checkpoint-sweep-summary",
+  "controls": 20,
+  "checkpoints": {
+    "50": {"exact_character": 0.90, "exact_moral": 0.85, "exact_both": 0.80, "ended": 1.0},
+    "100": {"exact_character": 0.90, "exact_moral": 0.70, "exact_both": 0.65, "ended": 1.0},
+    "150": {"exact_character": 0.85, "exact_moral": 0.80, "exact_both": 0.65, "ended": 1.0},
+    "200": {"exact_character": 0.85, "exact_moral": 0.75, "exact_both": 0.60, "ended": 1.0},
+    "250": {"exact_character": 0.85, "exact_moral": 0.85, "exact_both": 0.70, "ended": 1.0},
+    "final": {"exact_character": 0.85, "exact_moral": 0.85, "exact_both": 0.70, "ended": 1.0}
+  },
+  "selected_checkpoint": 50,
+  "selection_reason": "Best exact-both rate; later training did not visibly repair grammar or causal coherence."
+}

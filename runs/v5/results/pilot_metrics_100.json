@@ -1,0 +1,85 @@
+{
+  "kind": "v5-deterministic-evaluation",
+  "source": "runs/v5/results/pilot_generations_100.json",
+  "controls": {
+    "source": "/content/v5-data/prepared/eval_controls.json",
+    "count": 100,
+    "first": "klusai/ds-tf1-en-3m:train-valid-index-725608",
+    "last": "klusai/ds-tf1-en-3m:train-valid-index-725707"
+  },
+  "settings": {
+    "temperature": 0.8,
+    "top_p": 0.9,
+    "repetition_penalty": 1.3,
+    "max_new_tokens": 350,
+    "batch": 16,
+    "seed": 42
+  },
+  "summary": {
+    "v3-full": {
+      "n": 100,
+      "counts": {
+        "exact_character": 71,
+        "exact_moral": 91,
+        "exact_moral_near_end": 91,
+        "exact_both": 65,
+        "ended": 100
+      },
+      "rates": {
+        "exact_character": 0.71,
+        "exact_moral": 0.91,
+        "exact_moral_near_end": 0.91,
+        "exact_both": 0.65,
+        "ended": 1.0
+      },
+      "mean_words": 266.3,
+      "mean_output_tokens": 305.1
+    },
+    "v5": {
+      "n": 100,
+      "counts": {
+        "exact_character": 77,
+        "exact_moral": 81,
+        "exact_moral_near_end": 81,
+        "exact_both": 62,
+        "ended": 100
+      },
+      "rates": {
+        "exact_character": 0.77,
+        "exact_moral": 0.81,
+        "exact_moral_near_end": 0.81,
+        "exact_both": 0.62,
+        "ended": 1.0
+      },
+      "mean_words": 249.9,
+      "mean_output_tokens": 297.0
+    }
+  },
+  "paired_changes": {
+    "exact_character": {
+      "gained": 12,
+      "lost": 6,
+      "unchanged": 82
+    },
+    "exact_moral": {
+      "gained": 6,
+      "lost": 16,
+      "unchanged": 78
+    },
+    "exact_moral_near_end": {
+      "gained": 6,
+      "lost": 16,
+      "unchanged": 78
+    },
+    "exact_both": {
+      "gained": 11,
+      "lost": 14,
+      "unchanged": 75
+    },
+    "ended": {
+      "gained": 0,
+      "lost": 0,
+      "unchanged": 100
+    }
+  }
+}

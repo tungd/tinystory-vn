@@ -20,6 +20,37 @@ SYSTEM_INSTRUCTION = (
     "Judge only the supplied stories and request. Do not infer model identity. Output JSON only."
 )
 
+SCORE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["grammar", "creativity", "moral_clarity", "prompt_adherence"],
+    "properties": {
+        axis: {"type": "integer", "minimum": 1, "maximum": 10}
+        for axis in judge.AXES
+    },
+}
+PAIRWISE_RESPONSE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["a", "b", "winner", "confidence", "reason"],
+    "properties": {
+        "a": SCORE_SCHEMA,
+        "b": SCORE_SCHEMA,
+        "winner": {"type": "string", "enum": ["a", "b", "tie"]},
+        "confidence": {"type": "integer", "minimum": 1, "maximum": 5},
+        "reason": {
+            "type": "string",
+            "enum": [
+                "grammar",
+                "creativity",
+                "moral_clarity",
+                "prompt_adherence",
+                "mixed",
+            ],
+        },
+    },
+}
+
 
 def select_sources(rows: list[dict], count: int, seed: int) -> list[str]:
     sources = [row["source"] for row in rows if row["model"] == "v3-full"]
@@ -41,7 +72,9 @@ def build_prompt(request: str, story_a: str, story_b: str) -> str:
         "Return JSON only:\n"
         '{"a":{"grammar":1,"creativity":1,"moral_clarity":1,"prompt_adherence":1},'
         '"b":{"grammar":1,"creativity":1,"moral_clarity":1,"prompt_adherence":1},'
-        '"winner":"a|b|tie","confidence":1,"reason":"specific comparative evidence"}\n\n'
+        '"winner":"a|b|tie","confidence":1,'
+        '"reason":"grammar|creativity|moral_clarity|prompt_adherence|mixed"}\n\n'
+        "Reason is only the dominant deciding axis, never prose.\n\n"
         f"REQUEST:\n{request}\n\nSTORY A:\n{story_a}\n\nSTORY B:\n{story_b}\n\nJSON:"
     )
 
@@ -88,6 +121,24 @@ def summarize(judgments: list[dict]) -> dict:
     return {"wins": dict(wins), "mean_scores": means}
 
 
+def build_result(args, selected: list[str], judgments: list[dict]) -> dict:
+    return {
+        "kind": "v5-blind-pairwise-judge",
+        "source": args.input,
+        "selection": {"controls": len(selected), "seed": args.seed},
+        "judge_settings": {
+            "backend": "google-genai",
+            "model": args.model,
+            "thinking_level": google_judge_client.JUDGE_THINKING_LEVEL,
+            "max_output_tokens": args.max_output_tokens,
+            "prompt_version": "v3-blind-pairwise-strict-schema",
+        },
+        "complete": len(judgments) == len(selected),
+        "summary": summarize(judgments) if judgments else {},
+        "judgments": judgments,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
@@ -95,6 +146,8 @@ def main() -> None:
     parser.add_argument("--controls", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--model", default="gemma-4-26b-a4b-it")
+    parser.add_argument("--max-output-tokens", type=int, default=8192)
+    parser.add_argument("--retries", type=int, default=3)
     args = parser.parse_args()
     data = json.loads(Path(args.input).read_text())
     selected = select_sources(data["generations"], args.controls, args.seed)
@@ -102,20 +155,45 @@ def main() -> None:
     for row in data["generations"]:
         if row["source"] in selected:
             pairs.setdefault(row["source"], {})[row["model"]] = row
+    output = Path(args.out)
     judgments = []
+    if output.exists():
+        existing = json.loads(output.read_text())
+        expected = {"controls": len(selected), "seed": args.seed}
+        if existing.get("source") != args.input or existing.get("selection") != expected:
+            raise ValueError("Existing pairwise output does not match this run")
+        judgments = existing.get("judgments", [])
+    completed = {row["source"] for row in judgments}
     for index, source in enumerate(selected, 1):
+        if source in completed:
+            print(f"judged {index}/{len(selected)} (resumed)", flush=True)
+            continue
         pair = pairs[source]
         model_a, model_b = blind_order(source, args.seed)
         request = f"Main character: {pair[model_a]['character']}\nTeaching: {pair[model_a]['moral']}"
         started = time.perf_counter()
-        raw = google_judge_client.generate(
-            prompt=build_prompt(request, pair[model_a]["story"], pair[model_b]["story"]),
-            system=SYSTEM_INSTRUCTION,
-            model=args.model,
-            num_predict=2000,
-            temperature=0.0,
-        )
-        parsed = parse_pairwise(raw)
+        for attempt in range(1, args.retries + 1):
+            try:
+                raw = google_judge_client.generate(
+                    prompt=build_prompt(
+                        request, pair[model_a]["story"], pair[model_b]["story"]
+                    ),
+                    system=SYSTEM_INSTRUCTION,
+                    model=args.model,
+                    num_predict=args.max_output_tokens,
+                    temperature=0.0,
+                    response_schema=PAIRWISE_RESPONSE_SCHEMA,
+                )
+                parsed = parse_pairwise(raw)
+                break
+            except Exception as error:
+                if attempt == args.retries:
+                    raise
+                print(
+                    f"retry {attempt}/{args.retries} for {source}: {type(error).__name__}",
+                    flush=True,
+                )
+                time.sleep(2**attempt)
         winner_model = "tie" if parsed["winner"] == "tie" else {
             "a": model_a, "b": model_b
         }[parsed["winner"]]
@@ -130,21 +208,12 @@ def main() -> None:
             "reason": parsed["reason"],
             "latency_ms": round((time.perf_counter() - started) * 1000),
         })
+        output.write_text(
+            json.dumps(build_result(args, selected, judgments), indent=2, ensure_ascii=False)
+            + "\n"
+        )
         print(f"judged {index}/{len(selected)}", flush=True)
-    result = {
-        "kind": "v5-blind-pairwise-judge",
-        "source": args.input,
-        "selection": {"controls": len(selected), "seed": args.seed},
-        "judge_settings": {
-            "backend": "google-genai",
-            "model": args.model,
-            "thinking_level": google_judge_client.JUDGE_THINKING_LEVEL,
-            "prompt_version": "v3-blind-pairwise-strict",
-        },
-        "summary": summarize(judgments),
-        "judgments": judgments,
-    }
-    output = Path(args.out)
+    result = build_result(args, selected, judgments)
     output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     print(json.dumps(result["summary"], indent=2))
 

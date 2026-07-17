@@ -54,6 +54,7 @@ def generate(
     model: str | None = None,
     num_predict: int | None = None,
     temperature: float | None = None,
+    response_schema: dict | None = None,
     **_,
 ) -> str:
     """Generate one structured judgment through Google's native API."""
@@ -69,6 +70,7 @@ def generate(
                 include_thoughts=False,
             ),
             response_mime_type="application/json",
+            response_json_schema=response_schema,
         ),
     )
     return _answer_text(response)

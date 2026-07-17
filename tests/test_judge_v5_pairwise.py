@@ -1,4 +1,5 @@
 from scripts.judge_v5_pairwise import (
+    PAIRWISE_RESPONSE_SCHEMA,
     blind_order,
     build_prompt,
     parse_pairwise,
@@ -15,6 +16,10 @@ def test_pairwise_prompt_is_blind_and_requires_causal_moral():
     prompt = build_prompt("request", "old", "new").lower()
     assert "v3" not in prompt and "v5" not in prompt
     assert "causally" in prompt
+    assert PAIRWISE_RESPONSE_SCHEMA["required"] == [
+        "a", "b", "winner", "confidence", "reason"
+    ]
+    assert "mixed" in PAIRWISE_RESPONSE_SCHEMA["properties"]["reason"]["enum"]
 
 
 def test_parse_and_summarize_pairwise_result():
