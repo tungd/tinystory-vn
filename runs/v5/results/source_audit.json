@@ -1,0 +1,82 @@
+{
+  "kind": "v5-source-annotation-audit",
+  "annotated": 587,
+  "annotation_accepted": 521,
+  "prepared_after_cleanup": 435,
+  "external_controls_after_cleanup": 26,
+  "api_errors": 0,
+  "rejection_reasons": {
+    "anchor_not_exact": 30,
+    "incomplete": 13,
+    "invalid_moral": 6,
+    "invalid_scores": 1,
+    "invalid_trait": 1,
+    "low_coherence": 24,
+    "model_rejected": 42,
+    "not_child_suitable": 6,
+    "weak_moral_causality": 40
+  },
+  "collections": {
+    "Cunnie Rabbit, Mr. Spider and the Other Beef": {
+      "annotated": 4,
+      "annotation_accepted": 0,
+      "prepared": 0,
+      "external": 0
+    },
+    "Fables for Children and Moral Tales": {
+      "annotated": 60,
+      "annotation_accepted": 57,
+      "prepared": 53,
+      "external": 0
+    },
+    "Indian Fairy Tales": {
+      "annotated": 5,
+      "annotation_accepted": 4,
+      "prepared": 0,
+      "external": 0
+    },
+    "Jataka Tales": {
+      "annotated": 4,
+      "annotation_accepted": 2,
+      "prepared": 0,
+      "external": 0
+    },
+    "More Jataka Tales": {
+      "annotated": 10,
+      "annotation_accepted": 9,
+      "prepared": 1,
+      "external": 0
+    },
+    "South-African Folk-Tales": {
+      "annotated": 30,
+      "annotation_accepted": 22,
+      "prepared": 12,
+      "external": 0
+    },
+    "Three hundred Aesop's fables": {
+      "annotated": 248,
+      "annotation_accepted": 242,
+      "prepared": 232,
+      "external": 0
+    },
+    "Understanding Fables": {
+      "annotated": 189,
+      "annotation_accepted": 158,
+      "prepared": 129,
+      "external": 26
+    },
+    "West African Folk-Tales": {
+      "annotated": 13,
+      "annotation_accepted": 11,
+      "prepared": 1,
+      "external": 0
+    },
+    "Where Animals Talk": {
+      "annotated": 24,
+      "annotation_accepted": 16,
+      "prepared": 7,
+      "external": 0
+    }
+  },
+  "annotations_sha256": "70c12d0639a16475f469a487b99e2b2bce8672e931019ed1fac1f700592592b1"
+}

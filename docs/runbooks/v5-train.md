@@ -1,4 +1,4 @@
-# v5 public-domain quality pilot
+# v5 human-story quality pilot
 
 Goal: test a small quality-weighted continuation from v3-full. Never initialize
 from v4; it did not pass the conditioning gate.
@@ -8,8 +8,7 @@ from v4; it did not pass the conditioning gate.
 ```bash
 uv run python scripts/v5_sources.py --max-words 450
 
-set -a; source .env; set +a
-uv run python scripts/label_v5.py --workers 2 --request-interval 4
+uv run --env-file .env python scripts/label_v5.py --workers 2 --request-interval 4
 ```
 
 Source preparation also fetches the MIT-licensed `Understanding Fables` manual
@@ -48,13 +47,13 @@ python3 /content/scripts/train_v5.py \
   --out /content/drive/MyDrive/fable200m_v5/pilot/hf
 ```
 
-Expected: roughly 1,100 mixed examples and 180 steps. Exact count comes from
-`data/prepared/meta.json` after annotation finishes.
+Frozen data: 1,632 mixed examples and 260 steps.
 
 Do not assume the final checkpoint is best. Generate 20 matched controls from
-`checkpoint-50`, `checkpoint-100`, `checkpoint-150`, and the final export. Pick
-the duration using deterministic conditioning plus manual coherence inspection,
-then run the selected checkpoint through the full evaluation below.
+`checkpoint-50`, `checkpoint-100`, `checkpoint-150`, `checkpoint-200`,
+`checkpoint-250`, and the final export. Pick the duration using deterministic
+conditioning plus manual coherence inspection, then run the selected checkpoint
+through the full evaluation below.
 
 ## Evaluation
 
@@ -79,8 +78,8 @@ uv run python scripts/evaluate_v5_comparison.py \
 Blind high-thinking paired judge:
 
 ```bash
-set -a; source .env; set +a
-FABLE_JUDGE_THINKING_LEVEL=high uv run python scripts/judge_v5_pairwise.py \
+FABLE_JUDGE_THINKING_LEVEL=high uv run --env-file .env \
+  python scripts/judge_v5_pairwise.py \
   --input runs/v5/results/pilot_generations_100.json \
   --out runs/v5/results/pilot_pairwise_judged_20.json
 ```

@@ -11,7 +11,7 @@ if __package__ is None or __package__ == "":
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.label_v5 import latest_by_source, load_jsonl
-from scripts.prepare_v5 import build_external_control, build_real_example
+from scripts.prepare_v5 import build_external_control, build_real_example, restrict_annotations
 
 
 def summarize(rows: list[dict]) -> dict:
@@ -51,10 +51,12 @@ def summarize(rows: list[dict]) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", default="runs/v5/data/annotations.jsonl")
+    parser.add_argument("--candidates", default="runs/v5/data/candidates.jsonl")
     parser.add_argument("--out", default="runs/v5/results/source_audit.json")
     args = parser.parse_args()
     source = Path(args.input)
-    result = summarize(load_jsonl(source))
+    rows = restrict_annotations(load_jsonl(source), load_jsonl(args.candidates))
+    result = summarize(rows)
     result["annotations_sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
     output = Path(args.out)
     output.parent.mkdir(parents=True, exist_ok=True)

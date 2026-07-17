@@ -1,6 +1,6 @@
 {
   "version": "v5",
-  "status": "annotating_sources",
+  "status": "data_ready",
   "initial_weights": "Google Drive: /MyDrive/fable200m_v3/full/hf",
   "reset_optimizer": true,
   "architecture": {
@@ -21,20 +21,30 @@
     "annotation_thinking": "minimal",
     "modern_records": 189,
     "modern_external_holdout": 31,
+    "annotated": 587,
+    "annotation_accepted": 521,
+    "prepared_human_stories": 435,
+    "prepared_external_controls": 26,
+    "api_errors": 0,
     "story_rewriting": false,
     "deterministic_edit": "insert audited trait at first exact protagonist anchor"
   },
   "mix": {
     "validation_fraction": 0.1,
     "human_repeats": 3,
-    "v3_replay_ratio": 1.0
+    "v3_replay_ratio": 1.0,
+    "human_train_unique": 408,
+    "human_validation": 27,
+    "human_rows": 1224,
+    "replay_rows": 408,
+    "train_rows": 1632
   },
   "training": {
     "epochs": 10,
     "batch": 64,
     "learning_rate": 0.00001,
-    "expected_steps": 180,
-    "checkpoint_sweep": [50, 100, 150, "final"]
+    "expected_steps": 260,
+    "checkpoint_sweep": [50, 100, 150, 200, 250, "final"]
   },
   "evaluation": {
     "controls": "same 100 fresh TF1 controls used by v4",
@@ -42,5 +52,5 @@
     "judge_thinking": "high",
     "judge_prompt_version": "v3-blind-pairwise-strict"
   },
-  "results": []
+  "results": ["runs/v5/results/source_audit.json"]
 }

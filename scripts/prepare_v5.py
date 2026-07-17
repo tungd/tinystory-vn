@@ -1,6 +1,6 @@
 """Build a small quality-weighted v5 continuation set.
 
-Accepted public-domain stories stay unrewritten. Their exact protagonist phrase
+Accepted human-authored stories stay unrewritten. Their exact protagonist phrase
 and Gemma-inferred causal moral become controls. A small v3 replay slice limits
 catastrophic forgetting; repeated real stories give the quality set most weight.
 """
@@ -100,7 +100,7 @@ def build_real_example(row: dict) -> dict | None:
         "character": character,
         "moral": moral,
         "source": row["source"],
-        "source_type": "public-domain-human",
+        "source_type": "human-authored",
         "original_protagonist_anchor": anchor,
         "demonstrated_trait": trait,
         "collection": row["collection"],
@@ -163,8 +163,14 @@ def prepare_v5(
         validation = [train_real.pop()]
 
     rng = random.Random(seed)
-    replay_count = min(len(replay_rows), round(len(train_real) * replay_ratio))
-    replay = rng.sample(replay_rows, replay_count)
+    eligible_replay = [
+        row
+        for row in replay_rows
+        if row["target"].count("Moral:") == 1
+        and row["target"].endswith(f"Moral: {row['moral']}\n</story>")
+    ]
+    replay_count = min(len(eligible_replay), round(len(train_real) * replay_ratio))
+    replay = rng.sample(eligible_replay, replay_count)
     replay = [
         {
             **row,
@@ -217,9 +223,28 @@ def prepare_v5(
     return meta
 
 
+def restrict_annotations(annotations: list[dict], candidates: list[dict]) -> list[dict]:
+    """Keep annotation history only for the current immutable candidate set."""
+    sources = {row["source"] for row in candidates}
+    restricted = [row for row in annotations if row["source"] in sources]
+    latest = latest_by_source(restricted)
+    missing = sorted(sources - latest.keys())
+    api_errors = sorted(
+        source
+        for source, row in latest.items()
+        if "api_error" in row["annotation"].get("rejection_reasons", [])
+    )
+    if missing or api_errors:
+        raise ValueError(
+            f"Incomplete v5 annotations: missing={missing}, api_errors={api_errors}"
+        )
+    return restricted
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--annotations", default="runs/v5/data/annotations.jsonl")
+    parser.add_argument("--candidates", default="runs/v5/data/candidates.jsonl")
     parser.add_argument("--replay", default="runs/v3/data/train.jsonl")
     parser.add_argument("--tokenizer", default="runs/v3/data/tokenizer.json")
     parser.add_argument("--eval-controls", default="runs/v4/data/eval_controls.json")
@@ -229,8 +254,11 @@ def main() -> None:
     parser.add_argument("--replay-ratio", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
+    annotations = restrict_annotations(
+        load_jsonl(args.annotations), load_jsonl(args.candidates)
+    )
     meta = prepare_v5(
-        load_jsonl(args.annotations),
+        annotations,
         load_jsonl(args.replay),
         args.out,
         args.tokenizer,

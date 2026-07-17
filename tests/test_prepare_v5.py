@@ -5,6 +5,7 @@ from scripts.prepare_v5 import (
     build_real_example,
     inject_character,
     prepare_v5,
+    restrict_annotations,
 )
 
 
@@ -32,7 +33,7 @@ def replay(index: int) -> dict:
         "character": "a replay fox",
         "moral": "old lessons remain useful",
         "prompt": "prompt",
-        "target": f"replay story {index}</story>",
+        "target": f"replay story {index}\n\nMoral: old lessons remain useful\n</story>",
     }
 
 
@@ -142,7 +143,7 @@ def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_pa
         json.loads(line) for line in (out / "validation.jsonl").read_text().splitlines()
     ]
     train_real_sources = {
-        row["source"] for row in train if row["source_type"] == "public-domain-human"
+        row["source"] for row in train if row["source_type"] == "human-authored"
     }
     assert meta["real_accepted"] == 20
     assert meta["external_controls"] == 1
@@ -150,3 +151,43 @@ def test_prepare_v5_uses_latest_annotations_and_separates_real_validation(tmp_pa
     assert sum(row["source_type"] == "v3-replay" for row in train) == len(train_real_sources)
     assert len(train) == len(train_real_sources) * 3
     assert len(json.loads((out / "external_controls.json").read_text())) == 1
+
+
+def test_prepare_v5_excludes_replay_with_extra_moral_marker(tmp_path):
+    rows = [annotation(str(i)) for i in range(10)]
+    malformed = replay(99)
+    malformed["target"] = (
+        "Moral: accidental marker\n\nMoral: old lessons remain useful\n</story>"
+    )
+    tokenizer = tmp_path / "tokenizer.json"
+    controls = tmp_path / "controls.json"
+    tokenizer.write_text('{"version":"test"}')
+    controls.write_text("[]")
+    out = tmp_path / "prepared"
+    prepare_v5(
+        rows,
+        [malformed] + [replay(i) for i in range(20)],
+        out,
+        tokenizer,
+        controls,
+        validation_fraction=0.2,
+        real_repeats=1,
+        replay_ratio=1.0,
+    )
+    train = [json.loads(line) for line in (out / "train.jsonl").read_text().splitlines()]
+    assert all(row["target"].count("Moral:") == 1 for row in train)
+
+
+def test_restrict_annotations_excludes_stale_sources_and_requires_complete_success():
+    current = [annotation("current")]
+    stale = annotation("stale")
+    assert restrict_annotations(current + [stale], [{"source": "current"}]) == current
+
+    failed = annotation("current")
+    failed["annotation"]["rejection_reasons"] = ["api_error"]
+    try:
+        restrict_annotations([failed], [{"source": "current"}])
+    except ValueError as error:
+        assert "api_errors=['current']" in str(error)
+    else:
+        raise AssertionError("API error must block v5 preparation")
