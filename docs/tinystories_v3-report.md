@@ -1,4 +1,4 @@
-> **Note:** This is the report for the companion project **tinystories_v3**, ported into `tinystory-vn` (docs only). All **code, ADRs, tests, and notebooks** referenced below live in the source repo: https://github.com/harryct229/tinystories_v3 — relative paths like `src/`, `docs/adr/`, `tests/`, `notebooks/` refer to that repo. An HTML version sits beside this file: `tinystories_v3-report.html`.
+> **Note:** This is the report for the companion project **tinystories_v3**, ported into `tinystory-vn` (docs only). All **code, ADRs, tests, and notebooks** referenced below live in the source repo: https://github.com/harryct229/tinystories_v3 — relative paths like `src/`, `docs/adr/`, `tests/`, `notebooks/` refer to that repo. An HTML version sits beside this file: `tinystories_v3-report.html`. **Tiếng Việt:** [`tinystories_v3-report.vi.md`](tinystories_v3-report.vi.md) (HTML: [`tinystories_v3-report.vi.html`](tinystories_v3-report.vi.html)).
 
 ---
 

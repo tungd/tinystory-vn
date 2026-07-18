@@ -392,7 +392,11 @@ Dự án đồng hành **`tinystories_v3`** giải cùng bài toán (sinh fable 
 
 **Dùng trong app này:** hai model chạy qua Ollama như mọi model khác. Sau khi tạo model từ GGUF — `ollama create tsv3-smollm135-base -f Modelfile.base` và `... -best -f Modelfile.best` (xem repo `tinystories_v3`) — chúng xuất hiện trong dropdown và bật được **Compare mode** để đặt cạnh `Qwen3-4B` (so sánh *"nhỏ hơn ~30× thì gần được đến đâu?"*) hoặc so *before/after* của chính SmolLM2. *Lưu ý:* adapter được train trên đúng prompt của TF1 nên khi app gửi prompt hơi khác, model 135M (đã lượng tử hoá Q8) có thể yếu hơn số liệu eval gốc.
 
-**Tài liệu đầy đủ:** [`docs/tinystories_v3-report.md`](docs/tinystories_v3-report.md) (bản HTML mở bằng trình duyệt: [`docs/tinystories_v3-report.html`](docs/tinystories_v3-report.html)). Code + adapter: [github.com/harryct229/tinystories_v3](https://github.com/harryct229/tinystories_v3); adapter LoRA trên Hugging Face Hub: `congthanh991/tsv3-smollm135-{A-qv-all, B-qv-last3, C-alllinear}`.
+**Tài liệu đầy đủ** — báo cáo chi tiết:
+- 🇻🇳 **Tiếng Việt:** [`docs/tinystories_v3-report.vi.md`](docs/tinystories_v3-report.vi.md) · bản HTML mở bằng trình duyệt: [`docs/tinystories_v3-report.vi.html`](docs/tinystories_v3-report.vi.html)
+- 🇬🇧 **English:** [`docs/tinystories_v3-report.md`](docs/tinystories_v3-report.md) · [`docs/tinystories_v3-report.html`](docs/tinystories_v3-report.html)
+
+Code + adapter: [github.com/harryct229/tinystories_v3](https://github.com/harryct229/tinystories_v3); adapter LoRA trên Hugging Face Hub: `congthanh991/tsv3-smollm135-{A-qv-all, B-qv-last3, C-alllinear}`.
 
 ---
 
