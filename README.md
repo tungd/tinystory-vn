@@ -377,6 +377,23 @@ cd web && npm run build
 
 Kế hoạch huấn luyện một model trên TF1-EN-3M (SFT → ORPO, chạy trên Colab) và batch eval khoa học đầy đủ nằm trong `docs/superpowers/plans/` và `docs/adr/0002-evaluation-methodology.md`. Ứng dụng hiện chạy hoàn chỉnh trên **base model**; khi có model fine-tune, chỉ cần thêm vào `config/models.json` để so sánh before/after trong Compare mode + tab Results.
 
+### 13.1. Nghiên cứu so sánh: mô hình nhỏ + LoRA (`tinystories_v3`)
+
+Dự án đồng hành **`tinystories_v3`** giải cùng bài toán (sinh fable trên TF1-EN-3M) nhưng theo **hướng ngược lại**: thay vì full fine-tune một model **4B**, nó **fine-tune một model nhỏ `SmolLM2-135M` bằng LoRA** và biến câu hỏi *đặt adapter ở đâu* (which layers / which modules) thành nội dung nghiên cứu chính. Đây là một **góc tiếp cận khác** để so sánh với hướng của đồ án này (4B, full SFT + ORPO, tập trung vào app + phương pháp đánh giá).
+
+**Hai model đã được thêm vào `config/models.json`** (bật được Compare mode):
+
+| `id` | `kind` | Ý nghĩa |
+|---|---|---|
+| `tsv3-smollm135-base` | `base` | SmolLM2-135M gốc, chưa fine-tune (*before*) |
+| `tsv3-smollm135-best` | `finetuned` | Cấu hình LoRA tốt nhất = **C** (all-linear @ toàn bộ 30 layer), val PPL **3.84** (*after*) |
+
+**Kết quả chính:** perplexity giảm **9.52 → 3.84**, Flesch **−66 → +53** (từ không đọc được → phù hợp trẻ 4–7 tuổi). Hai so sánh một-biến: *which layers* — adapter trên **toàn bộ layer** thắng chỉ 1/3 layer cuối (4.82 vs 5.46); *which modules* — thêm adapter cho **MLP** thắng đậm attention-only (3.84 vs 4.82). ⇒ **module breadth** (thêm MLP) mới là đòn bẩy lớn nhất, chỉ cần train **~3.5%** trọng số.
+
+**Dùng trong app này:** hai model chạy qua Ollama như mọi model khác. Sau khi tạo model từ GGUF — `ollama create tsv3-smollm135-base -f Modelfile.base` và `... -best -f Modelfile.best` (xem repo `tinystories_v3`) — chúng xuất hiện trong dropdown và bật được **Compare mode** để đặt cạnh `Qwen3-4B` (so sánh *"nhỏ hơn ~30× thì gần được đến đâu?"*) hoặc so *before/after* của chính SmolLM2. *Lưu ý:* adapter được train trên đúng prompt của TF1 nên khi app gửi prompt hơi khác, model 135M (đã lượng tử hoá Q8) có thể yếu hơn số liệu eval gốc.
+
+**Tài liệu đầy đủ:** [`docs/tinystories_v3-report.md`](docs/tinystories_v3-report.md) (bản HTML mở bằng trình duyệt: [`docs/tinystories_v3-report.html`](docs/tinystories_v3-report.html)). Code + adapter: [github.com/harryct229/tinystories_v3](https://github.com/harryct229/tinystories_v3); adapter LoRA trên Hugging Face Hub: `congthanh991/tsv3-smollm135-{A-qv-all, B-qv-last3, C-alllinear}`.
+
 ---
 
 ## 14. Xử lý sự cố
@@ -410,5 +427,6 @@ Kế hoạch huấn luyện một model trên TF1-EN-3M (SFT → ORPO, chạy tr
 
 - **Dataset:** [`klusai/ds-tf1-en-3m`](https://huggingface.co/datasets/klusai/ds-tf1-en-3m) (CC BY 4.0)
 - **Paper:** https://arxiv.org/abs/2504.20605
+- **Nghiên cứu đồng hành:** [`tinystories_v3`](docs/tinystories_v3-report.md) — SmolLM2-135M + LoRA adapter-placement study (xem §13.1); code: [github.com/harryct229/tinystories_v3](https://github.com/harryct229/tinystories_v3)
 
 **Phương pháp kế thừa từ paper** (xem [§8.3](#83-phương-pháp-đánh-giá-bám-adr-0002) và [§9](#9-cách-thức-đánh-giá)): bộ 4 trục LLM-as-judge (grammar, creativity, moral clarity, template/prompt adherence), panel judge từ **các họ model khác nhau**, và các **metric reference-free** về đa dạng/độ đọc dễ (Distinct-1/2, Self-BLEU, Flesch Reading Ease).

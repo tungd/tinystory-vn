@@ -1,3 +1,5 @@
 [
-  {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"}
+  {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"},
+  {"id": "tsv3-smollm135-base", "name": "SmolLM2-135M (base)", "ollama": "tsv3-smollm135-base", "kind": "base", "desc": "tinystories_v3: pretrained SmolLM2-135M, no fine-tune (before)"},
+  {"id": "tsv3-smollm135-best", "name": "SmolLM2-135M LoRA (best)", "ollama": "tsv3-smollm135-best", "kind": "finetuned", "desc": "tinystories_v3: best LoRA config = C (all-linear @ all 30 layers), val PPL 3.84 (after)"}
 ]
