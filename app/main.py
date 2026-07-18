@@ -12,11 +12,13 @@ from app import ollama_client, judge
 from app.models_registry import load_models, resolve_ollama
 from app.config import (
     JUDGE_MODEL_ID,
+    REPAIR_MODEL_ID,
     GEN_TEMPERATURE,
     GEN_TOP_P,
     GEN_REPEAT_PENALTY,
     RESULTS_PATH,
 )
+from app.enhanced_generation import enhance_story
 from app.guardrail.input_filter import check_input_en
 from app.guardrail.output_filter import check_output_en
 from app.prompt_en import (
@@ -39,7 +41,8 @@ class GenReq(BaseModel):
     outcome: str = Field("", max_length=300)
     teaching: str = Field("", max_length=200)
     length: Literal["short", "medium", "long"] = "medium"
-    model_id: str = "base-qwen3-4b"
+    model_id: str = "base-llama32-3b-instruct"
+    generation_mode: Literal["raw", "postprocess", "repair"] = "raw"
     guardrail_enabled: bool = True
     seed: int | None = None
 
@@ -78,6 +81,24 @@ def _resolve_model_info(model_id: str) -> tuple[str, str]:
     return model_id, "base"
 
 
+def _req_prompt_row(req: GenReq) -> dict:
+    return {
+        "character": req.character,
+        "setting": req.setting,
+        "challenge": req.challenge,
+        "outcome": req.outcome,
+        "teaching": req.teaching,
+        "length": req.length,
+    }
+
+
+def _resolve_repair_model(selected_model: str) -> str:
+    try:
+        return resolve_ollama(REPAIR_MODEL_ID)
+    except KeyError:
+        return selected_model
+
+
 @app.get("/models")
 def models():
     return load_models()
@@ -108,6 +129,7 @@ def generate_stream(
     seed_str = str(req.seed) if req.seed is not None else "random"
     params_detail = (
         f"Model: {model_name} ({kind}) via Ollama '{model}' | "
+        f"mode {req.generation_mode}, "
         f"temp {GEN_TEMPERATURE}, top_p {GEN_TOP_P}, "
         f"repeat_penalty {GEN_REPEAT_PENALTY}, seed {seed_str}"
     )
@@ -129,7 +151,7 @@ def generate_stream(
             {"type": "step", "stage": "model", "status": "ok", "detail": params_detail}
         )
 
-        if not req.guardrail_enabled:
+        if not req.guardrail_enabled and req.generation_mode == "raw":
             yield _sse(
                 {
                     "type": "step",
@@ -180,6 +202,7 @@ def generate_stream(
                 "temperature": GEN_TEMPERATURE,
                 "top_p": GEN_TOP_P,
                 "repetition_penalty": GEN_REPEAT_PENALTY,
+                "generation_mode": req.generation_mode,
                 "num_predict": num_predict,
                 "seed": req.seed,
                 "prompt_sent": prompt,
@@ -191,37 +214,37 @@ def generate_stream(
             yield _sse({"type": "done", "status": "success", "story": story_text, "meta": meta})
             return
 
-        # guardrail ON
-        yield _sse(
-            {
-                "type": "step",
-                "stage": "input_check",
-                "status": "running",
-                "detail": "Layer 1: scanning request for unsafe or out-of-scope content",
-            }
-        )
-        d = check_input_en(
-            req.character, req.setting, req.challenge, req.outcome, req.teaching
-        )
-        if not d.allowed:
+        if req.guardrail_enabled:
             yield _sse(
                 {
                     "type": "step",
                     "stage": "input_check",
-                    "status": "blocked",
-                    "detail": f"Layer 1 BLOCKED [{d.category}]: {d.reason}",
+                    "status": "running",
+                    "detail": "Layer 1: scanning request for unsafe or out-of-scope content",
                 }
             )
-            yield _sse({"type": "done", "status": "refused", "reason": d.reason})
-            return
-        yield _sse(
-            {
-                "type": "step",
-                "stage": "input_check",
-                "status": "ok",
-                "detail": "Layer 1 passed: request is in scope",
-            }
-        )
+            d = check_input_en(
+                req.character, req.setting, req.challenge, req.outcome, req.teaching
+            )
+            if not d.allowed:
+                yield _sse(
+                    {
+                        "type": "step",
+                        "stage": "input_check",
+                        "status": "blocked",
+                        "detail": f"Layer 1 BLOCKED [{d.category}]: {d.reason}",
+                    }
+                )
+                yield _sse({"type": "done", "status": "refused", "reason": d.reason})
+                return
+            yield _sse(
+                {
+                    "type": "step",
+                    "stage": "input_check",
+                    "status": "ok",
+                    "detail": "Layer 1 passed: request is in scope",
+                }
+            )
         reason = "The generated story was not appropriate."
         for attempt in range(MAX_REGEN + 1):
             yield _sse(
@@ -247,9 +270,38 @@ def generate_stream(
                 yield _sse({"type": "error", "reason": str(e)})
                 return
             story = result["text"]
+            enhancement: dict | None = None
+            if req.generation_mode != "raw":
+                rewrite_model = (
+                    _resolve_repair_model(model)
+                    if req.generation_mode == "repair"
+                    else None
+                )
+                yield _sse(
+                    {
+                        "type": "step",
+                        "stage": "generating",
+                        "status": "running",
+                        "detail": (
+                            "Applying postprocess"
+                            if req.generation_mode == "postprocess"
+                            else f"Validating and repairing with {rewrite_model}"
+                        ),
+                    }
+                )
+                enhancement = enhance_story(
+                    story,
+                    _req_prompt_row(req),
+                    rewrite_model=rewrite_model,
+                    generate_meta_fn=gmeta if req.generation_mode == "repair" else None,
+                    seed=req.seed,
+                )
+                story = enhancement["story"]
             input_tokens = result.get("input_tokens", 0)
             output_tokens = result.get("output_tokens", 0)
-            latency_ms = result.get("latency_ms", 0)
+            latency_ms = result.get("latency_ms", 0) + (
+                enhancement.get("extra_latency_ms", 0) if enhancement else 0
+            )
             tokens_per_sec = (
                 output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
             )
@@ -264,6 +316,33 @@ def generate_stream(
                     ),
                 }
             )
+            meta = {
+                "model_id": req.model_id,
+                "model_name": model_name,
+                "kind": kind,
+                "temperature": GEN_TEMPERATURE,
+                "top_p": GEN_TOP_P,
+                "repetition_penalty": GEN_REPEAT_PENALTY,
+                "generation_mode": req.generation_mode,
+                "enhancement": enhancement,
+                "num_predict": num_predict,
+                "seed": req.seed,
+                "prompt_sent": prompt,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "latency_ms": latency_ms,
+                "tokens_per_sec": round(tokens_per_sec, 2),
+            }
+            if not req.guardrail_enabled:
+                yield _sse(
+                    {
+                        "type": "done",
+                        "status": "success",
+                        "story": story,
+                        "meta": meta,
+                    }
+                )
+                return
             yield _sse(
                 {
                     "type": "step",
@@ -282,21 +361,6 @@ def generate_stream(
                         "detail": "Layer 4 passed: content is safe",
                     }
                 )
-                meta = {
-                    "model_id": req.model_id,
-                    "model_name": model_name,
-                    "kind": kind,
-                    "temperature": GEN_TEMPERATURE,
-                    "top_p": GEN_TOP_P,
-                    "repetition_penalty": GEN_REPEAT_PENALTY,
-                    "num_predict": num_predict,
-                    "seed": req.seed,
-                    "prompt_sent": prompt,
-                    "input_tokens": input_tokens,
-                    "output_tokens": output_tokens,
-                    "latency_ms": latency_ms,
-                    "tokens_per_sec": round(tokens_per_sec, 2),
-                }
                 yield _sse({"type": "done", "status": "success", "story": story, "meta": meta})
                 return
             reason = out.reason
@@ -321,6 +385,7 @@ def generate_stream(
             "temperature": GEN_TEMPERATURE,
             "top_p": GEN_TOP_P,
             "repetition_penalty": GEN_REPEAT_PENALTY,
+            "generation_mode": req.generation_mode,
             "num_predict": num_predict,
             "seed": req.seed,
             "prompt_sent": prompt,

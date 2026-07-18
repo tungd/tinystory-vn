@@ -1,4 +1,5 @@
-"""Làm sạch dữ liệu thô + định dạng instruction cho fine-tune."""
+"""Clean raw story data and format instruction records for fine-tuning."""
+
 import argparse
 import json
 import re
@@ -11,8 +12,12 @@ def clean_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def build_records(raw: list[dict], refusals: list[dict],
-                  max_chars: int | None = None, min_chars: int = 0) -> list[dict]:
+def build_records(
+    raw: list[dict],
+    refusals: list[dict],
+    max_chars: int | None = None,
+    min_chars: int = 0,
+) -> list[dict]:
     records: list[dict] = []
     seen: set[str] = set()
     for item in raw:
@@ -24,22 +29,27 @@ def build_records(raw: list[dict], refusals: list[dict],
         if max_chars is not None and len(story) > max_chars:
             continue
         seen.add(story)
-        records.append({
-            "type": "story",
-            "instruction": build_instruction(item["topic"], item["moral"], item["age_range"]),
-            "output": story,
-        })
+        records.append(
+            {
+                "type": "story",
+                "instruction": build_instruction(item["topic"], item["moral"], item["age_range"]),
+                "output": story,
+            }
+        )
     for item in refusals:
-        records.append({
-            "type": "refusal",
-            "instruction": clean_text(item["instruction"]),
-            "output": clean_text(item["output"]),
-        })
+        records.append(
+            {
+                "type": "refusal",
+                "instruction": clean_text(item["instruction"]),
+                "output": clean_text(item["output"]),
+            }
+        )
     return records
 
 
 def split_records(records: list[dict], seed: int) -> dict:
     import random
+
     shuffled = list(records)
     random.Random(seed).shuffle(shuffled)
     n = len(shuffled)
@@ -74,8 +84,12 @@ def main() -> None:
     parser.add_argument("--min-chars", type=int, default=0)
     args = parser.parse_args()
 
-    records = build_records(_read_jsonl(Path(args.raw)), _read_jsonl(Path(args.refusals)),
-                            max_chars=args.max_chars, min_chars=args.min_chars)
+    records = build_records(
+        _read_jsonl(Path(args.raw)),
+        _read_jsonl(Path(args.refusals)),
+        max_chars=args.max_chars,
+        min_chars=args.min_chars,
+    )
     splits = split_records(records, seed=args.seed)
     for name, rows in splits.items():
         _write_jsonl(Path(args.out) / f"{name}.jsonl", rows)

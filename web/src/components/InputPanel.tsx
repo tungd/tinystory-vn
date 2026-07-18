@@ -10,6 +10,7 @@ import { ModelSelect } from './ModelSelect';
 import { PRESETS } from '../presets';
 
 export type FableLength = 'short' | 'medium' | 'long';
+export type GenerationMode = 'raw' | 'postprocess' | 'repair';
 
 export interface FablePayload {
   character: string;
@@ -19,6 +20,7 @@ export interface FablePayload {
   teaching: string;
   length: FableLength;
   model_id: string;
+  generation_mode: GenerationMode;
   guardrail_enabled: boolean;
 }
 
@@ -36,6 +38,7 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
   const [teaching, setTeaching] = useState('');
   const [length, setLength] = useState<FableLength>('medium');
   const [modelId, setModelId] = useState('');
+  const [generationMode, setGenerationMode] = useState<GenerationMode>('raw');
   const [guardrail, setGuardrail] = useState(true);
 
   function applyPreset(presetId: string) {
@@ -62,6 +65,7 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
       teaching,
       length,
       model_id: modelId,
+      generation_mode: generationMode,
       guardrail_enabled: guardrail,
     });
   }
@@ -213,6 +217,31 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
       {/* Model selector */}
       <ModelSelect value={modelId} onChange={setModelId} disabled={busy} />
 
+      {/* Generation mode selector */}
+      <div>
+        <p
+          style={{
+            margin: '0 0 0.5rem',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            color: 'var(--astryx-color-text, #111827)',
+          }}
+        >
+          Mode
+        </p>
+        <SegmentedControl
+          value={generationMode}
+          onChange={(v) => setGenerationMode(v as GenerationMode)}
+          label="Generation mode"
+          layout="fill"
+          isDisabled={busy}
+        >
+          <SegmentedControlItem value="raw" label="Raw" />
+          <SegmentedControlItem value="postprocess" label="Post" />
+          <SegmentedControlItem value="repair" label="Repair" />
+        </SegmentedControl>
+      </div>
+
       {/* Guardrail toggle */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Switch
@@ -249,12 +278,12 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
 
       {/* Generate button */}
       <Button
-        label={busy ? 'Generating…' : 'Generate fable'}
+        label={busy ? 'Generating...' : 'Generate fable'}
         variant="primary"
         onClick={handleSubmit}
         isDisabled={busy}
       >
-        {busy ? 'Generating…' : 'Generate fable'}
+        {busy ? 'Generating...' : 'Generate fable'}
       </Button>
     </div>
   );

@@ -1,14 +1,22 @@
-# Claude Code local
+# Local assistant/tool state
 .claude/
+.agents/
 
-# Model artifacts (lớn)
+# Model artifacts
 models/
+experiments/
 *.gguf
 *.safetensors
 
-# Dữ liệu (thường lớn / nhạy cảm)
+# Archives and packaged datasets
+*.zip
+
+# Data caches / raw downloads
 data/raw/
 data/processed/
+data/archive/
+data/fluency_sft_v1/raw/
+data/fluency_sft_v1/.hf_cache/
 
 # Python
 __pycache__/
@@ -16,11 +24,16 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+.pytest_cache/
+**/__pycache__/
 
-# Môi trường
+# Environment
 .env
 
 # Node / Web
 node_modules/
 web/node_modules/
 web/dist/
+
+# Generated experiment history
+results/archive/

@@ -225,7 +225,7 @@ function App() {
                   transition: 'all 0.15s',
                 }}
               >
-                {mode === 'single' ? 'Single' : 'Compare'}
+                  {mode === 'single' ? 'Single' : 'Compare'}
               </button>
             ))}
           </div>

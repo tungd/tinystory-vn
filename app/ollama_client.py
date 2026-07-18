@@ -11,6 +11,33 @@ class OllamaError(Exception):
     pass
 
 
+def _options(num_predict: int | None, seed: int | None, kwargs: dict) -> dict:
+    options: dict = {}
+    if num_predict is not None:
+        options["num_predict"] = num_predict
+    if seed is not None:
+        options["seed"] = seed
+    for key in ("temperature", "top_p", "repeat_penalty"):
+        if key in kwargs and kwargs[key] is not None:
+            options[key] = kwargs[key]
+    return options
+
+
+def _payload(prompt: str, system: str, model: str | None, stream: bool, options: dict) -> dict:
+    payload: dict = {
+        "model": model or MODEL_NAME,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        "stream": stream,
+        "think": ENABLE_THINKING,
+    }
+    if options:
+        payload["options"] = options
+    return payload
+
+
 def generate(
     prompt: str,
     system: str,
@@ -19,36 +46,18 @@ def generate(
     seed: int | None = None,
     **kwargs,
 ) -> str:
-    options: dict = {}
-    if num_predict is not None:
-        options["num_predict"] = num_predict
-    if seed is not None:
-        options["seed"] = seed
-    for k in ("temperature", "top_p", "repeat_penalty"):
-        if k in kwargs and kwargs[k] is not None:
-            options[k] = kwargs[k]
-    payload: dict = {
-        "model": model or MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        "stream": False,
-        "think": ENABLE_THINKING,
-    }
-    if options:
-        payload["options"] = options
+    payload = _payload(prompt, system, model, False, _options(num_predict, seed, kwargs))
     try:
         with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
             resp = client.post("/api/chat", json=payload)
             resp.raise_for_status()
     except httpx.HTTPError as exc:
-        raise OllamaError(f"Lỗi gọi Ollama: {exc}") from exc
+        raise OllamaError(f"Ollama request failed: {exc}") from exc
 
     data = resp.json()
     content = data.get("message", {}).get("content", "")
     if not content:
-        raise OllamaError("Ollama trả về nội dung rỗng.")
+        raise OllamaError("Ollama returned empty content.")
     return content
 
 
@@ -61,25 +70,7 @@ def generate_meta(
     **kwargs,
 ) -> dict:
     """Non-streaming generate that also returns token counts and latency."""
-    options: dict = {}
-    if num_predict is not None:
-        options["num_predict"] = num_predict
-    if seed is not None:
-        options["seed"] = seed
-    for k in ("temperature", "top_p", "repeat_penalty"):
-        if k in kwargs and kwargs[k] is not None:
-            options[k] = kwargs[k]
-    payload: dict = {
-        "model": model or MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        "stream": False,
-        "think": ENABLE_THINKING,
-    }
-    if options:
-        payload["options"] = options
+    payload = _payload(prompt, system, model, False, _options(num_predict, seed, kwargs))
 
     t0 = time.perf_counter()
     try:
@@ -87,13 +78,13 @@ def generate_meta(
             resp = client.post("/api/chat", json=payload)
             resp.raise_for_status()
     except httpx.HTTPError as exc:
-        raise OllamaError(f"Lỗi gọi Ollama: {exc}") from exc
+        raise OllamaError(f"Ollama request failed: {exc}") from exc
     latency_ms = int((time.perf_counter() - t0) * 1000)
 
     data = resp.json()
     content = data.get("message", {}).get("content", "")
     if not content:
-        raise OllamaError("Ollama trả về nội dung rỗng.")
+        raise OllamaError("Ollama returned empty content.")
     return {
         "text": content,
         "input_tokens": data.get("prompt_eval_count", 0),
@@ -110,25 +101,7 @@ def generate_stream(
     seed: int | None = None,
     **kwargs,
 ) -> Iterator[str]:
-    options: dict = {}
-    if num_predict is not None:
-        options["num_predict"] = num_predict
-    if seed is not None:
-        options["seed"] = seed
-    for k in ("temperature", "top_p", "repeat_penalty"):
-        if k in kwargs and kwargs[k] is not None:
-            options[k] = kwargs[k]
-    payload: dict = {
-        "model": model or MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": prompt},
-        ],
-        "stream": True,
-        "think": ENABLE_THINKING,
-    }
-    if options:
-        payload["options"] = options
+    payload = _payload(prompt, system, model, True, _options(num_predict, seed, kwargs))
     try:
         with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
             with client.stream("POST", "/api/chat", json=payload) as resp:
@@ -143,4 +116,4 @@ def generate_stream(
                     if chunk.get("done"):
                         break
     except httpx.HTTPError as exc:
-        raise OllamaError(f"Lỗi gọi Ollama (stream): {exc}") from exc
+        raise OllamaError(f"Ollama stream request failed: {exc}") from exc

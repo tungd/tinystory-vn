@@ -1,3 +1,44 @@
 [
-  {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"}
+  {
+    "id": "base-llama32-3b-instruct",
+    "name": "Llama 3.2 3B Instruct Q4",
+    "ollama": "llama3.2:3b",
+    "kind": "base",
+    "desc": "Installed local Llama 3.2 3B Instruct Q4 model, non-thinking"
+  },
+  {
+    "id": "base-qwen25-3b",
+    "name": "Qwen 2.5 3B",
+    "ollama": "qwen2.5:3b",
+    "kind": "base",
+    "desc": "Alternative chat model, non-thinking"
+  },
+  {
+    "id": "base-llama32-3b-instruct-q4",
+    "name": "Llama 3.2 3B Instruct Q4",
+    "ollama": "llama3.2:3b",
+    "kind": "base",
+    "desc": "Local Ollama Llama 3.2 3B Instruct Q4 used for strict-prompt ablation"
+  },
+  {
+    "id": "sft-llama32-3b-clean3k",
+    "name": "Llama 3.2 3B Fable Clean 3K Q4",
+    "ollama": "llama32-fable-clean3k:q4",
+    "kind": "finetuned",
+    "desc": "SFT clean synthetic 3000 examples, Q4_K_M GGUF"
+  },
+  {
+    "id": "failure-lora-llama32-3b",
+    "name": "Llama 3.2 3B Failure-Focused LoRA Q4",
+    "ollama": "llama32-fable-failure-lora:q4",
+    "kind": "finetuned",
+    "desc": "Failure-focused LoRA trained on error-taxonomy corrected fables, Q4_K_M GGUF"
+  },
+  {
+    "id": "fluency-sft-v1-lora-q4",
+    "name": "Llama 3.2 3B Fluency SFT v1 LoRA Q4",
+    "ollama": "llama32-fable-fluency-sft-v1:q4",
+    "kind": "finetuned",
+    "desc": "LoRA trained on 10000 quality-filtered TF1 fables for fluency and final moral reliability, Q4_K_M GGUF"
+  }
 ]

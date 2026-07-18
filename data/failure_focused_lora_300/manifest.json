@@ -1,0 +1,19 @@
+{
+  "name": "failure_focused_lora_300",
+  "purpose": "Extended failure-focused LoRA dataset.",
+  "total": 300,
+  "seed_failure_rows": 24,
+  "tf1_augmented_rows": 276,
+  "train": 270,
+  "valid": 30,
+  "reason_counts": {
+    "action_moral_postprocess": 19,
+    "action_rewrite": 6,
+    "empty_moral": 57,
+    "missing_or_empty_moral": 177,
+    "unclean_ending": 117,
+    "weak_moral_alignment": 187,
+    "weak_outcome_coverage": 59
+  },
+  "method": "Observed Base failure rows are kept. Additional TF1 corrected targets are sampled as gold outputs and tagged with the same failure taxonomy to train the model toward complete moral-aligned fables."
+}

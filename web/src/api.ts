@@ -54,6 +54,18 @@ export interface GenMeta {
   temperature: number;
   top_p: number;
   repetition_penalty: number;
+  generation_mode?: "raw" | "postprocess" | "repair";
+  enhancement?: {
+    actions?: string[];
+    initial_validation?: {
+      fixable_reasons?: string[];
+      severe_reasons?: string[];
+    };
+    final_validation?: {
+      fixable_reasons?: string[];
+      severe_reasons?: string[];
+    };
+  } | null;
   num_predict: number;
   seed?: number;
   prompt_sent: string;
