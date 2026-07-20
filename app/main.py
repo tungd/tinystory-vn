@@ -43,6 +43,7 @@ class GenReq(BaseModel):
     model_id: str = "base-qwen3-4b"
     guardrail_enabled: bool = True
     seed: int | None = None
+    best_of_n: int = Field(1, ge=1, le=5)
 
 
 class EvalReq(BaseModel):
@@ -84,12 +85,18 @@ def models():
     return load_models()
 
 
+def pick_best_index(scores: list[float]) -> int:
+    """Index của điểm cao nhất (best-of-N selection). Rỗng -> 0."""
+    return max(range(len(scores)), key=lambda i: scores[i]) if scores else 0
+
+
 @app.post("/generate/stream")
 def generate_stream(
     req: GenReq,
     gen=Depends(generate_fn),
     gstream=Depends(stream_fn),
     gmeta=Depends(meta_fn),
+    jf=Depends(judge_fn),
 ):
     hint = LENGTH_HINT_EN[req.length]
     num_predict = LENGTH_NUM_PREDICT[req.length]
@@ -129,6 +136,68 @@ def generate_stream(
         yield _sse(
             {"type": "step", "stage": "model", "status": "ok", "detail": params_detail}
         )
+
+        # ── Best-of-N: sinh N bản, judge chấm, chọn bản overall cao nhất ──────────
+        # Bắt "headroom" đã đo (mean ~7.7 -> best-of-N ~8.5) mà không cần train.
+        if req.best_of_n and req.best_of_n > 1:
+            if req.guardrail_enabled:
+                d = check_input_en(req.character, req.setting, req.challenge, req.outcome, req.teaching)
+                if not d.allowed:
+                    yield _sse({"type": "step", "stage": "input_check", "status": "blocked",
+                                "detail": f"Layer 1 BLOCKED [{d.category}]: {d.reason}"})
+                    yield _sse({"type": "done", "status": "refused", "reason": d.reason})
+                    return
+            jtag = resolve_ollama(JUDGE_MODEL_ID)
+            yield _sse({"type": "step", "stage": "generating", "status": "running",
+                        "detail": f"Best-of-{req.best_of_n}: generating candidates with {model_name}"})
+            t0 = time.perf_counter()
+            cands, scores = [], []
+            for k in range(req.best_of_n):
+                try:
+                    r = gmeta(prompt=prompt, system=SYSTEM_PROMPT_MINIMAL_EN, model=model,
+                              num_predict=num_predict,
+                              seed=(req.seed + k if req.seed is not None else None),
+                              temperature=GEN_TEMPERATURE, top_p=GEN_TOP_P,
+                              repeat_penalty=GEN_REPEAT_PENALTY)
+                except ollama_client.OllamaError as e:
+                    yield _sse({"type": "error", "reason": str(e)}); return
+                story_k = r["text"]
+                if r.get("done_reason") == "length":
+                    story_k = trim_to_last_sentence(story_k)
+                try:
+                    sc = judge.evaluate(story_k, prompt, model=jtag, gen=jf)
+                    overall = float(sc.get("overall", 0.0))
+                except Exception:
+                    overall = 0.0
+                cands.append(story_k); scores.append(overall)
+                yield _sse({"type": "step", "stage": "generating", "status": "ok",
+                            "detail": f"Candidate {k + 1}/{req.best_of_n}: judge overall {overall:.2f}"})
+            bi = pick_best_index(scores)
+            story = cands[bi]
+            yield _sse({"type": "step", "stage": "generating", "status": "ok",
+                        "detail": f"Selected candidate {bi + 1} (best overall {scores[bi]:.2f})"})
+            if req.guardrail_enabled:
+                out = check_output_en(story)
+                status = "ok" if out.ok else "blocked"
+                yield _sse({"type": "step", "stage": "output_check", "status": status,
+                            "detail": ("Layer 4 passed: content is safe" if out.ok
+                                       else f"Layer 4 BLOCKED: {out.reason}")})
+                if not out.ok:
+                    yield _sse({"type": "done", "status": "refused", "reason": out.reason})
+                    return
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            output_tokens = len(story.split())
+            meta = {
+                "model_id": req.model_id, "model_name": model_name, "kind": kind,
+                "temperature": GEN_TEMPERATURE, "top_p": GEN_TOP_P,
+                "repetition_penalty": GEN_REPEAT_PENALTY, "num_predict": num_predict,
+                "seed": req.seed, "prompt_sent": prompt, "input_tokens": 0,
+                "output_tokens": output_tokens, "latency_ms": latency_ms,
+                "tokens_per_sec": round(output_tokens / (latency_ms / 1000), 2) if latency_ms > 0 else 0.0,
+                "best_of_n": req.best_of_n, "candidate_scores": scores, "selected": bi,
+            }
+            yield _sse({"type": "done", "status": "success", "story": story, "meta": meta})
+            return
 
         if not req.guardrail_enabled:
             yield _sse(

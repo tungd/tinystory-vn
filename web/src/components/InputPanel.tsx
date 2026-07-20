@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MdCasino } from 'react-icons/md';
+import { MdCasino, MdInfoOutline } from 'react-icons/md';
 import { TextArea } from '@astryxdesign/core/TextArea';
 import { SegmentedControl } from '@astryxdesign/core/SegmentedControl';
 import { SegmentedControlItem } from '@astryxdesign/core/SegmentedControl';
@@ -20,6 +20,7 @@ export interface FablePayload {
   length: FableLength;
   model_id: string;
   guardrail_enabled: boolean;
+  best_of_n: number;
 }
 
 export interface InputPanelProps {
@@ -37,6 +38,7 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
   const [length, setLength] = useState<FableLength>('medium');
   const [modelId, setModelId] = useState('');
   const [guardrail, setGuardrail] = useState(true);
+  const [bestOfN, setBestOfN] = useState(1);
 
   function applyPreset(presetId: string) {
     const preset = PRESETS.find((p) => p.id === presetId);
@@ -63,6 +65,7 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
       length,
       model_id: modelId,
       guardrail_enabled: guardrail,
+      best_of_n: bestOfN,
     });
   }
 
@@ -207,6 +210,34 @@ export function InputPanel({ onSubmit, busy = false }: InputPanelProps) {
           <SegmentedControlItem value="short" label="Short" />
           <SegmentedControlItem value="medium" label="Medium" />
           <SegmentedControlItem value="long" label="Long" />
+        </SegmentedControl>
+      </div>
+
+      {/* Best-of-N: sinh N bản, judge chấm chọn bản tốt nhất (bắt headroom của SLM) */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
+          <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 500, color: 'var(--astryx-color-text, #111827)' }}>
+            Best-of-N
+          </p>
+          <Tooltip
+            content="Sinh N bản rồi để LLM-judge chấm và chọn bản điểm cao nhất. SLM nhỏ chất lượng dao động; best-of-N bắt phần đầu ra tốt nhất (đo được: mean ~7.7 -> best-of-3 ~8.5). N cao hơn = tốt hơn nhưng chậm hơn tuyến tính."
+            placement="above"
+          >
+            <span aria-label="Best-of-N info" style={{ display: 'inline-flex', alignItems: 'center', color: 'var(--astryx-color-text-subtle, #9ca3af)', cursor: 'help' }}>
+              <MdInfoOutline size={15} />
+            </span>
+          </Tooltip>
+        </div>
+        <SegmentedControl
+          value={String(bestOfN)}
+          onChange={(v) => setBestOfN(parseInt(v as string, 10))}
+          label="Best of N candidates"
+          layout="fill"
+          isDisabled={busy}
+        >
+          <SegmentedControlItem value="1" label="Off" />
+          <SegmentedControlItem value="3" label="3" />
+          <SegmentedControlItem value="5" label="5" />
         </SegmentedControl>
       </div>
 
