@@ -1,0 +1,50 @@
+{
+ "note": "judge overall tren held-out prompts; moi cap (baseline, method) tu cung mot phien eval",
+ "experiments": [
+  {
+   "name": "DPO 194 pairs",
+   "n": 15,
+   "baseline": 8.02,
+   "method": 7.88
+  },
+  {
+   "name": "SFT-on-best 42",
+   "n": 12,
+   "baseline": 8.02,
+   "method": 7.98
+  },
+  {
+   "name": "RAFT 200 (>=9.0)",
+   "n": 15,
+   "baseline": 7.78,
+   "method": 7.6
+  },
+  {
+   "name": "GRPO-lite 60 steps",
+   "n": 45,
+   "baseline": 7.94,
+   "method": 8.03
+  }
+ ],
+ "best_of_n": {
+  "name": "Best-of-3 (inference)",
+  "n": 15,
+  "baseline": 7.72,
+  "method": 8.55
+ },
+ "noise": {
+  "p2": [
+   7.82,
+   7.73
+  ],
+  "raft": [
+   7.38,
+   7.82
+  ],
+  "grpo_n15": [
+   8.0,
+   8.45
+  ],
+  "grpo_n45": 8.03
+ }
+}

@@ -168,3 +168,74 @@ except FileNotFoundError:
     print("skip fig 15 (no data)")
 
 print("DONE:", len(os.listdir(FIG)), "figures")
+
+# ---- Fig 16: post-training campaign summary (4 methods null vs best-of-N win) ----
+try:
+    camp = load("posttraining_campaign.json")
+    fig, ax = plt.subplots(figsize=(10, 4.6))
+    exps = camp["experiments"] + [camp["best_of_n"]]
+    x = np.arange(len(exps))
+    b = [e["baseline"] for e in exps]; m = [e["method"] for e in exps]
+    ax.bar(x-.2, b, .4, label="baseline (30M-p2)", color=GRAY)
+    colors = [ORANGE]*len(camp["experiments"]) + [GREEN]
+    ax.bar(x+.2, m, .4, label="method", color=colors)
+    for i, e in enumerate(exps):
+        d = e["method"]-e["baseline"]
+        ax.text(i+.2, e["method"]+.06, f"{d:+.2f}\n(n={e['n']})", ha="center", fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels([e["name"] for e in exps], fontsize=8.5)
+    ax.set_ylim(6.5, 9.3); ax.set_ylabel("LLM-judge overall (held-out)")
+    ax.axhline(8.55, ls=":", color=GREEN, alpha=.5)
+    ax.set_title("Post-training campaign: four training methods are null; inference-time best-of-N is the only confirmed gain")
+    ax.legend(loc="upper left"); ax.grid(axis="y", alpha=.3)
+    save(fig, "16_posttraining_campaign.png")
+except FileNotFoundError:
+    print("skip fig 16 (no data)")
+
+# ---- Fig 17: GRPO training dynamics (reward curve + KL) ----
+try:
+    rows = [json.loads(l) for l in open(os.path.join(D, "data", "grpo_log.jsonl"))]
+    st = [r["step"] for r in rows]; rw = [r["reward_mean"] for r in rows]
+    kl = [abs(r["kl"]) for r in rows]
+    fig, ax = plt.subplots(1, 2, figsize=(11, 4.2))
+    ax[0].plot(st, rw, "o-", ms=3, color=BLUE, alpha=.7, label="reward mean (16 rollouts)")
+    w = 5
+    ma = [np.mean(rw[max(0,i-w+1):i+1]) for i in range(len(rw))]
+    ax[0].plot(st, ma, color=ORANGE, lw=2, label=f"moving avg ({w})")
+    ax[0].axvline(30.5, ls="--", color=GRAY); ax[0].text(31, min(rw)+.05, "lr 3e-6 -> 1e-5", fontsize=8)
+    ax[0].set_xlabel("GRPO step"); ax[0].set_ylabel("judge reward"); ax[0].legend(); ax[0].grid(alpha=.3)
+    ax[0].set_title("In-training reward stays flat (judge noise dominates)")
+    ax[1].semilogy(st, kl, "s-", ms=3, color=BLUE)
+    ax[1].set_xlabel("GRPO step"); ax[1].set_ylabel("|KL(policy || ref)| nats/token (log)")
+    ax[1].axvline(30.5, ls="--", color=GRAY)
+    ax[1].set_title("Policy shift stays tiny (KL ~ 1e-3 at end)")
+    ax[1].grid(alpha=.3, which="both")
+    save(fig, "17_grpo_dynamics.png")
+except FileNotFoundError:
+    print("skip fig 17 (no data)")
+
+# ---- Fig 18: judge measurement noise (the methodological lesson) ----
+try:
+    nz = load("posttraining_campaign.json")["noise"]
+    fig, ax = plt.subplots(figsize=(8.5, 4.4))
+    groups = [("30M-p2\n(same model, 2 runs)", nz["p2"], GRAY),
+              ("30M-raft\n(same model, 2 runs)", nz["raft"], ORANGE),
+              ("30M-grpo\n(n=15, 2 runs)", nz["grpo_n15"], BLUE)]
+    for i, (name, vals, c) in enumerate(groups):
+        ax.scatter([i]*len(vals), vals, s=90, color=c, zorder=3)
+        ax.plot([i, i], [min(vals), max(vals)], color=c, lw=2, alpha=.5)
+        for v in vals:
+            ax.text(i+.08, v, f"{v:.2f}", va="center", fontsize=9)
+    ax.scatter([3], [nz["grpo_n45"]], s=110, color=GREEN, zorder=3, marker="D")
+    ax.text(3.08, nz["grpo_n45"], f'{nz["grpo_n45"]:.2f}', va="center", fontsize=9)
+    ax.annotate("n=15 spread collapses at n=45", xy=(3, nz["grpo_n45"]), xytext=(1.9, 8.75),
+                arrowprops=dict(arrowstyle="->", color=GREEN), fontsize=9, color=GREEN)
+    ax.set_xticks(range(4))
+    ax.set_xticklabels([g[0] for g in groups] + ["30M-grpo\n(n=45)"], fontsize=8.5)
+    ax.set_ylabel("LLM-judge overall")
+    ax.set_title("Repeated measurements of the SAME model differ by up to 0.45:\njudge noise bounds what n=15 evals can conclude")
+    ax.grid(axis="y", alpha=.3)
+    save(fig, "18_judge_noise.png")
+except FileNotFoundError:
+    print("skip fig 18 (no data)")
+
+print("EXTRA FIGS DONE")

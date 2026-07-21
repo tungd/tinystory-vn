@@ -1,0 +1,7 @@
+pairs train 164 val 30
+ep1 loss=0.7130 val_pair_acc=0.433 val_spearman=-0.015
+ep2 loss=0.6077 val_pair_acc=0.433 val_spearman=0.004
+ep3 loss=0.5180 val_pair_acc=0.400 val_spearman=0.091
+ep4 loss=0.4226 val_pair_acc=0.433 val_spearman=0.166
+ep5 loss=0.3186 val_pair_acc=0.467 val_spearman=0.200
+RM-BT DONE -> out/rm-30m-bt.pt

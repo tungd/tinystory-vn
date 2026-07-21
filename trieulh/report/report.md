@@ -2,7 +2,7 @@
 title: "Training a 30M-Parameter Small Language Model from Scratch for English Children's Fables"
 subtitle: "A reproducible study: can a tiny model rival a large LLM on constrained story generation?"
 author: "trieulh - IT5410"
-date: "2026-07-16"
+date: "2026-07-21"
 geometry: margin=2.3cm
 fontsize: 11pt
 colorlinks: true
@@ -22,11 +22,17 @@ we move from a deliberately under-trained baseline (loss 1.8) through a Chinchil
 retraining (loss 1.278, held-out perplexity 3.56) and a targeted data intervention that
 cures a template-collapse failure ("wise old owl" generation rate 90% -> 23%). We add an
 application-analysis dashboard (intrinsic diversity, readability, Zipf, positional loss)
-and close with **DPO preference alignment (RLAIF)** that lifts prompt-adherence while
-preserving language quality (perplexity drift 0%). The final 30M model generates coherent,
-complete fables at **~949 tokens/s, roughly 50x faster than the 4B reference**, reaching an
-LLM-judge quality of ~7.0/10 (from 2.5 at baseline). All parameters, curves and artifacts
-are reported from training step 0.
+and close with a **systematic post-training campaign**: four alignment methods sharing one
+evaluation protocol - DPO (194 pairs), SFT-on-best, threshold-filtered RAFT (200 stories
+judged >= 9.0) and GRPO-lite (REINFORCE with a group baseline, 60 on-policy steps) - are
+**all null** on the model's default distribution, while **inference-time best-of-N search
+captures a confirmed +0.8 judge-point gain** (7.7 -> 8.55, near the 4B reference at 9.75)
+and ships in the app. Along the way we *measure* the LLM-judge's own noise (repeated
+evaluations of the same model differ by up to 0.45 at n=15) and show it retroactively
+explains two earlier false positives. The final 30M model generates coherent, complete
+fables at **~949 tokens/s, roughly 50x faster than the 4B reference**, reaching an
+LLM-judge quality of ~7.9/10 as measured under the final protocol (n=45). All parameters,
+curves and artifacts are reported from training step 0.
 
 \newpage
 
@@ -45,7 +51,11 @@ narrative of the work is a sequence of hypotheses and measured outcomes:
 1. A reduced baseline is intentionally under-trained (diagnosis).
 2. Right-sizing the token budget per scaling laws fixes it (Phase 1).
 3. A data intervention fixes a specific qualitative failure (Phase 2).
-4. Sampling cannot fix prompt-adherence; preference optimization can (DPO/RLAIF).
+4. Sampling temperature cannot fix prompt-adherence (measured); we hypothesized
+   preference optimization could.
+5. A four-method post-training campaign (DPO, SFT-on-best, RAFT, GRPO-lite) tests that
+   hypothesis rigorously - and refutes it at this scale and feedback budget, while
+   inference-time best-of-N search delivers the gain the training methods could not.
 
 ## 2. Scientific grounding
 
@@ -59,6 +69,12 @@ narrative of the work is a sequence of hypotheses and measured outcomes:
   is nearly as good as fresh data.
 - **DPO (Rafailov et al. 2023) / RLAIF (Bai et al. 2022):** align a model to preferences
   using pairwise (chosen, rejected) data, here labeled by an AI judge.
+- **REINFORCE + baseline (Williams 1992; course Week 10):** policy-gradient RL with
+  variance reduction by subtracting a baseline from the reward; normalizing within a
+  group of rollouts per prompt yields the GRPO estimator (Shao et al. 2024) used by
+  DeepSeek-R1. This grounds our GRPO-lite experiment (Section 9.12).
+- **RAFT (Dong et al. 2023):** keep only high-absolute-reward samples and fine-tune on
+  them - the design of our threshold-9.0 experiment (Section 9.10).
 - **Dataset + evaluation methodology:** TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605);
   evaluation follows our ADR-0002 (objective metrics + a cross-family LLM-judge panel).
 
@@ -113,8 +129,14 @@ design (Section 9.6).
 | Phase 1 | 400k v1 | 1800 | 1.447 | 4.18 | 6.0 | right-sized token budget |
 | + sampling fix | - | - | - | - | 6.2 | repeat_penalty 1.3 -> 1.1 (entity drift) |
 | Phase 2 | 400k **v2** | 3600 | **1.278** | **3.56** | 7.0 | data intervention (resume 1800 -> 3600) |
-| Phase 2 + DPO | 115 pairs | 30 | (loss 1.278) | 3.54 | (pending panel) | preference alignment, adherence +5pt |
+| Phase 2 + DPO | 194 pairs | 30 | (loss 1.278) | 3.54 | 7.88 (n=15) | null vs baseline 8.02 (Section 9.8) |
+| + RAFT | 200 stories >= 9.0 | 30 | 0.672 (SFT) | 10.64* | 7.60 (n=15, pooled) | null (Section 9.10) |
+| + GRPO-lite | 60 steps x 16 rollouts | 30 | on-policy | 10.58* | 8.03 (n=45) | null, KL ~1e-3 (Section 9.12) |
+| Best-of-3 (no training) | - | 30 | - | - | **8.55 (n=15)** | deployed in app (Section 9.9) |
 | Qwen3-4B (ref) | - | - | - | - | 9.75 | 130x larger, instruction-tuned |
+
+\*Perplexity for the alignment rows is measured on a different held-out slice (raw
+`test.jsonl` text) than the 3.5x figures above; only the *relative* drift matters.
 
 Phase 2 uses two data interventions motivated by qualitative analysis (Section 9.4):
 cap the "wise old owl" template to 10% of the corpus, and lower the slot dropout for the
@@ -189,25 +211,118 @@ stories complete** with a real ending.
 
 We measured whether sampling temperature affects slot adherence. On 10 held-out prompts,
 temperature 0.7 and 0.8 gave *identical* adherence (69%): **sampling is not the lever**;
-adherence is capped by the 30M model's weak conditioning. The proper fix is preference
-optimization.
+adherence is capped by the 30M model's weak conditioning. At the time we hypothesized
+preference optimization was the proper fix - the campaign below tests that hypothesis.
 
-### 9.8 DPO preference alignment (RLAIF)
+### 9.8 DPO preference alignment (RLAIF): an instructive null
 
 We generate two stories per prompt from the Phase-2 model, have an AI judge score them on
 the four axes, and keep pairs with a clear preference (margin >= 1.0) as (chosen, rejected)
-data. We then run **DPO** (ORPO was unavailable in the installed TRL 1.8; DPO is the
-canonical equivalent). A trial on 115 pairs, run locally on Apple-Silicon MPS in ~1 minute:
+data - 194 pairs after filtering. We then run **DPO** (ORPO was unavailable in the
+installed TRL 1.8; DPO is the canonical equivalent) locally on Apple-Silicon MPS.
 
-![DPO reward accuracy climbs to 1.0 and the reward margin (chosen - rejected) turns strongly positive - the model learns the preference. Held-out perplexity is unchanged (0% drift): no catastrophic forgetting.](figures/13_dpo_dynamics.png)
+![DPO reward accuracy climbs to 1.0 and the reward margin (chosen - rejected) turns strongly positive - the model learns the preference *on its training pairs*. Held-out perplexity is unchanged (0% drift): no catastrophic forgetting.](figures/13_dpo_dynamics.png)
 
-![Prompt-adherence (slot recall) improves from 71% to 76% after DPO, with story completeness preserved.](figures/12_adherence_dpo.png)
+The in-training signal looks perfect - reward accuracy 1.0, positive margin, zero
+perplexity drift. An early slot-recall probe even suggested +5 points of adherence
+(71% -> 76%, Fig. below). **Both impressions failed the rigorous test.** Under the standard
+protocol (15 held-out prompts, LLM-judge, fixed seeds), the DPO model scores **7.88 vs the
+baseline's 8.02** - a null result. Section 9.11 shows the +5-point probe was within
+measurement noise. The mechanism-level explanation: with chosen and rejected drawn from
+the *same* model at similar quality, the relative preference signal is too weak to move
+the default distribution.
 
-Even with only 115 preference pairs, DPO moves adherence in the right direction (+5 points)
-while keeping perplexity flat - validating alignment as the correct mechanism for this
-weakness.
+![The early slot-recall probe (71% -> 76%) that later proved to be within judge noise - kept here as a documented lesson in evaluation rigor.](figures/12_adherence_dpo.png)
 
-### 9.9 Free vs conditioned generation
+### 9.9 The headroom probe: best-of-N shows capacity is not the ceiling
+
+Is the 30M model *unable* to produce great fables, or merely *inconsistent*? We sample
+K=3 candidates per prompt (temperatures 0.5/0.8/1.1) and let the judge pick the best:
+
+| Measure | Value |
+|---|---|
+| Single-sample mean (15 held-out prompts) | 7.72 |
+| **Best-of-3 mean** | **8.55** |
+| Individual best samples | up to 9.0-9.5 (4B reference: 9.75) |
+
+The model already *contains* near-reference-quality fables - the binding constraint is
+**variance, not capacity**. This result reframed the whole alignment effort: the goal is
+not to teach the model something new but to shift probability mass toward its own best
+modes. Best-of-N (off / 3 / 5) ships in the app as a user-facing control: the backend
+generates N candidates, the judge scores each, and the best is returned with all candidate
+scores logged in the Activity Log.
+
+### 9.10 RAFT: threshold-filtered SFT at 5x scale - null
+
+If best-of-N finds the good samples, can we *train on them* and internalize the gain?
+Our first SFT-on-best trial (42 stories) was null, but 93% of that corpus already scored
+>= 8.5, so the untested variables were **scale** and a strict **absolute threshold** - the
+defining features of RAFT (reward-ranked fine-tuning). We built a 200-story corpus in
+which *every* story is judged >= 9.0 (mean 9.22; 105 harvested from earlier experiments,
+95 newly generated with a 23% prompt acceptance rate), and fine-tuned at lr 2e-5 for 3
+epochs with the conditioning loss-masked.
+
+Result: **null again** - 7.60 (pooled over two evaluation runs) vs baseline 7.78, with
+perplexity drift +0.5% only. The theoretical reading: best-of-N samples are drawn from
+the model's *own* distribution, so supervised fine-tuning on them mostly re-weights modes
+the model already prefers; ~60k story tokens against a 600M-token pretraining prior is
+also a very small nudge. Crucially, the gradient contains no *negative* component - nothing
+pushes probability *away* from mediocre modes.
+
+### 9.11 Measuring the judge itself: the noise that manufactured two false positives
+
+Re-evaluating the *same* RAFT model twice (same protocol, same seeds) returned 7.38 and
+7.82 - a 0.44 spread. The same double-measurement on the baseline returned 7.73/7.82, and
+on the GRPO model 8.00/8.45. At n=15 prompts, **the judge's own noise is ~+-0.4**, which
+retroactively explains both the "DPO +5 adherence" probe (Section 9.8) and an early
+"GRPO +0.45" reading (Section 9.12) as sampling artifacts.
+
+![Repeated evaluations of the same checkpoints: the spread within a model is as large as the effects we were trying to detect at n=15.](figures/18_judge_noise.png)
+
+Methodological rule adopted for all conclusions in this report: any delta below ~0.5
+judge-points at n=15 is treated as noise; decisive comparisons are re-run at n=45 with
+paired seeds.
+
+### 9.12 GRPO-lite: on-policy RL with a group baseline - null at this budget
+
+The last untested ingredient class from the course material (Week 10: policy gradients,
+REINFORCE, variance reduction with a baseline) is **on-policy RL with an absolute reward
+and a negative gradient**. We implemented GRPO-lite: each step samples 4 prompts x 4 fresh
+rollouts, scores each rollout with the judge, normalizes the advantage within the group
+(`(r - mean)/std` - the Week-10 baseline trick), and applies REINFORCE with a KL penalty
+(beta 0.05) against the frozen Phase-2 reference. Sixty steps (~960 judge calls, ~5 h,
+lr 3e-6 then 1e-5), checkpoint-resumed across interruptions.
+
+![GRPO training dynamics: the in-training reward is dominated by judge noise, and the policy's KL divergence from the reference stays around 1e-3 nats/token - the policy barely moves.](figures/17_grpo_dynamics.png)
+
+At n=15 the GRPO model read +0.45 above baseline - promising. Applying our own noise rule,
+we extended the evaluation to **n=45 paired prompts**: the delta collapsed to **+0.09
+(t=0.54; win/tie/loss 17/10/18)**. Null - but a *diagnosable* one: with final KL ~1e-3,
+the policy never moved far enough for any effect to be measurable. The honest conclusion
+is "GRPO at a ~960-judge-call budget does not shift the distribution", not "GRPO cannot".
+The practical blocker is reward cost: at ~15 s per judge call, DeepSeek-R1-scale step
+counts are out of reach locally, and a distilled 30M reward model failed its validation
+gate (pairwise accuracy 46.7% ~ chance) - the quality signal is not learnable from ~500
+noisy labels at this scale.
+
+### 9.13 The campaign in one picture
+
+![Four training methods, one evaluation protocol, four nulls - and the inference-time search that works. Judge-eval means per experiment pair; n as annotated.](figures/16_posttraining_campaign.png)
+
+| Method | Signal | Exploration | Negative gradient | Result |
+|---|---|---|---|---|
+| DPO (194 pairs) | relative preference | no (static data) | implicit | null (7.88 vs 8.02) |
+| SFT-on-best (42) | best-of-batch | no | no | null (7.98 vs 8.02) |
+| RAFT (200 >= 9.0) | absolute threshold | no | no | null (7.60 vs 7.78) |
+| GRPO-lite (60 steps) | group advantage | yes (on-policy) | yes | null at this budget (+0.09, n=45) |
+| **Best-of-N (inference)** | judge selection | yes (test-time) | - | **+0.8, deployed** |
+
+**Central empirical finding of the post-training study:** at 30M scale with weak, noisy
+AI feedback, the quality headroom demonstrably *exists at the sample level* but is *not
+trainable into the default distribution* by any of the low-cost methods above.
+Inference-time search converts that headroom directly; training methods do not.
+
+### 9.14 Free vs conditioned generation
 
 Does conditioning on the five slots merely constrain the model, or does it improve the
 output? We compare 20 *free* fables (no slots, only "write a children's fable") against 20
@@ -230,7 +345,7 @@ slightly harder readability), whereas the five slots *diversify* the output (the
 different characters/settings/challenges) and *ground* it to the user's request. The
 scaffold improves quality, not only controllability.
 
-### 9.10 Efficiency
+### 9.15 Efficiency
 
 ![Inference speed. The 30M SLM generates ~949 tokens/s versus ~19 for the 4B reference on the same machine - roughly 50x faster at ~1/130th the parameters.](figures/14_speed.png)
 
@@ -269,8 +384,13 @@ dashboard produces a per-metric PASS / WARN / FAIL verdict:
   *raises* cross-set diversity, *improves* readability into the children band and *grounds*
   the story to the request (Section 9.9) - versus free generation, which collapses toward a
   narrower set of stock fables.
-- **Alignment works and is cheap.** DPO/RLAIF improves prompt-adherence with zero perplexity
-  drift, and runs locally in about a minute - no GPU cluster required.
+- **Best-of-N converts headroom into shipped quality.** The +0.8 judge-point gain
+  (7.7 -> 8.55) is the study's one confirmed post-training improvement, costs no training,
+  and is exposed in the app as a user control with per-candidate score logging.
+- **Negative results are measured, not assumed.** Four alignment methods were tested under
+  one fixed protocol with paired seeds, repeated measurements and an n=45 confirmation
+  step; the judge's own noise was quantified (+-0.4 at n=15) and used to retract two
+  early false positives - the evaluation methodology is itself a contribution.
 - **Reproducible and defensible.** Every number is tied to a run and a published method;
   the training pipeline, data interventions and evaluation are all scripted.
 
@@ -278,9 +398,16 @@ dashboard produces a per-metric PASS / WARN / FAIL verdict:
 
 - **Context ceiling (512 tokens):** the model cannot produce coherent fables beyond
   ~300-340 words; the length selector has little effect on the SLM.
-- **Prompt-adherence ceiling (~70-76%):** a 30M model has weak conditioning; it reads the
-  five slots but still drops one or two (especially abstract Challenge/Outcome). DPO helps
-  but a residual gap remains - a quantified size/capability trade-off.
+- **Prompt-adherence ceiling (~70-80%):** a 30M model has weak conditioning; it reads the
+  five slots but still drops one or two (especially abstract Challenge/Outcome) - a
+  quantified size/capability trade-off that none of the tested alignment methods moved.
+- **The default distribution resists cheap self-feedback.** DPO, SFT-on-best, RAFT and
+  GRPO-lite (at a ~960-judge-call budget) all fail to shift default-generation quality;
+  only inference-time selection captures the headroom. Improving the *default* output
+  likely requires an external teacher or a much larger, cleaner reward budget.
+- **The evaluation judge is noisy:** repeated evaluations of the same checkpoint differ by
+  up to 0.45 at n=15. All headline deltas in this report respect that noise floor; readers
+  should apply the same caution to any small reported difference.
 - **Weak length control:** the model has a natural length (~250-280 words) and largely
   ignores the short/medium/long hint.
 - **Template / redemption priors:** the model inherits TF1 biases (friendship/kindness
@@ -302,18 +429,25 @@ pay off, not just a wish-list item.
   and has not plateaued; Kaplan/Chinchilla predict continued gains from more tokens.
   *Feasibility:* the 400k unique corpus with <=4-epoch repeat (Muennighoff 2023) supplies
   the tokens; only more T4 time is needed.
-- **Full DPO on 500+ preference pairs (vs. the 115-pair trial).**
-  *Evidence:* even 115 pairs moved adherence 71 -> 76% with reward accuracy reaching 1.0 and
-  **0% perplexity drift** (Fig. 13) - the signal is real and non-destructive.
-  *Feasibility:* pair generation is resume-safe and the DPO step runs locally in ~1 minute.
-- **Stronger preference judge (e.g. a 14B local model, or a frontier API).**
-  *Evidence:* the Qwen-4B judge keeps only ~43% of pairs (noisy labels); cleaner labels
-  should raise the DPO gain. *Feasibility:* the 36 GB machine runs a 14B judge comfortably.
-- **Knowledge distillation from a larger teacher.**
-  *Evidence:* the model already reproduces the data's diversity, readability and Zipf
-  statistics (Section 8) - the missing piece is long-range coherence/adherence, exactly what
-  soft-label distillation (Hinton 2015) targets. *Feasibility:* teacher forward passes are
-  cheap and one-off.
+- **Knowledge distillation from a larger teacher - now the primary alignment candidate.**
+  *Evidence:* the campaign (Section 9.13) shows self-generated data cannot shift the
+  default distribution because it is in-distribution by construction; a 4B teacher's
+  stories are genuinely off-distribution supervision, which is exactly the missing
+  ingredient. The model already reproduces the data's surface statistics (Section 8), so
+  the gap is long-range coherence/adherence - what distillation (Hinton 2015) targets.
+  *Feasibility:* ~500-1000 teacher stories generate overnight locally via Ollama.
+- **Scaled reward-based RL with a cheaper, cleaner reward.**
+  *Evidence:* GRPO-lite was null with KL ~1e-3 - the policy never moved at a 960-call
+  budget - so the method is untested at scale rather than refuted (Section 9.12). DeepSeek-
+  R1 demonstrates the mechanism works given thousands of steps.
+  *Feasibility:* requires replacing the ~15 s/call judge: either a stronger local judge
+  distilled into a fast scorer trained on far more labels (the 30M scorer failed at ~500
+  labels; scaling labels is the testable fix), or rule-based partial rewards (slot recall,
+  completeness) that cost microseconds.
+- **Stronger evaluation judge and larger eval sets by default.**
+  *Evidence:* the measured +-0.4 noise at n=15 (Section 9.11) manufactured two false
+  positives; n=45 paired evals resolved both. *Feasibility:* the 36 GB machine runs a 14B
+  judge comfortably; n=45-100 evals are an hour of compute.
 - **Targeted data debiasing beyond the owl template.**
   *Evidence:* the single "wise old owl" cap already moved the generation rate 90% -> 23%
   (Fig. 10), proving the intervention mechanism works; the same recipe can address the
@@ -326,12 +460,18 @@ pay off, not just a wish-list item.
 ## 13. Conclusion
 
 A 30M-parameter model trained from scratch, guided by scaling-law reasoning and a targeted
-data intervention, reaches ~7.0/10 fable quality (from 2.5) with held-out perplexity 3.56,
-generating complete, on-domain stories at ~50x the speed and 1/130th the size of a 4B LLM.
-Preference alignment (DPO/RLAIF) further improves instruction adherence without harming
-language quality. The result supports the thesis: **for a well-scoped task, a tiny model
-can rival a large one on the axes that matter, at a fraction of the cost** - while honestly
-documenting where the size ceiling still shows (length control, residual adherence gap).
+data intervention, reaches ~7.9/10 fable quality (final protocol, n=45; from 2.5 at the
+under-trained baseline) with held-out perplexity 3.56, generating complete, on-domain
+stories at ~50x the speed and 1/130th the size of a 4B LLM. A systematic post-training
+campaign then delivers the study's sharpest finding: the model's quality headroom is real
+at the sample level (best-of-3 reaches 8.55, near the 4B reference at 9.75) but **no
+low-cost self-feedback training method - DPO, SFT-on-best, RAFT or budget-limited GRPO -
+moves the default distribution**, while inference-time best-of-N captures the gain
+directly and ships in the app. The result supports the thesis with an honest boundary:
+**for a well-scoped task, a tiny model can rival a large one on the axes that matter, at a
+fraction of the cost** - provided the remaining variance is managed at inference time, and
+with the size ceiling documented where it shows (length control, residual adherence gap,
+alignment resistance).
 
 ## 14. Reproducibility
 
@@ -339,7 +479,11 @@ All model code lives under `trieulh/` (isolated from the shared web app):
 
 - Data + training: `trieulh/scripts/prepare_tf1_pretrain.py`, `train_tokenizer.py`,
   `tf1_pretrain/`; notebook `trieulh/notebooks/pretrain_slm_30m_dashboard.ipynb`.
-- Alignment: `trieulh/scripts/gen_preference_pairs.py`, `dpo_train_local.py`.
+- Alignment campaign: `trieulh/scripts/gen_preference_pairs.py`, `dpo_train_local.py`,
+  `headroom_probe.py` (best-of-N), `raft_harvest.py` + `raft_gen_corpus.py` +
+  `sft_best_local.py` (RAFT), `rm_train.py` + `rm_train_pairwise.py` (reward-model gate),
+  `grpo_train.py` (GRPO-lite), `raft_judge_eval.py` / `grpo_judge_eval.py` /
+  `big_judge_eval.py` (the shared evaluation protocol).
 - Evaluation: `trieulh/scripts/eval_slm.py`; app metrics `app/metrics.py`, `app/perplexity.py`.
 - Experiment log (source of this report): `trieulh/docs/experiments/2026-07-08-slm-training-log.md`.
 - Artifacts (Google Drive): checkpoints, HF models (30M, 30M-p2, 30M-dpo), GGUF exports,
@@ -358,3 +502,7 @@ To run it: unzip, then `ollama create slm-30m-dpo -f Modelfile-30M-dpo`.
 4. Muennighoff et al. (2023). *Scaling Data-Constrained Language Models.*
 5. Rafailov et al. (2023). *Direct Preference Optimization.*
 6. Bai et al. (2022). *Constitutional AI: Harmlessness from AI Feedback (RLAIF).*
+7. Williams (1992). *Simple Statistical Gradient-Following Algorithms for Connectionist RL (REINFORCE).*
+8. Shao et al. (2024). *DeepSeekMath: Pushing the Limits of Mathematical Reasoning (GRPO).*
+9. Dong et al. (2023). *RAFT: Reward-rAnked FineTuning for Generative Foundation Model Alignment.*
+10. Hinton et al. (2015). *Distilling the Knowledge in a Neural Network.*
