@@ -300,3 +300,207 @@ Giới hạn đã biết (ghi để trung thực trong báo cáo):
 2. **Hạ tầng free có hạn mức động**: mọi bước tốn công (data, checkpoint, model, kết quả phân tích) phải persist ra Drive ngay từ đầu, không đợi cuối run. Checkpoint/resume không phải tùy chọn mà là bắt buộc.
 3. **Chọn ngân sách bước theo cửa sổ tài nguyên**: một run 45 phút chắc chắn xong có giá trị hơn một run 2 giờ bị cắt giữa chừng.
 4. **Đánh giá cần mốc tham chiếu**: dashboard Step 5B đặt mọi metric của model cạnh fable thật (held-out) để khoảng cách chất lượng đọc được ngay trên biểu đồ.
+
+---
+
+# 2026-07-20/21 — RAFT vòng 1: reward-filtered SFT với ngưỡng tuyệt đối 9.0
+
+## Bối cảnh (chuỗi thí nghiệm dẫn tới RAFT)
+
+1. **DPO 194 pairs: NULL** — judge overall 8.02 -> 7.88 trên 15 prompt held-out (preference signal tương đối quá yếu khi chosen/rejected na ná nhau).
+2. **Headroom probe (best-of-N): model KHÔNG bị trần capacity** — mean 7.72 -> best-of-3 8.55, có sample 9.0-9.5 (sát Qwen 9.75). Nút thắt = tính nhất quán của phân bố mặc định. Best-of-N đã deploy vào app làm giải pháp tạm.
+3. **SFT-on-best 42 truyện: NULL** (8.02 -> 7.98). Kiểm tra lại data: 93% corpus đó đã >= 8.5 — vậy biến số thiếu KHÔNG phải chất lượng mà là **quy mô** (42 truyện ≈ 12k token story so với 600M token pretrain).
+4. **Nghiên cứu material Week8-10** (`trieulh/docs/research-improvement-directions.md`): khung Week9 exploration-vs-exploitation lý giải các null; Week10 tr.11-21 (Policy Gradient/REINFORCE/baseline/Actor-Critic) cho lộ trình reward-guided; Week8 diffusion không áp dụng trực tiếp cho text (chỉ rút analog contrastive decoding).
+
+## Thiết kế RAFT vòng 1
+
+- **Corpus**: 200 truyện, TẤT CẢ judge >= 9.0 (mean 9.22), gấp ~5x thí nghiệm SFT cũ.
+  - 105 harvest miễn phí từ thí nghiệm cũ (77 dpo_chosen + 28 sft_best >= 9.0).
+  - 95 sinh mới (`trieulh/scripts/raft_gen_corpus.py`): K=3 temp [0.5, 0.8, 1.1], chấp nhận sớm khi đạt ngưỡng; tỉ lệ prompt đạt >= 9.0 là **95/412 ≈ 23%**; resume-safe (corpus + reject-log).
+- **Train** (`sft_best_local.py --corpus data/raft/corpus.jsonl --lr 2e-5 --epochs 3`): khởi từ 30M-p2, loss-mask phần conditioning, 75 step MPS (~2.6h), loss cuối **0.672**.
+- **Eval** (`raft_judge_eval.py`): judge qwen3-4b-instruct, 15 prompt test.jsonl held-out (cùng protocol dpo194), seed cố định 1234+i, + guard perplexity trên test.jsonl[100:140]. Resume-safe (máy sleep giữa chừng đã được cứu bằng progress file).
+
+## Artifact
+
+| File | Nội dung |
+|---|---|
+| `data/raft/corpus.jsonl` | 200 truyện >= 9.0 (prompt, story, score, src) |
+| `data/raft/rejected_prompts.txt` | 317 prompt không đạt ngưỡng (tránh thử lại) |
+| `trieulh/report/data/raft_train_log.json` | loss theo step + thống kê corpus + acceptance rate |
+| `trieulh/report/data/raft_gen.log` | log sinh corpus (accept/reject từng prompt) |
+| `trieulh/report/data/raft_judge_eval.json` | kết quả judge eval p2 vs raft (đang chạy) |
+| `out/30M-raft/` | model sau RAFT (HF format, gitignored) |
+
+## Kết quả: NULL lần thứ 3 — và đây là phát hiện khoa học chính
+
+Judge eval 15 prompt held-out (2 lần đo độc lập cho raft, cùng seed sinh):
+
+| Model | Overall (lần A) | Overall (lần B) | Pooled | Adherence | PPL held-out |
+|---|---|---|---|---|---|
+| 30M-p2 (baseline) | 7.82 | 7.73 | ~7.78 | 7.8 | 10.579 |
+| 30M-raft | 7.38 | 7.82 | 7.60 | 7.2-7.9 | 10.635 (+0.5%) |
+
+- **RAFT vòng 1 = NULL**: raft nằm trong khoảng nhiễu của baseline. PPL không drift (không quên ngôn ngữ) — model "chịu" train nhưng phân bố mặc định không dịch.
+- **Nhiễu đo judge lớn**: cùng một model raft, 2 lần chấm chênh 7.38 vs 7.82 (~±0.4). Mọi kết luận delta < 0.5 điểm trên n=15 đều không đáng tin — điều này cũng hồi tố giải thích "DPO +5đ adherence" trước đây là nhiễu.
+- **Diễn giải lý thuyết** (khớp khung Week9): corpus RAFT là sample RÚT TỪ CHÍNH phân bố của model (best-of-N chọn đuôi phải của phân bố hiện có). SFT trên chúng chỉ tô đậm các mode sẵn có — gradient không chứa thông tin "tránh cái xấu". 60k token story so với 600M token pretrain là cú hích quá nhỏ, và quan trọng hơn: **tín hiệu không có thành phần contrastive/negative**.
+- **Hệ quả cho lộ trình**: 3 phương pháp exploitation-trên-data-tĩnh (DPO, SFT-on-best, RAFT-ngưỡng-9.0) đều null -> biến số còn lại đúng như research doc dự đoán: (1) **GRPO-lite/REINFORCE+baseline** (Week10 tr.18-19) — có gradient ÂM đẩy xuống sample dưới baseline, on-policy; hoặc (2) **distillation từ teacher ngoài** — tín hiệu off-distribution thực sự mới. Best-of-N vẫn là giải pháp deploy hiệu quả duy nhất đã xác nhận (+0.8đ).
+
+---
+
+# 2026-07-21 — Reward model 30M: KHÔNG khả thi (gate fail)
+
+Mục tiêu: RM nhỏ (backbone 30M-p2 + linear head) làm reward nhanh/ít nhiễu cho GRPO-lite
+và rerank best-of-N (hướng #4, Week10 Actor-Critic). Gate đặt trước: val Spearman >= 0.5.
+
+| Biến thể | Data | Kết quả val | Verdict |
+|---|---|---|---|
+| Pointwise MSE (`rm_train.py`) | 482 (story, judge score), val 53 | MSE 0.021 nhưng Spearman **0.215**, Pearson 0.16 | Collapse về predict mean |
+| Pairwise Bradley-Terry (`rm_train_pairwise.py`) | 164 cặp chosen/rejected (margin >= 1), val 30 cặp | pair-acc **46.7%** (ngẫu nhiên = 50%), Spearman 0.20; train loss 0.71 -> 0.32 | Học thuộc train, zero khái quát |
+
+Diễn giải: representation của backbone 30M không tách được "chất lượng theo judge"
+với ~500 mẫu — tín hiệu judge vốn nhiễu (±0.4 trên mean-15) và rubric 4 trục quá phức tạp
+so với dung lượng biểu diễn + lượng data. Khớp chủ đề xuyên suốt: mọi tín hiệu phản hồi
+tự tạo (AI feedback) ở quy mô này đều quá yếu để huấn luyện tiếp.
+
+Hệ quả: GRPO-lite chạy trực tiếp với judge reward (chậm, ~15s/call) ở quy mô nhỏ
+(30 step x 4 prompt x 4 rollout ≈ 480 call). Metrics lưu: `trieulh/report/data/rm_metrics.json`,
+`rm_bt_metrics.json`.
+
+---
+
+# 2026-07-21 — GRPO-lite (REINFORCE + baseline nhóm, Week10 tr.14-19): tín hiệu DƯƠNG đầu tiên
+
+## Thiết kế
+
+`trieulh/scripts/grpo_train.py` — on-policy, khác hẳn 3 thí nghiệm null trước (đều exploitation trên data tĩnh):
+- Mỗi step: 4 prompt x 4 rollout MỚI từ policy hiện tại (temp 0.9, top_p 0.95, max 380 token).
+- Reward = judge qwen3-4b-instruct trực tiếp (RM đã fail gate). Advantage chuẩn hóa THEO NHÓM cùng prompt: `(r_i - mean)/std` -> có gradient ÂM đẩy xuống sample dưới baseline (thành phần contrastive mà DPO/SFT/RAFT thiếu).
+- loss = -adv * mean_logprob(story) + 0.05 * KL(policy || ref=30M-p2); grad-clip 1.0.
+- Guard ppl held-out (test[100:130]) mỗi 10 step, trần +10%. Checkpoint + resume mỗi step (sống sót 4 lần task kill).
+
+Hai pha: step 1-30 lr 3e-6 (KL chỉ đạt ~3e-4 — quá nhỏ), step 31-60 lr 1e-5 (KL ~1e-3). Tổng ~960 judge call, ~5h MPS.
+
+## Kết quả huấn luyện
+
+- Reward curve trong-train PHẲNG (dao động 6.6-8.3 quanh ~7.6) — kỳ vọng với 60 step ngắn và nhiễu judge; reward trong-train không phải thước đo chính.
+- ppl held-out 10.895 -> 10.897 (0.02% — không quên ngôn ngữ). KL cuối ~1e-3 nats/token (policy dịch rất nhẹ).
+- Log từng step: `out/30M-grpo/grpo_log.jsonl` (loss/reward_mean/reward_std/kl/ppl) — dữ liệu vẽ reward curve cho báo cáo.
+
+## Đánh giá (judge eval 15 prompt held-out, protocol chuẩn)
+
+| Model | Lần đo A (seed 1234) | Lần đo B (seed 4321) | PPL |
+|---|---|---|---|
+| 30M-p2 (2 lần đo trước) | 7.82 | 7.73 | 10.579 |
+| **30M-grpo** | **8.00** (adh 8.07) | **8.45** (adh 8.47) | 10.579 |
+
+- **Cả 2 lần đo GRPO cao hơn cả 2 lần đo baseline** — min(grpo)=8.00 > max(p2)=7.82. Khác hẳn pattern DPO/RAFT (lẫn trong nhiễu).
+- Thống kê chưa đạt ngưỡng với n=15: paired (cùng seed) delta +0.27 t=0.66; pooled delta +0.45 t=1.32 (cần t≈2.0).
+- Đang chạy eval MỞ RỘNG n=45 prompt (tái dùng 30 đo cũ cùng protocol + 60 call mới) để kết luận dứt điểm -> `trieulh/report/data/big_judge_eval.json`.
+
+## Kết luận cuối (eval n=45): tín hiệu dương KHÔNG lặp lại — GRPO@60step cũng NULL
+
+Eval mở rộng 45 prompt held-out, paired cùng seed (`big_judge_eval.json`):
+
+| Metric | 30M-p2 | 30M-grpo | Delta |
+|---|---|---|---|
+| Overall (n=45) | 7.939 | 8.033 | **+0.094, t=0.54** |
+| Adherence | 7.87 | 7.98 | +0.11 |
+| Win/tie/loss (grpo vs p2) | — | — | 17/10/18 |
+| PPL held-out | 10.579 | 10.579 | 0 |
+
+- Delta +0.45 ở n=15 co về +0.09 ở n=45 — **một lần nữa xác nhận nhiễu judge là bẫy chính** của mọi kết luận ở n nhỏ (lần 2 sau vụ "DPO +5đ").
+- Diễn giải trung thực: KL cuối chỉ ~1e-3 nats/token — policy gần như chưa dịch. Thí nghiệm này chứng minh "GRPO ở budget 60 step x 16 rollout (~960 judge call, ~5h) không đủ dịch phân bố", KHÔNG bác bỏ GRPO ở budget lớn hơn (hàng nghìn step như DeepSeek-R1). Nút nghẽn thực tế: judge ~15s/call khiến scale-up cục bộ bất khả thi.
+
+## Bức tranh tổng: 4 phương pháp post-training đều NULL ở 30M với AI-feedback yếu
+
+| Phương pháp | Tín hiệu | Exploration | Gradient âm | Kết quả (judge, held-out) |
+|---|---|---|---|---|
+| DPO 194 pairs | preference tương đối | không (data tĩnh) | có (implicit) | NULL (7.88 vs 8.02) |
+| SFT-on-best 42 | best-of-batch | không | không | NULL (7.98 vs 8.02) |
+| RAFT 200 >= 9.0 | ngưỡng tuyệt đối | không | không | NULL (7.60 vs 7.78) |
+| GRPO-lite 60 step | advantage nhóm | CÓ (on-policy) | CÓ | NULL ở budget này (+0.09, t=0.54) |
+| **Best-of-N (inference)** | judge chọn | CÓ (test-time) | — | **+0.8 xác nhận, đã deploy** |
+
+Kết luận khoa học cho báo cáo: ở quy mô 30M + judge nhiễu (sigma đơn lẻ ~1.5), headroom chất lượng
+tồn tại ở mức SAMPLE (best-of-N bắt được) nhưng KHÔNG dịch được vào phân bố mặc định bằng
+bất kỳ phương pháp feedback-tự-tạo chi phí thấp nào; hướng còn lại có cơ sở là (1) distillation
+từ teacher ngoài (tín hiệu off-distribution thật) hoặc (2) RL budget lớn với reward rẻ/sạch hơn.
+
+---
+
+# 2026-07-21 (đêm) — Distillation từ teacher Qwen3-4B: chạy trên Colab T4 qua Colab CLI
+
+## Lý do và thiết kế
+
+Hướng cuối còn cơ sở sau 4 null: **tín hiệu off-distribution thật** — teacher sinh truyện,
+SLM học SFT trên đó (Hinton 2015). Chọn teacher Qwen3-4B (không lên 12-14B) vì: judge 9.75/10
+trên rubric đã dư tín hiệu so SLM 7.9; nhanh gấp đôi -> gấp đôi data/đêm; văn phong đơn giản
+khớp vocab 12k + Flesch band trẻ em hơn model to (rủi ro "văn hoa" lệch phân bố).
+
+- **Bước 1 — corpus teacher** (`trieulh/scripts/distill_gen_corpus.py`): 600 truyện theo prompt
+  5-slot (pool `data/orpo/prompts.jsonl`, không đụng test set); system prompt ép STRICTLY
+  150-250 từ, từ đơn giản, kết moral, không markdown; hạ length-hint gửi teacher xuống
+  170-240 từ nhưng LƯU prompt gốc cho SFT; chuẩn hóa punctuation unicode -> ASCII; lọc cứng
+  <= 400 token SLM + 120-280 từ. Resume-safe (corpus + reject log).
+- **Bước 2 — SFT** (`sft_best_local.py`): khởi từ 30M-p2, 2 epoch, lr 2e-5, loss-mask
+  conditioning -> `out/30M-distill`.
+- **Bước 3 — eval n=45 paired** (`distill_judge_eval.py`): chạy LOCAL sau (45 điểm p2 đã seed
+  từ big_eval; judge phải là cùng deployment Ollama local Q8_0 để so sánh hợp lệ).
+
+## Vận hành trên Colab CLI (giảm tải M3, theo yêu cầu)
+
+Session `distill`, GPU T4 15GB (`colab new -s distill --gpu T4`). Các bài học ops cũ được áp dụng
+(log ra file trên VM, chain tar->download, resume-safe):
+
+1. Cài Ollama trên VM: cần `apt-get install zstd` trước (install.sh fail nếu thiếu — bài học mới);
+   pull `qwen3:4b-instruct-2507-q8_0` (4.3GB) — **cùng quant Q8_0 với judge local**.
+2. Upload input qua `colab upload`: prompts.jsonl, tokenizer, script; riêng
+   `model.safetensors` 140MB bị 400 (giới hạn API contents) -> **split 45MB/phần, cat lại
+   trên VM, verify MD5 khớp** (bài học mới).
+3. Patch script trên VM qua `colab exec` (stdin): MODEL -> tag Colab; sft dev mps -> cuda + fp16.
+4. Chuỗi gen -> SFT -> tar chạy detached (`subprocess.Popen`) trên VM, log `/content/work/chain.log`;
+   poll định kỳ bằng `colab exec`. Corpus 10 truyện sinh local trước đó được upload để resume tiếp.
+
+Throughput đo được: teacher trên T4 ~5-7s/truyện (local M3 ~25s). ETA bước 1 ~1h, bước 2 ~15-30ph.
+
+## Vận hành thực tế (cập nhật 2026-07-22 rạng sáng)
+
+- Runtime `distill` bị Colab THU HỒI giữa run ở 364/600 truyện (headless, ~1.5h) — partial corpus
+  sống sót nhờ tải về định kỳ (bài học mới: POLL + DOWNLOAD PARTIAL mỗi lần check).
+- `colab new` lần 2 dính Precondition Failed (hết quota) -> gen 236 truyện còn lại chạy LOCAL
+  (resume-safe từ file đã tải). Quota mở lại sau ~40 phút -> session `distill2` cho SFT.
+- **SFT trên T4: 16.84 giây** (71 samples/s, fp16) — so với ~5h ước tính trên MPS (~1000x).
+  Riêng con số này đã chứng minh giá trị của việc offload: mọi SFT/train sau này nên mặc định Colab.
+- Model tar -> split 45MB -> download -> ghép + verify MD5 khớp -> stop session ngay.
+
+## Kết quả eval (n=45 paired, judge local Q8_0): ÂM NHẸ — và là phương pháp đầu tiên LÀM MODEL DỊCH CHUYỂN THẬT
+
+| Metric | 30M-p2 | 30M-distill | Delta |
+|---|---|---|---|
+| Overall | 7.939 | 7.572 | **-0.367, t=-1.55** |
+| Adherence | 7.87 | 7.56 | -0.31 |
+| Win/tie/loss | — | — | 17/8/20 |
+| PPL held-out | 10.579 | 11.042 | **+4.4%** |
+
+Đọc kết quả:
+- Train loss trên data teacher ~2.94 (so 0.67 khi SFT trên data tự sinh) + ppl drift +4.4%:
+  tín hiệu off-distribution LÀ thật và model ĐÃ học — khác hẳn 4 thí nghiệm trước (không dịch gì).
+- Nhưng chất lượng judge GIẢM: student 30M nhại văn phong teacher (câu dài hơn, từ vựng lạ hơn)
+  vượt capacity -> vỡ độ trôi chảy bản địa. Hiện tượng "imitation học style, không học content"
+  (Gudibande et al. 2023, The False Promise of Imitating Proprietary LLMs).
+- 180k token distill so 600M token pretrain: đủ để lệch style, không đủ để học cấu trúc mới.
+
+## Kết luận CHUNG cuộc cho toàn campaign (5 phương pháp)
+
+| Phương pháp | Model có dịch không? | Chất lượng |
+|---|---|---|
+| DPO / SFT-on-best / RAFT | không (KL~0, ppl 0%) | không đổi (null) |
+| GRPO-lite 60 step | gần như không (KL 1e-3) | không đổi (null) |
+| Distill teacher 600 | CÓ (ppl +4.4%) | GIẢM -0.37 |
+| Best-of-N inference | — | **+0.8 (duy nhất dương)** |
+
+Phân bố mặc định của 30M-p2 nằm ở local optimum theo đúng capacity + data pretrain của nó:
+đẩy bằng data trong-phân-bố thì không nhúc nhích, đẩy bằng data ngoài-phân-bố thì tụt.
+Muốn nâng floor phải quay về pretrain (data sạch hơn/nhiều hơn, model to hơn) — còn ở
+post-training, inference-time search là cách khai thác đúng và đã ship.
+30M-distill KHÔNG nạp app.

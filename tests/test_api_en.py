@@ -343,3 +343,29 @@ def test_evaluate_includes_objective_and_method():
     assert "objective" in d and set(d["objective"]) == {"distinct_1", "distinct_2", "flesch_reading_ease"}
     assert "method" in d and "overall_formula" in d["method"] and "citation" in d["method"]
     assert d["method"]["axes"].keys() >= {"grammar", "creativity", "moral_clarity", "prompt_adherence"}
+
+
+def test_best_of_n_picks_highest_judge_score():
+    """best_of_n>1: generate N via meta, judge each, return the highest-overall story."""
+    stories = iter(["Story A weak.", "Story B strong ending.", "Story C mid."])
+    app.dependency_overrides[meta_fn] = lambda: (
+        lambda prompt, system, **kw: {"text": next(stories), "input_tokens": 5,
+                                      "output_tokens": 10, "latency_ms": 50, "done_reason": "stop"}
+    )
+    scores = iter(['{"grammar":{"score":5},"creativity":{"score":5},"moral_clarity":{"score":5},"prompt_adherence":{"score":5}}',
+                   '{"grammar":{"score":9},"creativity":{"score":9},"moral_clarity":{"score":9},"prompt_adherence":{"score":9}}',
+                   '{"grammar":{"score":6},"creativity":{"score":6},"moral_clarity":{"score":6},"prompt_adherence":{"score":6}}'])
+    app.dependency_overrides[judge_fn] = lambda: (lambda prompt, system, **kw: next(scores))
+    ev = _collect({"character": "a fox", "setting": "", "challenge": "", "outcome": "",
+                   "teaching": "", "length": "short", "model_id": "slm-30m-p2",
+                   "guardrail_enabled": False, "best_of_n": 3})
+    done = [e for e in ev if e["type"] == "done"][-1]
+    assert done["status"] == "success"
+    assert done["story"] == "Story B strong ending."       # highest judge overall (9)
+    assert done["meta"]["best_of_n"] == 3 and done["meta"]["selected"] == 1
+
+
+def test_pick_best_index():
+    from app.main import pick_best_index
+    assert pick_best_index([5.0, 9.0, 6.0]) == 1
+    assert pick_best_index([]) == 0

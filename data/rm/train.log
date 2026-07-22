@@ -1,0 +1,6 @@
+train 482 val 53
+ep1 train_mse=0.1373 val_mse=0.0397 pearson=0.068 spearman=0.143
+ep2 train_mse=0.0310 val_mse=0.0279 pearson=0.054 spearman=0.092
+ep3 train_mse=0.0180 val_mse=0.0213 pearson=0.091 spearman=0.166
+ep4 train_mse=0.0128 val_mse=0.0206 pearson=0.161 spearman=0.215
+RM DONE -> out/rm-30m.pt
