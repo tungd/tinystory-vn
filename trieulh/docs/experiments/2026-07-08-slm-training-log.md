@@ -425,3 +425,82 @@ Kết luận khoa học cho báo cáo: ở quy mô 30M + judge nhiễu (sigma đ
 tồn tại ở mức SAMPLE (best-of-N bắt được) nhưng KHÔNG dịch được vào phân bố mặc định bằng
 bất kỳ phương pháp feedback-tự-tạo chi phí thấp nào; hướng còn lại có cơ sở là (1) distillation
 từ teacher ngoài (tín hiệu off-distribution thật) hoặc (2) RL budget lớn với reward rẻ/sạch hơn.
+
+---
+
+# 2026-07-21 (đêm) — Distillation từ teacher Qwen3-4B: chạy trên Colab T4 qua Colab CLI
+
+## Lý do và thiết kế
+
+Hướng cuối còn cơ sở sau 4 null: **tín hiệu off-distribution thật** — teacher sinh truyện,
+SLM học SFT trên đó (Hinton 2015). Chọn teacher Qwen3-4B (không lên 12-14B) vì: judge 9.75/10
+trên rubric đã dư tín hiệu so SLM 7.9; nhanh gấp đôi -> gấp đôi data/đêm; văn phong đơn giản
+khớp vocab 12k + Flesch band trẻ em hơn model to (rủi ro "văn hoa" lệch phân bố).
+
+- **Bước 1 — corpus teacher** (`trieulh/scripts/distill_gen_corpus.py`): 600 truyện theo prompt
+  5-slot (pool `data/orpo/prompts.jsonl`, không đụng test set); system prompt ép STRICTLY
+  150-250 từ, từ đơn giản, kết moral, không markdown; hạ length-hint gửi teacher xuống
+  170-240 từ nhưng LƯU prompt gốc cho SFT; chuẩn hóa punctuation unicode -> ASCII; lọc cứng
+  <= 400 token SLM + 120-280 từ. Resume-safe (corpus + reject log).
+- **Bước 2 — SFT** (`sft_best_local.py`): khởi từ 30M-p2, 2 epoch, lr 2e-5, loss-mask
+  conditioning -> `out/30M-distill`.
+- **Bước 3 — eval n=45 paired** (`distill_judge_eval.py`): chạy LOCAL sau (45 điểm p2 đã seed
+  từ big_eval; judge phải là cùng deployment Ollama local Q8_0 để so sánh hợp lệ).
+
+## Vận hành trên Colab CLI (giảm tải M3, theo yêu cầu)
+
+Session `distill`, GPU T4 15GB (`colab new -s distill --gpu T4`). Các bài học ops cũ được áp dụng
+(log ra file trên VM, chain tar->download, resume-safe):
+
+1. Cài Ollama trên VM: cần `apt-get install zstd` trước (install.sh fail nếu thiếu — bài học mới);
+   pull `qwen3:4b-instruct-2507-q8_0` (4.3GB) — **cùng quant Q8_0 với judge local**.
+2. Upload input qua `colab upload`: prompts.jsonl, tokenizer, script; riêng
+   `model.safetensors` 140MB bị 400 (giới hạn API contents) -> **split 45MB/phần, cat lại
+   trên VM, verify MD5 khớp** (bài học mới).
+3. Patch script trên VM qua `colab exec` (stdin): MODEL -> tag Colab; sft dev mps -> cuda + fp16.
+4. Chuỗi gen -> SFT -> tar chạy detached (`subprocess.Popen`) trên VM, log `/content/work/chain.log`;
+   poll định kỳ bằng `colab exec`. Corpus 10 truyện sinh local trước đó được upload để resume tiếp.
+
+Throughput đo được: teacher trên T4 ~5-7s/truyện (local M3 ~25s). ETA bước 1 ~1h, bước 2 ~15-30ph.
+
+## Vận hành thực tế (cập nhật 2026-07-22 rạng sáng)
+
+- Runtime `distill` bị Colab THU HỒI giữa run ở 364/600 truyện (headless, ~1.5h) — partial corpus
+  sống sót nhờ tải về định kỳ (bài học mới: POLL + DOWNLOAD PARTIAL mỗi lần check).
+- `colab new` lần 2 dính Precondition Failed (hết quota) -> gen 236 truyện còn lại chạy LOCAL
+  (resume-safe từ file đã tải). Quota mở lại sau ~40 phút -> session `distill2` cho SFT.
+- **SFT trên T4: 16.84 giây** (71 samples/s, fp16) — so với ~5h ước tính trên MPS (~1000x).
+  Riêng con số này đã chứng minh giá trị của việc offload: mọi SFT/train sau này nên mặc định Colab.
+- Model tar -> split 45MB -> download -> ghép + verify MD5 khớp -> stop session ngay.
+
+## Kết quả eval (n=45 paired, judge local Q8_0): ÂM NHẸ — và là phương pháp đầu tiên LÀM MODEL DỊCH CHUYỂN THẬT
+
+| Metric | 30M-p2 | 30M-distill | Delta |
+|---|---|---|---|
+| Overall | 7.939 | 7.572 | **-0.367, t=-1.55** |
+| Adherence | 7.87 | 7.56 | -0.31 |
+| Win/tie/loss | — | — | 17/8/20 |
+| PPL held-out | 10.579 | 11.042 | **+4.4%** |
+
+Đọc kết quả:
+- Train loss trên data teacher ~2.94 (so 0.67 khi SFT trên data tự sinh) + ppl drift +4.4%:
+  tín hiệu off-distribution LÀ thật và model ĐÃ học — khác hẳn 4 thí nghiệm trước (không dịch gì).
+- Nhưng chất lượng judge GIẢM: student 30M nhại văn phong teacher (câu dài hơn, từ vựng lạ hơn)
+  vượt capacity -> vỡ độ trôi chảy bản địa. Hiện tượng "imitation học style, không học content"
+  (Gudibande et al. 2023, The False Promise of Imitating Proprietary LLMs).
+- 180k token distill so 600M token pretrain: đủ để lệch style, không đủ để học cấu trúc mới.
+
+## Kết luận CHUNG cuộc cho toàn campaign (5 phương pháp)
+
+| Phương pháp | Model có dịch không? | Chất lượng |
+|---|---|---|
+| DPO / SFT-on-best / RAFT | không (KL~0, ppl 0%) | không đổi (null) |
+| GRPO-lite 60 step | gần như không (KL 1e-3) | không đổi (null) |
+| Distill teacher 600 | CÓ (ppl +4.4%) | GIẢM -0.37 |
+| Best-of-N inference | — | **+0.8 (duy nhất dương)** |
+
+Phân bố mặc định của 30M-p2 nằm ở local optimum theo đúng capacity + data pretrain của nó:
+đẩy bằng data trong-phân-bố thì không nhúc nhích, đẩy bằng data ngoài-phân-bố thì tụt.
+Muốn nâng floor phải quay về pretrain (data sạch hơn/nhiều hơn, model to hơn) — còn ở
+post-training, inference-time search là cách khai thác đúng và đã ship.
+30M-distill KHÔNG nạp app.

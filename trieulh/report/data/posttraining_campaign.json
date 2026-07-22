@@ -24,6 +24,12 @@
    "n": 45,
    "baseline": 7.94,
    "method": 8.03
+  },
+  {
+   "name": "Distill 600 (teacher)",
+   "n": 45,
+   "baseline": 7.94,
+   "method": 7.57
   }
  ],
  "best_of_n": {

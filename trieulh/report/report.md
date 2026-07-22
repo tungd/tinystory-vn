@@ -25,7 +25,9 @@ application-analysis dashboard (intrinsic diversity, readability, Zipf, position
 and close with a **systematic post-training campaign**: four alignment methods sharing one
 evaluation protocol - DPO (194 pairs), SFT-on-best, threshold-filtered RAFT (200 stories
 judged >= 9.0) and GRPO-lite (REINFORCE with a group baseline, 60 on-policy steps) - are
-**all null** on the model's default distribution, while **inference-time best-of-N search
+**all null** on the model's default distribution, a fifth (knowledge distillation from the
+4B teacher, 600 stories) *moves* the model but slightly degrades it (-0.37, the imitation
+trap), while **inference-time best-of-N search
 captures a confirmed +0.8 judge-point gain** (7.7 -> 8.55, near the 4B reference at 9.75)
 and ships in the app. Along the way we *measure* the LLM-judge's own noise (repeated
 evaluations of the same model differ by up to 0.45 at n=15) and show it retroactively
@@ -315,12 +317,28 @@ noisy labels at this scale.
 | SFT-on-best (42) | best-of-batch | no | no | null (7.98 vs 8.02) |
 | RAFT (200 >= 9.0) | absolute threshold | no | no | null (7.60 vs 7.78) |
 | GRPO-lite (60 steps) | group advantage | yes (on-policy) | yes | null at this budget (+0.09, n=45) |
+| Distill-from-teacher (600) | off-distribution imitation | teacher's | no | **negative** (-0.37, n=45; ppl +4.4%) |
 | **Best-of-N (inference)** | judge selection | yes (test-time) | - | **+0.8, deployed** |
+
+**Postscript - the fifth experiment.** After the four nulls we ran the remaining
+evidence-backed direction: knowledge distillation from the Qwen3-4B teacher (600 stories,
+five-slot conditioned, style-constrained to simple English; SFT 2 epochs on a Colab T4 in
+17 seconds). Uniquely among all five methods, this one *did* move the model - train loss
+on teacher text is 2.94 (vs 0.67 on self-generated text) and held-out perplexity drifts
++4.4% - and the movement was *downward*: 7.57 vs 7.94 (paired n=45, t=-1.55). The 30M
+student imitates the teacher's surface style beyond its capacity and loses native fluency -
+the "imitation learns style, not content" failure mode (Gudibande et al. 2023). 180k
+distillation tokens against a 600M-token pretraining prior can bend style but cannot teach
+structure.
 
 **Central empirical finding of the post-training study:** at 30M scale with weak, noisy
 AI feedback, the quality headroom demonstrably *exists at the sample level* but is *not
 trainable into the default distribution* by any of the low-cost methods above.
-Inference-time search converts that headroom directly; training methods do not.
+Inference-time search converts that headroom directly; training methods either fail to
+move the distribution (in-distribution data) or move it in the wrong direction
+(off-distribution data beyond the student's capacity). The default distribution sits at a
+local optimum determined by pretraining - raising the *floor* requires better pretraining
+(more/cleaner data, more capacity), not cheap post-training.
 
 ### 9.14 Free vs conditioned generation
 
@@ -429,13 +447,14 @@ pay off, not just a wish-list item.
   and has not plateaued; Kaplan/Chinchilla predict continued gains from more tokens.
   *Feasibility:* the 400k unique corpus with <=4-epoch repeat (Muennighoff 2023) supplies
   the tokens; only more T4 time is needed.
-- **Knowledge distillation from a larger teacher - now the primary alignment candidate.**
-  *Evidence:* the campaign (Section 9.13) shows self-generated data cannot shift the
-  default distribution because it is in-distribution by construction; a 4B teacher's
-  stories are genuinely off-distribution supervision, which is exactly the missing
-  ingredient. The model already reproduces the data's surface statistics (Section 8), so
-  the gap is long-range coherence/adherence - what distillation (Hinton 2015) targets.
-  *Feasibility:* ~500-1000 teacher stories generate overnight locally via Ollama.
+- **Distillation at pretraining scale, not SFT scale.**
+  *Evidence:* the 600-story hard-label distillation moved the model but degraded it
+  (Section 9.13) - the imitation trap. The literature remedy is scale and soft labels:
+  mix teacher data into *pretraining* (millions of tokens, as TF1 itself was
+  Gemma-generated) or distill token-level soft targets (Hinton 2015) rather than
+  fine-tuning on a few hundred hard-label stories. *Feasibility:* T4 SFT takes seconds
+  (measured 17 s for 1,200 samples); the cost is teacher generation time, which scales
+  linearly and parallelizes.
 - **Scaled reward-based RL with a cheaper, cleaner reward.**
   *Evidence:* GRPO-lite was null with KL ~1e-3 - the policy never moved at a 960-call
   budget - so the method is untested at scale rather than refuted (Section 9.12). DeepSeek-
@@ -465,9 +484,10 @@ under-trained baseline) with held-out perplexity 3.56, generating complete, on-d
 stories at ~50x the speed and 1/130th the size of a 4B LLM. A systematic post-training
 campaign then delivers the study's sharpest finding: the model's quality headroom is real
 at the sample level (best-of-3 reaches 8.55, near the 4B reference at 9.75) but **no
-low-cost self-feedback training method - DPO, SFT-on-best, RAFT or budget-limited GRPO -
-moves the default distribution**, while inference-time best-of-N captures the gain
-directly and ships in the app. The result supports the thesis with an honest boundary:
+low-cost post-training method moves the default distribution upward** - DPO, SFT-on-best,
+RAFT and budget-limited GRPO are null, and teacher distillation at SFT scale moves it
+*down* (the imitation trap) - while inference-time best-of-N captures the gain directly
+and ships in the app. The result supports the thesis with an honest boundary:
 **for a well-scoped task, a tiny model can rival a large one on the axes that matter, at a
 fraction of the cost** - provided the remaining variance is managed at inference time, and
 with the size ceiling documented where it shows (length control, residual adherence gap,
@@ -506,3 +526,4 @@ To run it: unzip, then `ollama create slm-30m-dpo -f Modelfile-30M-dpo`.
 8. Shao et al. (2024). *DeepSeekMath: Pushing the Limits of Mathematical Reasoning (GRPO).*
 9. Dong et al. (2023). *RAFT: Reward-rAnked FineTuning for Generative Foundation Model Alignment.*
 10. Hinton et al. (2015). *Distilling the Knowledge in a Neural Network.*
+11. Gudibande et al. (2023). *The False Promise of Imitating Proprietary LLMs.*
