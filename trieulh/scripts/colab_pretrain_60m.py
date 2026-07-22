@@ -204,8 +204,20 @@ def main():
         lr_scheduler_type="constant", report_to=[],
         dataloader_num_workers=2, disable_tqdm=True,
     )
+    from transformers import TrainerCallback
+
+    class DriveLog(TrainerCallback):
+        """Ghi log train lên Drive để theo dõi từ ngoài (poll qua Drive API)."""
+        def __init__(self, path):
+            self.path = path
+        def on_log(self, args_, state, control, logs=None, **kw):
+            if logs:
+                with open(self.path, "a") as f:
+                    f.write(json.dumps({"step": state.global_step, **logs}) + "\n")
+
     trainer = Trainer(model=model, args=args, train_dataset=PackedDS(),
                       data_collator=collator, optimizers=(optimizer, scheduler))
+    trainer.add_callback(DriveLog(f"{DRIVE}/train60_progress.jsonl"))
     trainer.train(resume_from_checkpoint=resume_from)
 
     # ── save final + analysis nhanh ───────────────────────────────────────────
