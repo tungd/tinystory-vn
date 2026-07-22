@@ -131,7 +131,7 @@ def main():
     if not os.path.exists("/content/tinystory-vn"):
         sh("git clone -q https://github.com/tungd/tinystory-vn.git /content/tinystory-vn")
     os.chdir("/content/tinystory-vn")
-    sh("git fetch -q origin && git checkout -q feat/trieulh-improve && git pull -q")
+    sh("git fetch -q origin && git checkout -q feat/trieulh-60m && git pull -q")
     sh('pip -q install "datasets>=2.20" "tokenizers>=0.19" "transformers>=4.44" accelerate')
 
     from transformers import (LlamaConfig, LlamaForCausalLM, PreTrainedTokenizerFast,
