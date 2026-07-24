@@ -1,0 +1,116 @@
+{
+ "claude_scores": {
+  "UC1_free": {
+   "slm-30m": [
+    6.5,
+    6.0,
+    7.0,
+    7.0
+   ],
+   "slm-30m-p2": [
+    6.0,
+    7.5,
+    7.5,
+    7.0
+   ],
+   "slm-30m-dpo": [
+    5.0,
+    6.0,
+    7.0,
+    7.0
+   ]
+  },
+  "UC2_slots": {
+   "slm-30m": [
+    6.0,
+    2.5,
+    4.0,
+    5.0
+   ],
+   "slm-30m-p2": [
+    8.0,
+    5.0,
+    6.75,
+    7.0
+   ],
+   "slm-30m-dpo": [
+    7.5,
+    5.75,
+    7.5,
+    7.0
+   ]
+  }
+ },
+ "notes": {
+  "identical_prefix": "Cùng seed, p2 và dpo cho truyện GẦN NHƯ GIỐNG HỆT, chỉ rẽ nhánh ở đoạn cuối (UC2 #0/#1/#3, UC1 #1/#2): bằng chứng trực quan DPO hầu như không dịch phân bố.",
+  "dpo_freegen_regressions": "DPO có vài câu gãy ở free-gen: 'Why don them bring you a warm blanket and some of your wings?', 'not very good at flying or flying'.",
+  "p1_uc2_failure": "Phase 1 trượt slot nặng ở UC2: #1 (duckling) sinh truyện hoàn toàn khác prompt (Curious Bird/meadow/snake), adherence ~1/10.",
+  "judge_vs_claude": "Judge overrate vài truyện phase 1 free-gen (vd #0 monkey 9.0 có nhiều phi logic; Claude chấm 6.5)."
+ },
+ "judge_means": {
+  "UC1_free": {
+   "slm-30m": 8.19,
+   "slm-30m-p2": 8.12,
+   "slm-30m-dpo": 7.06
+  },
+  "UC2_slots": {
+   "slm-30m": 4.75,
+   "slm-30m-p2": 7.44,
+   "slm-30m-dpo": 7.19
+  }
+ },
+ "objective_means": {
+  "UC1_free": {
+   "slm-30m": {
+    "distinct_2": 0.922,
+    "flesch": 70.8,
+    "adherence_judge": 8.25,
+    "words": 250
+   },
+   "slm-30m-p2": {
+    "distinct_2": 0.911,
+    "flesch": 80.8,
+    "adherence_judge": 8.25,
+    "words": 248
+   },
+   "slm-30m-dpo": {
+    "distinct_2": 0.927,
+    "flesch": 75.4,
+    "adherence_judge": 6.75,
+    "words": 261
+   }
+  },
+  "UC2_slots": {
+   "slm-30m": {
+    "distinct_2": 0.92,
+    "flesch": 80.8,
+    "adherence_judge": 3.5,
+    "words": 263
+   },
+   "slm-30m-p2": {
+    "distinct_2": 0.927,
+    "flesch": 82.5,
+    "adherence_judge": 7,
+    "words": 246
+   },
+   "slm-30m-dpo": {
+    "distinct_2": 0.913,
+    "flesch": 82.5,
+    "adherence_judge": 5.75,
+    "words": 254
+   }
+  }
+ },
+ "claude_means": {
+  "UC1_free": {
+   "slm-30m": 6.62,
+   "slm-30m-p2": 7.0,
+   "slm-30m-dpo": 6.25
+  },
+  "UC2_slots": {
+   "slm-30m": 4.38,
+   "slm-30m-p2": 6.69,
+   "slm-30m-dpo": 6.94
+  }
+ }
+}

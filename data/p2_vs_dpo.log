@@ -1,0 +1,26 @@
+UC1_free #0 slm-30m-p2: overall=6.5 words=250
+UC1_free #0 slm-30m-dpo: overall=5.5 words=290
+UC1_free #1 slm-30m-p2: overall=8.75 words=252
+UC1_free #1 slm-30m-dpo: overall=6.5 words=264
+UC1_free #2 slm-30m-p2: overall=8.75 words=247
+UC1_free #2 slm-30m-dpo: overall=8.75 words=240
+UC1_free #3 slm-30m-p2: overall=8.5 words=244
+UC1_free #3 slm-30m-dpo: overall=7.5 words=251
+UC2_slots #0 slm-30m-p2: overall=9.25 words=236
+UC2_slots #0 slm-30m-dpo: overall=8.25 words=253
+UC2_slots #1 slm-30m-p2: overall=5.5 words=244
+UC2_slots #1 slm-30m-dpo: overall=5.5 words=245
+UC2_slots #2 slm-30m-p2: overall=7.5 words=255
+UC2_slots #2 slm-30m-dpo: overall=8.5 words=259
+UC2_slots #3 slm-30m-p2: overall=7.5 words=250
+UC2_slots #3 slm-30m-dpo: overall=6.5 words=261
+HEAD2HEAD DONE: 16 rows
+UC1_free #0 slm-30m: overall=9.0 words=263
+UC1_free #1 slm-30m: overall=6.5 words=262
+UC1_free #2 slm-30m: overall=8.5 words=227
+UC1_free #3 slm-30m: overall=8.75 words=247
+UC2_slots #0 slm-30m: overall=6.25 words=275
+UC2_slots #1 slm-30m: overall=2.5 words=270
+UC2_slots #2 slm-30m: overall=4.5 words=254
+UC2_slots #3 slm-30m: overall=5.75 words=254
+HEAD2HEAD DONE: 24 rows
