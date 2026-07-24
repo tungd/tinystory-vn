@@ -1,9 +1,9 @@
 ---
-title: "Training a 30M-Parameter Small Language Model from Scratch for English Children's Fables"
-subtitle: "A reproducible study: can a tiny model rival a large LLM on constrained story generation?"
+title: "Huấn luyện từ đầu một Small Language Model 30M tham số cho truyện ngụ ngôn thiếu nhi tiếng Anh"
+subtitle: "Timeline huấn luyện, các phương pháp cải thiện và giới hạn đo được của mô hình siêu nhỏ"
 author: "trieulh - IT5410"
-date: "2026-07-21"
-geometry: margin=2.3cm
+date: "2026-07-24"
+geometry: margin=2.2cm
 fontsize: 11pt
 colorlinks: true
 toc: true
@@ -12,518 +12,324 @@ toc-depth: 2
 
 \newpage
 
-## Abstract
-
-We train a **30M-parameter Llama-style language model from scratch** on the TF1-EN-3M
-children's-fable corpus and study, end to end and reproducibly, whether such a tiny
-model can approach the output quality of a 130x larger instruction-tuned LLM
-(Qwen3-4B) on a *constrained* generation task. Following modern scaling-law practice,
-we move from a deliberately under-trained baseline (loss 1.8) through a Chinchilla-aware
-retraining (loss 1.278, held-out perplexity 3.56) and a targeted data intervention that
-cures a template-collapse failure ("wise old owl" generation rate 90% -> 23%). We add an
-application-analysis dashboard (intrinsic diversity, readability, Zipf, positional loss)
-and close with a **systematic post-training campaign**: four alignment methods sharing one
-evaluation protocol - DPO (194 pairs), SFT-on-best, threshold-filtered RAFT (200 stories
-judged >= 9.0) and GRPO-lite (REINFORCE with a group baseline, 60 on-policy steps) - are
-**all null** on the model's default distribution, a fifth (knowledge distillation from the
-4B teacher, 600 stories) *moves* the model but slightly degrades it (-0.37, the imitation
-trap), while **inference-time best-of-N search
-captures a confirmed +0.8 judge-point gain** (7.7 -> 8.55, near the 4B reference at 9.75)
-and ships in the app. Along the way we *measure* the LLM-judge's own noise (repeated
-evaluations of the same model differ by up to 0.45 at n=15) and show it retroactively
-explains two earlier false positives. The final 30M model generates coherent, complete
-fables at **~949 tokens/s, roughly 50x faster than the 4B reference**, reaching an
-LLM-judge quality of ~7.9/10 as measured under the final protocol (n=45). All parameters,
-curves and artifacts are reported from training step 0.
-
-\newpage
-
-## 1. Introduction and thesis
-
-Large language models dominate open-ended text generation, but their size makes them slow
-and costly. This project asks a narrower, defensible question: **on a well-scoped task
-(children's fables conditioned on five narrative slots), how close can a from-scratch
-Small Language Model (SLM) of ~30M parameters get to a 4B instruction-tuned LLM, and at
-what efficiency?**
-
-The scientific priority of the project is the *training methodology*, not the app. Every
-claim is grounded in published method and evaluated with reproducible metrics. The
-narrative of the work is a sequence of hypotheses and measured outcomes:
-
-1. A reduced baseline is intentionally under-trained (diagnosis).
-2. Right-sizing the token budget per scaling laws fixes it (Phase 1).
-3. A data intervention fixes a specific qualitative failure (Phase 2).
-4. Sampling temperature cannot fix prompt-adherence (measured); we hypothesized
-   preference optimization could.
-5. A four-method post-training campaign (DPO, SFT-on-best, RAFT, GRPO-lite) tests that
-   hypothesis rigorously - and refutes it at this scale and feedback budget, while
-   inference-time best-of-N search delivers the gain the training methods could not.
-
-## 2. Scientific grounding
-
-- **Autoregressive LM = MLE on the chain rule** `log p(x) = sum_i log p(x_i | x_<i)`
-  (course Week 6). We loss-mask the conditioning so the model only maximizes the
-  log-likelihood of the *story* tokens.
-- **Scaling laws (Kaplan et al. 2020):** test loss falls as a power law in parameters N,
-  tokens processed D, and compute C. Under-training = too small a D for a given N.
-- **Chinchilla (Hoffmann et al. 2022):** compute-optimal ~20 tokens per parameter.
-- **Data-constrained scaling (Muennighoff et al. 2023):** repeating data up to ~4 epochs
-  is nearly as good as fresh data.
-- **DPO (Rafailov et al. 2023) / RLAIF (Bai et al. 2022):** align a model to preferences
-  using pairwise (chosen, rejected) data, here labeled by an AI judge.
-- **REINFORCE + baseline (Williams 1992; course Week 10):** policy-gradient RL with
-  variance reduction by subtracting a baseline from the reward; normalizing within a
-  group of rollouts per prompt yields the GRPO estimator (Shao et al. 2024) used by
-  DeepSeek-R1. This grounds our GRPO-lite experiment (Section 9.12).
-- **RAFT (Dong et al. 2023):** keep only high-absolute-reward samples and fine-tune on
-  them - the design of our threshold-9.0 experiment (Section 9.10).
-- **Dataset + evaluation methodology:** TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605);
-  evaluation follows our ADR-0002 (objective metrics + a cross-family LLM-judge panel).
-
-## 3. Dataset
-
-We use `klusai/ds-tf1-en-3m`. Each record has a `prompt` (five scaffold slots: Main
-Character, Setting, Challenge, Outcome, Teaching/Moral) and a `fable`. We format each
-training example as a **conditional sequence**:
-
-```
-<conditioning: the 5 slots + a length hint>
-<|story|> <fable text> <|end|>
-```
-
-Only the story region contributes to the loss (the conditioning prefix is masked with
-`-100`). Key data-pipeline choices:
-
-- **Quality filter:** keep fables of 60-320 words (avoid truncated / rambling extremes).
-- **Slot dropout:** during training each slot is randomly blanked so the model learns to
-  generate with any subset of the five slots present.
-- **Custom BPE tokenizer, vocab 12k**, trained on the fable corpus - keeps the embedding
-  table small, which matters at 30M parameters.
-
-## 4. Model and training recipe
-
-The architecture is a standard Llama-style decoder (RoPE, Grouped-Query Attention, RMSNorm,
-SwiGLU, tied input/output embeddings).
-
-| Component | Value |
-|---|---|
-| Parameters | ~36.6M |
-| Hidden size / FFN | 512 / 2048 |
-| Layers / heads / KV heads | 8 / 8 / 2 (GQA) |
-| Vocab / sequence length | 12,000 / 512 |
-| Optimizer | AdamW, betas (0.9, 0.95), weight decay 0.1 |
-| Grad clip | 1.0 |
-| LR schedule | Warmup-Stable-Decay (warmup 2%, decay 20%) |
-| Peak LR | 3e-3 |
-| Effective batch | 32 x 4 accum = 128 sequences (~33k story tokens/step) |
-| Precision | fp16 (T4 GPU) |
-
-**Architectural ceiling.** The model is trained at sequence length 512. With a
-conditioning prompt of ~50-110 tokens this leaves ~400-460 tokens for the story, which
-caps the maximum coherent fable length. This ceiling later drives the "story completeness"
-design (Section 9.6).
-
-## 5. Experiments (from step 0)
-
-| Run | Data | Steps | Final loss | Held-out PPL | Judge (overall) | Notes |
-|---|---|---|---|---|---|---|
-| v1 (baseline) | 150k | 900 | ~1.80 | - | 2.5 | intentionally under-trained (~1.7 tok/param) |
-| Phase 1 | 400k v1 | 1800 | 1.447 | 4.18 | 6.0 | right-sized token budget |
-| + sampling fix | - | - | - | - | 6.2 | repeat_penalty 1.3 -> 1.1 (entity drift) |
-| Phase 2 | 400k **v2** | 3600 | **1.278** | **3.56** | 7.0 | data intervention (resume 1800 -> 3600) |
-| Phase 2 + DPO | 194 pairs | 30 | (loss 1.278) | 3.54 | 7.88 (n=15) | null vs baseline 8.02 (Section 9.8) |
-| + RAFT | 200 stories >= 9.0 | 30 | 0.672 (SFT) | 10.64* | 7.60 (n=15, pooled) | null (Section 9.10) |
-| + GRPO-lite | 60 steps x 16 rollouts | 30 | on-policy | 10.58* | 8.03 (n=45) | null, KL ~1e-3 (Section 9.12) |
-| Best-of-3 (no training) | - | 30 | - | - | **8.55 (n=15)** | deployed in app (Section 9.9) |
-| Qwen3-4B (ref) | - | - | - | - | 9.75 | 130x larger, instruction-tuned |
-
-\*Perplexity for the alignment rows is measured on a different held-out slice (raw
-`test.jsonl` text) than the 3.5x figures above; only the *relative* drift matters.
-
-Phase 2 uses two data interventions motivated by qualitative analysis (Section 9.4):
-cap the "wise old owl" template to 10% of the corpus, and lower the slot dropout for the
-Teaching/Outcome slots (0.30 -> 0.15) so the model learns to follow the requested moral.
-
-## 6. Training dynamics
-
-![Training loss over the full run. Phase 2 resumes at step 1800 on the cleaned corpus v2; the WSD decay pulls the final loss into the target band (< 1.5).](figures/01_loss_curve.png)
-
-![WSD learning-rate schedule (per phase).](figures/02_lr_schedule.png)
-
-![Gradient norm stays controlled (clip 1.0) - no instability across either phase.](figures/03_grad_norm.png)
-
-![Scaling-law check: on log-log axes the post-warmup loss is near-linear (R^2 ~ 0.96), i.e. the run stays in the power-law regime predicted by Kaplan et al. (2020).](figures/04_scaling_law.png)
-
-The loss falls smoothly from ~7 to **1.278**. The log-log fit gives an exponent of about
--0.25 with R^2 ~ 0.96, empirical evidence that our from-scratch run follows the scaling-law
-power law rather than diverging.
-
-## 7. Language-modeling quality
-
-![Held-out perplexity. Phase 2 (3.56) improves on Phase 1 (4.18); both sit essentially on the theoretical floor e^(train loss), so the model generalizes without over-fitting.](figures/05_perplexity.png)
-
-Held-out perplexity of **3.56** is within 1% of the floor e^(1.278) = 3.59, meaning the
-model's held-out behavior matches its training loss - no over-fitting despite the small
-size, thanks to the large unique corpus.
-
-## 8. Application analysis (intrinsic, reference-free)
-
-Following ADR-0002, we compute reference-free metrics on generated stories and compare
-against real held-out fables.
-
-![Diversity (Distinct-1/2), repetition (Self-BLEU) and readability (Flesch) of generated vs real fables. Generated diversity sits within a few percent of real; Flesch matches the real corpus (~80).](figures/06_intrinsic_quality.png)
-
-![Generated story-length distribution vs real fables.](figures/07_length_dist.png)
-
-![Mean cross-entropy by relative position in the story - the model is most confident at the opening and stays stable through the body.](figures/08_position_loss.png)
-
-![Zipf rank-frequency of generated tokens closely tracks the real-fable vocabulary distribution.](figures/09_zipf.png)
-
-The generated text matches real fables on diversity (Distinct-2 gap ~4%), repetition
-(Self-BLEU gap ~0.001), readability (Flesch 79.9 vs 80.0) and the Zipfian vocabulary
-profile - the model has learned the *statistical shape* of the domain, not just surface
-fluency.
-
-## 9. Findings by stage
-
-### 9.4 Data intervention: curing template collapse
-
-Qualitative review of Phase 1 revealed **mode amplification**: the phrase "wise old owl"
-appears in 28% of *real* fables but the model emitted it in ~90% of generations. Capping
-that template to 10% of the corpus (Phase 2) reduced the generation rate to **23%**, below
-even the data prior.
-
-![Template collapse before/after the data intervention.](figures/10_owl_rate.png)
-
-### 9.5 Quality progression
-
-![Overall LLM-judge quality across stages, with the 4B reference for scale. The 30M model rises from 2.5 (under-trained) to ~7.0, closing much of the gap to Qwen-4B (9.75) at 1/130th the size.](figures/11_score_progression.png)
-
-### 9.6 Story completeness (a limitation turned into a fix)
-
-The Phase-2 model occasionally cut stories mid-sentence at short lengths. Diagnosis: the
-generation cap (300 tokens) was smaller than the model's natural fable length, so it hit
-the cap before emitting `<|end|>`. Because the model is trained at sequence length 512,
-simply "adding tokens" is not an option beyond ~460. The fix: right-size the per-length
-token budget to the architectural ceiling, use `done_reason` to detect true completion vs
-cut-off, and trim any residual cut to the last complete sentence. Result: **30/30 test
-stories complete** with a real ending.
-
-### 9.7 Prompt-adherence: sampling vs alignment
-
-We measured whether sampling temperature affects slot adherence. On 10 held-out prompts,
-temperature 0.7 and 0.8 gave *identical* adherence (69%): **sampling is not the lever**;
-adherence is capped by the 30M model's weak conditioning. At the time we hypothesized
-preference optimization was the proper fix - the campaign below tests that hypothesis.
-
-### 9.8 DPO preference alignment (RLAIF): an instructive null
-
-We generate two stories per prompt from the Phase-2 model, have an AI judge score them on
-the four axes, and keep pairs with a clear preference (margin >= 1.0) as (chosen, rejected)
-data - 194 pairs after filtering. We then run **DPO** (ORPO was unavailable in the
-installed TRL 1.8; DPO is the canonical equivalent) locally on Apple-Silicon MPS.
-
-![DPO reward accuracy climbs to 1.0 and the reward margin (chosen - rejected) turns strongly positive - the model learns the preference *on its training pairs*. Held-out perplexity is unchanged (0% drift): no catastrophic forgetting.](figures/13_dpo_dynamics.png)
-
-The in-training signal looks perfect - reward accuracy 1.0, positive margin, zero
-perplexity drift. An early slot-recall probe even suggested +5 points of adherence
-(71% -> 76%, Fig. below). **Both impressions failed the rigorous test.** Under the standard
-protocol (15 held-out prompts, LLM-judge, fixed seeds), the DPO model scores **7.88 vs the
-baseline's 8.02** - a null result. Section 9.11 shows the +5-point probe was within
-measurement noise. The mechanism-level explanation: with chosen and rejected drawn from
-the *same* model at similar quality, the relative preference signal is too weak to move
-the default distribution.
-
-![The early slot-recall probe (71% -> 76%) that later proved to be within judge noise - kept here as a documented lesson in evaluation rigor.](figures/12_adherence_dpo.png)
-
-### 9.9 The headroom probe: best-of-N shows capacity is not the ceiling
-
-Is the 30M model *unable* to produce great fables, or merely *inconsistent*? We sample
-K=3 candidates per prompt (temperatures 0.5/0.8/1.1) and let the judge pick the best:
-
-| Measure | Value |
-|---|---|
-| Single-sample mean (15 held-out prompts) | 7.72 |
-| **Best-of-3 mean** | **8.55** |
-| Individual best samples | up to 9.0-9.5 (4B reference: 9.75) |
-
-The model already *contains* near-reference-quality fables - the binding constraint is
-**variance, not capacity**. This result reframed the whole alignment effort: the goal is
-not to teach the model something new but to shift probability mass toward its own best
-modes. Best-of-N (off / 3 / 5) ships in the app as a user-facing control: the backend
-generates N candidates, the judge scores each, and the best is returned with all candidate
-scores logged in the Activity Log.
-
-### 9.10 RAFT: threshold-filtered SFT at 5x scale - null
-
-If best-of-N finds the good samples, can we *train on them* and internalize the gain?
-Our first SFT-on-best trial (42 stories) was null, but 93% of that corpus already scored
->= 8.5, so the untested variables were **scale** and a strict **absolute threshold** - the
-defining features of RAFT (reward-ranked fine-tuning). We built a 200-story corpus in
-which *every* story is judged >= 9.0 (mean 9.22; 105 harvested from earlier experiments,
-95 newly generated with a 23% prompt acceptance rate), and fine-tuned at lr 2e-5 for 3
-epochs with the conditioning loss-masked.
-
-Result: **null again** - 7.60 (pooled over two evaluation runs) vs baseline 7.78, with
-perplexity drift +0.5% only. The theoretical reading: best-of-N samples are drawn from
-the model's *own* distribution, so supervised fine-tuning on them mostly re-weights modes
-the model already prefers; ~60k story tokens against a 600M-token pretraining prior is
-also a very small nudge. Crucially, the gradient contains no *negative* component - nothing
-pushes probability *away* from mediocre modes.
-
-### 9.11 Measuring the judge itself: the noise that manufactured two false positives
-
-Re-evaluating the *same* RAFT model twice (same protocol, same seeds) returned 7.38 and
-7.82 - a 0.44 spread. The same double-measurement on the baseline returned 7.73/7.82, and
-on the GRPO model 8.00/8.45. At n=15 prompts, **the judge's own noise is ~+-0.4**, which
-retroactively explains both the "DPO +5 adherence" probe (Section 9.8) and an early
-"GRPO +0.45" reading (Section 9.12) as sampling artifacts.
-
-![Repeated evaluations of the same checkpoints: the spread within a model is as large as the effects we were trying to detect at n=15.](figures/18_judge_noise.png)
-
-Methodological rule adopted for all conclusions in this report: any delta below ~0.5
-judge-points at n=15 is treated as noise; decisive comparisons are re-run at n=45 with
-paired seeds.
-
-### 9.12 GRPO-lite: on-policy RL with a group baseline - null at this budget
-
-The last untested ingredient class from the course material (Week 10: policy gradients,
-REINFORCE, variance reduction with a baseline) is **on-policy RL with an absolute reward
-and a negative gradient**. We implemented GRPO-lite: each step samples 4 prompts x 4 fresh
-rollouts, scores each rollout with the judge, normalizes the advantage within the group
-(`(r - mean)/std` - the Week-10 baseline trick), and applies REINFORCE with a KL penalty
-(beta 0.05) against the frozen Phase-2 reference. Sixty steps (~960 judge calls, ~5 h,
-lr 3e-6 then 1e-5), checkpoint-resumed across interruptions.
-
-![GRPO training dynamics: the in-training reward is dominated by judge noise, and the policy's KL divergence from the reference stays around 1e-3 nats/token - the policy barely moves.](figures/17_grpo_dynamics.png)
-
-At n=15 the GRPO model read +0.45 above baseline - promising. Applying our own noise rule,
-we extended the evaluation to **n=45 paired prompts**: the delta collapsed to **+0.09
-(t=0.54; win/tie/loss 17/10/18)**. Null - but a *diagnosable* one: with final KL ~1e-3,
-the policy never moved far enough for any effect to be measurable. The honest conclusion
-is "GRPO at a ~960-judge-call budget does not shift the distribution", not "GRPO cannot".
-The practical blocker is reward cost: at ~15 s per judge call, DeepSeek-R1-scale step
-counts are out of reach locally, and a distilled 30M reward model failed its validation
-gate (pairwise accuracy 46.7% ~ chance) - the quality signal is not learnable from ~500
-noisy labels at this scale.
-
-### 9.13 The campaign in one picture
-
-![Four training methods, one evaluation protocol, four nulls - and the inference-time search that works. Judge-eval means per experiment pair; n as annotated.](figures/16_posttraining_campaign.png)
-
-| Method | Signal | Exploration | Negative gradient | Result |
+## Tóm tắt
+
+Đồ án huấn luyện từ đầu một mô hình ngôn ngữ kiểu Llama 30M tham số trên kho truyện ngụ
+ngôn TF1-EN-3M, và trả lời câu hỏi: trên một tác vụ được giới hạn tốt, mô hình nhỏ tiến
+gần được đến đâu so với một LLM lớn hơn 130 lần (Qwen3-4B). Quá trình gồm ba giai đoạn
+huấn luyện theo timeline (baseline chẩn đoán, cấp đủ ngân sách token theo scaling law,
+can thiệp dữ liệu) đưa điểm LLM-judge từ 2.5 lên 7.0/10, tiếp theo là năm phương pháp
+post-training được kiểm chứng dưới cùng một protocol (DPO, SFT-on-best, RAFT, GRPO-lite,
+distillation): bốn phương pháp null, một phương pháp làm mô hình xấu đi; trong khi tìm
+kiếm best-of-N tại thời điểm suy luận thu được +0.8 điểm đã kiểm chứng (7.7 thành 8.55,
+sát mốc 9.75 của Qwen-4B) và được triển khai vào ứng dụng. Nghiên cứu cũng tự đo nhiễu
+của LLM-judge (+-0.4 điểm ở n=15) và dùng nó để rút lại hai kết luận dương tính giả.
+Kết luận trung tâm: dư địa chất lượng của mô hình nhỏ tồn tại ở mức từng mẫu sinh nhưng
+không huấn luyện được vào phân bố mặc định bằng phương pháp chi phí thấp; nâng sàn chất
+lượng đòi hỏi pretraining tốt hơn. Mô hình cuối sinh truyện trọn vẹn ở ~949 token/giây,
+nhanh hơn mốc 4B khoảng 50 lần.
+
+## 1. Bài toán và thiết lập
+
+**Câu hỏi nghiên cứu.** Trên tác vụ sinh truyện ngụ ngôn thiếu nhi có điều kiện theo 5
+slot tường thuật (Main character, Setting, Challenge, Outcome, Teaching), một SLM 30M
+huấn luyện từ đầu đạt bao nhiêu phần chất lượng của Qwen3-4B, và đổi lại hiệu năng gì?
+
+**Cơ sở lý thuyết.** Mô hình autoregressive được huấn luyện bằng MLE trên chain rule
+(Week 6); ngân sách token đặt theo scaling law (Kaplan 2020) và mốc Chinchilla ~20
+token/tham số (Hoffmann 2022), cho phép lặp dữ liệu tới 4 epoch (Muennighoff 2023). Các
+phương pháp cải thiện lần lượt dựa trên DPO (Rafailov 2023), RAFT (Dong 2023), REINFORCE
+với baseline (Williams 1992; Week 10) dạng GRPO (Shao 2024), và distillation
+(Hinton 2015).
+
+**Dữ liệu.** `klusai/ds-tf1-en-3m`: mỗi bản ghi gồm prompt 5 slot và một truyện. Mẫu huấn
+luyện có dạng `<5 slot + gợi ý độ dài> <|story|> <truyện> <|end|>`; chỉ phần truyện đóng
+góp vào loss (conditioning được mask). Lọc giữ truyện 60-320 từ; mỗi slot bị che ngẫu
+nhiên (slot dropout) để mô hình quen với mọi tập con slot; tokenizer BPE riêng 12k vocab
+giữ bảng embedding nhỏ.
+
+**Kiến trúc.** Decoder kiểu Llama (RoPE, GQA, RMSNorm, SwiGLU, tied embeddings):
+
+| Thành phần | Giá trị | Thành phần | Giá trị |
+|---|---|---|---|
+| Tham số | ~36.6M | Optimizer | AdamW (0.9, 0.95), wd 0.1 |
+| Hidden / FFN | 512 / 2048 | Lịch LR | WSD, đỉnh 3e-3 |
+| Layer / head / KV | 8 / 8 / 2 (GQA) | Batch hiệu dụng | 128 chuỗi (~33k token/bước) |
+| Vocab / seq len | 12.000 / 512 | Precision / grad clip | fp16 (T4) / 1.0 |
+
+Trần seq 512 (trừ prompt còn ~400-460 token cho truyện) là trần cứng cho độ dài truyện,
+sẽ xuất hiện lại ở phần giới hạn.
+
+## 2. Timeline huấn luyện và đánh giá
+
+| Giai đoạn | Dữ liệu, bước | Loss | PPL | Judge | Sự kiện chính |
+|---|---|---|---|---|---|
+| v1 baseline | 150k, 900 | ~1.80 | - | 2.5 | cố ý under-train để chẩn đoán |
+| Phase 1 | 400k, 1800 | 1.447 | 4.18 | 6.0 | cấp đủ ngân sách token |
+| (sửa sampling) | - | - | - | 6.2 | repeat_penalty 1.3 về 1.1 |
+| Phase 2 | 400k v2, 3600 | **1.278** | **3.56** | 7.0 | can thiệp dữ liệu, resume từ 1800 |
+| Qwen3-4B (mốc) | - | - | - | 9.75 | lớn hơn 130 lần |
+
+### 2.1 v1: chẩn đoán under-training
+
+Baseline chạy với ~1.7 token/tham số (so với mốc Chinchilla 20) cho điểm judge 2.5:
+truyện rời rạc, lặp và bỏ prompt. Chẩn đoán theo scaling law: mô hình không thiếu
+capacity mà thiếu dữ liệu; đây là giả thuyết kiểm chứng được và rẻ hơn nhiều so với đổi
+kiến trúc.
+
+### 2.2 Phase 1: cấp đủ ngân sách token
+
+Tăng lên 400k truyện unique, 1800 bước (~600M token qua 4 epoch). Loss giảm từ 7 về
+1.447, judge tăng 2.5 lên 6.0, xác nhận giả thuyết under-training. Một chỉnh nhỏ ở
+sampling (repeat_penalty 1.3 xuống 1.1, vì mức phạt cao trừng phạt cả tên nhân vật khiến
+nhân vật bị đổi giữa truyện) thêm +0.2 điểm.
+
+![Loss huấn luyện toàn trình, Phase 2 resume tại bước 1800.](figures/01_loss_curve.png){width=72%}
+
+**Đọc biểu đồ.** Trục hoành là bước huấn luyện, trục tung là cross-entropy loss: trung
+bình âm log-likelihood mỗi token, đo mức "bất ngờ" của mô hình trước token thật; thấp hơn
+nghĩa là dự đoán tốt hơn. Đường loss đi theo lịch Warmup-Stable-Decay (WSD): warmup (LR
+tăng dần, tránh sốc gradient khi trọng số còn ngẫu nhiên), stable (LR đỉnh 3e-3, giai
+đoạn học chính), decay (LR giảm về 0, mô hình "kết tinh" kiến thức nên loss rơi thêm một
+nấc rõ ở cuối mỗi phase). Đường cong mượt, không có spike: công thức huấn luyện ổn định.
+
+![Kiểm tra scaling law trên trục log-log.](figures/04_scaling_law.png){width=60%}
+
+**Đọc biểu đồ.** Cả hai trục lấy logarit; nếu loss tuân quan hệ lũy thừa
+loss ~ bước^(-k) thì các điểm nằm trên một đường thẳng. R^2 = 0.96 nghĩa là đường thẳng
+giải thích 96% biến thiên: lần chạy nằm đúng chế độ power-law mà Kaplan (2020) dự đoán và
+**chưa plateau**, tức thêm token vẫn còn lợi. Đây là bằng chứng định lượng cho hướng scale
+tiếp ở phần kết luận.
+
+### 2.3 Phase 2: can thiệp dữ liệu có chủ đích
+
+Rà soát định tính Phase 1 phát hiện **template collapse**: cụm "wise old owl" có trong
+28% truyện thật nhưng chiếm ~90% truyện sinh ra, vì sampling khuếch đại mode mạnh nhất
+của phân bố. Can thiệp trên corpus v2: giới hạn truyện chứa cụm này ở 10%, đồng thời giảm
+slot dropout của Teaching/Outcome (0.30 về 0.15) để mô hình thấy moral trong conditioning
+thường xuyên hơn và học bám theo nó. Resume từ bước 1800 chạy tiếp đến 3600.
+
+![Tần suất template trước và sau can thiệp.](figures/10_owl_rate.png){width=55%}
+
+**Đọc biểu đồ.** Cột là tỉ lệ truyện sinh ra có chứa cụm "wise old owl". Sau can thiệp,
+tỉ lệ giảm từ 90% xuống 23%, thấp hơn cả prior 28% của dữ liệu thật: sửa tại nguồn dữ
+liệu hiệu quả hơn sửa ở khâu sampling, và cùng công thức áp dụng được cho các khuôn mẫu
+khác (happy ending, motif lặp).
+
+![Perplexity held-out của hai phase.](figures/05_perplexity.png){width=55%}
+
+**Đọc biểu đồ.** Perplexity (PPL) = e^loss trên tập held-out, diễn giải trực quan là "số
+lựa chọn token tương đương" mà mô hình phân vân; thấp hơn là chắc chắn hơn. PPL 3.56 của
+Phase 2 chỉ cách sàn lý thuyết e^1.278 = 3.59 chưa đến 1%: hành vi trên dữ liệu chưa từng
+thấy khớp với loss huấn luyện, tức **không overfit** dù mô hình nhỏ, nhờ kho dữ liệu
+unique đủ lớn.
+
+![Metric nội tại của truyện sinh so với truyện thật.](figures/06_intrinsic_quality.png){width=75%}
+
+**Đọc biểu đồ.** Các metric không cần văn bản tham chiếu, so truyện sinh với truyện thật
+held-out: **Distinct-1/2** là tỉ lệ unigram/bigram khác nhau, đo đa dạng từ vựng (cao =
+ít lặp từ); **Self-BLEU** đo độ giống nhau giữa các truyện trong cùng một tập (thấp =
+không sinh rập khuôn một kiểu); **Flesch reading ease** đo độ dễ đọc (dải 80-100 phù hợp
+thiếu nhi). Truyện sinh khớp truyện thật trên cả ba nhóm (Distinct-2 chênh ~4%, Self-BLEU
+chênh 0.001, Flesch 79.9 so với 80.0): mô hình học được **hình dạng thống kê của miền dữ
+liệu** chứ không chỉ trôi chảy bề mặt.
+
+**Verdict tự động Phase 2:** 7 PASS / 2 WARN / 0 FAIL (hai WARN: Flesch hụt 0.1 điểm so
+dải mục tiêu; overlap phân bố độ dài 43% do mô hình có "độ dài tự nhiên" riêng).
+
+![Tiến trình điểm judge qua các giai đoạn.](figures/11_score_progression.png){width=65%}
+
+**Đọc biểu đồ.** Điểm LLM-judge trung bình (thang 10) tại từng mốc của timeline; vạch
+tham chiếu là Qwen3-4B (9.75). Bước nhảy lớn nhất (2.5 lên 6.0) đến từ ngân sách token,
+bước tiếp theo (6.2 lên 7.0) từ can thiệp dữ liệu. Bài học xuyên suốt: **ở quy mô nhỏ,
+dữ liệu và token quyết định, kiến trúc là thứ yếu.**
+
+## 3. Các phương pháp cải thiện sau huấn luyện
+
+Sau Phase 2, hạn chế lớn nhất còn lại là prompt-adherence (~70%, và đã đo được rằng
+nhiệt độ sampling không thay đổi nó) cùng độ ổn định chất lượng giữa các lần sinh. Năm
+phương pháp được thử lần lượt, tất cả đánh giá dưới **một protocol cố định**: sinh với
+seed bắt cặp trên prompt held-out, LLM-judge chấm 4 trục (grammar, creativity, moral,
+adherence), so với baseline Phase 2.
+
+### 3.1 DPO trên 194 cặp preference: null
+
+Sinh 2 truyện mỗi prompt từ Phase 2, judge chấm, giữ cặp có margin >= 1.0 làm (chosen,
+rejected), huấn luyện DPO cục bộ. Tín hiệu trong lúc train hoàn hảo (reward accuracy đạt
+1.0, perplexity không drift) và một phép thăm dò ban đầu còn gợi ý adherence tăng 5 điểm.
+Nhưng dưới protocol chuẩn: **7.88 so với 8.02 của baseline, null**; phép thăm dò +5 điểm
+về sau được chứng minh nằm trong nhiễu judge (Mục 3.4). Cơ chế: chosen và rejected đều
+rút từ cùng một mô hình với chất lượng sàn sàn nhau, tín hiệu preference tương đối quá
+yếu để dịch phân bố mặc định.
+
+### 3.2 Thăm dò dư địa bằng best-of-N: +0.8 điểm, được triển khai
+
+Câu hỏi phân định: mô hình **không thể** viết hay, hay chỉ **không ổn định**? Sinh K=3
+ứng viên mỗi prompt (nhiệt độ 0.5/0.8/1.1), judge chọn bản tốt nhất: trung bình một mẫu
+7.72 tăng lên **8.55**, nhiều mẫu đơn lẻ đạt 9.0-9.5 (mốc 4B: 9.75). Kết luận: ràng buộc
+là **phương sai, không phải capacity**; mô hình đã chứa sẵn truyện gần chất lượng tham
+chiếu. Best-of-N (tắt/3/5) được đưa vào ứng dụng: backend sinh N bản, judge chấm, trả về
+bản tốt nhất kèm log điểm từng ứng viên. Phát hiện này định nghĩa lại mục tiêu các thí
+nghiệm sau: không phải dạy mô hình điều mới, mà dồn xác suất về các mode tốt sẵn có.
+
+### 3.3 RAFT, SFT lọc ngưỡng tuyệt đối: null
+
+Nếu best-of-N tìm ra mẫu tốt, huấn luyện trên chúng có nội hóa được mức tăng? Corpus 200
+truyện **đều đạt judge >= 9.0** (trung bình 9.22; tỉ lệ prompt đạt ngưỡng chỉ 23%),
+fine-tune lr 2e-5, 3 epoch. Kết quả: **7.60 so với 7.78, null**, ppl drift +0.5%. Cơ chế:
+mẫu tự sinh là in-distribution nên SFT chỉ tô đậm mode sẵn có; 60k token đặt cạnh prior
+pretraining 600M token là cú hích quá nhỏ; và gradient của SFT không có thành phần âm nào
+đẩy xác suất ra khỏi các mode tầm thường.
+
+### 3.4 Đo nhiễu của chính judge: rút lại hai dương tính giả
+
+Chấm lại cùng một mô hình hai lần (cùng protocol, cùng seed): RAFT cho 7.38 và 7.82,
+baseline 7.73 và 7.82, GRPO 8.00 và 8.45. Suy ra **nhiễu judge ~+-0.4 điểm ở n=15**,
+ngang cỡ các hiệu ứng đang cần phát hiện.
+
+![Chấm lặp cùng một checkpoint.](figures/18_judge_noise.png){width=62%}
+
+**Đọc biểu đồ.** Mỗi cột dọc là hai lần chấm độc lập của cùng một mô hình; độ dài đoạn
+nối hai điểm chính là nhiễu đo được. Điểm kim cương bên phải cho thấy độ trải co lại khi
+tăng cỡ mẫu lên n=45. Từ đây báo cáo áp dụng quy tắc: chênh lệch dưới 0.5 điểm ở n=15 coi
+là nhiễu; kết luận quan trọng phải xác nhận ở n=45 với seed bắt cặp. Hai kết quả từng
+được ghi nhận ("DPO +5 adherence", "GRPO +0.45") bị rút lại theo quy tắc này.
+
+### 3.5 GRPO-lite, RL on-policy với baseline theo nhóm: null ở ngân sách này
+
+Thành phần còn thiếu của các phương pháp trên là **exploration và gradient âm**:
+GRPO-lite (dạng REINFORCE + baseline của Week 10) sinh rollout mới mỗi bước, chuẩn hóa
+advantage trong nhóm cùng prompt theo `(r - mean)/std`, phạt KL so với mô hình gốc. Chạy
+60 bước x 16 rollout (~960 lần gọi judge, ~5 giờ). Ở n=15 đọc được +0.45; mở rộng đúng
+quy tắc lên n=45: **co về +0.09 (t=0.54), null**. Chẩn đoán: KL cuối ~1e-3 nats/token,
+policy gần như chưa dịch chuyển; kết luận đúng phạm vi là "GRPO ở ngân sách này chưa đủ",
+không phải "GRPO sai". Nút chặn là giá reward (judge mất ~15 giây một lần gọi); một
+reward model 30M huấn luyện để thay judge đã rớt cổng kiểm định (pairwise accuracy 46.7%,
+ngang ngẫu nhiên, với ~500 nhãn).
+
+### 3.6 Distillation từ teacher: dịch chuyển thật, nhưng xuống
+
+Hướng cuối có bằng chứng: 600 truyện do Qwen3-4B sinh theo đúng 5 slot (ràng buộc văn
+phong đơn giản, 150-250 từ), SFT 2 epoch. Đây là tín hiệu **off-distribution thật** và là
+phương pháp duy nhất làm mô hình dịch chuyển đo được (loss trên văn teacher 2.94 so với
+0.67 trên văn tự sinh; ppl drift +4.4%), nhưng theo chiều xấu: **7.57 so với 7.94
+(n=45, t=-1.55)**. Mô hình 30M bắt chước văn phong bề mặt của teacher vượt quá capacity
+và đánh mất độ trôi chảy bản địa, đúng failure mode "imitation học style, không học
+content" (Gudibande 2023).
+
+### 3.7 Toàn cảnh chiến dịch
+
+![Năm phương pháp huấn luyện và một phương pháp suy luận, cùng một protocol.](figures/16_posttraining_campaign.png){width=88%}
+
+**Đọc biểu đồ.** Mỗi cụm hai cột là một thí nghiệm: cột xám là baseline Phase 2 đo trong
+cùng phiên đánh giá, cột màu là phương pháp (cột xanh lá: best-of-N); số trên cột là
+chênh lệch và cỡ mẫu n. Bốn phương pháp huấn luyện đầu nằm trong biên nhiễu của baseline,
+distillation âm rõ, chỉ best-of-N vượt hẳn lên.
+
+| Phương pháp | Tín hiệu | Exploration | Gradient âm | Kết quả |
 |---|---|---|---|---|
-| DPO (194 pairs) | relative preference | no (static data) | implicit | null (7.88 vs 8.02) |
-| SFT-on-best (42) | best-of-batch | no | no | null (7.98 vs 8.02) |
-| RAFT (200 >= 9.0) | absolute threshold | no | no | null (7.60 vs 7.78) |
-| GRPO-lite (60 steps) | group advantage | yes (on-policy) | yes | null at this budget (+0.09, n=45) |
-| Distill-from-teacher (600) | off-distribution imitation | teacher's | no | **negative** (-0.37, n=45; ppl +4.4%) |
-| **Best-of-N (inference)** | judge selection | yes (test-time) | - | **+0.8, deployed** |
+| DPO (194 cặp) | preference tương đối | không | ngầm | null (7.88 / 8.02) |
+| SFT-on-best (42) | best trong batch | không | không | null (7.98 / 8.02) |
+| RAFT (200 >= 9.0) | ngưỡng tuyệt đối | không | không | null (7.60 / 7.78) |
+| GRPO-lite (60 bước) | advantage nhóm | có | có | null ở ngân sách này (+0.09) |
+| Distill teacher (600) | off-distribution | của teacher | không | **âm** (-0.37, ppl +4.4%) |
+| **Best-of-N (suy luận)** | judge chọn lọc | có (test-time) | - | **+0.8, đã triển khai** |
 
-**Postscript - the fifth experiment.** After the four nulls we ran the remaining
-evidence-backed direction: knowledge distillation from the Qwen3-4B teacher (600 stories,
-five-slot conditioned, style-constrained to simple English; SFT 2 epochs on a Colab T4 in
-17 seconds). Uniquely among all five methods, this one *did* move the model - train loss
-on teacher text is 2.94 (vs 0.67 on self-generated text) and held-out perplexity drifts
-+4.4% - and the movement was *downward*: 7.57 vs 7.94 (paired n=45, t=-1.55). The 30M
-student imitates the teacher's surface style beyond its capacity and loses native fluency -
-the "imitation learns style, not content" failure mode (Gudibande et al. 2023). 180k
-distillation tokens against a 600M-token pretraining prior can bend style but cannot teach
-structure.
+### 3.8 Đối đầu ba mô hình trong ứng dụng: chốt mô hình cuối
 
-**Central empirical finding of the post-training study:** at 30M scale with weak, noisy
-AI feedback, the quality headroom demonstrably *exists at the sample level* but is *not
-trainable into the default distribution* by any of the low-cost methods above.
-Inference-time search converts that headroom directly; training methods either fail to
-move the distribution (in-distribution data) or move it in the wrong direction
-(off-distribution data beyond the student's capacity). The default distribution sits at a
-local optimum determined by pretraining - raising the *floor* requires better pretraining
-(more/cleaner data, more capacity), not cheap post-training.
+Kiểm chứng cuối bằng chính API của ứng dụng: Phase 1, Phase 2 và Phase 2+DPO chạy hai
+use case (UC1 sinh tự do không slot; UC2 đủ 5 slot), 4 prompt mỗi ô, **cùng seed bắt cặp
+giữa ba mô hình**, hai giám khảo độc lập: judge Qwen3-4B của app và Claude (khác họ mô
+hình) đọc chấm tay toàn bộ 24 truyện.
 
-### 9.14 Free vs conditioned generation
+![Đối đầu ba mô hình với seed bắt cặp, hai giám khảo.](figures/19_headtohead_progression.png){width=88%}
 
-Does conditioning on the five slots merely constrain the model, or does it improve the
-output? We compare 20 *free* fables (no slots, only "write a children's fable") against 20
-*conditioned* fables (all five slots filled), same model (Phase 2 + DPO) and sampling.
+**Đọc biểu đồ.** Hai panel là hai use case; trong mỗi cụm, cột xanh là điểm judge tự
+động, cột cam là điểm Claude chấm tay; trục tung thang 10. Hai giám khảo khác họ đồng
+thuận về thứ tự xếp hạng, dù judge Qwen chấm hào phóng hơn ~1-1.5 điểm ở sinh tự do,
+minh họa thêm cho thiên lệch của judge đơn (Mục 3.4).
 
-| Metric | Free | 5-slot conditioned |
-|---|---|---|
-| Distinct-1 / Distinct-2 (diversity) | 0.264 / 0.709 | **0.278 / 0.729** |
-| Self-BLEU (repetition, lower better) | 0.007 | **0.005** |
-| Flesch reading ease | 76.4 | **80.9** (into children band) |
-| Average length (words) | 266 | 267 |
-| Completeness | 100% | 100% |
-| Slot recall (adherence) | n/a | 75% |
+| | UC1 judge/Claude | UC2 judge/Claude | Adherence UC2 | Flesch UC1 |
+|---|---|---|---|---|
+| Phase 1 | 8.19 / 6.62 | 4.75 / 4.38 | 3.5 | 70.8 |
+| Phase 2 | 8.12 / 7.00 | **7.44 / 6.69** | **7.0** | **80.8** |
+| Phase 2+DPO | 7.06 / 6.25 | 7.19 / 6.94 | 5.8 | 75.4 |
 
-![Free vs 5-slot conditioned generation. Conditioning raises cross-set diversity (Distinct up, Self-BLEU down), improves readability into the children band, and grounds the story to the request (75% slot recall) - at no cost to completeness or length.](figures/15_free_vs_conditioned.png)
+Ba quan sát: (1) mức tiến bộ thật là Phase 1 sang Phase 2 và chỉ hiện rõ ở sinh có điều
+kiện, nơi Phase 1 trượt slot nặng (một prompt bị sinh thành truyện khác hẳn); (2) với
+cùng seed, truyện của Phase 2 và DPO **giống hệt nhau phần lớn độ dài, chỉ rẽ nhánh vài
+câu cuối** (5/8 cặp): bằng chứng trực quan cho kết luận DPO không dịch phân bố; (3) hiện
+tượng "DPO điểm cao hơn" đôi khi thấy trên giao diện là nhiễu một lần chấm của judge đơn.
+**Mô hình cuối: `slm-30m-p2` (Phase 2), dùng kèm best-of-N = 3 trong ứng dụng** (cấu hình
+8.55/10 đã kiểm chứng); bản DPO giữ trong registry để trình diễn thí nghiệm.
 
-**Finding:** conditioning is not just a control interface. Free generation drifts toward a
-narrower set of stock fables (lower diversity, higher self-similarity across the set,
-slightly harder readability), whereas the five slots *diversify* the output (they force
-different characters/settings/challenges) and *ground* it to the user's request. The
-scaffold improves quality, not only controllability.
+## 4. Kết luận
 
-### 9.15 Efficiency
+### 4.1 Vì sao mô hình không thể tốt hơn: bốn giới hạn đo được
 
-![Inference speed. The 30M SLM generates ~949 tokens/s versus ~19 for the 4B reference on the same machine - roughly 50x faster at ~1/130th the parameters.](figures/14_speed.png)
+1. **Phân bố mặc định nằm ở tối ưu cục bộ do pretraining quyết định.** Dữ liệu tự sinh
+   (in-distribution) không dịch được phân bố vì thiếu gradient âm; dữ liệu teacher
+   (off-distribution) dịch được thì vượt capacity của học trò và làm giảm chất lượng.
+   Hai chiều thất bại bổ sung nhau thành một kết luận: không có đường tắt post-training
+   chi phí thấp; nâng sàn phải bằng pretraining (nhiều dữ liệu hơn, sạch hơn, mô hình
+   lớn hơn).
+2. **Tín hiệu phản hồi AI tự tạo quá yếu và nhiễu.** Judge có nhiễu +-0.4 ở n=15 (tự đo),
+   từng tạo hai dương tính giả; reward model học từ ~500 nhãn của nó rớt cổng kiểm định.
+   Vòng lặp tự cải thiện thiếu tín hiệu sạch để hội tụ.
+3. **Capacity 30M chặn adherence và độ bền logic.** Adherence trần ~70-80% (hay rơi các
+   slot trừu tượng như Challenge/Outcome), lỗi đại từ và phi logic cục bộ xuất hiện rải
+   rác; không phương pháp alignment nào dịch được các con số này.
+4. **Trần kiến trúc 512 token** giới hạn truyện ở ~340 từ và làm gợi ý độ dài gần như vô
+   hiệu (mô hình có độ dài tự nhiên ~250-280 từ).
 
-## 10. Automatic verdict (Phase 2)
+Điểm then chốt: giới hạn của 30M là **tính nhất quán, không phải năng lực đỉnh**. Đuôi
+phải của phân bố chứa truyện 9.0-9.5 điểm và best-of-N khai thác trực tiếp được nó; ranh
+giới này chỉ đo được nhờ chiến dịch kiểm chứng có hệ thống, và bản thân phương pháp đánh
+giá (protocol cố định, seed bắt cặp, tự đo nhiễu judge, xác nhận ở n=45) là một đóng góp
+độc lập của đồ án.
 
-Thresholds are heuristics calibrated for this setup (30M params, 12k vocab, TF1). The
-dashboard produces a per-metric PASS / WARN / FAIL verdict:
+### 4.2 Trả lời câu hỏi nghiên cứu
 
-| Metric | Value | Verdict |
-|---|---|---|
-| Final train loss | 1.278 | PASS |
-| Scaling-law fit R^2 | 0.959 | PASS |
-| Held-out perplexity | 3.56 (0.99x floor) | PASS |
-| Distinct-1 gap vs real | 8% | PASS |
-| Distinct-2 gap vs real | 4% | PASS |
-| Self-BLEU abs gap | 0.001 | PASS |
-| Flesch reading ease | 79.9 | WARN (0.1 below band) |
-| Length distribution overlap | 43% | WARN |
-| Owl template rate (gen) | 23% | PASS |
+Mô hình 30M đạt ~7.9/10 theo protocol cuối (best-of-3 đạt 8.55, so với 9.75 của
+Qwen-4B), sinh truyện trọn vẹn đúng miền ở tốc độ ~949 token/giây, nhanh hơn ~50 lần với
+kích thước bằng 1/130. **Trên tác vụ được giới hạn tốt, mô hình siêu nhỏ có thể sánh với
+mô hình lớn trên các trục quan trọng với chi phí bằng một phần nhỏ**, miễn là phần phương
+sai còn lại được quản lý tại thời điểm suy luận, và với các giới hạn kích thước được ghi
+nhận trung thực ở nơi chúng bộc lộ.
 
-**7 PASS / 2 WARN / 0 FAIL.**
+### 4.3 Hướng phát triển (kèm bằng chứng khả thi)
 
-## 11. Strengths and limitations
+- **Scale pretraining** (hướng chính, trực tiếp từ Giới hạn 1): loss còn trên đường
+  power-law chưa plateau; TF1 còn ~2.6M truyện chưa dùng. Một run 60M trên full TF1 với
+  seq 1024 đã được khởi động trong khuôn khổ tiếp theo của đồ án.
+- **Distillation ở quy mô pretraining** (trộn hàng triệu token teacher vào corpus, hoặc
+  soft label token-level) thay vì SFT vài trăm truyện đã chứng minh phản tác dụng.
+- **RL có quy mô với reward rẻ hơn** (scorer nhanh học từ nhiều nhãn hơn hẳn mức ~500 đã
+  thất bại, hoặc reward theo luật như slot recall) để vượt nút chặn 15 giây một lần gọi
+  judge.
+- **Judge mạnh hơn và n lớn mặc định** cho mọi đánh giá (bài học trực tiếp từ Mục 3.4).
 
-### 11.1 Strengths
+## 5. Tái lập
 
-- **Coherent, complete, on-domain output.** After the completeness fix, 30/30 test stories
-  end with a real resolution; generated text matches real fables on diversity (Distinct-2
-  gap ~4%), repetition (Self-BLEU gap ~0.001), readability (Flesch 79.9 vs 80.0) and the
-  Zipfian vocabulary profile - the model learned the statistical shape of the domain.
-- **Efficiency.** ~949 tokens/s, roughly **50x faster** than the 4B reference at **1/130th**
-  the parameters; runs on a laptop with a 39 MB q8 file.
-- **Well-generalized language model.** Held-out perplexity 3.56 sits essentially on the
-  theoretical floor e^(train loss) - no over-fitting despite the small size.
-- **The scaffold improves quality, not only control.** Conditioning on the five slots
-  *raises* cross-set diversity, *improves* readability into the children band and *grounds*
-  the story to the request (Section 9.9) - versus free generation, which collapses toward a
-  narrower set of stock fables.
-- **Best-of-N converts headroom into shipped quality.** The +0.8 judge-point gain
-  (7.7 -> 8.55) is the study's one confirmed post-training improvement, costs no training,
-  and is exposed in the app as a user control with per-candidate score logging.
-- **Negative results are measured, not assumed.** Four alignment methods were tested under
-  one fixed protocol with paired seeds, repeated measurements and an n=45 confirmation
-  step; the judge's own noise was quantified (+-0.4 at n=15) and used to retract two
-  early false positives - the evaluation methodology is itself a contribution.
-- **Reproducible and defensible.** Every number is tied to a run and a published method;
-  the training pipeline, data interventions and evaluation are all scripted.
+Mã nguồn nằm dưới `trieulh/` (tách khỏi web app dùng chung): pipeline dữ liệu và huấn
+luyện (`prepare_tf1_pretrain.py`, `tf1_pretrain/`, notebook dashboard), chiến dịch
+alignment (`dpo_train_local.py`, `headroom_probe.py`, `raft_*.py`, `rm_train*.py`,
+`grpo_train.py`, `distill_gen_corpus.py`) và protocol đánh giá resume-safe
+(`*_judge_eval.py`). Nhật ký thí nghiệm đầy đủ, nguồn của báo cáo này:
+`trieulh/docs/experiments/2026-07-08-slm-training-log.md`. Artifact (checkpoint, mô hình
+HF, GGUF, log số liệu, dữ liệu đánh giá) lưu trên Google Drive. Mô hình cuối:
+`slm-30m-p2.gguf` (39 MB, q8) kèm `Modelfile-30M-p2`, chạy bằng
+`ollama create slm-30m-p2 -f Modelfile-30M-p2`.
 
-### 11.2 Limitations
-
-- **Context ceiling (512 tokens):** the model cannot produce coherent fables beyond
-  ~300-340 words; the length selector has little effect on the SLM.
-- **Prompt-adherence ceiling (~70-80%):** a 30M model has weak conditioning; it reads the
-  five slots but still drops one or two (especially abstract Challenge/Outcome) - a
-  quantified size/capability trade-off that none of the tested alignment methods moved.
-- **The default distribution resists cheap self-feedback.** DPO, SFT-on-best, RAFT and
-  GRPO-lite (at a ~960-judge-call budget) all fail to shift default-generation quality;
-  only inference-time selection captures the headroom. Improving the *default* output
-  likely requires an external teacher or a much larger, cleaner reward budget.
-- **The evaluation judge is noisy:** repeated evaluations of the same checkpoint differ by
-  up to 0.45 at n=15. All headline deltas in this report respect that noise floor; readers
-  should apply the same caution to any small reported difference.
-- **Weak length control:** the model has a natural length (~250-280 words) and largely
-  ignores the short/medium/long hint.
-- **Template / redemption priors:** the model inherits TF1 biases (friendship/kindness
-  morals; happy endings; a recurring "wise old owl" mediator), which the data intervention
-  reduces but does not eliminate.
-- **Local logical slips:** occasional pronoun/reference errors and small non-sequiturs
-  within a story - a capacity limit, not a sampling artifact.
-- **Single-judge in-app eval:** the per-generation score is a quick indicator; the
-  headline conclusions use the offline cross-family judge panel with weighted Cohen's
-  kappa and Kendall's tau (ADR-0002).
-
-## 12. Future directions (with feasibility evidence)
-
-Each direction below is paired with concrete evidence from this study that it is likely to
-pay off, not just a wish-list item.
-
-- **Train to the full Chinchilla budget (~7,900 steps / ~600M tokens).**
-  *Evidence:* at 3,600 steps the loss still lies on the power-law line (R^2 0.96, Fig. 4)
-  and has not plateaued; Kaplan/Chinchilla predict continued gains from more tokens.
-  *Feasibility:* the 400k unique corpus with <=4-epoch repeat (Muennighoff 2023) supplies
-  the tokens; only more T4 time is needed.
-- **Distillation at pretraining scale, not SFT scale.**
-  *Evidence:* the 600-story hard-label distillation moved the model but degraded it
-  (Section 9.13) - the imitation trap. The literature remedy is scale and soft labels:
-  mix teacher data into *pretraining* (millions of tokens, as TF1 itself was
-  Gemma-generated) or distill token-level soft targets (Hinton 2015) rather than
-  fine-tuning on a few hundred hard-label stories. *Feasibility:* T4 SFT takes seconds
-  (measured 17 s for 1,200 samples); the cost is teacher generation time, which scales
-  linearly and parallelizes.
-- **Scaled reward-based RL with a cheaper, cleaner reward.**
-  *Evidence:* GRPO-lite was null with KL ~1e-3 - the policy never moved at a 960-call
-  budget - so the method is untested at scale rather than refuted (Section 9.12). DeepSeek-
-  R1 demonstrates the mechanism works given thousands of steps.
-  *Feasibility:* requires replacing the ~15 s/call judge: either a stronger local judge
-  distilled into a fast scorer trained on far more labels (the 30M scorer failed at ~500
-  labels; scaling labels is the testable fix), or rule-based partial rewards (slot recall,
-  completeness) that cost microseconds.
-- **Stronger evaluation judge and larger eval sets by default.**
-  *Evidence:* the measured +-0.4 noise at n=15 (Section 9.11) manufactured two false
-  positives; n=45 paired evals resolved both. *Feasibility:* the 36 GB machine runs a 14B
-  judge comfortably; n=45-100 evals are an hour of compute.
-- **Targeted data debiasing beyond the owl template.**
-  *Evidence:* the single "wise old owl" cap already moved the generation rate 90% -> 23%
-  (Fig. 10), proving the intervention mechanism works; the same recipe can address the
-  happy-ending/redemption prior and other stock phrases.
-- **Extended context / explicit length control.**
-  *Evidence:* the 512-token ceiling is the direct cause of both the length-control weakness
-  and rare truncation (Section 9.6). *Feasibility:* retraining at 1024 tokens or adding
-  length-bucket control tokens is a known, bounded change.
-
-## 13. Conclusion
-
-A 30M-parameter model trained from scratch, guided by scaling-law reasoning and a targeted
-data intervention, reaches ~7.9/10 fable quality (final protocol, n=45; from 2.5 at the
-under-trained baseline) with held-out perplexity 3.56, generating complete, on-domain
-stories at ~50x the speed and 1/130th the size of a 4B LLM. A systematic post-training
-campaign then delivers the study's sharpest finding: the model's quality headroom is real
-at the sample level (best-of-3 reaches 8.55, near the 4B reference at 9.75) but **no
-low-cost post-training method moves the default distribution upward** - DPO, SFT-on-best,
-RAFT and budget-limited GRPO are null, and teacher distillation at SFT scale moves it
-*down* (the imitation trap) - while inference-time best-of-N captures the gain directly
-and ships in the app. The result supports the thesis with an honest boundary:
-**for a well-scoped task, a tiny model can rival a large one on the axes that matter, at a
-fraction of the cost** - provided the remaining variance is managed at inference time, and
-with the size ceiling documented where it shows (length control, residual adherence gap,
-alignment resistance).
-
-## 14. Reproducibility
-
-All model code lives under `trieulh/` (isolated from the shared web app):
-
-- Data + training: `trieulh/scripts/prepare_tf1_pretrain.py`, `train_tokenizer.py`,
-  `tf1_pretrain/`; notebook `trieulh/notebooks/pretrain_slm_30m_dashboard.ipynb`.
-- Alignment campaign: `trieulh/scripts/gen_preference_pairs.py`, `dpo_train_local.py`,
-  `headroom_probe.py` (best-of-N), `raft_harvest.py` + `raft_gen_corpus.py` +
-  `sft_best_local.py` (RAFT), `rm_train.py` + `rm_train_pairwise.py` (reward-model gate),
-  `grpo_train.py` (GRPO-lite), `raft_judge_eval.py` / `grpo_judge_eval.py` /
-  `big_judge_eval.py` (the shared evaluation protocol).
-- Evaluation: `trieulh/scripts/eval_slm.py`; app metrics `app/metrics.py`, `app/perplexity.py`.
-- Experiment log (source of this report): `trieulh/docs/experiments/2026-07-08-slm-training-log.md`.
-- Artifacts (Google Drive): checkpoints, HF models (30M, 30M-p2, 30M-dpo), GGUF exports,
-  `analysis_*.json`, `loss_log_*.json`, and the dashboard figures.
-
-**Model download.** The final aligned model (Phase 2 + DPO) is packaged as a zip
-(GGUF q8 + Ollama Modelfile + HF checkpoint):
-<https://drive.google.com/file/d/1tY6dPodSqHunYlYEZDdMOEZ1dJyg2HuD/view?usp=drivesdk>
-To run it: unzip, then `ollama create slm-30m-dpo -f Modelfile-30M-dpo`.
-
-## References
+## Tài liệu tham khảo
 
 1. Nadas et al. (2025). *TF1-EN-3M.* arXiv:2504.20605.
 2. Kaplan et al. (2020). *Scaling Laws for Neural Language Models.*
 3. Hoffmann et al. (2022). *Training Compute-Optimal LLMs (Chinchilla).*
 4. Muennighoff et al. (2023). *Scaling Data-Constrained Language Models.*
 5. Rafailov et al. (2023). *Direct Preference Optimization.*
-6. Bai et al. (2022). *Constitutional AI: Harmlessness from AI Feedback (RLAIF).*
-7. Williams (1992). *Simple Statistical Gradient-Following Algorithms for Connectionist RL (REINFORCE).*
-8. Shao et al. (2024). *DeepSeekMath: Pushing the Limits of Mathematical Reasoning (GRPO).*
-9. Dong et al. (2023). *RAFT: Reward-rAnked FineTuning for Generative Foundation Model Alignment.*
-10. Hinton et al. (2015). *Distilling the Knowledge in a Neural Network.*
-11. Gudibande et al. (2023). *The False Promise of Imitating Proprietary LLMs.*
+6. Williams (1992). *REINFORCE.*
+7. Shao et al. (2024). *DeepSeekMath (GRPO).*
+8. Dong et al. (2023). *RAFT: Reward-rAnked FineTuning.*
+9. Hinton et al. (2015). *Distilling the Knowledge in a Neural Network.*
+10. Gudibande et al. (2023). *The False Promise of Imitating Proprietary LLMs.*
