@@ -5,6 +5,8 @@
 # Model artifacts
 models/
 experiments/
+!lienntp/models/
+!lienntp/models/**
 *.gguf
 *.safetensors
 

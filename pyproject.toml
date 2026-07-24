@@ -11,10 +11,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.2"]
-train = ["datasets>=5.0.0"]
 
 [tool.setuptools.packages.find]
-include = ["app", "app.*", "scripts", "scripts.*"]
+include = ["app", "app.*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
