@@ -504,3 +504,71 @@ Phân bố mặc định của 30M-p2 nằm ở local optimum theo đúng capaci
 Muốn nâng floor phải quay về pretrain (data sạch hơn/nhiều hơn, model to hơn) — còn ở
 post-training, inference-time search là cách khai thác đúng và đã ship.
 30M-distill KHÔNG nạp app.
+
+---
+
+# 2026-07-22 -> 07-25 — Pretrain 60M trên full TF1 (Colab T4, resume qua 4 phiên)
+
+## Thiết kế (theo kết luận campaign: nâng floor = pretrain)
+
+`trieulh/scripts/colab_pretrain_60m.py` trên branch `feat/trieulh-60m`:
+- Kiến trúc scale từ 30M: hidden 768 (t. 512), 12 heads (kv 4), seq **1024** (t. 512),
+  8 layers, giữ tokenizer 12k -> **59.6M params**.
+- Data: FULL TF1 sau lọc + dedup = **2.341.231 truyện, 934M token**, giữ can thiệp v2
+  (owl cap 10%, slot-dropout teaching/outcome 0.15). Corpus pack int16 (tokens/offsets/
+  condlens .npy) cache trên Drive `data_tf1_60m/` — build một lần ~50 phút.
+- Train: 10.000 bước (rút từ 15.000 bằng cách dời điểm decay WSD — quyết định của user
+  để xong trong ngày), batch eff 128, peak LR 3e-3, decay 15% cuối (8.500->10.000),
+  fp16 T4. ~0.4 step/s.
+- Vận hành: notebook UI (user mount Drive + Run all; drivemount qua CLI/MCP đều fail ở
+  DriveFS core — đã ghi nhận), checkpoint mỗi 500 bước vào Drive `ckpt_60M/`,
+  auto-resume. Run trải 4 phiên qua 3 ngày (2 lần runtime bị thu hồi + 1 lần hết quota),
+  KHÔNG mất bước nào ngoài <=500 step/lần đứt. Progress per-25-step ghi
+  `train60_progress.jsonl` trên Drive (nguồn vẽ loss curve).
+
+## Kết quả pretrain
+
+| Metric | 30M-p2 | **60M** |
+|---|---|---|
+| Loss cuối | 1.278 | **1.058** |
+| PPL held-out | 3.56 | **2.87** (-19%) |
+| Owl-rate gen | 23% | 27% |
+| Token đã học | ~600M (400k x4 epoch) | ~1.28B qua 10k bước (0.55 epoch full TF1, không lặp) |
+
+Loss 1.278 (mốc cuối của 30M) bị 60M vượt qua ngay ở ~bước 5.000 (1/2 chặng). Pha decay
+kéo 1.231 -> 1.058. Sample đọc tay: văn mạch lạc, bám slot, hội thoại tự nhiên hơn 30M.
+
+## Đánh giá (đang chạy)
+
+Eval judge n=45 paired vs 30M-p2 (protocol chuẩn, seed 1234+i, p2 tái dùng 45 điểm cũ):
+`trieulh/scripts/sixty_judge_eval.py` -> `trieulh/report/data/sixty_judge_eval.json`.
+Artifact đã tải về: `out/60M/` (HF), `trieulh/report/data/{analysis,loss_log}_60M.json`.
+
+## Kết quả eval n=45 paired: 60M THẮNG ÁP ĐẢO — kết luận campaign được kiểm chứng
+
+| Metric | 30M-p2 | **60M** | Delta |
+|---|---|---|---|
+| Judge overall (n=45, seed bắt cặp) | 7.939 | **8.956** | **+1.017, t=6.53** |
+| Prompt-adherence | 7.87 | **9.11** | +1.24 |
+| Win/tie/loss (60M vs p2) | — | — | **36/5/4** |
+| PPL (test.jsonl slice) | 10.579 | 9.478 | -10% |
+
+- Delta +1.0 với t=6.53 vượt xa nhiễu judge (quy tắc 0.5đ/n=15; đây là n=45 bắt cặp) —
+  **phương pháp đầu tiên trong toàn đồ án cải thiện được phân bố mặc định**, và nó đúng là
+  pretraining scale như Giới hạn 1 dự đoán ("nâng sàn phải bằng pretraining").
+- 60M mặc định (8.96) VƯỢT cả 30M-p2 + best-of-3 (8.55); khoảng cách tới Qwen-4B (9.75)
+  còn 0.8 điểm. Adherence 9.11 phá trần ~70-80% của 30M (nhờ capacity + có thể cả seq 1024).
+- Chuỗi suy luận khép kín: 5 phương pháp post-training rẻ đều fail -> kết luận cơ chế
+  "phân bố mặc định nằm ở tối ưu cục bộ của pretraining" -> đầu tư đúng chỗ (60M + full
+  TF1 + 1024) -> +1.0 điểm. Negative results đã chỉ đường cho positive result.
+
+
+## Head-to-head trong app (bổ sung 60M, 2026-07-25)
+
+Cùng protocol Mục 3.8 của báo cáo (2 use case x 4 prompt, seed bắt cặp, judge app +
+Claude đọc tay): 60M dẫn đầu cả hai use case theo cả hai giám khảo — UC1 8.81/7.62,
+UC2 8.19/7.62 (judge/Claude), adherence UC2 8.0, Flesch 81.7, ~600-670 tok/s (63MB gguf
+q8). Nhận xét đọc tay: văn sạch gần như không câu gãy; lần đầu có model dùng đúng chi
+tiết "moonlit orchard"; sót còn lại: UC2 #1 thay butterfly bằng snake (slot trừu tượng).
+App: đã convert GGUF + `ollama create slm-60m` + registry `slm-60m`. Model cuối của đồ
+án: **slm-60m**.

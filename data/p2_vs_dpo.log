@@ -24,3 +24,12 @@ UC2_slots #1 slm-30m: overall=2.5 words=270
 UC2_slots #2 slm-30m: overall=4.5 words=254
 UC2_slots #3 slm-30m: overall=5.75 words=254
 HEAD2HEAD DONE: 24 rows
+UC1_free #0 slm-60m: overall=9.25 words=252
+UC1_free #1 slm-60m: overall=9.25 words=311
+UC1_free #2 slm-60m: overall=7.5 words=268
+UC1_free #3 slm-60m: overall=9.25 words=280
+UC2_slots #0 slm-60m: overall=9.75 words=246
+UC2_slots #1 slm-60m: overall=6.25 words=255
+UC2_slots #2 slm-60m: overall=8.25 words=243
+UC2_slots #3 slm-60m: overall=8.5 words=250
+HEAD2HEAD DONE: 32 rows

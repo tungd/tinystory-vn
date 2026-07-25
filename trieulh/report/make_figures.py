@@ -243,17 +243,17 @@ print("EXTRA FIGS DONE")
 # ---- Fig 19: head-to-head p1/p2/dpo x 2 use case (judge + Claude) ----
 try:
     hh = load("headtohead_summary.json")
-    MODELS = ["slm-30m", "slm-30m-p2", "slm-30m-dpo"]
-    LBL = ["Phase 1", "Phase 2", "Phase 2+DPO"]
+    MODELS = ["slm-30m", "slm-30m-p2", "slm-30m-dpo", "slm-60m"]
+    LBL = ["Phase 1", "Phase 2", "Phase 2+DPO", "60M"]
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.4))
-    x = np.arange(3)
+    x = np.arange(len(MODELS))
     for ax, uc, title in [(axes[0], "UC1_free", "UC1: free generation (no slots, short)"),
                           (axes[1], "UC2_slots", "UC2: 5-slot conditioned (short)")]:
         j = [hh["judge_means"][uc][m] for m in MODELS]
         c = [hh["claude_means"][uc][m] for m in MODELS]
         ax.bar(x - .2, j, .4, label="LLM-judge (qwen3-4b)", color=BLUE)
         ax.bar(x + .2, c, .4, label="Claude (manual read)", color=ORANGE)
-        for i in range(3):
+        for i in range(len(MODELS)):
             ax.text(i - .2, j[i] + .06, f"{j[i]:.2f}", ha="center", fontsize=8)
             ax.text(i + .2, c[i] + .06, f"{c[i]:.2f}", ha="center", fontsize=8)
         ax.set_xticks(x); ax.set_xticklabels(LBL, fontsize=9)
@@ -261,7 +261,7 @@ try:
         ax.set_title(title, fontsize=10)
     axes[0].set_ylabel("overall score (/10)")
     axes[0].legend(fontsize=8, loc="lower right")
-    fig.suptitle("Head-to-head, paired seeds, n=4/cell: the real gain is Phase 1 -> Phase 2 on conditioned generation", fontsize=10)
+    fig.suptitle("Head-to-head, paired seeds, n=4/cell: gains come from pretraining (P1->P2->60M), not from DPO", fontsize=10)
     save(fig, "19_headtohead_progression.png")
 except FileNotFoundError:
     print("skip fig 19 (no data)")

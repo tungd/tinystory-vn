@@ -8,7 +8,7 @@ Output: trieulh/report/data/p2_vs_dpo_headtohead.json (story đầy đủ để 
 import json, re, requests
 
 API = "http://localhost:8000"
-MODELS = ["slm-30m", "slm-30m-p2", "slm-30m-dpo"]
+MODELS = ["slm-30m", "slm-30m-p2", "slm-30m-dpo", "slm-60m"]
 SLOT_SETS = [
     {"character": "a shy hedgehog", "setting": "a moonlit orchard",
      "challenge": "afraid to ask for help", "outcome": "friends help when asked",
