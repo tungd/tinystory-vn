@@ -269,9 +269,10 @@ def test_guardrail_on_done_has_meta_with_input_tokens():
 def test_models_includes_scratch_slms():
     r = client.get("/models")
     ids = {m["id"] for m in r.json()}
-    assert {"slm-30m"}.issubset(ids)
+    assert {"slm-30m-p2", "slm-60m"}.issubset(ids)
     kinds = {m["id"]: m["kind"] for m in r.json()}
-    assert kinds["slm-30m"] == "scratch-slm"
+    assert kinds["slm-30m-p2"] == "scratch-slm"
+    assert kinds["slm-60m"] == "scratch-slm"
 
 
 # ── Story completeness: done_reason + trim (2026-07-16) ────────────────────────
