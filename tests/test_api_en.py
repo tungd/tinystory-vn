@@ -264,26 +264,108 @@ def test_guardrail_on_done_has_meta_with_input_tokens():
     assert done_ev["meta"]["input_tokens"] == 42
 
 
-def test_results_absent_returns_available_false(monkeypatch, tmp_path):
-    """When RESULTS_PATH points to a non-existent file, GET /results returns 200 with available=false."""
-    missing_file = str(tmp_path / "nonexistent.json")
-    monkeypatch.setenv("FABLE_RESULTS_PATH", missing_file)
-    r = client.get("/results")
-    assert r.status_code == 200
-    data = r.json()
-    assert data["available"] is False
-    assert data["data"] is None
 
 
-def test_results_present_returns_data(monkeypatch, tmp_path):
-    """When RESULTS_PATH points to a valid JSON file, GET /results returns 200 with available=true and the data."""
-    results_file = tmp_path / "eval_summary.json"
-    test_data = {"foo": 1, "bar": "test"}
-    results_file.write_text(json.dumps(test_data))
-    monkeypatch.setenv("FABLE_RESULTS_PATH", str(results_file))
-    r = client.get("/results")
-    assert r.status_code == 200
-    data = r.json()
-    assert data["available"] is True
-    assert data["data"]["foo"] == 1
-    assert data["data"]["bar"] == "test"
+def test_models_includes_scratch_slms():
+    r = client.get("/models")
+    ids = {m["id"] for m in r.json()}
+    assert {"slm-30m"}.issubset(ids)
+    kinds = {m["id"]: m["kind"] for m in r.json()}
+    assert kinds["slm-30m"] == "scratch-slm"
+
+
+# ── Story completeness: done_reason + trim (2026-07-16) ────────────────────────
+
+def test_stream_trims_when_length_cutoff():
+    """Guardrail OFF + done_reason=length + mid-sentence text -> done.story trimmed."""
+    def fake_stream(prompt, system, on_done=None, **kw):
+        for p in ["Once upon a time. ", "But then the wise"]:
+            yield p
+        if on_done:
+            on_done("length")
+    app.dependency_overrides[stream_fn] = lambda: fake_stream
+    ev = _collect({
+        "character": "a fox", "setting": "", "challenge": "", "outcome": "",
+        "teaching": "", "length": "short", "model_id": "slm-30m-p2",
+        "guardrail_enabled": False,
+    })
+    done = [e for e in ev if e["type"] == "done"][-1]
+    assert done["status"] == "success"
+    assert done["story"] == "Once upon a time."   # trimmed at last terminator
+    assert any(e["type"] == "step" and "trimmed" in e.get("detail", "").lower() for e in ev)
+
+
+def test_stream_no_trim_when_stop():
+    """done_reason=stop (complete) -> story kept verbatim, no trim step."""
+    def fake_stream(prompt, system, on_done=None, **kw):
+        yield "The fox shared its food. The end."
+        if on_done:
+            on_done("stop")
+    app.dependency_overrides[stream_fn] = lambda: fake_stream
+    ev = _collect({
+        "character": "a fox", "setting": "", "challenge": "", "outcome": "",
+        "teaching": "", "length": "short", "model_id": "slm-30m-p2",
+        "guardrail_enabled": False,
+    })
+    done = [e for e in ev if e["type"] == "done"][-1]
+    assert done["story"] == "The fox shared its food. The end."
+    assert not any("trimmed" in e.get("detail", "").lower() for e in ev if e["type"] == "step")
+
+
+def test_guardrail_on_trims_when_length():
+    """Guardrail ON + meta done_reason=length -> story trimmed before output check."""
+    app.dependency_overrides[meta_fn] = lambda: (
+        lambda prompt, system, **kw: {
+            "text": "A kind bear shared honey with friends. Then suddenly the",
+            "input_tokens": 10, "output_tokens": 20, "latency_ms": 100,
+            "done_reason": "length",
+        }
+    )
+    ev = _collect({
+        "character": "a kind bear", "setting": "", "challenge": "", "outcome": "",
+        "teaching": "sharing", "length": "short", "model_id": "slm-30m-p2",
+        "guardrail_enabled": True,
+    })
+    done = [e for e in ev if e["type"] == "done"][-1]
+    assert done["status"] == "success"
+    assert done["story"] == "A kind bear shared honey with friends."
+
+
+def test_evaluate_includes_objective_and_method():
+    """/evaluate now returns objective metrics + methodology metadata (scientific)."""
+    app.dependency_overrides[judge_fn] = lambda: (
+        lambda prompt, system, **kw: '{"grammar":{"score":8,"reason":"ok"},"creativity":{"score":7,"reason":"ok"},"moral_clarity":{"score":8,"reason":"ok"},"prompt_adherence":{"score":9,"reason":"ok"}}'
+    )
+    r = client.post("/evaluate", json={
+        "story": "The fox shared its food. And everyone was happy in the end.",
+        "prompt": "a fox", "judge_model_id": "base-qwen3-4b"})
+    d = r.json()
+    assert "objective" in d and set(d["objective"]) == {"distinct_1", "distinct_2", "flesch_reading_ease"}
+    assert "method" in d and "overall_formula" in d["method"] and "citation" in d["method"]
+    assert d["method"]["axes"].keys() >= {"grammar", "creativity", "moral_clarity", "prompt_adherence"}
+
+
+def test_best_of_n_picks_highest_judge_score():
+    """best_of_n>1: generate N via meta, judge each, return the highest-overall story."""
+    stories = iter(["Story A weak.", "Story B strong ending.", "Story C mid."])
+    app.dependency_overrides[meta_fn] = lambda: (
+        lambda prompt, system, **kw: {"text": next(stories), "input_tokens": 5,
+                                      "output_tokens": 10, "latency_ms": 50, "done_reason": "stop"}
+    )
+    scores = iter(['{"grammar":{"score":5},"creativity":{"score":5},"moral_clarity":{"score":5},"prompt_adherence":{"score":5}}',
+                   '{"grammar":{"score":9},"creativity":{"score":9},"moral_clarity":{"score":9},"prompt_adherence":{"score":9}}',
+                   '{"grammar":{"score":6},"creativity":{"score":6},"moral_clarity":{"score":6},"prompt_adherence":{"score":6}}'])
+    app.dependency_overrides[judge_fn] = lambda: (lambda prompt, system, **kw: next(scores))
+    ev = _collect({"character": "a fox", "setting": "", "challenge": "", "outcome": "",
+                   "teaching": "", "length": "short", "model_id": "slm-30m-p2",
+                   "guardrail_enabled": False, "best_of_n": 3})
+    done = [e for e in ev if e["type"] == "done"][-1]
+    assert done["status"] == "success"
+    assert done["story"] == "Story B strong ending."       # highest judge overall (9)
+    assert done["meta"]["best_of_n"] == 3 and done["meta"]["selected"] == 1
+
+
+def test_pick_best_index():
+    from app.main import pick_best_index
+    assert pick_best_index([5.0, 9.0, 6.0]) == 1
+    assert pick_best_index([]) == 0

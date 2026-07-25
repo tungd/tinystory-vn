@@ -22,11 +22,33 @@ export interface EvalAxes {
   prompt_adherence: number;
 }
 
-/** Full evaluation result: 4 axes + weighted overall + optional per-axis rationale. */
+/** Objective (reference-free, deterministic) metrics computed on the story. */
+export interface EvalObjective {
+  distinct_1: number;
+  distinct_2: number;
+  flesch_reading_ease: number;
+}
+
+/** Methodology metadata: how the numbers are computed + citation. */
+export interface EvalMethod {
+  judge_model: string;
+  scale: string;
+  overall_formula: string;
+  axes: Record<string, string>;
+  objective_defs: Record<string, string>;
+  citation: string;
+  note: string;
+}
+
+/** Full evaluation result: 4 axes + overall + optional rationale/objective/method. */
 export interface EvalResult extends EvalAxes {
   overall: number;
   /** Judge's short justification per axis (evidence quoted from the story). May be absent. */
   rationale?: Partial<Record<keyof EvalAxes, string>>;
+  /** Reference-free objective metrics on this story. */
+  objective?: EvalObjective;
+  /** How the numbers are computed + citation to the paper methodology. */
+  method?: EvalMethod;
 }
 
 /** Runtime type guard - verifies all 5 fields are finite numbers. */
@@ -89,7 +111,3 @@ export async function streamFable(payload: unknown, onEvent: (e: SSEEvent)=>void
     for (const p of parts) { const t=p.trim(); if (t.startsWith("data:")) onEvent(JSON.parse(t.slice(5).trim()) as SSEEvent); } }
 }
 
-export async function fetchResults(): Promise<{ available: boolean; data: unknown }> {
-  const r = await fetch("/results");
-  return r.json() as Promise<{ available: boolean; data: unknown }>;
-}

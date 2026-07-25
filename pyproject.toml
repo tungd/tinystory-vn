@@ -11,10 +11,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.2"]
+eval = ["textstat>=0.7", "scipy>=1.11"]
 
 [tool.setuptools.packages.find]
 include = ["app", "app.*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-testpaths = ["tests"]
+testpaths = ["tests", "trieulh/tests"]

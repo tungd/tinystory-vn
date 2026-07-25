@@ -90,6 +90,9 @@ def generate_meta(
         "input_tokens": data.get("prompt_eval_count", 0),
         "output_tokens": data.get("eval_count", 0),
         "latency_ms": latency_ms,
+        # "stop" = model phát <|end|> (Ollama nuốt token này) = kết hoàn thiện;
+        # "length" = đụng trần num_predict/context = truyện bị cắt.
+        "done_reason": data.get("done_reason"),
     }
 
 
@@ -99,8 +102,11 @@ def generate_stream(
     model: str | None = None,
     num_predict: int | None = None,
     seed: int | None = None,
+    on_done=None,
     **kwargs,
 ) -> Iterator[str]:
+    """Stream story tokens. Nếu truyền `on_done`, gọi `on_done(done_reason)` khi
+    chunk cuối về ("stop" = kết hoàn thiện, "length" = bị cắt) để caller xử lý."""
     payload = _payload(prompt, system, model, True, _options(num_predict, seed, kwargs))
     try:
         with httpx.Client(base_url=OLLAMA_BASE_URL, timeout=REQUEST_TIMEOUT_SECONDS) as client:
@@ -114,6 +120,8 @@ def generate_stream(
                     if piece:
                         yield piece
                     if chunk.get("done"):
+                        if on_done is not None:
+                            on_done(chunk.get("done_reason"))
                         break
     except httpx.HTTPError as exc:
         raise OllamaError(f"Ollama stream request failed: {exc}") from exc

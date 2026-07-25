@@ -1,6 +1,4 @@
 import { useState, useCallback } from 'react';
-import { TabList } from '@astryxdesign/core/TabList';
-import { Tab } from '@astryxdesign/core/TabList';
 import { InputPanel } from './components/InputPanel';
 import type { FablePayload } from './components/InputPanel';
 import { StoryStream } from './components/StoryStream';
@@ -12,11 +10,9 @@ import type { FableMeta } from './components/ObservabilityPanel';
 import { CompareMode } from './components/CompareMode';
 import { EvalPanel } from './components/EvalPanel';
 import type { EvalState } from './components/EvalPanel';
-import { ResultsPanel } from './components/ResultsPanel';
 import { streamFable, evaluate, isEvalResult } from './api';
 import type { EvalResult, SSEEvent } from './api';
 
-type AppTab = 'playground' | 'results';
 type PlaygroundMode = 'single' | 'compare';
 
 let logIdCounter = 0;
@@ -25,7 +21,6 @@ function nextLogId(): string {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<AppTab>('playground');
   const [playgroundMode, setPlaygroundMode] = useState<PlaygroundMode>('single');
 
   // Single mode state
@@ -160,29 +155,10 @@ function App() {
             Generate creative fables using fine-tuned language models
           </p>
         </div>
-        <TabList value={activeTab} onChange={(v) => setActiveTab(v as AppTab)}>
-          <Tab value="playground" label="Playground" />
-          <Tab value="results" label="Results" />
-        </TabList>
       </header>
 
-      {/* - Tab: Results - */}
-      {activeTab === 'results' && (
-        <main
-          style={{
-            padding: '1.5rem 2rem',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            width: '100%',
-            boxSizing: 'border-box',
-          }}
-        >
-          <ResultsPanel />
-        </main>
-      )}
-
-      {/* - Tab: Playground - */}
-      {activeTab === 'playground' && (
+      {/* - Playground - */}
+      {(
         <main
           style={{
             padding: '1.5rem 2rem',

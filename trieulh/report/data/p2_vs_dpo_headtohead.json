@@ -1,0 +1,2081 @@
+[
+ {
+  "uc": "UC1_free",
+  "i": 0,
+  "model": "slm-30m-p2",
+  "seed": 7000,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the icy lands of the North Pole, a little moth with a big heart lived among the frosty flowers. This moth was different from the other moths, for she was small and too big. She had big dreams and a special talent that made her friends feel safe.\n\nOne day, while flying over the frozen tundra, the little moth saw a group of penguins struggling to find food in the cold. Their home, a cozy little cave, was being threatened by a big, strong polar bear. The little moth knew she had to help.\n\n\"Oh, what a great idea!\" she said to her friends. \"Let's work together to build a safe place for the polar bear's cave.\"\n\nThe other moths laughed and said, \"Why should we help him? He's just one of us.\" But the little moth didn't give up. She flew around, gathering small stones and sticks, and built a beautiful nest for the polar bear's den.\n\nWhen the polar bear arrived, he was surprised to see the little moth's nest. The polar bear was angry because he had lost his family in a big storm. But the little moth's friends were sorry for him and offered to help build a new home for the polar bear.\n\nThe little moth smiled and said, \"We can do it! We'll make sure everyone has food and shelter.\" And so, they did. The polar bear was happy, and the little moth learned that even small deeds can make a big difference.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 250,
+   "latency_ms": 328,
+   "tokens_per_sec": 762.2
+  },
+  "eval": {
+   "grammar": 7,
+   "creativity": 6,
+   "moral_clarity": 8,
+   "prompt_adherence": 5,
+   "overall": 6.5,
+   "rationale": {
+    "grammar": "Some sentence structures are awkward, e.g., 'she was small and too big' which is illogical and unclear",
+    "creativity": "The scenario of a moth helping penguins and polar bears lacks biological plausibility and originality",
+    "moral_clarity": "The moral that 'even small deeds can make a big difference' is clear and consistent throughout the story",
+    "prompt_adherence": "Fails to include essential elements of children's fable structure like a protagonist with specific challenge or transformation; lacks animal traits aligned naturally"
+   },
+   "objective": {
+    "distinct_1": 0.596,
+    "distinct_2": 0.8876,
+    "flesch_reading_ease": 88.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 0,
+  "model": "slm-30m-dpo",
+  "seed": 7000,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the icy lands of the North Pole, a little moth with a big heart lived among the frosty flowers. This moth was different from the other moths, for she was small and black. She loved to dance in the moonlight and play hide-and-seek with her friends.\n\nOne day, while flying over the frozen tundra, the little moth saw a group of penguins struggling to find food. The ice was melting, and the snowflakes were falling gently. She thought to herself, \"I'm so good at flying! I can fly away from this cold land.\" But then she saw a big, old owl perched on a nearby tree, watching her with wise eyes.\n\n\"Hello, little moth,\" said, \"What are you doing here?\" The moth replied, \"I'm just looking for some food. It's hard to find because I'm not very good at flying.\" The owl looked at her with wise eyes and said, \"Being small doesn't mean you can't help others. Everyone has something special to offer. Why don them bring you a warm blanket and some of your wings?\"\n\nThe moth thought for a moment and then said, \"I can fly and play, but I'm not very good at flying or flying. I'll just stay here and watch the world go by.\" The owl smiled and said, \"That's who you are. You may be small, but you're special in your own way. That's what makes you special.\"\n\nThe moth felt proud of herself and realized that she didn't need to fly or fly. She could fly high and be special in her own way. From that day on, the little moth flew with a new sense of pride, and all the other moths looked up to her for help and respect.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 290,
+   "latency_ms": 383,
+   "tokens_per_sec": 757.18
+  },
+  "eval": {
+   "grammar": 5,
+   "creativity": 6,
+   "moral_clarity": 7,
+   "prompt_adherence": 4,
+   "overall": 5.5,
+   "rationale": {
+    "grammar": "Contains grammatical errors such as 'fly away from this cold land' after stating she is good at flying; repeated phrases like 'I can fly or play but I'm not very good at flying' are illogical and contradictory",
+    "creativity": "Incorporates unusual elements (moth in North Pole with penguins) but the setting and character interactions feel forced and unrealistic for a children's fable",
+    "moral_clarity": "The moral that 'everyone has something special to offer' is present, though it’s stated vaguely without strong contrast or clear consequence from actions taken by characters",
+    "prompt_adherence": "Fails to meet the word count requirement (over 300 words), and includes inconsistent elements like a moth flying in icy lands with penguins that don’t logically interact; also misrepresents prompt's request for shortness"
+   },
+   "objective": {
+    "distinct_1": 0.5966,
+    "distinct_2": 0.9273,
+    "flesch_reading_ease": 91.9
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 1,
+  "model": "slm-30m-p2",
+  "seed": 7001,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the bustling port of Golden Cove, a busy honeybee buzzed from flower to flower, collecting nectar for her hive. She was known for her kind heart and her ability to forgive any creature. One day, while sipping from a bright yellow bloom, she met a charming butterfly. They danced together, their colors shimmering like colors.\n\nHowever, as the days passed, the honeybee began to notice that the butterfly's charm was making her friends forget about her kindness. She felt a flutter in her heart and wondered if she was doing something wrong. The honeybee confided in her friend, a wise old owl, \"I've been taking away my friends' love with the butterfly. I feel like she doesn't care about me.\"\n\nThe owl listened carefully and then said, \"Tell the truth, little one. If you truly care for your feelings, it will help your friends in need.\" The honeybee took a deep breath and flew to her friends' home, telling them the truth. They were touched her heart and appreciated her kindness.\n\nTo their surprise, the butterfly's true nature was revealed. She was delighted to see her friends happy and content once more. From that day on, she began to share her love with all her friends, and they all celebrated her kindness. The honeybee smiled, knowing that forgiveness had brought healing to her heart and created a deeper bond.\n\nThis story teaches us that when we speak the truth, it can heal even the deepest wounds and bring people closer together.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 252,
+   "latency_ms": 307,
+   "tokens_per_sec": 820.85
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 8.75,
+   "rationale": {
+    "grammar": "Sentences are mostly clear and well-constructed; only minor issues like awkward phrasing in 'a flutter in her heart' slightly disrupt flow.",
+    "creativity": "The tale features familiar elements (bee, butterfly) with a gentle twist on forgiveness but lacks unique or surprising imagery or plot developments.",
+    "moral_clarity": "The moral is explicitly stated: 'when we speak the truth, it can heal even the deepest wounds and bring people closer together.'",
+    "prompt_adherence": "Includes a short fable with animal characters in an engaging setting; slightly exceeds word count but remains within reasonable bounds."
+   },
+   "objective": {
+    "distinct_1": 0.6468,
+    "distinct_2": 0.9283,
+    "flesch_reading_ease": 74.0
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 1,
+  "model": "slm-30m-dpo",
+  "seed": 7001,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the bustling port of Golden Cove, a busy honeybee buzzed from flower to flower, collecting nectar for her hive. She was known for her kind heart and her ability to forgive any creature. One day, while sipping from a bright yellow bloom, she met a charming butterfly. They danced together, their colors shimmering like colors.\n\nHowever, as the days passed, the honeybee began to notice that the butterfly's charm was making her friends forget about her kindness. She felt a flutter in her heart and wondered if she was doing something wrong. The honeybee confided in her friend, a wise old owl, \"I've been keeping secrets from my friends. I don't want to be left out.\"\n\nThe owl listened carefully and then asked, \"What makes you think your friends are?\" The honeybee thought for a moment before answering, \"I was just being myself.\" The owl smiled and said, \"Then let's talk to them together.\"\n\nWhen they met again, the honeybee confessed her fears and feelings. Her friends were understanding that she had been keeping secrets from their own. They forgave her and welcomed her back with open wings. The honeybee realized that even though her friends were gone, she could still be kind and loyal, even if it meant getting lost in a place of misunderstanding.\n\nFrom that day on, the honeybee's kindness spread throughout Golden Cove, reminding all creatures that honesty outlives deceit. As the seasons passed, the honeybee's story became a reminder to all who would listen with the heart of gold and truth, no matter how different they may seem.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 264,
+   "latency_ms": 305,
+   "tokens_per_sec": 865.57
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 6,
+   "moral_clarity": 7,
+   "prompt_adherence": 5,
+   "overall": 6.5,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues include awkward phrasing like 'her friends were gone' which is inconsistent with prior narrative.",
+    "creativity": "The fable follows a familiar structure but lacks unique imagery or originality in character and plot development",
+    "moral_clarity": "The moral that honesty outlives deceit is clear but somewhat vague; the story implies it without direct reinforcement of consequences.",
+    "prompt_adherence": "Fails to strictly adhere to word count (exceeds 160 words) and includes elements not typical in traditional fables such as secret-keeping and a butterfly's charm affecting friends' attention"
+   },
+   "objective": {
+    "distinct_1": 0.6591,
+    "distinct_2": 0.943,
+    "flesch_reading_ease": 71.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 2,
+  "model": "slm-30m-p2",
+  "seed": 7002,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "On the windswept plains of golden grass, a curious puma with shiny fur loved to explore. She had heard tales of far-off lands and was eager for adventure. One day, while wandering through the tall grass, she met a majestic eagle perched on a rock.\n\nThe eagle, proud of his strength and speed, looked down at the puma with pride. \"You think you're so great, don't you?\" he said, puffing out his chest. The puma felt a pang of doubt. Was she truly worthy to her friendships or her love for the eagle?\n\nAs the days passed, the puma's doubts grew. She stopped exploring and playing with the other creatures on the plains. One day, while wandering through the open fields, she stumbled upon a group of animals struggling to find food. A small rabbit was shivering with hunger, while a lost bird lay in their nest.\n\nMoved by the rabbit's desperation, the puma realized that her true strength wasn't about being the strongest or fastest, but about helping others. She approached the eagle and asked for its aid. Together, they gathered berries and nuts from the nearby forest. The eagle, seeing the puma's genuine kindness, began to appreciate her inner skills.\n\nAs the puma and the eagle worked side by side, their bond grew stronger. The puma learned that true strength lies not in being the strongest, but in helping others. And the eagle realized that his pride had blinded him to the puma's true worth.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 247,
+   "latency_ms": 292,
+   "tokens_per_sec": 845.89
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 8.75,
+   "rationale": {
+    "grammar": "Sentences are mostly well-formed with clear subject-verb structure; only minor issues like awkward phrasing such as 'her love for the eagle' instead of a clearer emotional dynamic",
+    "creativity": "The puma-eagle interaction and journey from pride to cooperation is original but follows common fable tropes with limited imaginative elements",
+    "moral_clarity": "The moral 'true strength lies not in being the strongest, but in helping others' is explicitly stated at the end and reinforced throughout",
+    "prompt_adherence": "Includes a short narrative with animal characters, clear conflict, resolution, and lesson; slightly exceeds word count by ~15 words but remains within acceptable range"
+   },
+   "objective": {
+    "distinct_1": 0.6235,
+    "distinct_2": 0.9228,
+    "flesch_reading_ease": 79.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 2,
+  "model": "slm-30m-dpo",
+  "seed": 7002,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "On the windswept plains of golden grass, a curious puma with shiny fur loved to explore. She had never seen such lovely sunsets and was fascinated by the endless grasslands. One day, while chasing a butterfly, she stumbled upon a group of rabbits gathered around a large tree.\n\nThe rabbits welcomed the puma with open arms, but as they began to share stories, a disagreement arose. The puma thought the rabbits were taking over her home, while the rabbits believed the puma was being selfish. They were argued until their words were hurt and anger.\n\nAs the argument escalated, the puma realized that the rabbits were not fighting for a common goal – they were bringing joy to others. She understood that the rabbits' home was special and that they needed each other.\n\nThe puma approached the rabbits and proposed a challenge: \"Why not share your homes and your food with me, so you can have some of your land?\" The rabbits agreed, and from that day on, the puma and the rabbits shared their homes and their resources.\n\nAs they sat together in their new home, the puma realized that sharing her home had brought her more joy than ever before. She learned that when we share our gifts with others, it brings us even greater joy and friendship. And from that day on, the puma and the rabbits became the best of friends, proving that generosity overcomes envy.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 240,
+   "latency_ms": 278,
+   "tokens_per_sec": 863.31
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 8.75,
+   "rationale": {
+    "grammar": "Sentences are mostly clear and well-structured, e.g., 'The puma approached the rabbits and proposed a challenge...'",
+    "creativity": "Incorporates unique animal characters and settings like a curious puma in golden grasslands with butterflies; however, some elements feel conventional for children's fables.",
+    "moral_clarity": "The moral is explicitly stated: 'when we share our gifts with others, it brings us even greater joy and friendship'",
+    "prompt_adherence": "Includes a short narrative about animals sharing resources in harmony; slightly exceeds word count but remains within reasonable bounds for children's fable"
+   },
+   "objective": {
+    "distinct_1": 0.5917,
+    "distinct_2": 0.8996,
+    "flesch_reading_ease": 69.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 3,
+  "model": "slm-30m-p2",
+  "seed": 7003,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of the mystical Labyrinth of Luminous Dreams, where sunbeams danced through shimmering crystals, a relentless beetle lived. This little beetle was always on the move, never stopping to rest and watch for its friends.\n\nOne day, a severe drought struck the labyrinth, and the plants began to wither. The relentless beetle watched as its friends struggled, but no one seemed to be the first to find food. The beetle felt a pang of sadness for its friends.\n\nAs it wandered through the barren landscape, the beetle met a wise old owl perched on a cypress tree. \"Why do you look so troubled?\" the owl asked.\n\n\"I want to help my friends,\" the beetle replied, \"but I'm not sure if I can trust you.\"\n\nThe owl looked at the beetle with big, round eyes and said, \"Let's work together. We can dig a channel that helps us find water in the underground waters.\"\n\nThe beetle agreed, and they began digging. As they worked, the beetle realized that it didn't have to be alone. The owl showed it how the beetle's strength could help, and the beetle was grateful for its own unique skills.\n\nTogether, they found a hidden spring, and the plants began to bloom once more. The beetle felt proud of what it had accomplished, but also a bit more grateful for its friends. From that day on, the relentless beetle knew that gratitude was the key to overcoming any envy.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 244,
+   "latency_ms": 322,
+   "tokens_per_sec": 757.76
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 8,
+   "moral_clarity": 6,
+   "prompt_adherence": 10,
+   "overall": 8.5,
+   "rationale": {
+    "grammar": "All sentences are properly structured with correct punctuation and syntax, e.g., 'The relentless beetle watched as its friends struggled'.",
+    "creativity": "Inventive setting like the Labyrinth of Luminous Dreams adds wonder; however, some elements feel clichéd (e.g. wise owl helping with digging)",
+    "prompt_adherence": "Includes a short fable structure (beetle in mystical setting), conflict due to drought, teamwork solution, and ending that resolves the situation within word limit"
+   },
+   "objective": {
+    "distinct_1": 0.627,
+    "distinct_2": 0.9053,
+    "flesch_reading_ease": 81.7
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 3,
+  "model": "slm-30m-dpo",
+  "seed": 7003,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of the mystical Labyrinth of Sunshine, where stars twinkled like a thousand stars, a patient platypus lived among the winding stones. This gentle creature spent her days swimming in the lake and helping her friends with their daily tasks.\n\nOne day, a severe drought struck the labyrinth, and the water became scarce. The animals gathered to discuss who would save the last drops of water for their homes. A sly raccoon boasted that he should be the only one who could help with the tasks. He said, \"I'm the strongest and smartest in the labyrinth. I should get all the water.\"\n\nThe patient platypus listened calmly, but she didn't agree to fight. She suggested, \"Let's work together, and we'll find a way to bring both our homes to the same goal. That way, everyone will benefit.\"\n\nThe raccoon scoffed, but the platypus persisted. As they worked together, the raccoon began to see the value in helping others. He realized that sharing the water would make him stronger and more helpful than he ever thought possible.\n\nTogether, they discovered a hidden underground spring, filled with fresh water. The animals rejoiced, and the patient platypus smiled, knowing that their teamwork had brought harmony to the labyrinth. From that day on, the raccoon learned to value the value of cooperation and the trust that grew from the patient and patient platypus.\n\nAs the seasons passed, the labyrinth flourished, and the animals lived in harmony, thanks to the patient platypus's selfless heart.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 251,
+   "latency_ms": 338,
+   "tokens_per_sec": 742.6
+  },
+  "eval": {
+   "grammar": 7,
+   "creativity": 6,
+   "moral_clarity": 8,
+   "prompt_adherence": 9,
+   "overall": 7.5,
+   "rationale": {
+    "grammar": "Some sentences are awkward or repetitive, e.g. 'the value of cooperation and the trust that grew from the patient and patient platypus'",
+    "creativity": "The setting is imaginative but lacks distinctive elements; the plot follows a predictable structure without unique twists",
+    "moral_clarity": "The moral of cooperation and patience is clearly stated through the platypus's actions and outcomes: 'the patient platypus’s selfless heart'",
+    "prompt_adherence": "Includes a clear fable structure with animals in conflict resolving via teamwork; stays within word count (approximately 150 words)"
+   },
+   "objective": {
+    "distinct_1": 0.6295,
+    "distinct_2": 0.94,
+    "flesch_reading_ease": 69.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 0,
+  "model": "slm-30m-p2",
+  "seed": 7000,
+  "slots": {
+   "character": "a shy hedgehog",
+   "setting": "a moonlit orchard",
+   "challenge": "afraid to ask for help",
+   "outcome": "friends help when asked",
+   "teaching": "asking for help is brave"
+  },
+  "story": "In a bright, sunny orchard, a shy hedgehog loved to explore. She'd sniff and snuffle through the flowers, watching butterflies dance around her. One evening, as she wandered deeper into the orchard, she met a friendly squirrel.\n\n\"Hello there, little hedgehog,\" said the squirrel. \"I'm on a quest to find the sweetest apple in the forest. Would you like to help me?\"\n\nThe hedgehog hesitated, afraid of getting lost or alone. \"I don't know if I can do it,\" she said.\n\nThe squirrel looked at her with kind eyes. \"I can show you where the juiciest apples grow, but first, let me take you to the orchard's center. We can work together and find the ripest ones.\"\n\nThe hedgehog hesitated, but the squirrel's enthusiasm was contagious. Together, they searched high and low, and soon they found the sweetest apple. The hedgehog realized that she didn't have to be scared of getting lost or trying new things.\n\nAs they sat under a tree, munching on the sweet apple, the hedgehog said, \"Thank you for helping me. I was too afraid to ask.\"\n\nThe squirrel smiled and said, \"We're friends because we help each other. That's what friends are for.\"\n\nFrom that night on, the shy hedgehog and the friendly squirrel explored the orchard together, always asking for help when they needed it. And whenever they faced a challenge, they remembered: \"When you need help, ask for it!\"",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a shy hedgehog\n- Setting: a moonlit orchard\n- Challenge: afraid to ask for help\n- Outcome: friends help when asked\n- Teaching/Moral: asking for help is brave\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 236,
+   "latency_ms": 300,
+   "tokens_per_sec": 786.67
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 8,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 9.25,
+   "rationale": {
+    "grammar": "Sentences are clear and correctly structured throughout, with proper punctuation and subject-verb agreement.",
+    "creativity": "The setting and characters are imaginative, but the plot follows a predictable structure common in fables without significant originality.",
+    "moral_clarity": "The moral is explicitly stated: 'When you need help, ask for it!' which directly reinforces that asking for help is brave and valuable.",
+    "prompt_adherence": "Includes a shy hedgehog in a moonlit orchard (though the setting mentions sunny instead of moonlit), addresses fear of asking for help, shows friends helping when asked, and clearly conveys that asking is brave—only minor deviation from 'moonlit' setting."
+   },
+   "objective": {
+    "distinct_1": 0.6695,
+    "distinct_2": 0.9574,
+    "flesch_reading_ease": 80.5
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 0,
+  "model": "slm-30m-dpo",
+  "seed": 7000,
+  "slots": {
+   "character": "a shy hedgehog",
+   "setting": "a moonlit orchard",
+   "challenge": "afraid to ask for help",
+   "outcome": "friends help when asked",
+   "teaching": "asking for help is brave"
+  },
+  "story": "In a bright, sunny orchard, a shy hedgehog loved to explore. She'd sniff and snuffle through the flowers, watching butterflies dance around her. One evening, as she wandered deeper into the orchard, she met a friendly squirrel.\n\n\"Hello there, little hedgehog,\" said the squirrel. \"I'm on a quest to find the sweetest apple in the forest. Would you like to help me?\"\n\nThe hedgehog hesitated, afraid of getting lost or alone. \"I don't know if I can do it,\" she said.\n\nThe squirrel looked at her with kind eyes. \"I can show you where the juiciest apples grow, but first, let me take you to the orchard's center. We can work together and find the ripest ones.\"\n\nThe hedgehog hesitated, but the squirrel's enthusiasm was contagious. Together, they searched high and low, and soon they found the sweetest apple. The hedgehog realized that she didn't have to be scared of getting lost or trying new things.\n\nAs they sat under a tree, munching on the sweet apple, the hedgehog said, \"Thank you for helping me. I was too afraid to ask.\"\n\nThe squirrel smiled and said, \"We're friends because we help each other. That's what friends are for.\"\n\nThe hedgehog thought about this for a moment. She realized that she didn't have to be scared of asking for help. And that's when she felt brave and proud of herself. From that day on, the hedgehog and the squirrel explored the orchard together, helping each other and learning the value of friendship and teamwork.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a shy hedgehog\n- Setting: a moonlit orchard\n- Challenge: afraid to ask for help\n- Outcome: friends help when asked\n- Teaching/Moral: asking for help is brave\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 253,
+   "latency_ms": 342,
+   "tokens_per_sec": 739.77
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 6,
+   "overall": 8.25,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct with proper punctuation and structure, e.g. 'The hedgehog hesitated, but the squirrel's enthusiasm was contagious.'",
+    "creativity": "Features a clear animal character and simple setting, though dialogue is conventional; originality in imagery like moonlit orchard is limited to description without innovation.",
+    "moral_clarity": "The moral 'asking for help is brave' is explicitly stated through the hedgehog's realization: 'She realized that she didn't have to be scared of asking for help.'",
+    "prompt_adherence": "Setting incorrectly described as bright and sunny instead of moonlit; challenge and outcome are present but not fully aligned with prompt’s emphasis on a shy hedgehog in the orchard at night."
+   },
+   "objective": {
+    "distinct_1": 0.6403,
+    "distinct_2": 0.9246,
+    "flesch_reading_ease": 81.5
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 1,
+  "model": "slm-30m-p2",
+  "seed": 7001,
+  "slots": {
+   "character": "a curious duckling",
+   "setting": "a busy riverbank",
+   "challenge": "gets lost following a butterfly",
+   "outcome": "finds the way home by listening",
+   "teaching": "listen before you leap"
+  },
+  "story": "**The Riverbank's Lesson**\n\nOn a sunny day, a curious little duckling waddled along the riverbank. The warm breeze carried the sweet scent of blooming flowers. She loved this place where the river's secrets whispered to her.\n\nAs she walked, she met a wise old heron perched on a rock. \"Hello there, little duckling,\" the heron said with a gentle smile. \"What brings you to this beautiful spot?\"\n\nThe duckling explained that she had been searching for a rare flower, but it was nowhere to be found. The heron listened carefully and then said, \"I see. But have you ever stopped to think about what might happen if you were looking for the flower?\"\n\nThe duckling thought for a moment. \"No, I just assumed it was hidden somewhere,\" she said. The heron nodded, \"That's right! Sometimes, we need to listen to the answers of others.\"\n\nAs they walked along the riverbank, they met a friendly fish swimming in the water. The fish asked, \"What do you think will happen if you ask the river about where it is?\" The duckling thought for a moment and said, \"I think I know what's going on!\"\n\nThe fish smiled and said, \"That's correct! Sometimes, listening to the voices of others can lead us to amazing things.\" The duckling felt a sense of understanding wash over her. From that day on, she made sure to listen carefully before acting, and to always ask for help when she needed it.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a curious duckling\n- Setting: a busy riverbank\n- Challenge: gets lost following a butterfly\n- Outcome: finds the way home by listening\n- Teaching/Moral: listen before you leap\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 244,
+   "latency_ms": 305,
+   "tokens_per_sec": 800.0
+  },
+  "eval": {
+   "grammar": 7,
+   "creativity": 5,
+   "moral_clarity": 6,
+   "prompt_adherence": 4,
+   "overall": 5.5,
+   "rationale": {
+    "grammar": "Some sentences are awkward or unclear, e.g., 'the river's secrets whispered to her' lacks specificity",
+    "creativity": "The story relies on generic dialogue and familiar themes without unique imagery or surprise elements",
+    "moral_clarity": "The moral is implied rather than directly stated; the key lesson 'listen before you leap' isn't explicitly tied to the duckling's actions in a clear way",
+    "prompt_adherence": "Missing core elements: no butterfly challenge or lost state; outcome involves listening but not through following a butterfly as required"
+   },
+   "objective": {
+    "distinct_1": 0.627,
+    "distinct_2": 0.9259,
+    "flesch_reading_ease": 81.4
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 1,
+  "model": "slm-30m-dpo",
+  "seed": 7001,
+  "slots": {
+   "character": "a curious duckling",
+   "setting": "a busy riverbank",
+   "challenge": "gets lost following a butterfly",
+   "outcome": "finds the way home by listening",
+   "teaching": "listen before you leap"
+  },
+  "story": "**The Riverbank's Lesson**\n\nOn a sunny day, a curious little duckling waddled along the riverbank. The warm breeze carried the sweet scent of blooming flowers. She loved this place where the river's secrets whispered to her.\n\nAs she flew over the water, she spotted a beautiful butterfly fluttering above the flowers. The butterfly's wings shimmered in the sunlight, and the little duckling felt a flutter of admiration. \"Oh, how wonderful!\" she exclaimed.\n\nBut as she watched, a strong gust of wind swept the butterfly away. She found herself lost in the dense reeds. The little duckling's friends, a family of ducks, were waiting for her. They told her, \"We can help you find your way.\" But the little duckling was too busy admiring the butterfly's wings to listen.\n\n\"Wait!\" she cried. \"Let me show you the way!\" She flew over the reeds and into the water. The current pulled her up, and she found her way back home.\n\nThe little duckling looked at the butterfly with newfound respect. \"I should have listened before I rushed,\" she said. \"But I didn't listen to you. I learned that listening to wise advice is more important than having something for myself.\"\n\nFrom that day on, the little duckling listened carefully before acting, and the butterfly's wings sparkled even brighter. As they flew over the river together, the little duckling smiled, knowing she had found her place in the world. And the moral of the story: listening brings wisdom.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a curious duckling\n- Setting: a busy riverbank\n- Challenge: gets lost following a butterfly\n- Outcome: finds the way home by listening\n- Teaching/Moral: listen before you leap\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 245,
+   "latency_ms": 1670,
+   "tokens_per_sec": 146.71
+  },
+  "eval": {
+   "grammar": 7,
+   "creativity": 6,
+   "moral_clarity": 5,
+   "prompt_adherence": 4,
+   "overall": 5.5,
+   "rationale": {
+    "grammar": "Some sentences are awkwardly constructed, such as 'As she flew over the water' which contradicts duckling behavior; also includes inconsistent verb tenses like 'she found herself lost... She found her way back home.'",
+    "creativity": "The butterfly is anthropomorphized and given human-like thoughts such as wishing to be seen, but the story lacks vivid sensory details or imaginative twists typical of strong children's fables.",
+    "moral_clarity": "The moral 'listening brings wisdom' is vague and not directly tied to the core conflict; it also misaligns with prompt’s required teaching: 'listen before you leap,' which is absent in explicit form.",
+    "prompt_adherence": "Fails key elements of request—main character (duckling) follows butterfly but does not get lost by following; the challenge involves getting lost after chasing a butterfly and returning via listening to others' advice or environment—not achieved here. The duckling 'flies over reeds,' which is biologically implausible, undermining setting realism."
+   },
+   "objective": {
+    "distinct_1": 0.6367,
+    "distinct_2": 0.9139,
+    "flesch_reading_ease": 74.5
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 2,
+  "model": "slm-30m-p2",
+  "seed": 7002,
+  "slots": {
+   "character": "a proud rooster",
+   "setting": "a small farm",
+   "challenge": "refuses to share the best perch",
+   "outcome": "learns sharing brings friends",
+   "teaching": "sharing makes everyone happier"
+  },
+  "story": "In a sunny farm, where green wheat swayed gently in the breeze, a proud rooster lived. His feathers were as golden as freshly fallen snow, and his loud crow echoed through the streets.\n\nThe proud rooster loved to boast about his beautiful plumage and his strong wings. He thought it was the most magnificent creature in the farm. One day, he met a friendly chicken who had just moved to the farm. The chicken said, \"I've been watching you, proud one. You look so lovely.\"\n\nThe proud rooster laughed, \"What's the point of flying with me? I'm the strongest and the loudest bird here!\" The chicken smiled and said, \"Being strong doesn't mean you're the best. It means you can be kind and share your talents with others.\"\n\nThe proud rooster scoffed, but the chicken continued, \"Let's work together to make this farm an even more wonderful place! We can make it even better than before!\" The proud rooster thought for a moment, then his eyes lit up. Together, they created a beautiful garden filled with juicy fruits and fragrant flowers.\n\nAs they worked, the proud rooster realized that sharing his talents made him feel happy too. He began to see the chicken's beauty and was no longer arrogant. From that day on, the proud rooster and the friendly chicken became the best of friends, exploring the farm and sharing its secrets with all their new friends.\n\nThe moral of the story is that sharing and being kind makes everyone's heart feel full and happy.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a proud rooster\n- Setting: a small farm\n- Challenge: refuses to share the best perch\n- Outcome: learns sharing brings friends\n- Teaching/Moral: sharing makes everyone happier\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 255,
+   "latency_ms": 732,
+   "tokens_per_sec": 348.36
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 6,
+   "moral_clarity": 9,
+   "prompt_adherence": 7,
+   "overall": 7.5,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues like 'echoed through the streets' in a farm setting slightly undermine realism",
+    "creativity": "The story includes familiar elements but lacks unique imagery or original twists on sharing dynamics",
+    "moral_clarity": "The moral is clearly stated: 'sharing and being kind makes everyone's heart feel full and happy'",
+    "prompt_adherence": "Includes a proud rooster, farm setting, challenge of refusing to share perch (implied), but the sharing outcome focuses on talents/gardens rather than physical perch; slight deviation from prompt"
+   },
+   "objective": {
+    "distinct_1": 0.6549,
+    "distinct_2": 0.9331,
+    "flesch_reading_ease": 81.7
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 2,
+  "model": "slm-30m-dpo",
+  "seed": 7002,
+  "slots": {
+   "character": "a proud rooster",
+   "setting": "a small farm",
+   "challenge": "refuses to share the best perch",
+   "outcome": "learns sharing brings friends",
+   "teaching": "sharing makes everyone happier"
+  },
+  "story": "In a sunny farm, where green wheat swayed gently in the breeze, a proud rooster lived. His feathers were as red as sunset, and his song was as clear as the river's gentle flow. The rooster loved to strut around, flapping his wings to show off his bright feathers and loud crowing.\n\nOne day, while strutting through the farm, the proud rooster spotted a family of rabbits playing near the farm. He thought, \"Ah ha! A feast for me!\" He swooped down, flapping his wings loudly, and shouted, \"This is my spot! Leave it be!\"\n\nThe rabbits looked up at the rooster with big eyes and said, \"We didn't know you wanted us to play here. We want to share this farm with everyone.\" The proud rooster scoffed, \"No way! I'm the strongest bird here. You should find your own spot.\"\n\nAs he continued to chase the rabbits away, they whispered to each other, \"Please don't leave our farm. This is our home too!\" The proud rooster's loud voice grew louder, but his feathers lost their shine. He realized that if he shared the farm, everyone could be happy and friends.\n\nThe proud rooster decided to share the farm with the rabbits. Together, they played and laughed, showing the farm that there was enough for everyone. From that day on, the proud rooster and the rabbits became the best of friends. They showed the other animals in the farm that sharing made everyone happy, and that's when the proud rooster realized, \"When we share, everyone gets to enjoy it.\"",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a proud rooster\n- Setting: a small farm\n- Challenge: refuses to share the best perch\n- Outcome: learns sharing brings friends\n- Teaching/Moral: sharing makes everyone happier\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 259,
+   "latency_ms": 305,
+   "tokens_per_sec": 849.18
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 8,
+   "overall": 8.5,
+   "rationale": {
+    "grammar": "Sentences are mostly clear and well-structured; only minor issues like run-on sentences occur in descriptions.",
+    "creativity": "The story uses vivid imagery but follows a predictable fable structure with limited originality in character interactions.",
+    "moral_clarity": "The moral is explicitly stated: 'When we share, everyone gets to enjoy it' and reinforced throughout the narrative.",
+    "prompt_adherence": "Includes all required elements—proud rooster, farm setting, refusal to share perch (extended to entire farm), outcome of sharing bringing friends—and teaches that sharing makes happiness; slightly exceeds word count but stays within bounds."
+   },
+   "objective": {
+    "distinct_1": 0.6486,
+    "distinct_2": 0.9264,
+    "flesch_reading_ease": 86.9
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 3,
+  "model": "slm-30m-p2",
+  "seed": 7003,
+  "slots": {
+   "character": "a patient turtle",
+   "setting": "a sunny meadow",
+   "challenge": "teased for being slow",
+   "outcome": "wins respect by finishing the job",
+   "teaching": "steady effort pays off"
+  },
+  "story": "In a sunny meadow, a patient turtle made her home. She loved swimming in the nearby pond and watching the butterflies dance around the flowers.\n\nOne day, while she was out for watch the world go by, a big, loud bird started teasing her. \"Ha! You're too slow to catch fish,\" he cawed. \"You can't even fly!\" The other birds in the meadow laughed at him.\n\nThe patient turtle didn't get angry. She kept swimming and watching the flowers. The loud bird would tease her again and again, but she just kept going. One day, while the loud bird was taking a nap, a strong wind came to the meadow. He struggled to fly, and his big wings flapped wildly.\n\nThe patient turtle rushed to help him, using her slow and steady pace to guide him to safety. As they swam together, the loud bird looked at the patient turtle with new eyes. \"Thank you for saving me,\" he said, feeling a bit ashamed.\n\nFrom that day on, the loud bird became the patient turtle's friend. He even helped her find the sweetest berries in the meadow. The other birds saw how kind the patient turtle was and started to respect her too.\n\nAs the sun set over the meadow, the patient turtle smiled, knowing that she had made a new friend and learned something special. \"When we help each other,\" she said, \"we can overcome any challenge.\" And from then on, the meadow was filled with friendship and kindness.",
+  "meta": {
+   "model_id": "slm-30m-p2",
+   "model_name": "Fable-SLM 30M (phase 2)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a patient turtle\n- Setting: a sunny meadow\n- Challenge: teased for being slow\n- Outcome: wins respect by finishing the job\n- Teaching/Moral: steady effort pays off\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 250,
+   "latency_ms": 293,
+   "tokens_per_sec": 853.24
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 6,
+   "prompt_adherence": 8,
+   "overall": 7.5,
+   "rationale": {
+    "grammar": "Sentences are mostly clear and well-structured; minor issues like 'watch the world go by' instead of a consistent verb tense occur but do not impair readability",
+    "creativity": "The turtle helps the bird in an unexpected way that adds emotional depth, though it slightly diverges from direct focus on completing a task alone",
+    "moral_clarity": "The moral of steady effort pays off is implied but not explicitly stated; instead, friendship and kindness are emphasized as outcomes",
+    "prompt_adherence": "Includes patient turtle in sunny meadow, teased for being slow, and outcome involving respect—though the challenge shifts to helping rather than finishing a job"
+   },
+   "objective": {
+    "distinct_1": 0.6,
+    "distinct_2": 0.8916,
+    "flesch_reading_ease": 86.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 3,
+  "model": "slm-30m-dpo",
+  "seed": 7003,
+  "slots": {
+   "character": "a patient turtle",
+   "setting": "a sunny meadow",
+   "challenge": "teased for being slow",
+   "outcome": "wins respect by finishing the job",
+   "teaching": "steady effort pays off"
+  },
+  "story": "In a sunny meadow, a patient turtle made her home. She loved swimming in the nearby pond and watching the butterflies dance around the flowers.\n\nOne day, while she was out for watch the world go by, a big, loud bird started teasing her. \"Ha! You're too slow to catch fish,\" he cawed. \"You can't even fly!\" The other birds in the meadow laughed at him.\n\nThe patient turtle didn't get angry. She kept swimming and watching the flowers. The loud bird would tease her again and again, but she just kept going. One day, while the loud bird was taking a nap, a strong wind came to the meadow. He struggled to fly, and his big wings flapped wildly.\n\nThe patient turtle rushed to help him, using her slow and steady pace to guide him to safety. As they swam together, the loud bird looked at the patient turtle with new eyes. \"Thank you for saving me,\" he said, feeling a bit ashamed.\n\nFrom that day on, the loud bird became more gentle. He even helped the patient turtle find the best fish in the pond. The other birds saw how kind the patient turtle was and started to respect her too. They realized that even the smallest creatures can make a big difference when they work together.\n\nThe patient turtle smiled, happy to have made new friends. \"We can do great things when we help each other,\" she said. And from then on, the meadow was filled with laughter and friendship, all thanks to the patient turtle's gentle heart.",
+  "meta": {
+   "model_id": "slm-30m-dpo",
+   "model_name": "Fable-SLM 30M (phase 2 + DPO)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a patient turtle\n- Setting: a sunny meadow\n- Challenge: teased for being slow\n- Outcome: wins respect by finishing the job\n- Teaching/Moral: steady effort pays off\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 261,
+   "latency_ms": 302,
+   "tokens_per_sec": 864.24
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 7,
+   "moral_clarity": 6,
+   "prompt_adherence": 5,
+   "overall": 6.5,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct, though minor issues like 'watch the world go by' and misplaced clauses slightly disrupt flow",
+    "creativity": "The turtle helps a bird in crisis with steady movement; this idea is original but leans toward conventional moral tales without strong imaginative twists",
+    "moral_clarity": "The story implies that patience and kindness win respect, though the direct link between 'steady effort' and success is not explicitly stated as a lesson",
+    "prompt_adherence": "Missing key elements: no clear challenge of being teased for slowness in action; outcome lacks focus on finishing a job or task completed through steady work"
+   },
+   "objective": {
+    "distinct_1": 0.6092,
+    "distinct_2": 0.8885,
+    "flesch_reading_ease": 86.9
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 0,
+  "model": "slm-30m",
+  "seed": 7000,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the icy lands of the North Pole, a big, ambitious monkey lived. He loved to climb the snowy hills and play in the snow. One day, he decided to build the biggest, most magnificent ice sculptures the land had ever seen.\n\nThe other animals admired the monkey's creations. They worked together, but the monkey became jealous of their creations. He thought, \"Why can't I have such a wonderful ice palace?\"\n\nAs the days went by, the monkey's ice palace began to break apart. The other animals were sad and hungry. The monkey felt like he was losing his work.\n\nOne day, a wise old owl came to visit. She saw the monkey's struggles and asked him why. The monkey explained how he couldn't build something special. The owl said, \"Your ice palace is still beautiful. But it's also connected with the other animals. Why not use your ice palace for the next big celebration?\"\n\nThe monkey thought about this and decided to try. He gathered snow and ice, and built a stunning ice palace. The ice palace sparkled and shone, and the other animals joined in. Together, they created something truly special.\n\nThe monkey realized that he didn't need to be perfect. He could make his glacier even more wonderful together. From then on, he worked with the other animals, creating and helping each other. He learned that when everyone works together and shares their talents, amazing things can happen.\n\nThis is why the monkey's ice palace was still special, but it was the one who worked hard to make it shine.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 263,
+   "latency_ms": 691,
+   "tokens_per_sec": 380.61
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 7,
+   "moral_clarity": 9,
+   "prompt_adherence": 10,
+   "overall": 9.0,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct with proper punctuation and structure, e.g. 'The monkey realized that he didn't need to be perfect.'",
+    "creativity": "Features a unique setting (icy North Pole) and imaginative elements like ice sculptures, but follows familiar fable tropes of jealousy and cooperation.",
+    "moral_clarity": "The moral is clearly stated: 'When everyone works together and shares their talents, amazing things can happen.'",
+    "prompt_adherence": "Includes a short fable with animals in an unusual setting, clear conflict, resolution, and a positive message within the required word count."
+   },
+   "objective": {
+    "distinct_1": 0.6312,
+    "distinct_2": 0.9237,
+    "flesch_reading_ease": 76.0
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 1,
+  "model": "slm-30m",
+  "seed": 7001,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the ancient ruins of Azura, where crumbling stones whispered secrets to the wind, a dependable falcon made her home. She soared through the sky, her sharp eyes scanning for prey. One day, as she swooped down to claim the land's riches, she spotted two old rivals: a sly fox and a fierce tiger – secretly working together to protect the ruins from harm.\n\nThe dependable falcon watched as the fox and tiger started to chase each other, trying to catch them. But one day, while chasing a butterfly, the dependable falcon accidentally knocked over a delicate vase, causing it to shatter. The fox and tiger were devastated, but they couldn't stop thinking about what had happened.\n\nAs the dependable falcon watched from afar, she realized that she had been acting like the fox and tiger. She decided to help them instead of fighting. With a determined chirp, she gently landed beside the fox and tiger, and they began to see things from each other's perspective. They decided to work together, using their unique skills to repair the ruins and create a safe haven for all.\n\nAs the dependable falcon watched the fox and tiger working side by side, she saw that her friends were not as rivals, but as friends who cared about her. She flew back to join them, and they cheered in agreement. The dependable falcon smiled, knowing that second chances had rewrite their destinies. From that day on, the ruins were no longer a battle of wits, but a symbol of the power of second chances and friendship.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 262,
+   "latency_ms": 656,
+   "tokens_per_sec": 399.39
+  },
+  "eval": {
+   "grammar": 7,
+   "creativity": 6,
+   "moral_clarity": 8,
+   "prompt_adherence": 5,
+   "overall": 6.5,
+   "rationale": {
+    "grammar": "Some sentence structures are awkward, e.g., 'second chances had rewrite their destinies' contains grammatical error",
+    "creativity": "The setting is imaginative but the plot follows a predictable arc with little original twist or surprise",
+    "moral_clarity": "The moral of second chances and friendship is clearly stated in 'the power of second chances and friendship'",
+    "prompt_adherence": "Fails to include a clear conflict between characters as expected; instead features an accidental event leading to cooperation without sufficient tension or struggle"
+   },
+   "objective": {
+    "distinct_1": 0.5954,
+    "distinct_2": 0.9004,
+    "flesch_reading_ease": 65.7
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 2,
+  "model": "slm-30m",
+  "seed": 7002,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of the scorching desert, where golden sand dunes stretched as far as the eye could see, a rebellious stork lived with a dream for power. With wings that glided across the desert, the stork would often sneak into the neighboring bird to collect shiny stones and treasures, without paying them to her nest or return them.\n\nOne day, while searching for treasures, the stork spotted a beautiful, shimmering oasis filled with the most delicious fruits anyone had ever seen. Without hesitation, the stork swooped down, snatching a handful and then hid it behind a rock, feeling satisfied with its newfound wealth.\n\nBut as soon as the stork gazed at the oasis's abundance, it felt a pang of sadness. The palm trees seemed to grow taller, and the birds sang sweet melodies. The stork realized that it was losing its own needs and greed. The oasis's creatures noticed the stork's sorrow and offered it a gift: a beautiful, shimmering feather.\n\nThe stork accepted the gift and began to share its newfound wealth with the community. As they shared stories of kindness and generosity, the stork's heart grew lighter. It realized that selflessness was the greatest treasure of all – the joy of sharing and gratitude.\n\nFrom that day on, the stork spread the word: \"Generosity enriches the giver, and your heart is full of joy.\"",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 227,
+   "latency_ms": 665,
+   "tokens_per_sec": 341.35
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 8.5,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues like 'sneak into the neighboring bird to collect' lack clarity in subject-verb agreement.",
+    "creativity": "The desert stork and oasis setting is imaginative, but the plot follows a predictable structure common in fables without significant originality.",
+    "moral_clarity": "The moral 'Generosity enriches the giver' is explicitly stated at the end and reinforced throughout.",
+    "prompt_adherence": "Includes key elements of a fable: animal protagonist, clear conflict (greed vs. generosity), resolution with lesson; slightly exceeds word count but remains concise within range."
+   },
+   "objective": {
+    "distinct_1": 0.652,
+    "distinct_2": 0.9469,
+    "flesch_reading_ease": 68.7
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 3,
+  "model": "slm-30m",
+  "seed": 7003,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of a magical forest, a grand enchanted castle stood tall. Its walls sparkled with glittering blue and its towers reached for the sky sky. A kind-hearted camel lived in the castle's gardens, surrounded by sparkling fountains and vibrant flowers.\n\nOne day, a mischievous goat, known for causing trouble, knocked over the camel's basket of juicy berries. The berries spilled all over the ground, and the camel was devastated. \"Why did you do this?\" the camel asked, its voice trembling.\n\nThe goat looked down at his feet, ashamed. \"I'm sorry, I didn't mean to hurt you. I was hungry.\"\n\nThe camel forgave the goat, but they both needed the berries to survive. As they searched for the berries together, they discovered a hidden path that led to a secret garden filled with the most delicious fruits in the land. But they didn't need to fight over the juicy fruits. Instead, they decided to share them equally among all the creatures in the castle.\n\nThe goat and the camel became fast friends, and the castle's gardens flourished under their care. The camel learned that sharing and kindness can make even the most broken things feel better. The camel realized that forgiveness brought healing to the ruined castle, and from that day on, it was known as the kindest camel in the land.\n\nAs the sun set over the enchanted castle, the camel smiled, knowing that its friendship with the goat had made a beautiful, thriving community.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 247,
+   "latency_ms": 712,
+   "tokens_per_sec": 346.91
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 7,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 8.75,
+   "rationale": {
+    "grammar": "Most sentences are correctly formed; only minor repetition like 'sky sky' slightly affects clarity",
+    "creativity": "Includes magical elements and animal characters but follows a conventional fable structure with limited originality",
+    "moral_clarity": "The moral is explicitly stated: \"sharing and kindness can make even the most broken things feel better\"",
+    "prompt_adherence": "Includes key elements like a magical setting, animal characters, conflict, resolution, and shared outcome within word limit"
+   },
+   "objective": {
+    "distinct_1": 0.6275,
+    "distinct_2": 0.9187,
+    "flesch_reading_ease": 73.0
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 0,
+  "model": "slm-30m",
+  "seed": 7000,
+  "slots": {
+   "character": "a shy hedgehog",
+   "setting": "a moonlit orchard",
+   "challenge": "afraid to ask for help",
+   "outcome": "friends help when asked",
+   "teaching": "asking for help is brave"
+  },
+  "story": "In a lush orchard, where juicy apples ripened on trees and the sweet scent of ripe fruits filled the air, a shy hedgehog lived. She loved nothing more than sniffing out tasty treats and making new friends with the other animals.\n\nOne day, while exploring the orchard, she stumbled upon a small rabbit trapped in a hollow log. The log was stuck in the mud, and the rabbit's home was destroyed. The hedgehog, who had been watching from a safe distance, knew she had to act fast. She carefully approached the log and started to pull it towards the log.\n\nBut, oh no! The log was too heavy for her to lift alone. The rabbit asked, \"Please help me!\" The hedgehog hesitated, then said, \"No, I can do it myself.\" She tried again and again, but the log wouldn't budge.\n\nJust as the hedgehog was about to give up, a wise old owl perched on a nearby branch called out, \"Wait! Don't try to lift the log alone. Let me help you.\" The hedgehog hesitated, but then she remembered her friends' kindness. She took a deep breath and carefully lifted the log off the rabbit.\n\nTogether, they pulled the log out of the way, and the rabbit was finally free. The hedgehog felt happy and proud of herself for helping. From that day on, she realized that asking for help wasn't a sign of weakness, but of strength. She learned that asking for help is a sign of strength, not weakness. And whenever she looked at the tangled web, she remembered to ask for help and work together with her friends to achieve great things.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a shy hedgehog\n- Setting: a moonlit orchard\n- Challenge: afraid to ask for help\n- Outcome: friends help when asked\n- Teaching/Moral: asking for help is brave\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 275,
+   "latency_ms": 674,
+   "tokens_per_sec": 408.01
+  },
+  "eval": {
+   "grammar": 5,
+   "creativity": 6,
+   "moral_clarity": 8,
+   "prompt_adherence": 6,
+   "overall": 6.25,
+   "rationale": {
+    "grammar": "Contains errors like 'the log was stuck in the mud, and the rabbit's home was destroyed' followed by 'she carefully approached the log and started to pull it towards the log', which is redundant and illogical",
+    "creativity": "The setting and characters are imaginative but lack originality; elements like a trapped rabbit in a hollow log feel clichéd without unique twists",
+    "moral_clarity": "Reiterates the moral that asking for help is brave or strong multiple times: 'asking for help isn't a sign of weakness' and 'a sign of strength'",
+    "prompt_adherence": "Includes shy hedgehog in moonlit orchard but incorrectly states she pulls log toward itself; challenge of fear to ask for help is present though awkwardly executed"
+   },
+   "objective": {
+    "distinct_1": 0.6145,
+    "distinct_2": 0.9307,
+    "flesch_reading_ease": 84.9
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 1,
+  "model": "slm-30m",
+  "seed": 7001,
+  "slots": {
+   "character": "a curious duckling",
+   "setting": "a busy riverbank",
+   "challenge": "gets lost following a butterfly",
+   "outcome": "finds the way home by listening",
+   "teaching": "listen before you leap"
+  },
+  "story": "In a sunny meadow, a Curious Bird flitted from flower to flower, sipping sweet nectar. The air was filled with the sweet scent of blooming flowers. A Happy Bird, with feathers as white as snow, flitted about, collecting shiny pebbles for her nest.\n\nAs she landed on a nearby rock, she saw her friends frantically searching for shelter. A Sneaky Snake, with scales as black as coal, slithered up to her and whispered, \"Take me in, I'll show you where the juiciest berries grow!\" The Curious Bird's eyes grew wide with excitement. She flew to the edge of the clearing, where a wise old owl perched on a nearby branch.\n\n\"Why do you want my home so badly?\" asked the Curious Bird.\n\n\"I'm the one who finds the most delicious berries,\" replied the Sneaky Snake. \"I want to find the sweetest nectar in the forest.\"\n\nThe Curious Bird thought for a moment and then said, \"But what about the beauty of the flowers? Don't you know that they bring joy to them all?\"\n\nThe Sneaky Snake looked puzzled. \"What do you mean?\"\n\n\"I have the most beautiful home in the meadow,\" replied the Curious Bird. \"I've been searching for berries everywhere! Would you like to join me for the nectar, and I'll share it with you?\"\n\nThe Sneaky Snake's eyes lit up, and she eagerly accepted the gift. As they walked together, the Sneaky Snake realized that sharing was more fun than keeping it all to herself. From that day on, the Curious Bird and the Sneaky Snake explored the meadow together, discovering hidden wonders and enjoying each other's company.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a curious duckling\n- Setting: a busy riverbank\n- Challenge: gets lost following a butterfly\n- Outcome: finds the way home by listening\n- Teaching/Moral: listen before you leap\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 270,
+   "latency_ms": 649,
+   "tokens_per_sec": 416.02
+  },
+  "eval": {
+   "grammar": 3,
+   "creativity": 4,
+   "moral_clarity": 2,
+   "prompt_adherence": 1,
+   "overall": 2.5,
+   "rationale": {
+    "grammar": "Contains multiple errors such as incorrect character names ('Curious Bird', 'Happy Bird'), inconsistent pronouns, and illogical actions like a bird being lost following a butterfly; e.g., 'a Curious Bird flitted from flower to flower' contradicts the request for a duckling.",
+    "creativity": "Features imaginative elements such as talking birds and snakes, but misaligns with core narrative: no duckling character or butterfly challenge; e.g., 'A Happy Bird... collecting shiny pebbles' lacks originality and drifts from the prompt.",
+    "moral_clarity": "The moral about sharing is present but not tied to listening before acting; no explicit reference to 'listen before you leap'; e.g., it concludes with shared exploration rather than a lesson on caution or attentiveness.",
+    "prompt_adherence": "Fails fundamental requirements: main character is neither duckling nor follows butterfly; setting and challenge are entirely absent; outcome does not involve finding home by listening to sounds as required."
+   },
+   "objective": {
+    "distinct_1": 0.6259,
+    "distinct_2": 0.9294,
+    "flesch_reading_ease": 78.8
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 2,
+  "model": "slm-30m",
+  "seed": 7002,
+  "slots": {
+   "character": "a proud rooster",
+   "setting": "a small farm",
+   "challenge": "refuses to share the best perch",
+   "outcome": "learns sharing brings friends",
+   "teaching": "sharing makes everyone happier"
+  },
+  "story": "In a sunny farmland, where green fields stretched far and wide, a proud rooster lived. His feathers shone like gold in the sun. He loved to show off his beautiful voice to the other animals.\n\nOne day, while strutting around the farm, the proud rooster heard the farmer talking about a hidden treasure buried beneath the earth. The rooster thought to himself, \"If I dig a hole in the tree, I'll be the most famous rooster in the land!\" So, he dug and dug until his nest was full of juicy seeds and shiny treasures.\n\nBut when he opened the door, the farmer was not happy. He had been searching for the treasure all along! The proud rooster felt sad and lonely. \"Why did you leave me?\" he asked the farmer.\n\nThe farmer looked at him with kind eyes and said, \"I'm sorry. I thought we were friends, but now that's a bad thing.\"\n\nThe proud rooster realized that sharing his food with others made him feel happy and proud. From that day on, he shared his knowledge with the other animals in the farmland. He even started singing sweet melodies to share his voice with them.\n\nAs the sun set over the farm, the animals gathered around the proud rooster. He said, \"I'm glad I shared my secret. Now everyone can enjoy the treasure together!\" The proud rooster smiled, and they all celebrated their new friendship. From that day on, the proud rooster knew that sharing knowledge was the greatest gift of all.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a proud rooster\n- Setting: a small farm\n- Challenge: refuses to share the best perch\n- Outcome: learns sharing brings friends\n- Teaching/Moral: sharing makes everyone happier\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 254,
+   "latency_ms": 803,
+   "tokens_per_sec": 316.31
+  },
+  "eval": {
+   "grammar": 6,
+   "creativity": 5,
+   "moral_clarity": 4,
+   "prompt_adherence": 3,
+   "overall": 4.5,
+   "rationale": {
+    "grammar": "Contains grammatical errors such as 'dig a hole in the tree' instead of digging for treasure and inconsistent tense usage like 'he thought to himself... So, he dug...' followed by 'when he opened the door,' which is illogical.",
+    "creativity": "The story introduces an invented element (hidden treasure under a tree) not related to sharing or perches; this distracts from the core theme and lacks originality in narrative structure.",
+    "moral_clarity": "Moral is vaguely stated as 'sharing knowledge makes everyone happy' rather than directly tied to sharing the best perch or friendship through shared resources, weakening clarity of teaching.",
+    "prompt_adherence": "Fails to include a challenge about refusing the best perch; instead introduces an unrelated treasure hunt and shifts focus from physical perching to knowledge-sharing without addressing farm animals' social dynamics as required."
+   },
+   "objective": {
+    "distinct_1": 0.622,
+    "distinct_2": 0.9091,
+    "flesch_reading_ease": 85.0
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 3,
+  "model": "slm-30m",
+  "seed": 7003,
+  "slots": {
+   "character": "a patient turtle",
+   "setting": "a sunny meadow",
+   "challenge": "teased for being slow",
+   "outcome": "wins respect by finishing the job",
+   "teaching": "steady effort pays off"
+  },
+  "story": "In a sunny meadow, where colorful flowers swayed gently in the breeze, a patient turtle lived. The turtle loved watching the butterflies dance and listening to the songs of the birds. But one day, a boastful dragonfly began to tease the turtle, saying, \"You're slow, slow, and too weak! You can't even fly like me!\"\n\nThe patient turtle felt sad and angry. Why didn't she have quiet time? She decided to talk to the dragonfly. \"Why do you tease me?\" the turtle asked gently. The dragonfly replied, \"Because I'm stronger than the meadow's former beauty. And I know how to make flowers bloom.\"\n\nThe turtle thought for a moment. \"But what about the flowers that grow here? They bloom because they bloom so beautifully!\" The dragonfly looked surprised. \"I never thought of it that way!\" Together, they started to work on the flowers.\n\nAs they worked, the dragonfly began to see the beauty in the meadow's different colors. It was beautiful, and the flowers bloomed. The patient turtle smiled, knowing she had helped her friends understand each other. \"We're all special,\" the dragonfly said. \"And we can help each other grow strong together!\"\n\nThe turtle and the dragonfly became the best of friends, working as a team to make the meadow an even more beautiful place. They proved that when they worked together, they could overcome any obstacle. And from that day on, the patient turtle and the boastful dragonfly lived in harmony, reminding each other to appreciate their differences and help each other.",
+  "meta": {
+   "model_id": "slm-30m",
+   "model_name": "Fable-SLM 30M (phase 1)",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a patient turtle\n- Setting: a sunny meadow\n- Challenge: teased for being slow\n- Outcome: wins respect by finishing the job\n- Teaching/Moral: steady effort pays off\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 254,
+   "latency_ms": 732,
+   "tokens_per_sec": 346.99
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 6,
+   "moral_clarity": 5,
+   "prompt_adherence": 4,
+   "overall": 5.75,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues like 'Why didn't she have quiet time?' lack logical connection to context.",
+    "creativity": "The story introduces a dragonfly as the main character, which deviates from the requested turtle-focused challenge and weakens originality of the prompt's core elements.",
+    "moral_clarity": "While cooperation is mentioned, the moral 'steady effort pays off' is not clearly tied to the patient turtle’s slow but persistent action; instead, teamwork overshadowed individual perseverance.",
+    "prompt_adherence": "The story includes a sunny meadow and some teasing, but replaces the challenge with dragonfly-teaching dialogue and shifts focus from 'slow' to cooperation rather than overcoming slow speed through effort."
+   },
+   "objective": {
+    "distinct_1": 0.6378,
+    "distinct_2": 0.9091,
+    "flesch_reading_ease": 74.6
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 0,
+  "model": "slm-60m",
+  "seed": 7000,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the scorching desert, where sand dunes stretched far and wide, a wise diplomatic fish named Gentle swam in a small oasis pool. Gentle loved helping his friends, and his scales shone like jewels in the bright sunlight. \n\nOne day, a sly lizard named Sneaky slid into the oasis, seeking to claim it as his own. He whispered to the other animals, \"Gentle is taking over our home! We must chase him away!\" The animals believed Sneaky and started to argue with Gentle.\n\nBut Gentle didn't fight back. Instead, he asked Sneaky why he wanted to take over the oasis. Sneaky replied, \"I'm hungry and tired. I want to be in charge.\" Gentle listened carefully and said, \"I can help you find food and shelter, but first, let's talk to the other animals and clear up any misunderstandings.\"\n\nThe animals gathered around, and Gentle explained how he shared his home and food with those in need. The animals apologized for believing Sneaky and thanked Gentle for being kind. They realized that Sneaky was not a threat, but a friend who needed help.\n\nAs the sun set over the desert, Gentle swam back to the oasis pool, feeling happy and content. He smiled, knowing that his friends trusted him even more. From that day on, whenever someone needed help, they would call upon Gentle, and he would always be there. The animals learned that timely help earns lasting loyalty, and they lived in harmony with Gentle, a wise and kind friend to all.",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 252,
+   "latency_ms": 747,
+   "tokens_per_sec": 337.35
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 8,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 9.25,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct and fluent, e.g., 'Gentle listened carefully and said...'",
+    "creativity": "The fish as a diplomat in the desert is imaginative; however, the plot follows familiar tropes of conflict resolution.",
+    "moral_clarity": "The moral 'timely help earns lasting loyalty' is clearly stated and consistently reinforced throughout.",
+    "prompt_adherence": "Includes a short fable with animals in harmony; slightly exceeds word count but remains within acceptable range for children's stories."
+   },
+   "objective": {
+    "distinct_1": 0.6548,
+    "distinct_2": 0.9602,
+    "flesch_reading_ease": 72.8
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 1,
+  "model": "slm-60m",
+  "seed": 7001,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the old, empty warehouse by the river, a big, fluffy bear loved to play. He would swing from the rusty pipes and chase the birds that flew in through the broken windows. But one day, the warehouse was left with a big problem: a strong, grumpy bear came to take over.\n\nThe grumpy bear said, \"This is my new home now! You have to leave!\" The little bear didn't like this. He wanted to live in peace.\n\nThe two bears started to argue and fight. They roared and snarled at each other. But as they fought, the warehouse began to fall apart. The big doors creaked and groaned, and the little bear got scared.\n\nJust then, a wise old owl flew in. \"What's going on here?\" she asked. The two bears explained their problem. The owl listened carefully and said, \"You both need to work together to fix this warehouse. If you do, I'll help you make it safe for all of us.\"\n\nThe two bears looked at each other, then back at the owl. They thought about what she said. Then, they nodded their heads. Together, they started fixing the warehouse. The big bear used his strength to lift heavy beams, and the little bear used her quick thinking to find the right tools.\n\nAs they worked, the grumpy bear's grumpiness disappeared. He smiled and said, \"Thank you for helping me. I promise to always work with you from now on.\" And with that, the two bears became friends. They fixed up the warehouse together and made it a happy home for all of them.\n\nThe owl looked at the two bears with wise eyes and said, \"You see, when we work together and listen to each other, we can do great things. That's the secret to success.\" The two bears smiled, knowing that they had learned something important.",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 311,
+   "latency_ms": 477,
+   "tokens_per_sec": 651.99
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 8,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 9.25,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct with clear subject-verb agreement and proper punctuation, e.g., 'The big bear used his strength to lift heavy beams.'",
+    "creativity": "Inventive elements like the owl's wisdom and bears working together add a unique twist, though familiar fable tropes are present.",
+    "moral_clarity": "The moral is explicitly stated: 'When we work together and listen to each other, we can do great things. That's the secret to success.'",
+    "prompt_adherence": "Includes a short fable with animals in conflict resolving through cooperation; slightly exceeds word count but remains within expected range."
+   },
+   "objective": {
+    "distinct_1": 0.5981,
+    "distinct_2": 0.9032,
+    "flesch_reading_ease": 93.7
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 2,
+  "model": "slm-60m",
+  "seed": 7002,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of a vast desert, there was a magical oasis. Its palm trees swayed gently in the breeze, and a sparkling pool of water reflected the bright blue sky. A sincere wasp lived here, surrounded by her friends. She loved to collect nectar from the colorful flowers that bloomed in the oasis's secret spots.\n\nOne day, while flying over the pool, the wasp spotted a beautiful flower with petals as soft as silk. She had never seen anything like it before. As she landed on its petals, she felt a pang of fear. What if she couldn't find enough nectar? What if she failed to make the right decision?\n\nThe wasp's friends noticed her fear and asked, \"What's wrong, dear wasp?\" The wasp hesitated, then said, \"I don't know if I can find enough nectar. I'm afraid I'll fail.\" Her friends listened carefully and replied, \"We all make mistakes. But what's important is that we learn from them.\"\n\nThe wasp thought about this for a moment and then decided to take action. She flew around the pool, looking for the perfect spot to collect nectar. After many days, she discovered a hidden patch of sweet flowers. The wasp was overjoyed and thanked her friends for their help.\n\nAs they all celebrated together, the sincere wasp realized that the truth – her fears – had healed the deep wound of her fear. From that day on, she continued to explore the oasis, collecting nectar and making new friends. And whenever she faced a challenge, she remembered that honesty and facing her fears could lead to wonderful discoveries.",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 268,
+   "latency_ms": 383,
+   "tokens_per_sec": 699.74
+  },
+  "eval": {
+   "grammar": 9,
+   "creativity": 6,
+   "moral_clarity": 8,
+   "prompt_adherence": 7,
+   "overall": 7.5,
+   "rationale": {
+    "grammar": "Sentences are mostly clear and grammatically correct; only minor issues like 'the sincere wasp' (likely meant as 'a kind-hearted wasp') slightly disrupt coherence",
+    "creativity": "The setting is vivid but the plot follows a predictable structure with minimal imaginative twists or unusual elements",
+    "moral_clarity": "The moral about facing fears and learning from mistakes is clear in 'honesty and facing her fears could lead to wonderful discoveries'",
+    "prompt_adherence": "Includes a fable with characters, conflict, resolution, and lesson; slightly exceeds word count (180 words) but stays within general scope"
+   },
+   "objective": {
+    "distinct_1": 0.6716,
+    "distinct_2": 0.9625,
+    "flesch_reading_ease": 77.9
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC1_free",
+  "i": 3,
+  "model": "slm-60m",
+  "seed": 7003,
+  "slots": {
+   "character": "",
+   "setting": "",
+   "challenge": "",
+   "outcome": "",
+   "teaching": ""
+  },
+  "story": "In the heart of the Whimsy Woods, where sunbeams danced through leaves and flowers bloomed in every color, a little hedgehog named \"The Gentle One\" lived with her family. The Gentle One loved her home and took care of her little ones. But one day, a big, scary owl named \"The Sharp One\" came to the woods. She had sharp talons and a loud hoot, and the other creatures were afraid of her.\n\nThe Sharp One started to bully the Gentle One's family, taking their food and making them shiver with fear. The Gentle One tried to defend herself, but she felt like giving up. She thought, \"Maybe I'm not good enough to protect my family.\"\n\nJust then, a wise old rabbit named \"The Sage One\" appeared. \"Why are you fighting the Sharp One?\" she asked. The Gentle One explained the situation, and The Sage One said, \"Let's go talk to The Sharp One together.\"\n\nWhen they approached, The Sharp One sneered at them. But The Sage One stood up for her little ones and said, \"We won't let you bully us. We'll work together to keep our home safe.\" The Sharp One was surprised by the Sage One's bravery and kindness. She apologized and promised to leave the Gentle One's family alone.\n\nThe Gentle One realized that The Sage One was right – being kind and brave can be stronger than being fierce and mean. From that day on, The Gentle One and The Sage One worked together to keep their home safe and happy. The other creatures in the Whimsy Woods learned that kindness is rewarded, and that's why The Gentle One became known as \"The Kind One.\"",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable.\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 280,
+   "latency_ms": 411,
+   "tokens_per_sec": 681.27
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 8,
+   "moral_clarity": 10,
+   "prompt_adherence": 9,
+   "overall": 9.25,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct and well-structured, e.g. 'She had sharp talons and a loud hoot'",
+    "creativity": "The characters (Gentle One, Sharp One, Sage One) and setting offer originality; however, the plot follows a predictable moral structure common in fables",
+    "moral_clarity": "The moral is explicitly stated: 'being kind and brave can be stronger than being fierce and mean'",
+    "prompt_adherence": "Includes requested elements like a setting (Whimsy Woods), characters with distinct traits, conflict, resolution, and clear lesson; slightly exceeds word count but remains concise"
+   },
+   "objective": {
+    "distinct_1": 0.5929,
+    "distinct_2": 0.8817,
+    "flesch_reading_ease": 82.2
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 0,
+  "model": "slm-60m",
+  "seed": 7000,
+  "slots": {
+   "character": "a shy hedgehog",
+   "setting": "a moonlit orchard",
+   "challenge": "afraid to ask for help",
+   "outcome": "friends help when asked",
+   "teaching": "asking for help is brave"
+  },
+  "story": "In a moonlit orchard, where trees whispered secrets to the wind, a shy hedgehog lived among the branches. She loved to hide behind leaves and watch the world go by from a safe distance. One evening, as the moon hung low, a strong wind blew, knocking over a nearby beehive. The bees buzzed angrily, searching for someone to blame.\n\nThe hedgehog watched from her hiding spot, too afraid to help. But as she peeked out, she saw her friends, a brave rabbit and a clever squirrel, trying to lift the beehive. They worked together, but it was too heavy. The hedgehog felt too small to help.\n\nJust then, a wise old owl perched on a nearby branch called out, \"Why don't you join us? We need your help!\" The hedgehog took a deep breath and stepped forward. Together, they lifted the beehive with ease. The bees thanked them and buzzed with gratitude.\n\nAs they celebrated, the hedgehog realized that her friends had helped her in the first place. She felt proud of herself for being brave and asking for help when she needed it. The rabbit smiled and said, \"We're stronger together!\" The squirrel nodded, and the hedgehog felt happy to have made new friends.\n\nFrom that night on, whenever a problem arose, the hedgehog's friends worked together, and their orchard became an even more magical place. The hedgehog learned that when she helped her friends, they helped her back, and that's when true bravery arises.",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7000,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a shy hedgehog\n- Setting: a moonlit orchard\n- Challenge: afraid to ask for help\n- Outcome: friends help when asked\n- Teaching/Moral: asking for help is brave\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 246,
+   "latency_ms": 363,
+   "tokens_per_sec": 677.69
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 9,
+   "moral_clarity": 10,
+   "prompt_adherence": 10,
+   "overall": 9.75,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct and well-structured, e.g., 'The hedgehog took a deep breath and stepped forward.'",
+    "creativity": "Imaginative elements like whispering trees and bees blaming others add freshness to the setting and conflict.",
+    "moral_clarity": "The moral is explicitly stated: 'the hedgehog learned that when she helped her friends, they helped her back, and that's when true bravery arises.'",
+    "prompt_adherence": "Includes all required elements: shy hedgehog in moonlit orchard, afraid to ask for help, outcome where friends assist after being asked, clear teaching on courage through asking for help."
+   },
+   "objective": {
+    "distinct_1": 0.6545,
+    "distinct_2": 0.9469,
+    "flesch_reading_ease": 84.0
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 1,
+  "model": "slm-60m",
+  "seed": 7001,
+  "slots": {
+   "character": "a curious duckling",
+   "setting": "a busy riverbank",
+   "challenge": "gets lost following a butterfly",
+   "outcome": "finds the way home by listening",
+   "teaching": "listen before you leap"
+  },
+  "story": "**The Curious Duck's Discovery**\n\nBy the winding river, where sunbeams danced on the water, a curious duck waddled along the bank. She loved to explore and discover new things. One day, while swimming, she met a wise old fish. \"Be careful, little duck,\" said the fish. \"The river can be tricky. Stay close to me.\"\n\nBut the curious duck didn't listen. She swam further out to find her favorite hiding spot, where the water was calm and clear. As she swam, she met a sly snake who whispered, \"Come with me, little duck. I'll show you the secret treasure hidden beneath the river's surface.\" The duck's eyes grew wide with excitement.\n\nThe snake led her deeper into the river, but instead of treasure, they found a patch of slippery rocks. The snake laughed and said, \"Ha! You should have listened to the fish!\" But the curious duck didn't give up. She used her quick thinking to find a way out of the rocks.\n\nAs she swam back to the riverbank, the wise old fish asked, \"How did you know what was right in front of you?\" The curious duck thought for a moment and said, \"I listened to your words, and I found a better way.\" From that day on, the curious duck knew that listening carefully could help her find the right path. And whenever she waddled along the riverbank, she remembered the wise old fish's words: \"Listening is like finding a beautiful shell – it takes time and effort, but it's worth waiting.\"",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7001,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a curious duckling\n- Setting: a busy riverbank\n- Challenge: gets lost following a butterfly\n- Outcome: finds the way home by listening\n- Teaching/Moral: listen before you leap\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 255,
+   "latency_ms": 383,
+   "tokens_per_sec": 665.8
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 6,
+   "moral_clarity": 7,
+   "prompt_adherence": 4,
+   "overall": 6.25,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues include awkward phrasing such as 'listening to your words, and I found a better way' which lacks clarity.",
+    "creativity": "The story includes unexpected elements like the fish advising caution but not directly tied to the butterfly challenge or listening theme in an original way; relies on familiar tropes such as wise animal mentorship.",
+    "moral_clarity": "The moral is implied through dialogue and reflection: 'listening carefully could help her find the right path,' though it's not explicitly stated as 'listen before you leap'.",
+    "prompt_adherence": "Fails to include a butterfly challenge or setting of a busy riverbank with lost duckling following butterfly; instead features swimming and snake encounter unrelated to prompt elements."
+   },
+   "objective": {
+    "distinct_1": 0.6471,
+    "distinct_2": 0.9094,
+    "flesch_reading_ease": 82.4
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 2,
+  "model": "slm-60m",
+  "seed": 7002,
+  "slots": {
+   "character": "a proud rooster",
+   "setting": "a small farm",
+   "challenge": "refuses to share the best perch",
+   "outcome": "learns sharing brings friends",
+   "teaching": "sharing makes everyone happier"
+  },
+  "story": "**The Proud Rooster's Gift**\n\nOn a sunny farm, where green fields stretched as far as the eye could see, a proud rooster strutted proudly on his rock. He loved to crow loudly every morning, making sure all the other animals knew it was time to wake up.\n\nOne day, a group of hungry birds flew in, looking for food. They spotted the rooster's favorite spot and thought, \"Yum! A cozy spot!\" The proud rooster refused to share his spot, saying, \"This is mine! Go find your own food!\"\n\nThe birds were sad, but they promised to find their own food. They kept coming back, day after day, until the sun began to set. The birds were tired and hungry. Just as they were about to give up, a wise old owl suggested, \"Why don't we work together? We can all share the spot and make it even more special.\"\n\nThe proud rooster was surprised. No one had ever suggested sharing with him before! He thought, \"Maybe this is a wonderful idea!\" So, he invited the birds to come and find food together. As they worked side by side, the proud rooster realized that sharing wasn't just about giving up something, but about making new friends and having fun together.\n\nFrom that day on, the proud rooster's loud crow was replaced with happy chirps and happy chirps. He learned that sharing and working together makes everyone happy, and that's the greatest gift of all!",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7002,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a proud rooster\n- Setting: a small farm\n- Challenge: refuses to share the best perch\n- Outcome: learns sharing brings friends\n- Teaching/Moral: sharing makes everyone happier\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 243,
+   "latency_ms": 363,
+   "tokens_per_sec": 669.42
+  },
+  "eval": {
+   "grammar": 8,
+   "creativity": 6,
+   "moral_clarity": 9,
+   "prompt_adherence": 10,
+   "overall": 8.25,
+   "rationale": {
+    "grammar": "Most sentences are grammatically correct; minor issues like repetitive use of 'happy chirps' and awkward phrasing in \"a proud rooster's loud crow was replaced with happy chirps\"",
+    "creativity": "The plot follows a predictable structure but lacks originality; the owl’s suggestion feels clichéd and underdeveloped compared to other fables of similar themes",
+    "moral_clarity": "The moral is clearly stated: 'sharing and working together makes everyone happy' directly supports the teaching that sharing brings happiness",
+    "prompt_adherence": "Includes all required elements: a proud rooster on a farm; refusal to share best perch; outcome of learning sharing brings friends; moral about shared joy"
+   },
+   "objective": {
+    "distinct_1": 0.6872,
+    "distinct_2": 0.9587,
+    "flesch_reading_ease": 82.4
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ },
+ {
+  "uc": "UC2_slots",
+  "i": 3,
+  "model": "slm-60m",
+  "seed": 7003,
+  "slots": {
+   "character": "a patient turtle",
+   "setting": "a sunny meadow",
+   "challenge": "teased for being slow",
+   "outcome": "wins respect by finishing the job",
+   "teaching": "steady effort pays off"
+  },
+  "story": "In a sunny meadow, a patient tortoise loved to take long walks through the colorful flowers. She would watch the butterflies flutter and the bees buzz around the sweet scents. One day, while taking a nap, she got up and started to move.\n\nA fast rabbit, who was in a hurry, saw her and laughed. \"Ha! Look at that slow tortoise! She'll never be able to even reach the other side!\" The rabbit started to push the tortoise's backward, making it harder for her to move.\n\nThe patient tortoise didn't get angry. She said, \"I may not be fast like you, but I can take my time and enjoy the view from the top of this hill.\" The rabbit laughed again, but the tortoise kept moving slowly.\n\nJust then, a big storm cloud rolled in, bringing strong winds and heavy rain. The rabbit was worried about her cozy burrow, but the patient tortoise used her strong neck to hold it steady. The rabbit's burrow was safe, and she was grateful.\n\nAs the storm passed, the rabbit said, \"Thank you for helping me! I was wrong to tease you.\" The patient tortoise smiled and said, \"We're all different, but that's what makes us special. We should respect each other's strengths and weaknesses.\"\n\nThe rabbit nodded, and from that day on, she and the tortoise became friends. They learned that being patient and steady is just as important as being fast. And they lived happily in the meadow, respecting each other's differences.",
+  "meta": {
+   "model_id": "slm-60m",
+   "model_name": "Fable-SLM 60M",
+   "kind": "scratch-slm",
+   "temperature": 0.7,
+   "top_p": 0.85,
+   "repetition_penalty": 1.1,
+   "num_predict": 400,
+   "seed": 7003,
+   "prompt_sent": "Write a children's fable. Use these narrative elements:\n- Main character: a patient turtle\n- Setting: a sunny meadow\n- Challenge: teased for being slow\n- Outcome: wins respect by finishing the job\n- Teaching/Moral: steady effort pays off\nKeep it short (about 120-160 words).",
+   "input_tokens": 0,
+   "output_tokens": 250,
+   "latency_ms": 376,
+   "tokens_per_sec": 664.89
+  },
+  "eval": {
+   "grammar": 10,
+   "creativity": 7,
+   "moral_clarity": 9,
+   "prompt_adherence": 8,
+   "overall": 8.5,
+   "rationale": {
+    "grammar": "All sentences are grammatically correct with proper punctuation and structure, e.g., 'She would watch the butterflies flutter...'",
+    "creativity": "The story includes original elements like a storm cloud affecting both characters' situations; however, it leans slightly predictable in its resolution involving friendship and respect",
+    "moral_clarity": "The moral is clearly stated: 'being patient and steady is just as important as being fast'",
+    "prompt_adherence": "Includes all required elements—patient turtle in sunny meadow, teased for slowness, wins respect by finishing the job (holding burrow during storm), with clear moral on steady effort; slightly exceeds word count but stays within bounds"
+   },
+   "objective": {
+    "distinct_1": 0.656,
+    "distinct_2": 0.9478,
+    "flesch_reading_ease": 82.8
+   },
+   "method": {
+    "judge_model": "Qwen3-4B-Instruct-2507",
+    "scale": "1-10 mỗi trục",
+    "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+    "axes": {
+     "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+     "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+     "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+     "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học)."
+    },
+    "objective_defs": {
+     "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+     "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+     "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi."
+    },
+    "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+    "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI)."
+   }
+  }
+ }
+]

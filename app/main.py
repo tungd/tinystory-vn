@@ -9,6 +9,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app import ollama_client, judge
+from app.textproc import trim_to_last_sentence
+from app.metrics import distinct_n, flesch_reading_ease
 from app.models_registry import load_models, resolve_ollama
 from app.config import (
     JUDGE_MODEL_ID,
@@ -16,7 +18,6 @@ from app.config import (
     GEN_TEMPERATURE,
     GEN_TOP_P,
     GEN_REPEAT_PENALTY,
-    RESULTS_PATH,
 )
 from app.enhanced_generation import enhance_story
 from app.guardrail.input_filter import check_input_en
@@ -41,10 +42,11 @@ class GenReq(BaseModel):
     outcome: str = Field("", max_length=300)
     teaching: str = Field("", max_length=200)
     length: Literal["short", "medium", "long"] = "medium"
-    model_id: str = "base-llama32-3b-instruct"
+    model_id: str = "base-qwen3-4b"
     generation_mode: Literal["raw", "postprocess", "repair"] = "raw"
     guardrail_enabled: bool = True
     seed: int | None = None
+    best_of_n: int = Field(1, ge=1, le=5)
 
 
 class EvalReq(BaseModel):
@@ -104,12 +106,18 @@ def models():
     return load_models()
 
 
+def pick_best_index(scores: list[float]) -> int:
+    """Index của điểm cao nhất (best-of-N selection). Rỗng -> 0."""
+    return max(range(len(scores)), key=lambda i: scores[i]) if scores else 0
+
+
 @app.post("/generate/stream")
 def generate_stream(
     req: GenReq,
     gen=Depends(generate_fn),
     gstream=Depends(stream_fn),
     gmeta=Depends(meta_fn),
+    jf=Depends(judge_fn),
 ):
     hint = LENGTH_HINT_EN[req.length]
     num_predict = LENGTH_NUM_PREDICT[req.length]
@@ -151,6 +159,68 @@ def generate_stream(
             {"type": "step", "stage": "model", "status": "ok", "detail": params_detail}
         )
 
+        # ── Best-of-N: sinh N bản, judge chấm, chọn bản overall cao nhất ──────────
+        # Bắt "headroom" đã đo (mean ~7.7 -> best-of-N ~8.5) mà không cần train.
+        if req.best_of_n and req.best_of_n > 1:
+            if req.guardrail_enabled:
+                d = check_input_en(req.character, req.setting, req.challenge, req.outcome, req.teaching)
+                if not d.allowed:
+                    yield _sse({"type": "step", "stage": "input_check", "status": "blocked",
+                                "detail": f"Layer 1 BLOCKED [{d.category}]: {d.reason}"})
+                    yield _sse({"type": "done", "status": "refused", "reason": d.reason})
+                    return
+            jtag = resolve_ollama(JUDGE_MODEL_ID)
+            yield _sse({"type": "step", "stage": "generating", "status": "running",
+                        "detail": f"Best-of-{req.best_of_n}: generating candidates with {model_name}"})
+            t0 = time.perf_counter()
+            cands, scores = [], []
+            for k in range(req.best_of_n):
+                try:
+                    r = gmeta(prompt=prompt, system=SYSTEM_PROMPT_MINIMAL_EN, model=model,
+                              num_predict=num_predict,
+                              seed=(req.seed + k if req.seed is not None else None),
+                              temperature=GEN_TEMPERATURE, top_p=GEN_TOP_P,
+                              repeat_penalty=GEN_REPEAT_PENALTY)
+                except ollama_client.OllamaError as e:
+                    yield _sse({"type": "error", "reason": str(e)}); return
+                story_k = r["text"]
+                if r.get("done_reason") == "length":
+                    story_k = trim_to_last_sentence(story_k)
+                try:
+                    sc = judge.evaluate(story_k, prompt, model=jtag, gen=jf)
+                    overall = float(sc.get("overall", 0.0))
+                except Exception:
+                    overall = 0.0
+                cands.append(story_k); scores.append(overall)
+                yield _sse({"type": "step", "stage": "generating", "status": "ok",
+                            "detail": f"Candidate {k + 1}/{req.best_of_n}: judge overall {overall:.2f}"})
+            bi = pick_best_index(scores)
+            story = cands[bi]
+            yield _sse({"type": "step", "stage": "generating", "status": "ok",
+                        "detail": f"Selected candidate {bi + 1} (best overall {scores[bi]:.2f})"})
+            if req.guardrail_enabled:
+                out = check_output_en(story)
+                status = "ok" if out.ok else "blocked"
+                yield _sse({"type": "step", "stage": "output_check", "status": status,
+                            "detail": ("Layer 4 passed: content is safe" if out.ok
+                                       else f"Layer 4 BLOCKED: {out.reason}")})
+                if not out.ok:
+                    yield _sse({"type": "done", "status": "refused", "reason": out.reason})
+                    return
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            output_tokens = len(story.split())
+            meta = {
+                "model_id": req.model_id, "model_name": model_name, "kind": kind,
+                "temperature": GEN_TEMPERATURE, "top_p": GEN_TOP_P,
+                "repetition_penalty": GEN_REPEAT_PENALTY, "num_predict": num_predict,
+                "seed": req.seed, "prompt_sent": prompt, "input_tokens": 0,
+                "output_tokens": output_tokens, "latency_ms": latency_ms,
+                "tokens_per_sec": round(output_tokens / (latency_ms / 1000), 2) if latency_ms > 0 else 0.0,
+                "best_of_n": req.best_of_n, "candidate_scores": scores, "selected": bi,
+            }
+            yield _sse({"type": "done", "status": "success", "story": story, "meta": meta})
+            return
+
         if not req.guardrail_enabled and req.generation_mode == "raw":
             yield _sse(
                 {
@@ -161,6 +231,7 @@ def generate_stream(
                 }
             )
             buf = []
+            done_info = {"reason": None}
             t0 = time.perf_counter()
             try:
                 for piece in gstream(
@@ -172,6 +243,7 @@ def generate_stream(
                     temperature=GEN_TEMPERATURE,
                     top_p=GEN_TOP_P,
                     repeat_penalty=GEN_REPEAT_PENALTY,
+                    on_done=lambda r: done_info.__setitem__("reason", r),
                 ):
                     buf.append(piece)
                     yield _sse({"type": "token", "text": piece})
@@ -180,6 +252,20 @@ def generate_stream(
                 return
             latency_ms = int((time.perf_counter() - t0) * 1000)
             story_text = "".join(buf)
+            # Truyện bị cắt cứng (đụng trần context) -> cắt đuôi dở về câu hoàn chỉnh
+            # cuối. done event gửi story đã làm sạch; frontend dùng lại field story.
+            if done_info["reason"] == "length":
+                trimmed = trim_to_last_sentence(story_text)
+                if trimmed != story_text:
+                    story_text = trimmed
+                    yield _sse(
+                        {
+                            "type": "step",
+                            "stage": "generating",
+                            "status": "ok",
+                            "detail": "Output trimmed to last complete sentence (hit context limit)",
+                        }
+                    )
             output_tokens = len(story_text.split())
             tokens_per_sec = (
                 output_tokens / (latency_ms / 1000) if latency_ms > 0 else 0.0
@@ -270,6 +356,19 @@ def generate_stream(
                 yield _sse({"type": "error", "reason": str(e)})
                 return
             story = result["text"]
+            # Truyện bị cắt cứng -> cắt đuôi dở về câu hoàn chỉnh cuối (trước output-check).
+            if result.get("done_reason") == "length":
+                trimmed = trim_to_last_sentence(story)
+                if trimmed != story:
+                    story = trimmed
+                    yield _sse(
+                        {
+                            "type": "step",
+                            "stage": "generating",
+                            "status": "ok",
+                            "detail": "Output trimmed to last complete sentence (hit context limit)",
+                        }
+                    )
             enhancement: dict | None = None
             if req.generation_mode != "raw":
                 rewrite_model = (
@@ -406,27 +505,34 @@ def evaluate(req: EvalReq, jf=Depends(judge_fn)):
         model = resolve_ollama(jid)
     except KeyError:
         return JSONResponse({"error": f"Unknown judge model: {jid}"}, status_code=400)
-    return judge.evaluate(req.story, req.prompt, model=model, gen=jf)
 
+    # Chủ quan: LLM-as-judge 4 trục (thang 1-10) + overall = trung bình cộng.
+    scores = judge.evaluate(req.story, req.prompt, model=model, gen=jf)
 
-@app.get("/results")
-def results():
-    """Read batch eval summary from RESULTS_PATH.
-
-    Returns:
-      - {"available": true, "data": <json>} if file exists and is valid JSON
-      - {"available": false, "data": null} if file absent or invalid JSON (HTTP 200)
-    """
-    import os
-    results_path = os.getenv("FABLE_RESULTS_PATH", "results/eval_summary.json")
-    if not Path(results_path).exists():
-        return JSONResponse({"available": False, "data": None}, status_code=200)
-    try:
-        with open(results_path, "r") as f:
-            data = json.load(f)
-        return JSONResponse({"available": True, "data": data}, status_code=200)
-    except (json.JSONDecodeError, IOError):
-        return JSONResponse({"available": False, "data": None}, status_code=200)
+    # Khách quan (reference-free, deterministic - phần tự động của phương pháp paper):
+    # tính ngay trên chính truyện. Self-BLEU/perplexity cần tập nhiều truyện/logits
+    # nên chỉ có ở batch eval, không tính được trên 1 mẫu.
+    story = req.story or ""
+    scores["objective"] = {
+        "distinct_1": round(distinct_n([story], 1), 4),
+        "distinct_2": round(distinct_n([story], 2), 4),
+        "flesch_reading_ease": round(flesch_reading_ease(story), 1) if story.strip() else 0.0,
+    }
+    judge_name, _ = _resolve_model_info(jid)
+    scores["method"] = {
+        "judge_model": judge_name,
+        "scale": "1-10 mỗi trục",
+        "overall_formula": "Overall = trung bình cộng 4 trục = (grammar + creativity + moral_clarity + prompt_adherence) / 4",
+        "axes": judge.AXIS_RUBRIC,
+        "objective_defs": {
+            "distinct_1": "Distinct-1 = số unigram khác nhau / tổng unigram (đa dạng từ vựng, cao = ít lặp).",
+            "distinct_2": "Distinct-2 = số bigram khác nhau / tổng bigram (đa dạng cụm từ).",
+            "flesch_reading_ease": "Flesch Reading Ease: 0-100, cao = dễ đọc; 80-100 hợp truyện thiếu nhi.",
+        },
+        "citation": "Phương pháp bám TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605) + ADR-0002.",
+        "note": "Chỉ báo nhanh từ 1 judge. Đánh giá chuẩn dùng panel 3 model khác họ + weighted Cohen kappa & Kendall tau (batch eval offline, không chạy trên UI).",
+    }
+    return scores
 
 
 # Serve web build if it exists (Phase B)

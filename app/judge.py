@@ -5,6 +5,15 @@ from app import ollama_client
 
 AXES = ["grammar", "creativity", "moral_clarity", "prompt_adherence"]
 
+# Rubric 4 trục theo phương pháp TF1-EN-3M (Nadas et al. 2025, arXiv:2504.20605);
+# không tự chế trục (ADR-0002). Mỗi trục chấm thang 1-10.
+AXIS_RUBRIC = {
+    "grammar": "Grammar & style: câu đúng ngữ pháp, mạch lạc, văn phong phù hợp truyện thiếu nhi.",
+    "creativity": "Creativity: tình tiết mới mẻ, hình ảnh sinh động, không sáo mòn.",
+    "moral_clarity": "Moral clarity: bài học đạo đức rõ ràng, được thể hiện qua cốt truyện.",
+    "prompt_adherence": "Prompt adherence: bám đúng các yếu tố yêu cầu (nhân vật/bối cảnh/thử thách/kết cục/bài học).",
+}
+
 
 def build_judge_prompt(story: str, prompt: str) -> str:
     return (
