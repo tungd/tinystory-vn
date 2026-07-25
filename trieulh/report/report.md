@@ -354,6 +354,122 @@ HF, GGUF, log số liệu, dữ liệu đánh giá) lưu trên Google Drive. Mô
 `slm-30m-p2.gguf` (39 MB, q8) kèm `Modelfile-30M-p2`, chạy bằng
 `ollama create slm-30m-p2 -f Modelfile-30M-p2`.
 
+## 6. Đối chiếu chéo: LoRA trên một mô hình 135M đã pretrain
+
+> Mục này do một thành viên khác đóng góp (thanhnc, đồ án song song `tinystories_v3`) và
+> **không sửa kết luận nào của các mục 1-5**. Hai đồ án dùng chung dataset TF1-EN-3M và
+> chung văn phong đích, nhưng đứng ở hai điểm đối lập của không gian thiết kế; mục này đặt
+> chúng cạnh nhau để thấy mỗi góc tiếp cận **đo được gì mà góc kia không đo được**. Báo cáo
+> đầy đủ: [`thanhnc/report/report.vi.md`](../../thanhnc/report/report.vi.md).
+
+### 6.1 Dựng prior hay kế thừa prior: hai lời giải cho cùng một câu hỏi
+
+Mục 4.1 kết luận rằng sàn chất lượng do pretraining quyết định. Đồ án song song hỏi đúng
+câu đó nhưng đổi tiền đề: thay vì tự dựng prior, **kế thừa prior của người khác** (SmolLM2
+-135M đã pretrain) rồi chỉ học một cập nhật hạng thấp (LoRA, r=16) trên TF1.
+
+| | 30M/60M from-scratch (báo cáo này) | SmolLM2-135M + LoRA (đồ án song song) |
+|---|---|---|
+| Prior | tự dựng từ đầu | kế thừa, base bị đóng băng |
+| Ngân sách dữ liệu | 934M token, 10.000 bước (60M) | 50k truyện x 2 epoch, ~3.125 bước |
+| Tham số cập nhật | 100% (59.6M) | **3.5%** (~4.9M trên nền 134.5M) |
+| Phần cứng | Colab T4, 4 phiên resume | 1x L4, vài phút mỗi arm |
+| PPL held-out | 2.87 (60M), 3.56 (30M-p2) | 9.52 (chưa fine-tune) xuống **3.84** |
+| LLM-judge | 8.96 ở n=45 | chưa chấm (hoãn có chủ đích) |
+
+**Cảnh báo so sánh.** Hai cột PPL **không so trực tiếp được**: tokenizer khác nhau (BPE 12k
+tự huấn luyện so với vocab 49.152 của SmolLM2), tập held-out khác nhau, cách mask khác
+nhau. Perplexity là đại lượng phụ thuộc tokenizer, nên "2.87 tốt hơn 3.84" là một phát biểu
+vô nghĩa nếu đọc thẳng. Thước đo công bằng duy nhất hiện có giữa hai đồ án là **judge trong
+ứng dụng**, chấm cùng bộ prompt qua cùng một dụng cụ đo (cả hai mô hình đều đã nằm trong
+`config/models.json`).
+
+**Đọc kết quả.** Cả hai đường đều nâng được sàn, với chi phí lệch nhau hàng bậc độ lớn. Điều
+đáng chú ý là kết quả này **không mâu thuẫn** với kết luận của Mục 4.1 mà củng cố nó: sàn
+vẫn do pretraining quyết định, chỉ là phần pretraining đó có thể **mua sẵn thay vì tự dựng**.
+Chiến dịch ở Mục 3 đã chứng minh không có đường tắt post-training chi phí thấp *trên một
+prior tự dựng*; đồ án song song bổ sung ô còn thiếu của không gian thiết kế: đổi prior, thì
+một lượng nhỏ post-training lại đủ.
+
+### 6.2 Chuyển giao ở mức trọng số, không phải ở mức đầu ra
+
+Mục 3.6 là kết quả âm rõ nhất của chiến dịch: distillation từ Qwen3-4B là **phương pháp duy
+nhất dịch chuyển được mô hình**, nhưng dịch theo chiều xấu (7.57 so với 7.94, ppl drift
++4.4%), đúng failure mode của Gudibande (2023). Đồ án song song đi cùng hướng "học từ một mô
+hình lớn hơn" nhưng ở một tầng khác: nó **kế thừa trọng số** của một lần pretrain lớn thay
+vì bắt chước **đầu ra** của teacher, và kết quả là dương (PPL 9.52 xuống 3.84, Flesch từ
+-66.2 lên +52.8, tức từ chỗ gần như không đọc được thành văn hợp lứa tuổi).
+
+Đọc chung hai kết quả cho một phát biểu gọn: **chuyển giao hiệu quả ở mức trọng số, thất bại
+ở mức đầu ra.** Đầu ra của teacher chỉ mang được văn phong bề mặt, thứ mà một mô hình nhỏ
+bắt chước sẽ vượt capacity; trọng số mang theo phần biểu diễn đã học. Đây là bằng chứng
+thuận chiều cho cách đọc Gudibande ở Mục 3.6, đến từ một thí nghiệm độc lập. Cần nói rõ giới
+hạn: đây **không phải một so sánh có kiểm soát** (khác mô hình nền, khác lượng dữ liệu, khác
+mục tiêu tối ưu), mà là một quan sát nhất quán giữa hai kết quả.
+
+### 6.3 Trục "đặt capacity ở đâu", chỉ hiện ra khi mô hình nền bị đóng băng
+
+Chiến dịch ở Mục 3 thay đổi **dữ liệu** và **hàm mục tiêu**, đều là các đòn bẩy bên ngoài mô
+hình. Đó không phải thiếu sót: khi huấn luyện from-scratch, mọi tham số đều học được, nên
+"đặt adapter ở layer nào" không phải một câu hỏi có nghĩa. Đóng băng một mô hình nền làm
+xuất hiện đúng trục đó, và nó đo được:
+
+| Cấu hình | Adapter đặt ở | Tham số học | PPL |
+|---|---|---|---|
+| base | không fine-tune | 0 | 9.52 |
+| A | `q,v` trên cả 30 layer | ~0.9M (0.68%) | 4.82 |
+| B | `q,v` trên 10 layer cuối | ~0.3M (0.23%) | 5.46 |
+| C | cả 7 projection tuyến tính, 30 layer | ~4.9M (3.5%) | **3.84** |
+
+Thiết kế cho phép hai phép so sánh đơn biến: **A so với B** giữ nguyên module, chỉ đổi độ
+phủ layer; **A so với C** giữ nguyên độ phủ layer, chỉ đổi tập module. Kết quả: phủ hết
+layer thắng 1/3 layer cuối (4.82 so với 5.46), nhưng phần thắng lớn hơn hẳn đến từ **độ rộng
+module**, tức thêm adapter cho các projection MLP (3.84 so với 4.82).
+
+**Liên quan gì tới báo cáo này.** Nếu sau này cần thích nghi mô hình 60M sang một văn phong
+hoặc miền dữ liệu khác mà không muốn pretrain lại, thứ tự ưu tiên đo được nói: gắn adapter
+vào **MLP trước, attention sau**. Và với các thí nghiệm mở băng một phần (partial unfreeze)
+trên chính mô hình from-scratch, khuôn thiết kế hai phép so sánh đơn biến ở trên áp dụng
+nguyên vẹn.
+
+### 6.4 Dụng cụ đo quyết định câu hỏi nào trả lời được
+
+Hai đồ án chọn hai dụng cụ đo khác nhau, và lựa chọn đó quyết định số câu hỏi mỗi bên đủ sức
+hỏi.
+
+| | Báo cáo này | Đồ án song song |
+|---|---|---|
+| Dụng cụ | LLM-judge 4 trục | perplexity teacher-forced, mask completion |
+| Chi phí | ~15 giây một lần gọi | miễn phí, không cần API |
+| Kiểm soát nhiễu | tự đo nhiễu +-0.4 ở n=15, seed bắt cặp, xác nhận ở n=45 | một seed, ước lượng điểm, không khoảng tin cậy |
+| Hệ quả | số arm bị chặn bởi ngân sách judge (Mục 3.5) | so được 4 arm dưới cùng một ngân sách |
+| Điểm mù | thiên lệch judge đơn | không biết truyện có hay không |
+
+Hai dụng cụ bổ sung cho nhau theo đúng nghĩa quy trình: **perplexity sàng lọc không gian
+thiết kế rẻ, protocol judge mới là thứ xác nhận một kết luận.** Cụ thể, quy tắc ở Mục 3.4
+(tự đo nhiễu, seed bắt cặp, xác nhận ở n=45) chính là mảnh còn thiếu của bảng xếp hạng
+3.84 / 4.82 / 5.46 phía trên, vốn là ước lượng điểm từ một seed duy nhất; ngược lại, một
+bước sàng bằng perplexity có thể giúp chiến dịch ở Mục 3 so nhiều arm hơn trong cùng ngân
+sách judge.
+
+Một bài học nhỏ đi kèm, hữu ích cho biểu đồ metric nội tại ở Mục 2.3: trong đồ án song song,
+mô hình **chưa fine-tune** lại có Distinct-1 **cao nhất** (0.557) và Self-BLEU **thấp nhất**
+(0.007), đơn giản vì văn bản ngẫu nhiên thì đương nhiên không lặp. Các metric đa dạng
+reference-free chỉ có nghĩa **sau khi** đã có sàn năng lực; đọc rời chúng, "đa dạng hơn" có
+thể chỉ là "kém mạch lạc hơn".
+
+### 6.5 Ba đề xuất rút ra từ việc đặt hai đồ án cạnh nhau
+
+1. **Đo một mốc PEFT trên mô hình nền có sẵn** để định giá đúng kết luận "nâng sàn bằng
+   pretraining": cùng judge, cùng bộ prompt, đặt `slm-60m` cạnh một mô hình 135M chỉ học
+   3.5% tham số. Đây là phép đo rẻ và là thứ duy nhất trả lời được câu "tự dựng prior đáng
+   giá bao nhiêu so với kế thừa".
+2. **Báo cáo bits-per-character bên cạnh perplexity** khi số liệu có khả năng bị đặt cạnh
+   một mô hình dùng tokenizer khác, để tránh so sánh sai như cảnh báo ở Mục 6.1.
+3. **Dùng perplexity làm bước sàng trước judge** trong các chiến dịch sau: nút chặn 15 giây
+   một lần gọi judge ở Mục 3.5 là ràng buộc thật, và một chỉ báo rẻ cho phép loại sớm các
+   arm không có hy vọng trước khi tiêu ngân sách judge.
+
 ## Tài liệu tham khảo
 
 1. Nadas et al. (2025). *TF1-EN-3M.* arXiv:2504.20605.
@@ -366,3 +482,5 @@ HF, GGUF, log số liệu, dữ liệu đánh giá) lưu trên Google Drive. Mô
 8. Dong et al. (2023). *RAFT: Reward-rAnked FineTuning.*
 9. Hinton et al. (2015). *Distilling the Knowledge in a Neural Network.*
 10. Gudibande et al. (2023). *The False Promise of Imitating Proprietary LLMs.*
+11. Hu et al. (2021). *LoRA: Low-Rank Adaptation of Large Language Models.* arXiv:2106.09685.
+12. Allal et al. (2025). *SmolLM2.* `HuggingFaceTB/SmolLM2-135M`, Hugging Face Hub.

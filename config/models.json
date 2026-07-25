@@ -61,5 +61,19 @@
     "ollama": "llama32-fable-fluency-sft-v1:q4",
     "kind": "finetuned",
     "desc": "LoRA trained on 10000 quality-filtered TF1 fables for fluency and final moral reliability, Q4_K_M GGUF"
+  },
+  {
+    "id": "tsv3-smollm135-base",
+    "name": "SmolLM2-135M (base)",
+    "ollama": "tsv3-smollm135-base",
+    "kind": "base",
+    "desc": "tinystories_v3: pretrained SmolLM2-135M, no fine-tune (before)"
+  },
+  {
+    "id": "tsv3-smollm135-best",
+    "name": "SmolLM2-135M LoRA (best)",
+    "ollama": "tsv3-smollm135-best",
+    "kind": "finetuned",
+    "desc": "tinystories_v3: best LoRA config = C (all-linear @ all 30 layers), val PPL 3.84 (after)"
   }
 ]
