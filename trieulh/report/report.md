@@ -26,8 +26,10 @@ sát mốc 9.75 của Qwen-4B) và được triển khai vào ứng dụng. Nghi
 của LLM-judge (+-0.4 điểm ở n=15) và dùng nó để rút lại hai kết luận dương tính giả.
 Kết luận trung tâm: dư địa chất lượng của mô hình nhỏ tồn tại ở mức từng mẫu sinh nhưng
 không huấn luyện được vào phân bố mặc định bằng phương pháp chi phí thấp; nâng sàn chất
-lượng đòi hỏi pretraining tốt hơn. Mô hình cuối sinh truyện trọn vẹn ở ~949 token/giây,
-nhanh hơn mốc 4B khoảng 50 lần.
+lượng đòi hỏi pretraining tốt hơn. Kết luận này được kiểm chứng thuận chiều ở bước cuối:
+một mô hình 60M huấn luyện trên full TF1 (2.34M truyện, seq 1024) đạt **8.96/10
+(+1.02 so với 30M, t=6.53, n=45)**, xác nhận rằng đầu tư đúng chỗ là pretraining. Mô hình
+sinh truyện trọn vẹn ở ~900 token/giây, nhanh hơn mốc 4B khoảng 50 lần.
 
 ## 1. Bài toán và thiết lập
 
@@ -68,6 +70,7 @@ sẽ xuất hiện lại ở phần giới hạn.
 | Phase 1 | 400k, 1800 | 1.447 | 4.18 | 6.0 | cấp đủ ngân sách token |
 | (sửa sampling) | - | - | - | 6.2 | repeat_penalty 1.3 về 1.1 |
 | Phase 2 | 400k v2, 3600 | **1.278** | **3.56** | 7.0 | can thiệp dữ liệu, resume từ 1800 |
+| 60M (Mục 3.9) | full TF1 2.34M, 10000 | **1.058** | **2.87** | **8.96** | scale-up kiểm chứng kết luận |
 | Qwen3-4B (mốc) | - | - | - | 9.75 | lớn hơn 130 lần |
 
 ### 2.1 v1: chẩn đoán under-training
@@ -252,16 +255,45 @@ minh họa thêm cho thiên lệch của judge đơn (Mục 3.4).
 | | UC1 judge/Claude | UC2 judge/Claude | Adherence UC2 | Flesch UC1 |
 |---|---|---|---|---|
 | Phase 1 | 8.19 / 6.62 | 4.75 / 4.38 | 3.5 | 70.8 |
-| Phase 2 | 8.12 / 7.00 | **7.44 / 6.69** | **7.0** | **80.8** |
+| Phase 2 | 8.12 / 7.00 | 7.44 / 6.69 | 7.0 | 80.8 |
 | Phase 2+DPO | 7.06 / 6.25 | 7.19 / 6.94 | 5.8 | 75.4 |
+| **60M (Mục 3.9)** | **8.81 / 7.62** | **8.19 / 7.62** | **8.0** | **81.7** |
 
-Ba quan sát: (1) mức tiến bộ thật là Phase 1 sang Phase 2 và chỉ hiện rõ ở sinh có điều
+Bốn quan sát: (1) mức tiến bộ thật là Phase 1 sang Phase 2 và chỉ hiện rõ ở sinh có điều
 kiện, nơi Phase 1 trượt slot nặng (một prompt bị sinh thành truyện khác hẳn); (2) với
 cùng seed, truyện của Phase 2 và DPO **giống hệt nhau phần lớn độ dài, chỉ rẽ nhánh vài
 câu cuối** (5/8 cặp): bằng chứng trực quan cho kết luận DPO không dịch phân bố; (3) hiện
-tượng "DPO điểm cao hơn" đôi khi thấy trên giao diện là nhiễu một lần chấm của judge đơn.
-**Mô hình cuối: `slm-30m-p2` (Phase 2), dùng kèm best-of-N = 3 trong ứng dụng** (cấu hình
-8.55/10 đã kiểm chứng); bản DPO giữ trong registry để trình diễn thí nghiệm.
+tượng "DPO điểm cao hơn" đôi khi thấy trên giao diện là nhiễu một lần chấm của judge đơn;
+(4) mô hình 60M (bổ sung sau khi hoàn thành Mục 3.9) **dẫn đầu cả hai use case theo cả
+hai giám khảo**: văn sạch gần như không câu gãy, lần đầu bám đúng chi tiết khó như
+"moonlit orchard", chỉ còn sót slot trừu tượng ở một prompt. Xếp hạng cuối theo cả hai
+giám khảo: 60M > Phase 2 > Phase 2+DPO ~ Phase 1.
+
+### 3.9 Kiểm chứng kết luận bằng scale: mô hình 60M
+
+Nếu chẩn đoán "nâng sàn phải bằng pretraining" đúng, thì đầu tư vào pretraining phải cho
+kết quả dương. Kiểm chứng: huấn luyện từ đầu mô hình **59.6M tham số** (hidden 768, 12
+head, **seq 1024**) trên **full TF1 sau lọc: 2.34 triệu truyện, 934M token, không lặp
+epoch**, giữ nguyên công thức đã kiểm chứng (tokenizer 12k, WSD, can thiệp dữ liệu v2);
+10.000 bước trên Colab T4, checkpoint-resume qua 4 phiên. Loss cuối 1.058, PPL held-out
+2.87 (30M: 3.56).
+
+| n=45, seed bắt cặp | 30M-p2 | **60M** | Delta |
+|---|---|---|---|
+| Judge overall | 7.939 | **8.956** | **+1.017 (t=6.53)** |
+| Prompt-adherence | 7.87 | **9.11** | +1.24 |
+| Thắng/hòa/thua | - | - | 36/5/4 |
+
+Đây là **phương pháp đầu tiên trong toàn đồ án cải thiện được phân bố mặc định**, với
+biên độ gấp đôi quy tắc nhiễu và mức ý nghĩa t=6.53. Ba điểm đáng chú ý: (1) 60M mặc
+định (8.96) vượt cả cấu hình 30M + best-of-3 (8.55), thu hẹp khoảng cách với Qwen-4B
+còn 0.8 điểm ở kích thước bằng 1/67; (2) adherence 9.11 phá hẳn mức trần ~70-80% mà mọi
+phương pháp alignment trên 30M không lay chuyển được, cho thấy trần đó thật sự là
+capacity; (3) chuỗi suy luận khép kín: năm kết quả âm của chiến dịch chỉ đúng chỗ cần
+đầu tư, và khoản đầu tư đó sinh lời đúng dự đoán. Đánh giá head-to-head trong ứng dụng
+(Mục 3.8, bổ sung 60M) xác nhận độc lập: 60M dẫn đầu cả hai use case theo cả judge tự
+động lẫn giám khảo đọc tay. **Mô hình cuối của ứng dụng chuyển sang `slm-60m`** (đã nạp
+registry, ~900 token/giây); best-of-N vẫn khả dụng phía trên.
 
 ## 4. Kết luận
 
@@ -290,18 +322,19 @@ giá (protocol cố định, seed bắt cặp, tự đo nhiễu judge, xác nh�
 
 ### 4.2 Trả lời câu hỏi nghiên cứu
 
-Mô hình 30M đạt ~7.9/10 theo protocol cuối (best-of-3 đạt 8.55, so với 9.75 của
-Qwen-4B), sinh truyện trọn vẹn đúng miền ở tốc độ ~949 token/giây, nhanh hơn ~50 lần với
-kích thước bằng 1/130. **Trên tác vụ được giới hạn tốt, mô hình siêu nhỏ có thể sánh với
-mô hình lớn trên các trục quan trọng với chi phí bằng một phần nhỏ**, miễn là phần phương
-sai còn lại được quản lý tại thời điểm suy luận, và với các giới hạn kích thước được ghi
-nhận trung thực ở nơi chúng bộc lộ.
+Mô hình 30M đạt ~7.9/10 theo protocol cuối (best-of-3: 8.55); bước kiểm chứng 60M trên
+full TF1 đạt **8.96/10 mặc định** so với 9.75 của Qwen-4B, ở kích thước bằng 1/67 và tốc
+độ ~900 token/giây (nhanh hơn ~50 lần). **Trên tác vụ được giới hạn tốt, mô hình siêu
+nhỏ có thể sánh với mô hình lớn trên các trục quan trọng với chi phí bằng một phần
+nhỏ**; phần phương sai còn lại quản lý được tại thời điểm suy luận, và con đường nâng
+sàn duy nhất được thực nghiệm xác nhận là pretraining (dữ liệu, token, capacity), không
+phải post-training chi phí thấp.
 
 ### 4.3 Hướng phát triển (kèm bằng chứng khả thi)
 
-- **Scale pretraining** (hướng chính, trực tiếp từ Giới hạn 1): loss còn trên đường
-  power-law chưa plateau; TF1 còn ~2.6M truyện chưa dùng. Một run 60M trên full TF1 với
-  seq 1024 đã được khởi động trong khuôn khổ tiếp theo của đồ án.
+- **Scale pretraining: ĐÃ KIỂM CHỨNG** (Mục 3.9): 60M trên full TF1 cho +1.0 điểm judge.
+  Đường power-law vẫn chưa plateau ở 10.000 bước, nên 100M hoặc thêm token dự kiến còn
+  dư địa; seq 1024 cũng mở đường cho kiểm soát độ dài tốt hơn (chưa đánh giá riêng).
 - **Distillation ở quy mô pretraining** (trộn hàng triệu token teacher vào corpus, hoặc
   soft label token-level) thay vì SFT vài trăm truyện đã chứng minh phản tác dụng.
 - **RL có quy mô với reward rẻ hơn** (scorer nhanh học từ nhiều nhãn hơn hẳn mức ~500 đã

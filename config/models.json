@@ -1,6 +1,37 @@
 [
-  {"id": "base-qwen3-4b", "name": "Qwen3-4B-Instruct-2507", "ollama": "qwen3-4b-instruct", "kind": "base", "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"},
-  {"id": "slm-30m", "name": "Fable-SLM 30M (phase 1)", "ollama": "slm-30m", "kind": "scratch-slm", "desc": "30M-param Llama-style SLM pretrained from scratch on TF1 (phase 1, 1800 steps)"},
-  {"id": "slm-30m-p2", "name": "Fable-SLM 30M (phase 2)", "ollama": "slm-30m-p2", "kind": "scratch-slm", "desc": "Phase 2: resumed to 3600 steps on curated corpus v2 (owl cap + moral-focused slot dropout)"},
-  {"id": "slm-30m-dpo", "name": "Fable-SLM 30M (phase 2 + DPO)", "ollama": "slm-30m-dpo", "kind": "scratch-slm", "desc": "Phase 2 + DPO preference alignment (RLAIF) for better prompt adherence"}
+  {
+    "id": "base-qwen3-4b",
+    "name": "Qwen3-4B-Instruct-2507",
+    "ollama": "qwen3-4b-instruct",
+    "kind": "base",
+    "desc": "Base model (Instruct-2507, non-thinking), chưa fine-tune"
+  },
+  {
+    "id": "slm-30m",
+    "name": "Fable-SLM 30M (phase 1)",
+    "ollama": "slm-30m",
+    "kind": "scratch-slm",
+    "desc": "30M-param Llama-style SLM pretrained from scratch on TF1 (phase 1, 1800 steps)"
+  },
+  {
+    "id": "slm-30m-p2",
+    "name": "Fable-SLM 30M (phase 2)",
+    "ollama": "slm-30m-p2",
+    "kind": "scratch-slm",
+    "desc": "Phase 2: resumed to 3600 steps on curated corpus v2 (owl cap + moral-focused slot dropout)"
+  },
+  {
+    "id": "slm-30m-dpo",
+    "name": "Fable-SLM 30M (phase 2 + DPO)",
+    "ollama": "slm-30m-dpo",
+    "kind": "scratch-slm",
+    "desc": "Phase 2 + DPO preference alignment (RLAIF) for better prompt adherence"
+  },
+  {
+    "id": "slm-60m",
+    "name": "Fable-SLM 60M",
+    "ollama": "slm-60m",
+    "kind": "scratch-slm",
+    "desc": "60M-param SLM pretrained from scratch on full TF1 (2.34M fables, seq 1024); judge 8.96 vs 7.94 of 30M-p2 (n=45)"
+  }
 ]
