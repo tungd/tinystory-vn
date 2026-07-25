@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tinystories_v3 — Báo cáo vị trí đặt LoRA adapter</title>
+<style>
+  :root{
+    --paper:#F4F5F7;--surface:#FFFFFF;--surface-2:#FAFAFC;
+    --ink:#171B24;--muted:#596072;--faint:#868C9C;--line:#E4E6EC;
+    --accent:#3E4CB0;--accent-2:#293596;--accent-soft:#E9EBF9;
+    --good:#1E7A54;--good-soft:#E2F1EA;--bad:#B23A2B;--bad-soft:#F6E6E2;
+    --code-bg:#F2F3F7;--shadow:0 1px 2px rgba(20,25,40,.05),0 8px 24px -14px rgba(20,25,40,.14);
+    --maxw:1180px;--prose:72ch;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#0E1117;--surface:#151A22;--surface-2:#1A212B;
+    --ink:#E8EAF0;--muted:#9BA2B4;--faint:#6C7488;--line:#262D39;
+    --accent:#8E9BF2;--accent-2:#AEB8FF;--accent-soft:#1E2540;
+    --good:#54C08D;--good-soft:#16281F;--bad:#E1705E;--bad-soft:#2C1B18;
+    --code-bg:#1B222C;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -16px rgba(0,0,0,.6);
+  }}
+  :root[data-theme="light"]{
+    --paper:#F4F5F7;--surface:#FFFFFF;--surface-2:#FAFAFC;--ink:#171B24;--muted:#596072;--faint:#868C9C;--line:#E4E6EC;
+    --accent:#3E4CB0;--accent-2:#293596;--accent-soft:#E9EBF9;--good:#1E7A54;--good-soft:#E2F1EA;--bad:#B23A2B;--bad-soft:#F6E6E2;
+    --code-bg:#F2F3F7;--shadow:0 1px 2px rgba(20,25,40,.05),0 8px 24px -14px rgba(20,25,40,.14);}
+  :root[data-theme="dark"]{
+    --paper:#0E1117;--surface:#151A22;--surface-2:#1A212B;--ink:#E8EAF0;--muted:#9BA2B4;--faint:#6C7488;--line:#262D39;
+    --accent:#8E9BF2;--accent-2:#AEB8FF;--accent-soft:#1E2540;--good:#54C08D;--good-soft:#16281F;--bad:#E1705E;--bad-soft:#2C1B18;
+    --code-bg:#1B222C;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -16px rgba(0,0,0,.6);}
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.66;font-size:16.5px;-webkit-font-smoothing:antialiased;margin:0;}
+  ::selection{background:var(--accent-soft);}
+  a{color:var(--accent);text-underline-offset:2px;text-decoration-thickness:.06em;}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,40px);}
+  header.mast{padding:clamp(40px,7vw,84px) 0 34px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 18px;}
+  h1.title{font-family:var(--serif);font-weight:600;line-height:1.08;text-wrap:balance;font-size:clamp(2rem,5vw,3.3rem);margin:0 0 .4em;letter-spacing:-.01em;max-width:22ch;}
+  .lede{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--muted);max-width:64ch;margin:0;line-height:1.5;}
+  .metarow{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:30px;font-family:var(--mono);font-size:.78rem;color:var(--muted);}
+  .metarow b{color:var(--ink);font-weight:600;} .metarow span{display:inline-flex;gap:7px;align-items:baseline;}
+  .langbar{margin-top:18px;font-family:var(--mono);font-size:.74rem;color:var(--faint);}
+  .langbar a{margin-left:4px;}
+  .layout{display:block;padding:44px 0 90px;}
+  @media(min-width:1080px){.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;align-items:start;}nav.toc{position:sticky;top:26px;}}
+  nav.toc{font-size:.86rem;}
+  nav.toc .toc-h{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--faint);margin:0 0 12px;}
+  nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:toc;}
+  nav.toc li{counter-increment:toc;margin:1px 0;}
+  nav.toc a{display:flex;gap:9px;padding:5px 9px;border-radius:7px;color:var(--muted);text-decoration:none;line-height:1.35;transition:background .12s,color .12s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);font-family:var(--mono);font-size:.7rem;color:var(--faint);min-width:1.6em;padding-top:1px;}
+  nav.toc a:hover{background:var(--accent-soft);color:var(--ink);}
+  @media(max-width:1079px){nav.toc{display:none;}}
+  main{min-width:0;}
+  section.sec{scroll-margin-top:22px;margin-bottom:52px;}
+  .sec>*{max-width:var(--prose);}
+  .sec>.full,.sec>figure,.sec>.panel,.sec>.tablewrap,.sec>.callout,.sec>pre{max-width:none;}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,3vw,2rem);line-height:1.14;letter-spacing:-.008em;margin:0 0 .5em;text-wrap:balance;display:flex;gap:.6em;align-items:baseline;}
+  h2 .num{font-family:var(--mono);font-size:.6em;color:var(--accent);font-weight:600;padding-top:.15em;}
+  h3{font-family:var(--sans);font-weight:650;font-size:1.1rem;margin:1.9em 0 .35em;letter-spacing:-.005em;}
+  p{margin:0 0 1.05em;} .sec p,.sec li{color:var(--ink);}
+  strong{font-weight:650;} em{color:var(--muted);}
+  ul,ol{margin:0 0 1.15em;padding-left:1.25em;} li{margin:.4em 0;} ul.tight li{margin:.28em 0;}
+  code{font-family:var(--mono);font-size:.86em;background:var(--code-bg);padding:.12em .38em;border-radius:5px;border:1px solid var(--line);}
+  .abstract{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow);max-width:var(--prose);}
+  .abstract .k{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--accent);margin:0 0 10px;font-weight:600;}
+  .abstract p{margin:0;font-size:1.01rem;}
+  .callout{border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:1.5em 0;background:var(--surface);display:flex;gap:14px;align-items:flex-start;}
+  .callout .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;margin-top:2px;}
+  .callout.finding{background:var(--accent-soft);border-color:transparent;}
+  .callout.finding .tag{background:var(--accent);color:#fff;}
+  @media (prefers-color-scheme:dark){.callout.finding .tag{color:#0E1117;}}
+  :root[data-theme="dark"] .callout.finding .tag{color:#0E1117;} :root[data-theme="light"] .callout.finding .tag{color:#fff;}
+  .callout .body{font-size:.97rem;line-height:1.55;} .callout .body p{margin:0;} .callout .body p+p{margin-top:.5em;}
+  .tablewrap{overflow-x:auto;margin:1.4em 0;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px;}
+  th,td{padding:11px 15px;text-align:left;border-bottom:1px solid var(--line);}
+  thead th{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;}
+  tbody td:first-child{font-weight:600;}
+  tr.best td{background:var(--good-soft);}
+  .rowlabel{font-weight:650;} .rowlabel small{display:block;font-weight:400;color:var(--faint);font-family:var(--mono);font-size:.72em;margin-top:2px;}
+  .chip{display:inline-block;font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:20px;vertical-align:middle;margin-left:6px;background:var(--good);color:#fff;}
+  @media (prefers-color-scheme:dark){.chip{color:#0E1117;}}
+  :root[data-theme="dark"] .chip{color:#0E1117;} :root[data-theme="light"] .chip{color:#fff;}
+  figure{margin:1.7em 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px 18px;box-shadow:var(--shadow);}
+  figcaption{font-size:.82rem;color:var(--muted);margin-top:14px;line-height:1.5;} figcaption b{color:var(--ink);}
+  .fig-title{font-family:var(--sans);font-weight:650;font-size:1rem;margin:0 0 3px;}
+  .fig-sub{font-family:var(--mono);font-size:.72rem;color:var(--faint);margin:0 0 18px;letter-spacing:.02em;}
+  .bars{display:flex;flex-direction:column;gap:14px;}
+  .bar-row{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center;}
+  .bar-label{font-size:.82rem;line-height:1.2;} .bar-label b{font-weight:650;}
+  .bar-label small{display:block;color:var(--faint);font-family:var(--mono);font-size:.68rem;margin-top:1px;}
+  .bar-track{position:relative;height:26px;background:var(--surface-2);border-radius:6px;border:1px solid var(--line);overflow:hidden;}
+  .bar-fill{position:absolute;top:0;bottom:0;left:0;border-radius:0 5px 5px 0;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-family:var(--mono);font-size:.76rem;font-weight:600;font-variant-numeric:tabular-nums;min-width:38px;}
+  @media (prefers-color-scheme:dark){.bar-fill{color:#0E1117;}}
+  :root[data-theme="dark"] .bar-fill{color:#0E1117;} :root[data-theme="light"] .bar-fill{color:#fff;}
+  .bar-fill.base{background:var(--muted);} .bar-fill.ft{background:var(--accent);} .bar-fill.best{background:var(--accent-2);}
+  .gridlines{display:flex;justify-content:space-between;margin:14px 0 0 146px;font-family:var(--mono);font-size:.64rem;color:var(--faint);}
+  .dv{display:flex;flex-direction:column;gap:13px;}
+  .dv-row{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center;}
+  .dv-track{position:relative;height:26px;background:linear-gradient(90deg,var(--bad-soft),var(--bad-soft) 50%,var(--good-soft) 50%,var(--good-soft));border-radius:6px;border:1px solid var(--line);}
+  .dv-zero{position:absolute;left:50%;top:-4px;bottom:-4px;width:1.5px;background:var(--faint);opacity:.6;}
+  .dv-fill{position:absolute;top:2px;bottom:2px;display:flex;align-items:center;font-family:var(--mono);font-size:.74rem;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;}
+  @media (prefers-color-scheme:dark){.dv-fill{color:#0E1117;}}
+  :root[data-theme="dark"] .dv-fill{color:#0E1117;} :root[data-theme="light"] .dv-fill{color:#fff;}
+  .dv-fill.neg{background:var(--bad);border-radius:5px 0 0 5px;justify-content:flex-start;padding-left:8px;}
+  .dv-fill.pos{background:var(--good);border-radius:0 5px 5px 0;justify-content:flex-end;padding-right:8px;}
+  .dv-scale{display:flex;justify-content:space-between;margin:12px 0 0 146px;font-family:var(--mono);font-size:.64rem;color:var(--faint);}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:1.5em 0;box-shadow:var(--shadow);} .panel h3{margin-top:0;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:1.5em 0;}
+  .stat{background:var(--surface);padding:18px 20px;}
+  .stat .v{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1;letter-spacing:-.01em;}
+  .stat .v.g{color:var(--good);} .stat .v.a{color:var(--accent);}
+  .stat .l{font-size:.78rem;color:var(--muted);margin-top:7px;line-height:1.35;} .stat .l b{color:var(--ink);}
+  .arms{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:1.5em 0;}
+  .arm{background:var(--surface);padding:16px 20px;display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;}
+  .arm .code{font-family:var(--mono);font-weight:700;font-size:1.02rem;color:var(--accent);} .arm.base .code{color:var(--muted);}
+  .arm .desc b{font-weight:650;} .arm .desc{font-size:.92rem;line-height:1.45;}
+  .arm .desc small{display:block;color:var(--faint);font-family:var(--mono);font-size:.7rem;margin-top:3px;}
+  .twocol{display:grid;gap:16px;margin:1.5em 0;} @media(min-width:620px){.twocol{grid-template-columns:1fr 1fr;}}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:12px;padding:18px 20px;overflow-x:auto;margin:1.4em 0;font-size:.8rem;line-height:1.6;}
+  pre code{background:none;border:none;padding:0;font-size:1em;} .cmt{color:var(--faint);}
+  .quote{border-left:3px solid var(--accent);padding:2px 0 2px 18px;margin:1.2em 0;color:var(--ink);font-style:italic;}
+  .refs{font-size:.86rem;counter-reset:ref;list-style:none;padding:0;}
+  .refs li{counter-increment:ref;padding-left:2.4em;position:relative;margin:.7em 0;color:var(--muted);line-height:1.5;}
+  .refs li::before{content:"["counter(ref)"]";position:absolute;left:0;font-family:var(--mono);font-size:.8em;color:var(--accent);font-weight:600;}
+  .refs b{color:var(--ink);font-weight:600;}
+  footer.foot{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--faint);font-family:var(--mono);font-size:.76rem;line-height:1.7;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;}}
+  html{scroll-behavior:smooth;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">Generative AI · Đồ án môn học · Báo cáo kỹ thuật</p>
+    <h1 class="title">Nên đặt adapter ở đâu?</h1>
+    <p class="lede">Nghiên cứu vị trí đặt LoRA adapter trên một model 135 triệu tham số học viết truyện ngụ ngôn cho
+      trẻ — và điều nó hé lộ về việc <em>layer nào</em> và <em>module nào</em> mới thực sự quan trọng.</p>
+    <div class="metarow">
+      <span>dự án&nbsp;<b>tinystories_v3</b></span><span>model nền&nbsp;<b>SmolLM2-135M</b></span>
+      <span>dataset&nbsp;<b>TF1-EN-3M</b></span><span>phần cứng&nbsp;<b>1× Colab L4</b></span><span>ngày&nbsp;<b>2026-07-13</b></span>
+    </div>
+    <p class="langbar">Ngôn ngữ: <b>Tiếng Việt</b> · <a href="report.html">English ↗</a></p>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Mục lục">
+      <p class="toc-h">Mục lục</p>
+      <ol>
+        <li><a href="#intro">Giới thiệu</a></li>
+        <li><a href="#bg">Nền tảng &amp; lý thuyết</a></li>
+        <li><a href="#data">Dataset</a></li>
+        <li><a href="#position">Định vị vs. tinystory-vn</a></li>
+        <li><a href="#method">Phương pháp</a></li>
+        <li><a href="#results">Kết quả</a></li>
+        <li><a href="#analysis">Phân tích &amp; thảo luận</a></li>
+        <li><a href="#deploy">Bàn giao</a></li>
+        <li><a href="#limits">Hạn chế</a></li>
+        <li><a href="#repro">Tính tái lập</a></li>
+        <li><a href="#conclusion">Kết luận</a></li>
+        <li><a href="#refs">Tài liệu &amp; phụ lục</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <div class="abstract" style="margin-bottom:44px;">
+        <p class="k">Tóm tắt</p>
+        <p>Dòng <em>TinyStories</em> cho thấy các model nhỏ được huấn luyện trên dữ liệu tổng hợp hẹp, chất lượng cao
+          vẫn sinh được tự sự mạch lạc. Chúng tôi lấy một <strong>SmolLM2-135M</strong> đã pretrain và fine-tune bằng
+          <strong>LoRA</strong> trên kho <strong>TF1-EN-3M</strong> gồm ba triệu truyện ngụ ngôn tổng hợp, đặt một câu
+          hỏi làm trọng tâm: <strong>nên đặt các adapter low-rank ở đâu.</strong> Giữ nguyên rank, dữ liệu và lịch,
+          chúng tôi so sánh mốc nền (không fine-tune) với ba cách đặt — <code>q,v</code> của attention trên toàn bộ
+          layer (A), cùng cấu hình nhưng chỉ ở 1/3 layer cuối (B), và cả bảy projection tuyến tính trên toàn bộ layer
+          (C). Validation perplexity giảm từ <strong>9.52</strong> (base) xuống <strong>3.84</strong> (C), và độ dễ đọc
+          đi từ gần như không đọc được đến phù hợp lứa tuổi. Hai phép so sánh trả lời tiêu đề: đặt adapter trên
+          <em>toàn bộ</em> layer thắng 1/3 layer cuối, nhưng phần thắng lớn nhất đến từ <strong>độ rộng module</strong>
+          — thêm adapter cho các projection <strong>MLP</strong>. Dự án là một góc đối lập có chủ đích với một dự án
+          fine-tune model 4 tỷ tham số, và được bàn giao đầy đủ: huấn luyện, đánh giá, export sang GGUF, phục vụ qua
+          Ollama ngay trong ứng dụng của dự án đồng hành.</p>
+      </div>
+
+      <section class="sec" id="intro">
+        <h2><span class="num">01</span>Giới thiệu</h2>
+        <p>Truyện ngụ ngôn là một dạng tự sự cô đọng, cấu trúc chặt: nhân vật kèm tính cách, bối cảnh, thử thách, cách
+          giải quyết, và bài học rõ ràng ở cuối. Sự đều đặn đó khiến nó là bài kiểm tra tốt bất thường cho model nhỏ —
+          từ vựng hạn chế, mạch ngắn, chất lượng dễ đánh giá bằng mắt. <em>TinyStories</em> [<a href="#refs">2</a>] cho
+          thấy model dưới 10M tham số vẫn viết được truyện thiếu nhi mạch lạc khi dữ liệu hẹp và tuyển kỹ; dataset ta
+          dùng [<a href="#refs">1</a>] được xây có chủ đích để "thuận lợi cho parameter-efficient fine-tuning các model
+          nhỏ ở hạ nguồn".</p>
+        <p>Thay vì train từ đầu, ta khởi đầu từ một model nhỏ <strong>đã pretrain</strong> và thích nghi bằng
+          <strong>LoRA</strong> [<a href="#refs">3</a>] — đóng băng trọng số nền, chỉ học các cập nhật low-rank ở những
+          projection được chọn. Vị trí đặt LoRA thường được chọn theo quy ước. Đề bài biến quy ước đó thành đóng góp —
+          <em>"ghi lại vì sao ta chọn thêm layer nào vào model"</em> — mà ta hiểu chính xác là <strong>vị trí đặt
+          adapter</strong>.</p>
+        <div class="callout finding"><span class="tag">Câu hỏi</span><div class="body"><p>Dưới cùng một ngân sách
+          (cùng model nền, rank, dữ liệu, lịch), <strong>việc đặt adapter ở đâu có thay đổi chất lượng truyện không — và
+          trục nào quan trọng hơn, các <em>layer</em> adapter phủ hay các <em>module</em> adapter gắn vào?</strong></p></div></div>
+        <p><strong>Đóng góp.</strong> (1) Một ablation có kiểm soát, đổi một-biến, về vị trí đặt LoRA cho bài toán sinh
+          tự sự trên model 135M, tách trục độ-sâu-layer (A vs. B) và độ-rộng-module (A vs. C); (2) một kết quả định
+          lượng — <strong>độ rộng module lấn át độ sâu layer</strong>; (3) một pipeline hoàn chỉnh, tái lập được, kèm
+          export GGUF→Ollama cắm vào ứng dụng đồng hành.</p>
+      </section>
+
+      <section class="sec" id="bg">
+        <h2><span class="num">02</span>Nền tảng &amp; lý thuyết</h2>
+        <h3>2.1 &nbsp;Low-Rank Adaptation (LoRA)</h3>
+        <p>Một lớp tuyến tính tính <code>h = W·x</code>. Full fine-tune cập nhật cả <code>d_out · d_in</code> phần tử.
+          LoRA đóng băng <code>W</code> và học một cập nhật <strong>low-rank</strong>:</p>
+        <pre><code>W' = W + ΔW ,   ΔW = (α / r) · B · A ,   A ∈ ℝ^(r × d_in) ,  B ∈ ℝ^(d_out × r)</code></pre>
+        <p>với rank <code>r ≪ min(d_in, d_out)</code>, <code>B</code> khởi tạo bằng 0 (nên lúc bắt đầu model đúng bằng
+          bản pretrain), và hệ số co giãn cố định <code>α/r</code>. Chỉ <code>A</code>, <code>B</code> được huấn luyện,
+          cho <code>r·(d_in + d_out)</code> tham số mỗi ma trận — ít hơn <code>d_in·d_out</code> rất nhiều bậc. Khi suy
+          luận, tích <code>BA</code> có thể <strong>gộp</strong> lại vào <code>W</code>, nên model đã gộp không tốn thêm
+          độ trễ — đây chính là cách ta export một model đặc sang GGUF (§<a href="#deploy">08</a>).</p>
+        <h3>2.2 &nbsp;Vì sao "đặt ở đâu" là câu hỏi thật</h3>
+        <p>LoRA để ngỏ hai lựa chọn — hai trục của nghiên cứu này:</p>
+        <ul class="tight">
+          <li><strong>Module nào?</strong> Một block có projection attention (<code>q,k,v,o</code>) và MLP
+            (<code>gate,up,down</code>). Bài báo LoRA nói chỉ thích nghi <code>W_q,W_v</code> thường là đủ — một khẳng
+            định cần kiểm chứng theo bài toán, không phải định luật.</li>
+          <li><strong>Layer nào?</strong> Adapter có thể phủ mọi layer hoặc một tập con; layer sau thường được cho là
+            mang biểu diễn đặc thù-bài-toán nhiều hơn, tạo động lực cho lựa chọn "chỉ 1/3 cuối" như đòn bẩy hiệu quả.</li>
+        </ul>
+        <p>Hai trục này thường bị trộn lẫn. Thiết kế ở §<a href="#method">05.3</a> tách chúng có chủ đích để đọc riêng
+          từng trục.</p>
+        <h3>2.3 &nbsp;Vì sao dạng fable hợp model nhỏ</h3>
+        <p>Văn phong đích hẹp có chủ đích: fable ~200 từ, cấu trúc 5 phần cố định, từ vựng hạn chế. Một model 135M không
+          đủ và không cần mô hình hoá văn bản mở; chính sự hẹp khiến model nhỏ khả thi và câu hỏi vị trí trở nên sắc
+          nét — có tín hiệu thật để nắm, và khác biệt nhỏ về <em>nơi</em> thêm dung lượng trở nên nhìn thấy được.</p>
+      </section>
+
+      <section class="sec" id="data">
+        <h2><span class="num">03</span>Dataset</h2>
+        <p>Ta huấn luyện trên <strong>TF1-EN-3M</strong> (<code>klusai/ds-tf1-en-3m</code>) [<a href="#refs">1</a>], ba
+          triệu fable tiếng Anh sinh tổng hợp bởi một model instruction 8 tỷ tham số. Mỗi dòng ghép một <strong>prompt
+          có cấu trúc</strong> với một <strong>fable</strong> và một <strong>system message</strong> cố định. Prompt
+          hiển thị năm ô có nhãn:</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Ô</th><th>Ý nghĩa</th><th>Ví dụ</th></tr></thead>
+          <tbody>
+            <tr><td>Main Character</td><td>nhân vật chính (character + trait)</td><td><em>a clever skunk</em></td></tr>
+            <tr><td>Setting</td><td>bối cảnh</td><td><em>a flower field</em></td></tr>
+            <tr><td>Challenge</td><td>xung đột trung tâm</td><td><em>rivalry in love</em></td></tr>
+            <tr><td>Outcome</td><td>cách giải quyết</td><td><em>ancient enemies sign a pact</em></td></tr>
+            <tr><td>Teaching</td><td>bài học</td><td><em>appearances can be deceiving</em></td></tr>
+          </tbody>
+        </table></div>
+        <p>Các split: <strong>2.8M train / 100K validation / 100K test</strong>. Một cặp minh hoạ — đưa ra để cố định
+          <em>văn phong đích</em>, không phải đầu ra của model:</p>
+        <div class="quote">"In a sun-kissed flower field, a clever skunk loved to sniff out the sweetest blooms … As they
+          bent to drink, they saw their reflections in the calm water. 'We've been judging each other wrong,' said the
+          skunk … From that day on they promised to look beyond appearances — a reminder that true beauty comes from
+          within."</div>
+      </section>
+
+      <section class="sec" id="position">
+        <h2><span class="num">04</span>Định vị vs. tinystory-vn</h2>
+        <p>Dự án này là góc đối lập có chủ đích với dự án đồng hành <code>tinystory-vn</code>, vốn nhắm cùng dataset và
+          văn phong đích nhưng từ đầu kia của không gian thiết kế. Dự án đó <strong>full fine-tune một model 4 tỷ tham
+          số</strong> (Qwen3-4B, SFT + ORPO) và đặt đóng góp ở <strong>ứng dụng và phương pháp đánh giá</strong> — app
+          có guardrail nhiều lớp và panel LLM-judge. Ta chủ đích đi nhỏ và biến <strong>câu hỏi nội tại của model về vị
+          trí đặt adapter</strong> thành trọng tâm — trục mà dự án kia không khảo sát. §<a href="#analysis">07.6</a>
+          đặt các góc cạnh nhau.</p>
+      </section>
+
+      <section class="sec" id="method">
+        <h2><span class="num">05</span>Phương pháp</h2>
+        <h3>5.1 &nbsp;Model nền — và vì sao chọn SmolLM2-135M</h3>
+        <p>Ta khởi đầu từ <strong>SmolLM2-135M</strong> (base, không phải instruct) [<a href="#refs">4</a>]: decoder kiểu
+          Llama với 30 layer, hidden 576, 9 attention head (3 KV head, grouped-query), MLP intermediate 1536, vocab
+          49.152. Lựa chọn này mang tính quyết định: SmolLM2 giữ <strong>riêng</strong> các projection <code>q/k/v/o</code>
+          và <code>gate/up/down</code>, nên phép so sánh "chỉ thích nghi <code>q,v</code>" xác định được. Một model có
+          <strong>QKV hợp nhất</strong> (ví dụ <code>c_attn</code> của GPT-2) không tách được <code>q</code> khỏi
+          <code>v</code>, khiến trục module không so sánh được. Bắt đầu từ checkpoint <em>base</em> (không phải instruct)
+          cho phép before/after trung thực — base hoàn toàn không bám được prompt fable. (ADR-0001.)</p>
+        <h3>5.2 &nbsp;Định dạng bài toán</h3>
+        <p>Việc học là <strong>sinh có điều kiện</strong>: input = <code>system ⧺ prompt</code>, đích = <code>fable</code>,
+          loss chỉ trên <strong>token của fable</strong> — token ngữ cảnh bị mask thành <code>−100</code>
+          (completion-only masking) và một token kết thúc được thêm để model học dừng.</p>
+        <pre><code>input  =  BOS  s_1 … s_m  (system+prompt)   f_1 … f_n  &lt;eot&gt;
+labels = −100 −100 … −100  (ngữ cảnh bị mask)  f_1 … f_n  &lt;eot&gt;
+loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code></pre>
+        <p>Cách này giữ model điều khiển được và, quan trọng cho một nghiên cứu vị trí, khiến <strong>perplexity thành
+          tín hiệu công bằng, cùng-điều-kiện</strong> — mọi arm chấm với cùng cách mask trên cùng văn bản.</p>
+        <h3>5.3 &nbsp;Thiết kế ablation — layer nào, module nào</h3>
+        <p>Rank cố định <code>r=16</code> (α=32, dropout 0.05) xuyên suốt để <strong>vị trí đặt adapter là biến duy
+          nhất</strong>. Bốn cấu hình:</p>
+        <div class="arms">
+          <div class="arm base"><div class="code">base</div><div class="desc"><b>Không fine-tune</b> — SmolLM2-135M pretrain làm mốc nền.<small>0 tham số thích nghi</small></div></div>
+          <div class="arm"><div class="code">A</div><div class="desc"><b><code>q,v</code> · toàn bộ 30 layer</b> — cách đặt LoRA tối thiểu kinh điển.<small>≈ 0,9M tham số · ≈ 0,68% model</small></div></div>
+          <div class="arm"><div class="code">B</div><div class="desc"><b><code>q,v</code> · 10 layer cuối</b> (index 20–29) — phép so "layer nào" vs. A.<small>≈ 0,3M tham số · ≈ 0,23% model</small></div></div>
+          <div class="arm"><div class="code">C</div><div class="desc"><b>cả 7 projection tuyến tính · toàn bộ 30 layer</b> — phép so "module nào" vs. A.<small>≈ 4,9M tham số · ≈ 3,5% model</small></div></div>
+        </div>
+        <p><strong>A vs. B</strong> chỉ đổi <em>độ sâu layer</em>; <strong>A vs. C</strong> chỉ đổi <em>độ rộng
+          module</em>. Ta kiểm chứng bằng code rằng adapter arm B thực sự chỉ ở layer 20–29 và arm A phủ cả 30, nên
+          khẳng định không chỉ là danh nghĩa. (ADR-0002.)</p>
+        <h3>5.4 &nbsp;Hạch toán số tham số thích nghi</h3>
+        <p>LoRA ở rank <code>r</code> thêm <code>r·(d_in + d_out)</code> tham số mỗi ma trận. Với các chiều SmolLM2:</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Projection</th><th>shape (in→out)</th><th class="num">tham số @ r=16</th></tr></thead>
+          <tbody>
+            <tr><td>q_proj</td><td>576 → 576</td><td class="num">18.432</td></tr>
+            <tr><td>k_proj</td><td>576 → 192</td><td class="num">12.288</td></tr>
+            <tr><td>v_proj</td><td>576 → 192</td><td class="num">12.288</td></tr>
+            <tr><td>o_proj</td><td>576 → 576</td><td class="num">18.432</td></tr>
+            <tr><td>gate_proj</td><td>576 → 1536</td><td class="num">33.792</td></tr>
+            <tr><td>up_proj</td><td>576 → 1536</td><td class="num">33.792</td></tr>
+            <tr><td>down_proj</td><td>1536 → 576</td><td class="num">33.792</td></tr>
+          </tbody>
+        </table></div>
+        <p>So với model nền ≈134,5M: <strong>A</strong> (q,v × 30) ≈ 0,92M (0,68%); <strong>B</strong> (q,v × 10) ≈
+          0,31M (0,23%); <strong>C</strong> (cả-7 × 30) ≈ 4,88M (3,5%).</p>
+        <h3>5.5 &nbsp;Cấu hình huấn luyện</h3>
+        <p>Mỗi arm huấn luyện trên <strong>tập con 50.000 fable cố định</strong> (seed 42, giống nhau giữa các arm)
+          trong <strong>2 epoch</strong> ở độ dài chuỗi 512: AdamW, lr <code>2e-4</code>, lịch cosine 3% warmup, bf16,
+          batch hiệu dụng 32 (≈ 3.125 step/arm). Trên một <strong>Colab L4</strong>; adapter đẩy lên Hub, chỉ số stream
+          về Weights &amp; Biases kèm heartbeat callback.</p>
+        <h3>5.6 &nbsp;Phương pháp đánh giá</h3>
+        <ul class="tight">
+          <li><strong>Validation perplexity</strong> (chính) — teacher-forced, loss chỉ trên token fable, có trọng số
+            token; cùng cách mask cho base và mọi arm. Tín hiệu tự nhiên, không cần API, so sánh trực tiếp được.</li>
+          <li><strong>Chỉ số reference-free</strong> trên 100 bản sinh/arm (temp 0.8, top-p 0.9, rep-pen 1.3, có seed):
+            <strong>Distinct-1/2</strong> (đa dạng từ vựng), <strong>Self-BLEU</strong> (trùng lặp nội-tập; thấp = đa
+            dạng hơn), <strong>Flesch Reading Ease</strong> (cao = dễ đọc; dưới 0 = không đọc được).</li>
+          <li><strong>LLM-as-judge (dự kiến)</strong> — một judge cục bộ theo 4 trục của bài báo; để dành. (ADR-0003.)</li>
+        </ul>
+      </section>
+
+      <section class="sec" id="results">
+        <h2><span class="num">06</span>Kết quả</h2>
+        <p>Cả bốn cấu hình, đánh giá đồng nhất trên cùng 500 prompt held-out:</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Cấu hình</th><th class="num">Tham số thích nghi</th><th class="num">Val PPL ↓</th><th class="num">Distinct-1</th><th class="num">Distinct-2</th><th class="num">Self-BLEU</th><th class="num">Flesch</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">base<small>không FT</small></td><td class="num">0</td><td class="num">9.52</td><td class="num">0.557</td><td class="num">0.971</td><td class="num">0.007</td><td class="num">−66.2</td></tr>
+            <tr><td class="rowlabel">A<small>q,v · all-30</small></td><td class="num">~0,9M</td><td class="num">4.82</td><td class="num">0.188</td><td class="num">0.716</td><td class="num">0.176</td><td class="num">57.7</td></tr>
+            <tr><td class="rowlabel">B<small>q,v · last-10</small></td><td class="num">~0,3M</td><td class="num">5.46</td><td class="num">0.190</td><td class="num">0.739</td><td class="num">0.171</td><td class="num">51.1</td></tr>
+            <tr class="best"><td class="rowlabel">C<small>all-linear · all-30</small><span class="chip">tốt nhất</span></td><td class="num">~4,9M</td><td class="num"><b>3.84</b></td><td class="num">0.210</td><td class="num">0.728</td><td class="num">0.191</td><td class="num">52.8</td></tr>
+          </tbody>
+        </table></div>
+
+        <figure>
+          <p class="fig-title">Validation perplexity</p>
+          <p class="fig-sub">thấp hơn là tốt hơn · cùng 500 prompt held-out · teacher-forced, loss trên token fable</p>
+          <div class="bars">
+            <div class="bar-row"><div class="bar-label"><b>base</b><small>không FT</small></div><div class="bar-track"><div class="bar-fill base" style="width:95.2%">9.52</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>A</b><small>q,v · all-30</small></div><div class="bar-track"><div class="bar-fill ft" style="width:48.2%">4.82</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>B</b><small>q,v · last-10</small></div><div class="bar-track"><div class="bar-fill ft" style="width:54.6%">5.46</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>C</b><small>all-linear · all-30</small></div><div class="bar-track"><div class="bar-fill best" style="width:38.4%">3.84</div></div></div>
+          </div>
+          <div class="gridlines"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+          <figcaption><b>Fine-tune giảm perplexity gần một nửa, và vị trí đặt adapter kéo nó xuống thêm.</b> Cách đặt
+            tốt nhất (C) đạt 3.84 — giảm 60% so với mốc nền chưa huấn luyện. Cột xám là mốc nền; mỗi cột đều dán nhãn
+            trực tiếp.</figcaption>
+        </figure>
+
+        <figure>
+          <p class="fig-title">Flesch Reading Ease — trước và sau</p>
+          <p class="fig-sub">cao hơn = dễ đọc hơn · giá trị dưới 0 gần như không đọc được</p>
+          <div class="dv">
+            <div class="dv-row"><div class="bar-label"><b>base</b><small>không FT</small></div><div class="dv-track"><div class="dv-zero"></div><div class="dv-fill neg" style="right:50%;width:41.4%">−66.2</div></div></div>
+            <div class="dv-row"><div class="bar-label"><b>A</b><small>q,v · all-30</small></div><div class="dv-track"><div class="dv-zero"></div><div class="dv-fill pos" style="left:50%;width:36.1%">57.7</div></div></div>
+            <div class="dv-row"><div class="bar-label"><b>B</b><small>q,v · last-10</small></div><div class="dv-track"><div class="dv-zero"></div><div class="dv-fill pos" style="left:50%;width:31.9%">51.1</div></div></div>
+            <div class="dv-row"><div class="bar-label"><b>C</b><small>all-linear · all-30</small></div><div class="dv-track"><div class="dv-zero"></div><div class="dv-fill pos" style="left:50%;width:33.0%">52.8</div></div></div>
+          </div>
+          <div class="dv-scale"><span>−80 · không đọc được</span><span>0</span><span>dễ đọc · +80</span></div>
+          <figcaption><b>Model base sinh văn bản gần như không đọc được</b> (Flesch −66); mọi arm fine-tune rơi vào dải
+            +51…+58 "khá dễ" phù hợp trẻ nhỏ. Đỏ = dưới 0, xanh = trên 0; mỗi cột đều dán nhãn.</figcaption>
+        </figure>
+
+        <div class="stat-grid">
+          <div class="stat"><div class="v g">−60%</div><div class="l">perplexity so với mốc nền, <b>cấu hình tốt nhất (C)</b></div></div>
+          <div class="stat"><div class="v a">3,5%</div><div class="l">trọng số của model được huấn luyện cho kết quả đó</div></div>
+          <div class="stat"><div class="v">+119</div><div class="l">điểm Flesch, base → C (<b>−66 → +53</b>), không đọc được → phù hợp lứa tuổi</div></div>
+        </div>
+      </section>
+
+      <section class="sec" id="analysis">
+        <h2><span class="num">07</span>Phân tích &amp; thảo luận</h2>
+        <h3>7.1 &nbsp;Fine-tune có tác dụng — rất mạnh</h3>
+        <p>Base chưa huấn luyện không bám được prompt: PPL 9.52 và Flesch âm mạnh. Distinct-1 <em>cao</em> (0.557) và
+          Self-BLEU <em>gần 0</em> (0.007) không phải tín hiệu chất lượng — chúng là dấu vân tay của văn bản
+          <strong>ngẫu nhiên, không ràng buộc</strong>, vốn tránh lặp một cách tầm thường. Mọi arm LoRA gói sự ngẫu
+          nhiên đó thành fable mạch lạc, đúng khuôn. Một cảnh báo đi kèm: chỉ số đa dạng reference-free, nếu đọc tách
+          biệt, có thể tưởng thưởng cho sự thiếu mạch lạc.</p>
+        <div class="callout finding"><span class="tag">Layer</span><div class="body"><p><strong>A vs. B — đặt adapter
+          trên toàn bộ layer thắng 1/3 layer cuối (PPL 4.82 vs. 5.46).</strong> Độ phủ có ích. Nhưng B lấy lại ~85%
+          phần cải thiện của A so với base trong khi chỉ thích nghi <em>một phần ba</em> số layer (≈ 0,3M vs. ≈ 0,9M
+          tham số) — một đánh đổi hiệu quả hợp lý khi ngân sách là ràng buộc.</p></div></div>
+        <div class="callout finding"><span class="tag">Module</span><div class="body"><p><strong>A vs. C — all-linear
+          thắng đậm attention-only (PPL 3.84 vs. 4.82, thấp hơn ≈ 20%).</strong> Phần thắng lớn nhất của nghiên cứu đến
+          từ việc thêm adapter cho các projection <strong>MLP</strong>, không phải từ phủ thêm layer. <em>Độ rộng
+          module</em> quan trọng hơn <em>độ sâu layer</em> — khả dĩ vì các sublayer MLP mang phần lớn dung lượng cho các
+          mẫu bề mặt/từ vựng mà một bài sinh hẹp như viết fable dựa vào.</p></div></div>
+        <h3>7.4 &nbsp;Cấu hình tốt nhất, và một đánh đổi</h3>
+        <p><strong>C</strong> (all-linear, toàn bộ layer) tốt nhất ở PPL 3.84 và giàu từ vựng nhất (Distinct-1 0.210);
+          được export thành <code>tsv3-smollm135-best</code>. Một điểm tinh tế: C thắng về mô hình hoá trong khi
+          <strong>A</strong> đạt Flesch cao nhất (57.7 vs. 52.8) — model all-linear viết văn đặc hơn chút. Với văn phong
+          sư phạm, khả năng mô hình hoá mạnh của C là tiêu điểm; A là á quân nhẹ ký khi tài nguyên khan hiếm.</p>
+        <h3>7.5 &nbsp;Kiểm tra định tính</h3>
+        <p>Chạy hai model đã export trên một prompt chưa gặp (<em>a brave little turtle · a quiet pond · a sudden storm ·
+          the animals work together · teamwork overcomes fear</em>) cho thấy khác biệt rõ. Model <strong>base</strong>
+          lạc đề, sinh lời bình kiểu hướng dẫn viết luận. Model <strong>best (C)</strong> viết một fable thật:</p>
+        <div class="quote">"In the quiet pond, where water lilies swayed gently in the breeze and fish swam happily by, a
+          brave little turtle lived among his friends… One day, dark clouds gathered over the pond as strong winds howled
+          and loud thunderclaps rumbled… The clever rabbit, strong and swift, had been watching from a nearby rock. He
+          suggested that they work together to save their friends… The two groups of creatures huddled closer and began
+          working together…"</div>
+        <p>Vài lỗi nhỏ (thi thoảng "(Figure 1)", nhân vật hơi lệch) là dễ hiểu với model 135M đã lượng tử hoá Q8 và độ
+          lệch định dạng prompt nói ở §<a href="#limits">09</a>, nhưng đầu ra rõ ràng là một fable mạch lạc, bám prompt.</p>
+        <h3>7.6 &nbsp;So sánh liên dự án</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Góc</th><th>tinystories_v3 (dự án này)</th><th>tinystory-vn</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">Kích cỡ model nền</td><td>135M</td><td>4B <span style="color:var(--faint)">(lớn hơn ≈ 30×)</span></td></tr>
+            <tr><td class="rowlabel">Cách thích nghi</td><td>LoRA, nghiên cứu vị trí đặt adapter</td><td>full SFT + ORPO</td></tr>
+            <tr><td class="rowlabel">Câu hỏi nghiên cứu</td><td>đặt adapter ở layer/module nào</td><td>app + phương pháp đánh giá</td></tr>
+            <tr><td class="rowlabel">Compute</td><td>1× L4, vài phút/arm</td><td>lớn hơn đáng kể</td></tr>
+            <tr><td class="rowlabel">Bàn giao</td><td>adapter GGUF cắm vào app của họ</td><td>app FastAPI + React + guardrail + judge</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="sec" id="deploy">
+        <h2><span class="num">08</span>Bàn giao: GGUF → Ollama → tinystory-vn</h2>
+        <p>Kết quả nghiên cứu được bàn giao dưới dạng model chạy được. Với <strong>base</strong> và <strong>best
+          (C)</strong>: <strong>(1) gộp</strong> adapter C vào base (<code>merge_and_unload</code>); <strong>(2)
+          chuyển</strong> sang <strong>GGUF Q8_0</strong> qua <code>llama.cpp</code> (≈ 138 MB mỗi bản); <strong>(3)</strong>
+          viết một <strong>Modelfile</strong> Ollama có <code>TEMPLATE</code> tái tạo đúng định dạng huấn luyện và dừng ở
+          <code>&lt;|endoftext|&gt;</code>; <strong>(4)</strong> <code>ollama create</code> cả hai; <strong>(5)</strong>
+          thêm hai mục vào <code>config/models.json</code> của <code>tinystory-vn</code>. Cả hai model đã được tạo và
+          kiểm chứng <strong>khác nhau về hành vi</strong> (base lạc đề; best viết fable). Chế độ Compare khi đó đặt bản
+          135M cạnh model 4B. (ADR-0004.)</p>
+      </section>
+
+      <section class="sec" id="limits">
+        <h2><span class="num">09</span>Hạn chế &amp; mối đe doạ tính hợp lệ</h2>
+        <ul>
+          <li><strong>Trần chất lượng.</strong> 135M giới hạn chất lượng; nghiên cứu bàn về hiệu quả đặt adapter
+            <em>tương đối</em>, không nhằm vượt model lớn.</li>
+          <li><strong>Chạy một lần, không có khoảng tin cậy.</strong> Mỗi arm một seed/lịch; ước lượng điểm không kèm
+            confidence interval (dù các khoảng cách PPL cách nhau thoải mái).</li>
+          <li><strong>2×2 chưa đủ.</strong> Ô còn thiếu <code>all-linear × last-third</code> sẽ cho kiểm tra tương tác
+            giữa hai trục.</li>
+          <li><strong>Chưa có panel judge.</strong> LLM-as-judge 4 trục để dành; kết luận dựa trên perplexity và chỉ số
+            reference-free.</li>
+          <li><strong>Lệch định dạng prompt ở hạ nguồn.</strong> Adapter huấn luyện trên câu chữ TF1 có thể chấm thấp
+            hơn khi bị điều khiển bằng prompt hơi khác của tinystory-vn. Chấp nhận có chủ đích (ADR-0004).</li>
+          <li><strong>Xáo trộn dữ liệu nhẹ.</strong> Tập con 50k lấy qua streaming shuffle buffer 10k — xác định và
+            giống nhau giữa các arm, nhưng gần "phần đầu được xáo nhẹ" hơn là mẫu đều.</li>
+        </ul>
+      </section>
+
+      <section class="sec" id="repro">
+        <h2><span class="num">10</span>Tính tái lập</h2>
+        <div class="twocol">
+          <div class="panel"><h3>Sản phẩm</h3>
+            <ul class="tight" style="margin:0;font-family:var(--mono);font-size:.8rem;">
+              <li>code · github.com/harryct229/tinystories_v3</li>
+              <li>congthanh991/tsv3-smollm135-<b>A-qv-all</b></li>
+              <li>congthanh991/tsv3-smollm135-<b>B-qv-last3</b></li>
+              <li>congthanh991/tsv3-smollm135-<b>C-alllinear</b></li>
+            </ul>
+            <p style="margin:.9em 0 0;font-size:.86rem;color:var(--muted);">Logic unit-test trên CPU; train/eval có
+              smoke test model tí hon (<code>python -m pytest</code>).</p>
+          </div>
+          <div class="panel"><h3>Hai ghi chú khi chạy lại trên Colab</h3>
+            <p style="margin:0 0 .6em;font-size:.9rem;"><b>Bẫy torchao.</b> Colab cài sẵn <code>torchao 0.10.0</code>
+              khiến bước tiêm LoRA của PEFT báo lỗi ở một kiểm tra phiên bản. Ta không dùng nó — <code>pip uninstall -y
+              torchao</code>.</p>
+            <p style="margin:0;font-size:.9rem;"><b>Theo dõi một VM chập chờn.</b> Websocket kernel của Colab không ổn
+              định với lệnh dài. Chạy huấn luyện như một <em>job nền</em> và theo dõi tiến độ qua Hub (adapter xuất
+              hiện), đừng tail log.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="conclusion">
+        <h2><span class="num">11</span>Kết luận &amp; hướng phát triển</h2>
+        <p>Dưới một ngân sách kiểm soát chặt, <strong>vị trí đặt adapter thay đổi đo được</strong> mức độ một model nhỏ
+          học viết fable tốt đến đâu. Phủ <em>toàn bộ</em> layer thắng 1/3 layer cuối, nhưng đòn bẩy trội nhất là
+          <strong>độ rộng module</strong> — gắn adapter vào các projection MLP, không chỉ attention, mới cho kết quả tốt
+          nhất (PPL 3.84, giảm 60% so với mốc nền) trong khi chỉ huấn luyện 3,5% trọng số. Một model nhỏ đã pretrain
+          cộng adapter low-rank đặt khéo là đủ để biến đầu ra không đọc được thành fable phù hợp lứa tuổi.</p>
+        <p><strong>Hướng phát triển:</strong> chạy judge 4 trục để củng cố xếp hạng; quét rank để tách hiệu ứng vị trí
+          khỏi dung lượng; hoàn thiện 2×2 để kiểm tra tương tác; và dùng các model đã export cho một so sánh định lượng
+          nhỏ-so-với-lớn với model 4B đồng hành.</p>
+      </section>
+
+      <section class="sec" id="refs">
+        <h2><span class="num">12</span>Tài liệu tham khảo &amp; phụ lục</h2>
+        <ol class="refs">
+          <li><b>Nadás, Dioșan, Piscoran, Tomescu (2025).</b> <i>TF1-EN-3M: Three Million Synthetic Moral Fables for
+            Training Small, Open Language Models.</i> arXiv:2504.20605. Dataset <code>klusai/ds-tf1-en-3m</code>.</li>
+          <li><b>Eldan &amp; Li (2023).</b> <i>TinyStories: How Small Can Language Models Be and Still Speak Coherent
+            English?</i> arXiv:2305.07759.</li>
+          <li><b>Hu et al. (2021).</b> <i>LoRA: Low-Rank Adaptation of Large Language Models.</i> arXiv:2106.09685.</li>
+          <li><b>Allal et al. (2025).</b> <i>SmolLM2.</i> <code>HuggingFaceTB/SmolLM2-135M</code>, Hugging Face Hub.</li>
+          <li><b>tinystory-vn</b> — dự án đồng hành (Qwen3-4B, SFT + ORPO). <code>github.com/tungd/tinystory-vn</code>.</li>
+        </ol>
+        <h3>Phụ lục A · Cấu hình chính xác</h3>
+        <pre><code><span class="cmt"># model nền</span>
+model        HuggingFaceTB/SmolLM2-135M   <span class="cmt"># Llama, 30 layer, hidden 576, 9/3 head, vocab 49152</span>
+<span class="cmt"># LoRA (cố định giữa các arm)</span>
+r=16  alpha=32  dropout=0.05  bias=none  task=CAUSAL_LM
+  A  target=[q_proj,v_proj]                  layers=toàn bộ 30
+  B  target=[q_proj,v_proj]                  layers=20..29 (1/3 cuối)
+  C  target=[q,k,v,o,gate,up,down]_proj      layers=toàn bộ 30
+<span class="cmt"># dữ liệu / bài toán</span>
+dataset      klusai/ds-tf1-en-3m   tập con train=50.000 (seed 42)   epoch=2
+             conditional (system+prompt)->fable, loss trên token fable (mask -100), max_seq_len=512
+<span class="cmt"># tối ưu</span>
+AdamW  lr=2e-4  cosine  warmup_ratio=0.03  bf16  batch=16 x grad_accum=2 (hiệu dụng 32)  ~3125 step/arm  L4
+<span class="cmt"># đánh giá</span>
+held-out=500 (validation, seed 42)   chính=perplexity (teacher-forced, có trọng số token)
+reference-free=Distinct-1/2, Self-BLEU, Flesch  (100 bản sinh/arm; temp 0.8, top-p 0.9, rep-pen 1.3)
+<span class="cmt"># bản ghi quyết định</span>
+ADR-0001 model nhỏ pretrain + LoRA   ADR-0002 ablation vị trí = đóng góp
+ADR-0003 đánh giá một-judge          ADR-0004 bàn giao qua tinystory-vn (GGUF/Ollama)</code></pre>
+      </section>
+    </main>
+  </div>
+
+  <footer class="foot">
+    <div>tinystories_v3 · Nghiên cứu vị trí đặt LoRA adapter trên SmolLM2-135M · truyện ngụ ngôn TF1-EN-3M</div>
+    <div>Tạo ngày 2026-07-13 · huấn luyện trên một Colab L4 · adapter &amp; code phát hành công khai</div>
+  </footer>
+</div>
+</body>
+</html>

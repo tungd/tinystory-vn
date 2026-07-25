@@ -11,6 +11,7 @@ Trình tạo **truyện ngụ ngôn tiếng Anh** cho trẻ em, chạy trên mô
 | Người | Model | Báo cáo khoa học | Tải model |
 |---|---|---|---|
 | **trieulh** | SLM 30M from-scratch trên TF1 | [`trieulh/report/report.pdf`](trieulh/report/report.pdf) (15 biểu đồ, đầy đủ thông số từ step 0 → DPO alignment) · nguồn [`report.md`](trieulh/report/report.md) · nhật ký [`trieulh/docs/experiments/`](trieulh/docs/experiments/) | **[Model DPO (.zip)](https://drive.google.com/file/d/1tY6dPodSqHunYlYEZDdMOEZ1dJyg2HuD/view?usp=drivesdk)** (GGUF + Modelfile + HF checkpoint) · [toàn bộ artifact (folder)](https://drive.google.com/drive/folders/1N852R4wZ_QUq8PruO0uULLIT7VqL4sqv) |
+| **thanhnc** | SmolLM2-135M + LoRA trên TF1 (nghiên cứu vị trí đặt adapter) | [`thanhnc/report/report.md`](thanhnc/report/report.md) (bản HTML: [`report.html`](thanhnc/report/report.html)) · **Tiếng Việt:** [`report.vi.md`](thanhnc/report/report.vi.md) ([HTML](thanhnc/report/report.vi.html)) | Adapter công khai trên HF Hub: [`A-qv-all`](https://huggingface.co/congthanh991/tsv3-smollm135-A-qv-all) · [`B-qv-last3`](https://huggingface.co/congthanh991/tsv3-smollm135-B-qv-last3) · [`C-alllinear`](https://huggingface.co/congthanh991/tsv3-smollm135-C-alllinear) (best) — GGUF dựng cục bộ: merge adapter → `convert_hf_to_gguf.py` → `ollama create` |
 
 ---
 

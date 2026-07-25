@@ -33,5 +33,19 @@
     "ollama": "slm-60m",
     "kind": "scratch-slm",
     "desc": "60M-param SLM pretrained from scratch on full TF1 (2.34M fables, seq 1024); judge 8.96 vs 7.94 of 30M-p2 (n=45)"
+  },
+  {
+    "id": "tsv3-smollm135-base",
+    "name": "SmolLM2-135M (base)",
+    "ollama": "tsv3-smollm135-base",
+    "kind": "base",
+    "desc": "tinystories_v3: pretrained SmolLM2-135M, no fine-tune (before)"
+  },
+  {
+    "id": "tsv3-smollm135-best",
+    "name": "SmolLM2-135M LoRA (best)",
+    "ollama": "tsv3-smollm135-best",
+    "kind": "finetuned",
+    "desc": "tinystories_v3: best LoRA config = C (all-linear @ all 30 layers), val PPL 3.84 (after)"
   }
 ]
