@@ -1,0 +1,30 @@
+[
+  {
+    "id": "llama-fp16",
+    "name": "Llama 3.2 3B (FP16 - Uncompressed)",
+    "ollama": "llama3.2:3b-instruct-fp16",
+    "kind": "base",
+    "desc": "Mô hình base 16-bit (FP16, 6.0GB)"
+  },
+  {
+    "id": "llama-q4",
+    "name": "Llama 3.2 3B (Q4_K_M - Compressed)",
+    "ollama": "llama3.2:3b-instruct-q4_K_M",
+    "kind": "base",
+    "desc": "Mô hình nén 4-bit (Q4_K_M, 2.0GB)"
+  },
+  {
+    "id": "llama3-fable-300-q4",
+    "name": "Llama 3.2 3B Fable-300",
+    "ollama": "llama3-fable-300-q4",
+    "kind": "finetuned",
+    "desc": "Mô hình đã qua fine-tune fable-300 (Q4_K_M) 1 epoch"
+  },
+  {
+    "id": "llama3-fable-1000-q4",
+    "name": "Llama 3.2 3B Fable-1000",
+    "ollama": "llama3-fable-1000-q4",
+    "kind": "finetuned",
+    "desc": "Mô hình đã qua fine-tune fable-1000 (Q4_K_M) 3 epoch"
+  }
+]
