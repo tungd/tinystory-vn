@@ -1,5 +1,5 @@
 [project]
-name = "vietnamese-fable-generator"
+name = "english-fable-generator"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
@@ -12,6 +12,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.2"]
 eval = ["textstat>=0.7", "scipy>=1.11"]
+
+[tool.setuptools.packages.find]
+include = ["app", "app.*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

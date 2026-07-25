@@ -28,6 +28,18 @@ export interface FableMeta {
   temperature: number;
   top_p: number;
   repetition_penalty: number;
+  generation_mode?: 'raw' | 'postprocess' | 'repair';
+  enhancement?: {
+    actions?: string[];
+    initial_validation?: {
+      fixable_reasons?: string[];
+      severe_reasons?: string[];
+    };
+    final_validation?: {
+      fixable_reasons?: string[];
+      severe_reasons?: string[];
+    };
+  } | null;
   num_predict: number;
   seed?: number;
   prompt_sent: string;
@@ -143,6 +155,12 @@ export function ObservabilityPanel({ meta }: ObservabilityPanelProps) {
           label="Model"
           value={meta.kind ? `${meta.model_name} (${meta.kind})` : meta.model_name}
         />
+        {meta.generation_mode && (
+          <MetaRow label="Mode" value={meta.generation_mode} />
+        )}
+        {meta.enhancement?.actions && meta.enhancement.actions.length > 0 && (
+          <MetaRow label="Actions" value={meta.enhancement.actions.join(', ')} />
+        )}
 
         {/* Params section */}
         <div

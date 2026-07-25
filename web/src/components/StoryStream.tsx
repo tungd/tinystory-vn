@@ -120,7 +120,7 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
               animation: 'ss-pulse 1s ease-in-out infinite',
             }}
           />
-          Generating…
+          Generating...
         </div>
         <div
           ref={streamRef}
@@ -157,7 +157,7 @@ export function StoryStream({ state, tokens, finalStory, reason }: StoryStreamPr
                 fontSize: '0.875rem',
               }}
             >
-              Processing your request…
+              Processing your request...
             </div>
           )}
         </div>

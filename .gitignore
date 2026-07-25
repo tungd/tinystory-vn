@@ -32,3 +32,27 @@ out/
 # tooling / build artifacts
 .playwright-mcp/
 *.egg-info/
+# Local assistant/tool state
+.agents/
+
+# Model artifacts
+experiments/
+!lienntp/models/
+!lienntp/models/**
+
+# Archives and packaged datasets
+*.zip
+
+# Data caches / raw downloads
+data/archive/
+data/fluency_sft_v1/raw/
+data/fluency_sft_v1/.hf_cache/
+
+.pytest_cache/
+**/__pycache__/
+
+# Environment
+
+
+# Generated experiment history
+results/archive/

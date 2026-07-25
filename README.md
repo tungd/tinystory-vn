@@ -10,6 +10,7 @@ Trình tạo **truyện ngụ ngôn tiếng Anh** cho trẻ em, chạy trên mô
 
 | Người | Model | Báo cáo khoa học | Tải model |
 |---|---|---|---|
+| **lienntp** | Fine-tune Llama 3.2 3B (SFT clean-3k, failure-focused LoRA, fluency SFT) + generation mode Raw/Post/Repair | [`lienntp/README.md`](lienntp/README.md) · manifest [`lienntp/code/CODE_MANIFEST.md`](lienntp/code/CODE_MANIFEST.md) · assets [`lienntp/full/`](lienntp/full/) | Ollama Modelfiles trong [`lienntp/full/ollama/`](lienntp/full/ollama/) |
 | **trieulh** | SLM 30M from-scratch trên TF1 | [`trieulh/report/report.pdf`](trieulh/report/report.pdf) (15 biểu đồ, đầy đủ thông số từ step 0 → DPO alignment) · nguồn [`report.md`](trieulh/report/report.md) · nhật ký [`trieulh/docs/experiments/`](trieulh/docs/experiments/) | **[Model DPO (.zip)](https://drive.google.com/file/d/1tY6dPodSqHunYlYEZDdMOEZ1dJyg2HuD/view?usp=drivesdk)** (GGUF + Modelfile + HF checkpoint) · [toàn bộ artifact (folder)](https://drive.google.com/drive/folders/1N852R4wZ_QUq8PruO0uULLIT7VqL4sqv) |
 
 ---

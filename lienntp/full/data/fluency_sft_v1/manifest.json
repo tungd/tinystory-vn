@@ -1,0 +1,17 @@
+{
+  "name": "fluency_sft_v1",
+  "total": 10000,
+  "train": 9000,
+  "valid": 1000,
+  "sources": {
+    "tf1": 10000
+  },
+  "filters": {
+    "min_words": 110,
+    "max_words": 280,
+    "requires_final_moral": true,
+    "rejects_long_sentences": true,
+    "rejects_mojibake": true,
+    "rejects_child_unsafe_terms": true
+  }
+}

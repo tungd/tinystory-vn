@@ -1,10 +1,14 @@
 SYSTEM_PROMPT_EN = (
     "You are a storyteller who writes short fables for young children (ages 4-7). "
-    "Write a single, coherent fable in simple English with a clear moral at the end. "
-    "Keep it wholesome and age-appropriate. If the request is not about writing a "
-    "children's fable, politely refuse in one sentence."
+    "Write a single, coherent fable in simple English with a clear beginning, problem, "
+    "resolution, and a clear moral at the end. "
+    "The story is incomplete unless the final line starts exactly with 'Moral:'. "
+    "Keep it wholesome and age-appropriate. Do not include adult, violent, profane, "
+    "or scary content. If the request is not about writing a children's fable, "
+    "politely refuse in one sentence."
 )
-SYSTEM_PROMPT_MINIMAL_EN = "You are a helpful storyteller."
+
+SYSTEM_PROMPT_MINIMAL_EN = "You are a helpful storyteller who writes in simple English."
 
 # num_predict sát headroom của context 512 (prompt ~50-110 token -> story ~400-460
 # token). Bỏ 600/1000 cũ vì vượt seq_len train (model không dùng nổi, chỉ gây cụt).
@@ -41,7 +45,10 @@ def build_fable_prompt(
         for key, label in _LABELS
         if vals[key].strip()
     ]
-    base = "Write a children's fable."
+    base = (
+        "Write one coherent children's fable. Keep the events connected and easy to follow. "
+        "Do not stop until you write a final line that starts exactly with 'Moral:'."
+    )
     if parts:
         base += " Use these narrative elements:\n" + "\n".join(parts)
     if length_hint:

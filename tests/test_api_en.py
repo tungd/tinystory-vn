@@ -25,7 +25,7 @@ def _collect(payload):
 def test_models_endpoint():
     r = client.get("/models")
     assert r.status_code == 200
-    assert any(m["id"] == "base-qwen3-4b" for m in r.json())
+    assert any(m["id"] == "base-llama32-3b-instruct" for m in r.json())
 
 
 def test_stream_guardrail_off_streams_tokens():
@@ -40,7 +40,7 @@ def test_stream_guardrail_off_streams_tokens():
             "outcome": "",
             "teaching": "",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": False,
         }
     )
@@ -58,7 +58,7 @@ def test_stream_guardrail_on_bad_input_refused_no_tokens():
             "outcome": "",
             "teaching": "",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": True,
         }
     )
@@ -75,7 +75,7 @@ def test_guardrail_input_violation_logged_with_layer_and_category():
             "outcome": "",
             "teaching": "",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": True,
         }
     )
@@ -104,7 +104,7 @@ def test_stream_logs_prepare_and_model_steps():
             "outcome": "",
             "teaching": "",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": False,
         }
     )
@@ -137,7 +137,7 @@ def test_stream_guardrail_on_clean_input_no_tokens():
             "outcome": "",
             "teaching": "sharing is caring",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": True,
         }
     )
@@ -157,7 +157,7 @@ def test_evaluate_endpoint():
     )
     r = client.post(
         "/evaluate",
-        json={"story": "...", "prompt": "...", "judge_model_id": "base-qwen3-4b"},
+        json={"story": "...", "prompt": "...", "judge_model_id": "base-llama32-3b-instruct"},
     )
     assert r.json()["overall"] == 8.5
 
@@ -202,7 +202,7 @@ def test_done_event_has_meta():
             "outcome": "finds shelter",
             "teaching": "perseverance",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": False,
         }
     )
@@ -227,7 +227,7 @@ def test_seed_passed_through():
             "outcome": "",
             "teaching": "",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": False,
             "seed": 123,
         }
@@ -254,7 +254,7 @@ def test_guardrail_on_done_has_meta_with_input_tokens():
             "outcome": "makes friends",
             "teaching": "generosity",
             "length": "short",
-            "model_id": "base-qwen3-4b",
+            "model_id": "base-llama32-3b-instruct",
             "guardrail_enabled": True,
         }
     )

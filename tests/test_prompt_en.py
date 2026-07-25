@@ -1,4 +1,4 @@
-from app.prompt_en import build_fable_prompt, SYSTEM_PROMPT_EN, LENGTH_NUM_PREDICT
+from app.prompt_en import build_fable_prompt, LENGTH_NUM_PREDICT
 
 
 def test_prompt_includes_filled_elements_only():
