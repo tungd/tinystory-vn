@@ -13,20 +13,18 @@ class OutputDecision:
 
 def check_output(text: str) -> OutputDecision:
     if not text.strip():
-        return OutputDecision(False, "Mô hình trả về nội dung rỗng.")
+        return OutputDecision(False, "The model returned empty content.")
 
     lowered = text.lower()
     tokens = set(re.findall(r"\w+", lowered, flags=re.UNICODE))
-    if tokens & BANNED_WORDS or any(" " in bad and bad in lowered for bad in BANNED_WORDS):
-        return OutputDecision(False, "Truyện sinh ra chứa từ ngữ không phù hợp.")
+    en_tokens = set(re.findall(r"[a-z']+", lowered))
+    if tokens & BANNED_WORDS or en_tokens & BANNED_WORDS_EN:
+        return OutputDecision(False, "The generated story contains inappropriate words.")
+    if any(" " in bad and bad in lowered for bad in BANNED_WORDS):
+        return OutputDecision(False, "The generated story contains inappropriate words.")
 
     return OutputDecision(True, "")
 
 
 def check_output_en(text: str) -> OutputDecision:
-    if not text.strip():
-        return OutputDecision(False, "The model returned empty content.")
-    toks = set(re.findall(r"[a-z']+", text.lower()))
-    if toks & BANNED_WORDS_EN:
-        return OutputDecision(False, "The generated story contains inappropriate words.")
-    return OutputDecision(True, "")
+    return check_output(text)

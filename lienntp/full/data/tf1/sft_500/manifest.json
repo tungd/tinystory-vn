@@ -1,0 +1,6 @@
+{
+  "total": 500,
+  "train": 450,
+  "valid": 50,
+  "instruction": "Write a short English fable for children with a clear moral."
+}

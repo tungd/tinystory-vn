@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="620" viewBox="0 0 1180 620">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="590.0" y="35" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700">Human Evaluation - Fluency SFT v1</text>
+<line x1="90" y1="490.0" x2="1150" y2="490.0" stroke="#e5e7eb"/>
+<text x="78" y="494.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">0.0</text>
+<line x1="90" y1="406.0" x2="1150" y2="406.0" stroke="#e5e7eb"/>
+<text x="78" y="410.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">1.0</text>
+<line x1="90" y1="322.0" x2="1150" y2="322.0" stroke="#e5e7eb"/>
+<text x="78" y="326.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">2.0</text>
+<line x1="90" y1="238.0" x2="1150" y2="238.0" stroke="#e5e7eb"/>
+<text x="78" y="242.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">3.0</text>
+<line x1="90" y1="154.0" x2="1150" y2="154.0" stroke="#e5e7eb"/>
+<text x="78" y="158.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">4.0</text>
+<line x1="90" y1="70.0" x2="1150" y2="70.0" stroke="#e5e7eb"/>
+<text x="78" y="74.0" text-anchor="end" font-family="Arial" font-size="12" fill="#374151">5.0</text>
+<rect x="90" y="580" width="14" height="14" fill="#2563eb"/>
+<text x="110" y="592" font-family="Arial" font-size="13" fill="#111827">Fluency</text>
+<rect x="280" y="580" width="14" height="14" fill="#16a34a"/>
+<text x="300" y="592" font-family="Arial" font-size="13" fill="#111827">Adherence</text>
+<rect x="470" y="580" width="14" height="14" fill="#f59e0b"/>
+<text x="490" y="592" font-family="Arial" font-size="13" fill="#111827">Structure</text>
+<rect x="660" y="580" width="14" height="14" fill="#dc2626"/>
+<text x="680" y="592" font-family="Arial" font-size="13" fill="#111827">Moral</text>
+<rect x="850" y="580" width="14" height="14" fill="#7c3aed"/>
+<text x="870" y="592" font-family="Arial" font-size="13" fill="#111827">Safety</text>
+<rect x="1040" y="580" width="14" height="14" fill="#0891b2"/>
+<text x="1060" y="592" font-family="Arial" font-size="13" fill="#111827">Overall</text>
+</svg>
