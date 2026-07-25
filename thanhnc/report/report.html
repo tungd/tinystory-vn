@@ -201,7 +201,10 @@
           linear projections across all layers (C). Validation perplexity falls from <strong>9.52</strong> (base) to
           <strong>3.84</strong> (C), and readability moves from effectively unreadable to age-appropriate. The two
           contrasts answer the title: adapting <em>all</em> layers beats the last third, but the larger win by far comes
-          from breadth — adding the <strong>MLP</strong> projections. The project is a deliberate counterpoint to a
+          from breadth — adding the <strong>MLP</strong> projections. A four-axis LLM judge (n = 50/arm) reproduces that
+          ranking from independent assumptions (<strong>C 6.87 &gt; A 6.70 &gt; B 5.94 &gt; base 5.73</strong>) and
+          sharpens one thing perplexity got wrong: the last-third placement is no cheap near-equal, since its prompt
+          adherence (4.78) drops <em>below</em> the untrained base (5.08). The project is a deliberate counterpoint to a
           sibling project that pretrains its model from scratch, and is delivered end-to-end: trained, evaluated,
           exported to GGUF, and served through Ollama inside that sibling's application.</p>
       </div>
@@ -224,8 +227,10 @@
           matters more, the <em>layers</em> the adapters span or the <em>modules</em> they attach to?</strong></p></div></div>
         <p><strong>Contributions.</strong> (1) A controlled single-variable ablation of LoRA placement for narrative
           generation on a 135M model, isolating the layer-depth axis (A vs. B) and the module-breadth axis (A vs. C);
-          (2) a quantitative result — <strong>module breadth dominates layer depth</strong> for this task; (3) a
-          complete, reproducible pipeline with a GGUF→Ollama export into a sibling application.</p>
+          (2) a quantitative result — <strong>module breadth dominates layer depth</strong> for this task; (3) two
+          independent instruments on the same four arms, perplexity and a four-axis LLM judge, which agree on the
+          ranking and disagree informatively about the cost of restricting layers; (4) a complete, reproducible pipeline
+          with a GGUF→Ollama export into a sibling application.</p>
       </section>
 
       <section class="sec" id="bg">
@@ -358,8 +363,12 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
           <li><strong>Reference-free metrics</strong> on 100 sampled generations/arm (temp 0.8, top-p 0.9, rep-pen 1.3,
             seeded): <strong>Distinct-1/2</strong> (lexical diversity), <strong>Self-BLEU</strong> (intra-set redundancy;
             lower = more diverse), <strong>Flesch Reading Ease</strong> (higher = easier; below 0 = unreadable).</li>
-          <li><strong>LLM-as-judge (planned)</strong> — a single local judge over the paper's four axes; deferred as a
-            stretch goal. (ADR-0003.)</li>
+          <li><strong>LLM-as-judge</strong> — a single local judge over the paper's four axes (grammar, creativity,
+            moral clarity, prompt adherence), each 1–10, overall = mean of the four. Judge is
+            <strong>Qwen2.5-7B-Instruct</strong> in 4-bit (bitsandbytes) on a Colab L4, greedy decoding, JSON-only
+            rubric; <strong>n = 50</strong> generations/arm (first 50 rows of the same held-out sample), max 400 new
+            tokens, seeded. One judge, not a panel (ADR-0003), and deliberately <em>not</em> the app-level Qwen3-4B
+            judge — these scores are comparable across our four arms only.</li>
         </ul>
       </section>
 
@@ -406,10 +415,39 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
             labelled.</figcaption>
         </figure>
 
+        <h3>6.1 &nbsp;LLM-as-judge</h3>
+        <p>The same four configurations scored by the local four-axis judge (n = 50 per arm, §<a href="#method">05.6</a>):</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Config</th><th class="num">Grammar</th><th class="num">Creativity</th><th class="num">Moral clarity</th><th class="num">Prompt adherence</th><th class="num">Overall ↑</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlabel">base<small>no fine-tune</small></td><td class="num">6.68</td><td class="num">5.24</td><td class="num">5.92</td><td class="num">5.08</td><td class="num">5.73</td></tr>
+            <tr><td class="rowlabel">A<small>q,v · all-30</small></td><td class="num">6.90</td><td class="num"><b>7.16</b></td><td class="num">7.12</td><td class="num">5.62</td><td class="num">6.70</td></tr>
+            <tr><td class="rowlabel">B<small>q,v · last-10</small></td><td class="num">6.02</td><td class="num">6.54</td><td class="num">6.40</td><td class="num">4.78</td><td class="num">5.94</td></tr>
+            <tr class="best"><td class="rowlabel">C<small>all-linear · all-30</small><span class="chip">best</span></td><td class="num"><b>7.36</b></td><td class="num">6.94</td><td class="num"><b>7.16</b></td><td class="num"><b>6.00</b></td><td class="num"><b>6.87</b></td></tr>
+          </tbody>
+        </table></div>
+
+        <figure>
+          <p class="fig-title">Judge overall — same ranking as perplexity</p>
+          <p class="fig-sub">higher is better · mean of four axes · n = 50 per arm · single judge</p>
+          <div class="bars">
+            <div class="bar-row"><div class="bar-label"><b>base</b><small>no fine-tune</small></div><div class="bar-track"><div class="bar-fill base" style="width:57.3%">5.73</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>A</b><small>q,v · all-30</small></div><div class="bar-track"><div class="bar-fill ft" style="width:67.0%">6.70</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>B</b><small>q,v · last-10</small></div><div class="bar-track"><div class="bar-fill ft" style="width:59.4%">5.94</div></div></div>
+            <div class="bar-row"><div class="bar-label"><b>C</b><small>all-linear · all-30</small></div><div class="bar-track"><div class="bar-fill best" style="width:68.7%">6.87</div></div></div>
+          </div>
+          <div class="gridlines"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+          <figcaption><b>Two independent instruments, one ranking: C &gt; A &gt; B &gt; base.</b> The judge shares none
+            of perplexity's assumptions, so the agreement is real corroboration. It also sees what perplexity cannot:
+            the biggest gains are on creativity (5.24 → 7.16) and moral clarity (5.92 → 7.12), while B's prompt
+            adherence (4.78) lands <em>below</em> the untrained base (5.08).</figcaption>
+        </figure>
+
         <div class="stat-grid">
           <div class="stat"><div class="v g">−60%</div><div class="l">perplexity vs. the untrained floor, <b>best config (C)</b></div></div>
           <div class="stat"><div class="v a">3.5%</div><div class="l">of the model's weights trained for that best result</div></div>
           <div class="stat"><div class="v">+119</div><div class="l">Flesch points, base → C (<b>−66 → +53</b>), unreadable to age-appropriate</div></div>
+          <div class="stat"><div class="v g">+1.14</div><div class="l">judge points overall (<b>5.73 → 6.87</b>), ranking agrees with perplexity</div></div>
         </div>
       </section>
 
@@ -422,19 +460,32 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
           randomness into coherent, templated fables. A caution follows: reference-free diversity metrics, read in
           isolation, can reward incoherence.</p>
         <div class="callout finding"><span class="tag">Layers</span><div class="body"><p><strong>A vs. B — adapting all
-          layers beats the last third (PPL 4.82 vs. 5.46).</strong> Coverage helps. But B recovers ~85% of A's
-          improvement over base while adapting only <em>one third</em> as many layers (≈ 0.3M vs. ≈ 0.9M params) — a
-          defensible efficiency trade when budget is the binding constraint.</p></div></div>
+          layers beats the last third (PPL 4.82 vs. 5.46).</strong> Coverage helps. On perplexity alone the gap looks
+          forgiving: B recovers ~85% of A's improvement over base while adapting only <em>one third</em> as many layers
+          (≈ 0.3M vs. ≈ 0.9M params), which reads as a defensible efficiency trade.</p></div></div>
+        <div class="callout finding"><span class="tag">Layers · judge disagrees</span><div class="body"><p><strong>The
+          judge disagrees, and only here.</strong> B scores 5.94 against A's 6.70 and loses on <em>every</em> axis; its
+          prompt adherence (4.78) is the one number in the study that falls <strong>below the untrained base</strong>
+          (5.08). Confining adapters to the last ten layers does not merely capture less of the gain, it appears to
+          <em>cost</em> prompt-following. Recovering 85% of the perplexity gap is not recovering 85% of the quality gap:
+          perplexity averages over every token, so a model can predict a fable's ordinary tokens well while failing on
+          the few that carry the five slots. The efficiency trade holds for <em>modelling</em>, not for generated
+          quality — a perplexity-only report would have recommended B on a false premise.</p></div></div>
         <div class="callout finding"><span class="tag">Modules</span><div class="body"><p><strong>A vs. C — all-linear
           crushes attention-only (PPL 3.84 vs. 4.82, ≈ 20% lower).</strong> The single largest gain in the study comes
           from adding adapters to the <strong>MLP</strong> projections, not from more layers. Module <em>breadth</em>
           matters more than layer <em>depth</em> — plausibly because the MLP sublayers carry much of the capacity for the
-          surface-level lexical patterns a narrow generation task leans on.</p></div></div>
+          surface-level lexical patterns a narrow generation task leans on. The judge concurs, more modestly: C leads on
+          three of four axes (grammar 7.36 vs. 6.90, moral clarity 7.16 vs. 7.12, adherence 6.00 vs. 5.62) for 6.87 vs.
+          6.70 overall; A holds <em>creativity</em> (7.16 vs. 6.94).</p></div></div>
         <h3>7.4 &nbsp;Best configuration, and a trade-off</h3>
         <p><strong>C</strong> (all-linear, all layers) is best at PPL 3.84 and richest in vocabulary (Distinct-1 0.210);
-          it is exported as <code>tsv3-smollm135-best</code>. A subtlety: C wins on modelling while <strong>A</strong>
-          scores highest on Flesch readability (57.7 vs. 52.8). For the pedagogical target, C's stronger modelling is the
-          headline; A is a lightweight runner-up when compute is scarce.</p>
+          it is exported as <code>tsv3-smollm135-best</code>. C is best on <em>both</em> instruments (PPL 3.84, judge
+          6.87). A subtlety: <strong>A</strong> scores highest on Flesch readability (57.7 vs. 52.8) and on the judge's
+          creativity axis (7.16 vs. 6.94), so the all-linear model writes slightly denser, more conventional prose while
+          modelling the task better. For the pedagogical target, C's modelling plus its lead on grammar, moral clarity
+          and adherence is the headline; A is a lightweight runner-up when compute is scarce, and the more interesting
+          of the two if creative variety is what is being optimised.</p>
         <h3>7.5 &nbsp;Qualitative check</h3>
         <p>Driving the exported models on an unseen prompt (<em>a brave little turtle · a quiet pond · a sudden storm ·
           the animals work together · teamwork overcomes fear</em>) shows the difference concretely. The <strong>base</strong>
@@ -490,8 +541,13 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
             intervals (though the PPL gaps are comfortably separated).</li>
           <li><strong>Incomplete 2×2.</strong> The missing <code>all-linear × last-third</code> cell would test for an
             interaction between the two axes.</li>
-          <li><strong>No judge panel yet.</strong> The four-axis LLM-as-judge is deferred; conclusions rest on perplexity
-            and reference-free metrics.</li>
+          <li><strong>Single judge, no panel, no measured noise.</strong> One model (Qwen2.5-7B-Instruct, 4-bit) at
+            n = 50/arm, and we did not re-score an arm to measure run-to-run noise. Read individual scores as
+            indicative; the <em>ranking</em> is the robust signal. Inter-judge agreement across model families is
+            unmeasured, and the judge is lenient on base grammar (6.68 for text Flesch calls unreadable), which is why
+            base's overall (5.73) is not as low as the perplexity gap suggests.</li>
+          <li><strong>Judge scores are not portable.</strong> They come from our own judge and rubric — comparable
+            across our four arms only, never against the app-level Qwen3-4B judge or another study.</li>
           <li><strong>Prompt-format mismatch downstream.</strong> Adapters trained on TF1's wording may score lower when
             driven by tinystory-vn's slightly different prompt. Accepted (ADR-0004).</li>
           <li><strong>Light data shuffle.</strong> A 10k-buffer streaming shuffle over the 50k subset — deterministic and
@@ -529,9 +585,15 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
           <strong>module breadth</strong> — attaching adapters to the MLP projections, not just attention, drives the best
           result (PPL 3.84, a 60% reduction from the untrained floor) while training only 3.5% of the model. A tiny,
           pretrained model plus well-placed low-rank adapters turns unreadable output into age-appropriate fables.</p>
-        <p><strong>Future work:</strong> run the four-axis judge to corroborate the ranking; sweep the rank to separate
-          placement from capacity; complete the 2×2 to test for interaction; and use the exported models for a
-          quantitative small-vs-large comparison against the 4B sibling.</p>
+        <p>Two instruments stand behind that answer: a four-axis LLM judge reproduces the perplexity ranking
+          (C 6.87 &gt; A 6.70 &gt; B 5.94 &gt; base 5.73) without sharing its assumptions. Where they part company is
+          itself a result — perplexity flatters the last-third placement, whose prompt adherence the judge puts
+          <em>below</em> the untrained base. <strong>A likelihood metric averaged over every token can miss a failure
+          concentrated in the few tokens that carry the task.</strong></p>
+        <p><strong>Future work:</strong> measure the judge's own noise by re-scoring one arm twice, and add a judge from
+          a different model family, before treating any sub-point gap as real; sweep the rank to separate placement from
+          capacity; complete the 2×2 to test for interaction; and compare the exported models against the sibling
+          project's models under its app-level judge.</p>
       </section>
 
       <section class="sec" id="refs">
