@@ -21,7 +21,7 @@ cùng cấu hình đó nhưng chỉ ở **1/3 layer cuối** (**B**), và **cả
 từ **−66** (gần như không đọc được) lên **+53** (phù hợp lứa tuổi). Hai phép so sánh một-biến trả lời đúng tiêu đề:
 đặt adapter trên *toàn bộ* layer thắng cấu hình 1/3 layer cuối (4.82 so với 5.46), nhưng phần thắng lớn nhất đến từ
 **độ rộng module** — thêm adapter cho các projection **MLP** (3.84 so với 4.82). Dự án được đặt như một **góc tiếp
-cận đối lập có chủ đích** với dự án đồng hành vốn full fine-tune một model 4 tỷ tham số; nó đánh đổi chất lượng tuyệt
+cận đối lập có chủ đích** với dự án đồng hành vốn pretrain model của mình từ đầu; nó đánh đổi chất lượng tuyệt
 đối để đổi lấy một góc nhìn có kiểm soát về hiệu quả đặt adapter, và được triển khai đầy đủ: huấn luyện, đánh giá,
 export sang GGUF, và phục vụ qua Ollama ngay trong ứng dụng của dự án đồng hành.
 
@@ -119,10 +119,17 @@ model:
 ## 4 · Định vị: khác gì so với `tinystory-vn`
 
 Dự án này là một góc đối lập có chủ đích với dự án đồng hành `tinystory-vn`, vốn nhắm cùng dataset và văn phong đích
-nhưng từ đầu kia của không gian thiết kế. Dự án đó **full fine-tune một model 4 tỷ tham số** (Qwen3-4B, SFT + ORPO)
-và đặt đóng góp ở **ứng dụng và phương pháp đánh giá** — một app có streaming, guardrail nhiều lớp và panel
-LLM-as-judge. Chúng tôi chủ đích đi nhỏ và biến **câu hỏi nội tại của model về vị trí đặt adapter** thành trọng tâm
-— một trục mà dự án kia không hề khảo sát. Hai hướng bổ sung cho nhau; §7.6 đặt các góc cạnh nhau.
+nhưng từ đầu kia của không gian thiết kế. Dự án đó **tự dựng prior từ đầu**: một decoder kiểu Llama 30M pretrain
+trên TF1 với tokenizer 12k riêng, sau đó là chiến dịch năm phương pháp post-training (DPO, SFT-on-best, RAFT,
+GRPO-lite, distillation) chạy dưới cùng một protocol LLM-judge cố định, và cuối cùng là model 60M huấn luyện trên
+toàn bộ kho 2.34 triệu truyện — model được chốt cho ứng dụng. Đóng góp của họ là đường cong huấn luyện from-scratch
+đó, chiến dịch có kiểm chứng (bốn kết quả null và một kết quả âm, được báo cáo như phát hiện chính danh) và ứng dụng
+đã triển khai (guardrail, judge, chế độ Compare), trong đó Qwen3-4B vừa là mốc tham chiếu model lớn vừa là giám khảo.
+
+Chúng tôi xuất phát từ tiền đề ngược lại: **kế thừa một prior thay vì tự dựng**, và biến **câu hỏi nội tại của model
+về vị trí đặt adapter** thành trọng tâm — adapter nên gắn vào layer nào, module nào. Trục đó chỉ tồn tại khi model
+nền bị đóng băng, nên về mặt cấu trúc nó vắng mặt trong một dự án from-scratch. Hai hướng bổ sung cho nhau; §7.6 đặt
+các góc cạnh nhau.
 
 ---
 
@@ -282,15 +289,20 @@ lệch định dạng prompt nói ở §9, nhưng đầu ra rõ ràng là một 
 
 | Góc | tinystories_v3 (dự án này) | tinystory-vn |
 |---|---|---|
-| Kích cỡ model nền | 135M | 4B (lớn hơn ≈ 30×) |
-| Cách thích nghi | LoRA, nghiên cứu vị trí đặt adapter | full SFT + ORPO |
-| Câu hỏi nghiên cứu | đặt adapter ở layer/module nào | app + phương pháp đánh giá |
-| Compute | 1× L4, vài phút/arm | lớn hơn đáng kể |
-| Bàn giao | adapter GGUF cắm vào app của họ | app FastAPI + React đầy đủ + guardrail + judge |
+| Prior | **kế thừa** — SmolLM2-135M pretrained | **tự dựng từ đầu** — 30M, rồi 60M trên full TF1 |
+| Cách thích nghi | LoRA; ablation vị trí đặt adapter (4 arm) | đường cong pretrain + 5 phương pháp post-training |
+| Câu hỏi nghiên cứu | *đặt* capacity huấn luyện được ở đâu | SLM from-scratch đẩy được tới đâu |
+| Tham số được huấn luyện | 3.5% của 135M (≈ 4.9M) | 100% của 30M / 60M |
+| Ngân sách huấn luyện | 100k mẫu fable, vài phút/arm trên 1× L4 | 934M token, 10.000 bước (60M), Colab T4 |
+| Metric chính | perplexity val (teacher-forced, có mask) | LLM-judge, 4 trục, seed bắt cặp, n = 45 |
+| Khả năng điều khiển | prompt có điều kiện 5 slot | prompt có điều kiện 5 slot |
+| Bàn giao | adapter GGUF đăng ký trong app của họ | app FastAPI + React đầy đủ + guardrail + judge |
 
 Bản demo dự kiến rất trực diện: adapter tốt nhất (và base) được gộp, chuyển sang GGUF, và đăng ký trong danh sách
-model Ollama của `tinystory-vn`, để chế độ **Compare** hiện có đặt bản fine-tune 135M của chúng tôi cạnh model 4B —
-một so sánh trực tiếp "nhỏ hơn ~30×, gần được đến đâu?". (Xem ADR-0004.)
+model Ollama của `tinystory-vn`, để chế độ **Compare** hiện có đặt bản fine-tune 135M của chúng tôi cạnh cả mốc 4B
+(lớn hơn ≈ 30×) lẫn model 60M from-scratch của họ. Thực tế judge trong app là thước đo công bằng *duy nhất* giữa hai
+dự án: perplexity không so được với nhau khi một bên dùng BPE 12k tự huấn luyện còn một bên dùng vocab 49k của
+SmolLM2, trong khi judge chấm cùng bộ prompt qua cùng một dụng cụ đo. (Xem ADR-0004.)
 
 ---
 
@@ -357,7 +369,8 @@ export cho một so sánh định lượng nhỏ-so-với-lớn với model 4B �
 3. Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, Chen (2021). *LoRA: Low-Rank Adaptation of Large Language Models.*
    arXiv:2106.09685.
 4. Allal et al. (2025). *SmolLM2.* `HuggingFaceTB/SmolLM2-135M`, Hugging Face Hub.
-5. `tinystory-vn` — dự án đồng hành (Qwen3-4B, SFT + ORPO). `github.com/tungd/tinystory-vn`.
+5. `tinystory-vn` — dự án đồng hành (SLM 30M/60M from-scratch trên TF1, chiến dịch post-training có kiểm chứng,
+   app đã triển khai với Qwen3-4B làm mốc tham chiếu kiêm giám khảo). `github.com/tungd/tinystory-vn`.
 
 ---
 

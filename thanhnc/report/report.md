@@ -23,9 +23,9 @@ validation perplexity falls from **9.52** (base) to **3.84** (C), and Flesch Rea
 (effectively unreadable) to **+53** (age-appropriate). Two clean one-factor contrasts answer the title: adapting
 *all* layers beats the last third (4.82 vs. 5.46), but the dominant gain by far comes from **breadth** — adding the
 MLP projections (3.84 vs. 4.82). The project is framed as a deliberate counterpoint to a sibling project that
-full-fine-tunes a 4-billion-parameter model, trading absolute quality for a controlled look at parameter-efficient
-placement, and it is delivered end-to-end: trained, evaluated, exported to GGUF, and served through Ollama inside
-the sibling project's application.
+pretrains its model from scratch, trading absolute quality for a controlled look at parameter-efficient placement,
+and it is delivered end-to-end: trained, evaluated, exported to GGUF, and served through Ollama inside the sibling
+project's application.
 
 ---
 
@@ -132,11 +132,18 @@ output — reads:
 ## 4 · Positioning: how this differs from `tinystory-vn`
 
 This project is a deliberate counterpoint to a sibling course project, `tinystory-vn`, which targets the same
-dataset and output style from the opposite end of the design space. That project **full-fine-tunes a 4-billion-
-parameter model** (Qwen3-4B, SFT + ORPO) and centres its contribution on the **application and evaluation
-methodology** — a served app with a multi-layer guardrail and an LLM-judge panel. We deliberately go small and make
-the **model-internal placement question** the object of study, an axis that project never explores. The two are
-complementary; §8.6 lays the angles side by side.
+dataset and output style from the opposite end of the design space. That project **builds its prior from scratch**:
+a Llama-style 30M decoder pretrained on TF1 with its own 12k tokenizer, then a five-method post-training campaign
+(DPO, SFT-on-best, RAFT, GRPO-lite, distillation) run under one fixed LLM-judge protocol, and finally a 60M model
+trained on the full 2.34M-fable corpus that becomes the app's shipped model. Its contributions are that
+from-scratch training curve, the judged campaign — four null results and one negative, reported as first-class
+findings — and the served application (guardrail, judge, Compare mode) in which Qwen3-4B acts as both the
+large-model reference and the judge.
+
+We start from the opposite premise: **inherit a prior rather than build one**, and make the **model-internal
+placement question** the object of study — which layers, which modules receive the adapters. That axis only comes
+into existence once a pretrained base is frozen, so it is structurally absent from a from-scratch project. The two
+are complementary; §7.6 lays the angles side by side.
 
 ---
 
@@ -315,16 +322,20 @@ the prompt-format nuance discussed in §9, but the output is unmistakably a cohe
 
 | Angle | `tinystories_v3` (this) | `tinystory-vn` |
 |---|---|---|
-| Base size | 135M | 4B (≈ 30× larger) |
-| Adaptation | LoRA, adapter-placement study | full SFT + ORPO |
-| Research question | which layers / modules to adapt | app + evaluation methodology |
-| Compute | 1× L4, minutes per arm | substantially larger |
+| Prior | **inherited** — pretrained SmolLM2-135M | **built from scratch** — 30M, then 60M on full TF1 |
+| Adaptation | LoRA; adapter-placement ablation (4 arms) | pretraining curve + 5 post-training methods |
+| Research question | *where* trainable capacity should sit | how far a from-scratch SLM can be pushed |
+| Trained parameters | 3.5% of 135M (≈ 4.9M) | 100% of 30M / 60M |
+| Training budget | 100k fable-examples, minutes per arm on 1× L4 | 934M tokens, 10,000 steps (60M), Colab T4 |
+| Primary metric | val perplexity (teacher-forced, masked) | LLM-judge, 4 axes, paired seeds, n = 45 |
 | Controllability | 5-slot conditional prompt | 5-slot conditional prompt |
-| Delivery | GGUF adapters imported into their app | full FastAPI + React app + guardrail + judge |
+| Delivery | GGUF adapters registered in their app | full FastAPI + React app + guardrail + judge |
 
 The intended demo is literal: the best adapter (and the base) are merged, converted to GGUF, and registered in
 `tinystory-vn`'s Ollama model list, so its existing **Compare** mode can put our 135M fine-tune head-to-head against
-their 4B model — a live "30× smaller, how close?" comparison. (See ADR-0004.)
+both their 4B reference (≈ 30× larger) and their from-scratch 60M. That app-level judge is in fact the *only* fair
+yardstick between the two projects: the perplexities are not comparable across a 12k custom BPE and SmolLM2's 49k
+vocabulary, whereas the judge scores the same prompts through the same instrument. (See ADR-0004.)
 
 ---
 
@@ -399,7 +410,8 @@ interaction; and use the exported models for a quantitative small-vs-large compa
 3. Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, Chen (2021). *LoRA: Low-Rank Adaptation of Large Language Models.*
    arXiv:2106.09685.
 4. Allal et al. (2025). *SmolLM2.* `HuggingFaceTB/SmolLM2-135M`, Hugging Face Hub.
-5. `tinystory-vn` — sibling course project (Qwen3-4B, SFT + ORPO). `github.com/tungd/tinystory-vn`.
+5. `tinystory-vn` — sibling course project (from-scratch 30M/60M fable SLM on TF1, judged post-training campaign,
+   served app with Qwen3-4B as reference and judge). `github.com/tungd/tinystory-vn`.
 
 ---
 

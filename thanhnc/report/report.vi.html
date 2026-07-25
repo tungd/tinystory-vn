@@ -183,7 +183,7 @@
           đi từ gần như không đọc được đến phù hợp lứa tuổi. Hai phép so sánh trả lời tiêu đề: đặt adapter trên
           <em>toàn bộ</em> layer thắng 1/3 layer cuối, nhưng phần thắng lớn nhất đến từ <strong>độ rộng module</strong>
           — thêm adapter cho các projection <strong>MLP</strong>. Dự án là một góc đối lập có chủ đích với một dự án
-          fine-tune model 4 tỷ tham số, và được bàn giao đầy đủ: huấn luyện, đánh giá, export sang GGUF, phục vụ qua
+          pretrain model từ đầu, và được bàn giao đầy đủ: huấn luyện, đánh giá, export sang GGUF, phục vụ qua
           Ollama ngay trong ứng dụng của dự án đồng hành.</p>
       </div>
 
@@ -264,11 +264,17 @@
       <section class="sec" id="position">
         <h2><span class="num">04</span>Định vị vs. tinystory-vn</h2>
         <p>Dự án này là góc đối lập có chủ đích với dự án đồng hành <code>tinystory-vn</code>, vốn nhắm cùng dataset và
-          văn phong đích nhưng từ đầu kia của không gian thiết kế. Dự án đó <strong>full fine-tune một model 4 tỷ tham
-          số</strong> (Qwen3-4B, SFT + ORPO) và đặt đóng góp ở <strong>ứng dụng và phương pháp đánh giá</strong> — app
-          có guardrail nhiều lớp và panel LLM-judge. Ta chủ đích đi nhỏ và biến <strong>câu hỏi nội tại của model về vị
-          trí đặt adapter</strong> thành trọng tâm — trục mà dự án kia không khảo sát. §<a href="#analysis">07.6</a>
-          đặt các góc cạnh nhau.</p>
+          văn phong đích nhưng từ đầu kia của không gian thiết kế. Dự án đó <strong>tự dựng prior từ đầu</strong>: một
+          decoder kiểu Llama 30M pretrain trên TF1 với tokenizer 12k riêng, sau đó là chiến dịch năm phương pháp
+          post-training (DPO, SFT-on-best, RAFT, GRPO-lite, distillation) dưới cùng một protocol LLM-judge cố định, và
+          cuối cùng là model 60M huấn luyện trên toàn bộ kho 2.34 triệu truyện — model được chốt cho ứng dụng. Đóng góp
+          của họ là đường cong huấn luyện from-scratch đó, chiến dịch có kiểm chứng (bốn kết quả null và một kết quả
+          âm, báo cáo như phát hiện chính danh) và ứng dụng đã triển khai (guardrail, judge, Compare), trong đó
+          Qwen3-4B vừa là mốc tham chiếu model lớn vừa là giám khảo.</p>
+        <p>Ta xuất phát từ tiền đề ngược lại: <strong>kế thừa một prior thay vì tự dựng</strong>, và biến <strong>câu
+          hỏi nội tại của model về vị trí đặt adapter</strong> thành trọng tâm — adapter gắn vào layer nào, module nào.
+          Trục đó chỉ tồn tại khi model nền bị đóng băng, nên về mặt cấu trúc nó vắng mặt trong một dự án
+          from-scratch. §<a href="#analysis">07.6</a> đặt các góc cạnh nhau.</p>
       </section>
 
       <section class="sec" id="method">
@@ -420,13 +426,20 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
         <div class="tablewrap"><table>
           <thead><tr><th>Góc</th><th>tinystories_v3 (dự án này)</th><th>tinystory-vn</th></tr></thead>
           <tbody>
-            <tr><td class="rowlabel">Kích cỡ model nền</td><td>135M</td><td>4B <span style="color:var(--faint)">(lớn hơn ≈ 30×)</span></td></tr>
-            <tr><td class="rowlabel">Cách thích nghi</td><td>LoRA, nghiên cứu vị trí đặt adapter</td><td>full SFT + ORPO</td></tr>
-            <tr><td class="rowlabel">Câu hỏi nghiên cứu</td><td>đặt adapter ở layer/module nào</td><td>app + phương pháp đánh giá</td></tr>
-            <tr><td class="rowlabel">Compute</td><td>1× L4, vài phút/arm</td><td>lớn hơn đáng kể</td></tr>
-            <tr><td class="rowlabel">Bàn giao</td><td>adapter GGUF cắm vào app của họ</td><td>app FastAPI + React + guardrail + judge</td></tr>
+            <tr><td class="rowlabel">Prior</td><td><b>kế thừa</b> — SmolLM2-135M pretrained</td><td><b>tự dựng từ đầu</b> — 30M, rồi 60M trên full TF1</td></tr>
+            <tr><td class="rowlabel">Cách thích nghi</td><td>LoRA; ablation vị trí đặt adapter (4 arm)</td><td>đường cong pretrain + 5 phương pháp post-training</td></tr>
+            <tr><td class="rowlabel">Câu hỏi nghiên cứu</td><td><i>đặt</i> capacity huấn luyện được ở đâu</td><td>SLM from-scratch đẩy được tới đâu</td></tr>
+            <tr><td class="rowlabel">Tham số được huấn luyện</td><td>3.5% của 135M (≈ 4.9M)</td><td>100% của 30M / 60M</td></tr>
+            <tr><td class="rowlabel">Ngân sách huấn luyện</td><td>100k mẫu fable, vài phút/arm trên 1× L4</td><td>934M token, 10.000 bước (60M), Colab T4</td></tr>
+            <tr><td class="rowlabel">Metric chính</td><td>perplexity val (teacher-forced, có mask)</td><td>LLM-judge, 4 trục, seed bắt cặp, n = 45</td></tr>
+            <tr><td class="rowlabel">Bàn giao</td><td>adapter GGUF đăng ký trong app của họ</td><td>app FastAPI + React + guardrail + judge</td></tr>
           </tbody>
         </table></div>
+        <p>Bản demo rất trực diện: adapter tốt nhất (và base) được gộp, chuyển sang GGUF và đăng ký trong danh sách
+          model Ollama của <code>tinystory-vn</code>, để chế độ <strong>Compare</strong> đặt bản fine-tune 135M cạnh cả
+          mốc 4B (lớn hơn ≈ 30×) lẫn model 60M from-scratch của họ. Thực tế judge trong app là thước đo công bằng
+          <i>duy nhất</i> giữa hai dự án: perplexity không so được với nhau khi một bên dùng BPE 12k tự huấn luyện còn
+          một bên dùng vocab 49k của SmolLM2, trong khi judge chấm cùng bộ prompt qua cùng một dụng cụ đo.</p>
       </section>
 
       <section class="sec" id="deploy">
@@ -504,7 +517,9 @@ loss   =  −(1/N) · Σ_{t: label_t ≠ −100}  log p(label_t | x_&lt;t)</code
             English?</i> arXiv:2305.07759.</li>
           <li><b>Hu et al. (2021).</b> <i>LoRA: Low-Rank Adaptation of Large Language Models.</i> arXiv:2106.09685.</li>
           <li><b>Allal et al. (2025).</b> <i>SmolLM2.</i> <code>HuggingFaceTB/SmolLM2-135M</code>, Hugging Face Hub.</li>
-          <li><b>tinystory-vn</b> — dự án đồng hành (Qwen3-4B, SFT + ORPO). <code>github.com/tungd/tinystory-vn</code>.</li>
+          <li><b>tinystory-vn</b> — dự án đồng hành (SLM 30M/60M from-scratch trên TF1, chiến dịch post-training có kiểm
+            chứng, app đã triển khai với Qwen3-4B làm mốc tham chiếu kiêm giám khảo).
+            <code>github.com/tungd/tinystory-vn</code>.</li>
         </ol>
         <h3>Phụ lục A · Cấu hình chính xác</h3>
         <pre><code><span class="cmt"># model nền</span>
