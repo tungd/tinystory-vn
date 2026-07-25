@@ -375,14 +375,17 @@ câu đó nhưng đổi tiền đề: thay vì tự dựng prior, **kế thừa 
 | Tham số cập nhật | 100% (59.6M) | **3.5%** (~4.9M trên nền 134.5M) |
 | Phần cứng | Colab T4, 4 phiên resume | 1x L4, vài phút mỗi arm |
 | PPL held-out | 2.87 (60M), 3.56 (30M-p2) | 9.52 (chưa fine-tune) xuống **3.84** |
-| LLM-judge | 8.96 ở n=45 | chưa chấm (hoãn có chủ đích) |
+| LLM-judge | 8.96 ở n=45 (judge Qwen3-4B) | 6.87 ở n=50 (judge Qwen2.5-7B) |
 
-**Cảnh báo so sánh.** Hai cột PPL **không so trực tiếp được**: tokenizer khác nhau (BPE 12k
-tự huấn luyện so với vocab 49.152 của SmolLM2), tập held-out khác nhau, cách mask khác
-nhau. Perplexity là đại lượng phụ thuộc tokenizer, nên "2.87 tốt hơn 3.84" là một phát biểu
-vô nghĩa nếu đọc thẳng. Thước đo công bằng duy nhất hiện có giữa hai đồ án là **judge trong
-ứng dụng**, chấm cùng bộ prompt qua cùng một dụng cụ đo (cả hai mô hình đều đã nằm trong
-`config/models.json`).
+**Cảnh báo so sánh, cho cả hai hàng cuối.** Hai cột PPL **không so trực tiếp được**:
+tokenizer khác nhau (BPE 12k tự huấn luyện so với vocab 49.152 của SmolLM2), tập held-out
+khác nhau, cách mask khác nhau. Perplexity là đại lượng phụ thuộc tokenizer, nên "2.87 tốt
+hơn 3.84" là một phát biểu vô nghĩa nếu đọc thẳng. Hai cột judge **cũng không so được**, và
+vì đúng một lý do cùng loại: 8.96 do judge Qwen3-4B của ứng dụng chấm, 6.87 do một judge
+Qwen2.5-7B-Instruct cục bộ chấm với rubric riêng; điểm số của hai giám khảo khác nhau không
+nằm trên cùng một thang. Thước đo công bằng duy nhất hiện có giữa hai đồ án vẫn là **judge
+trong ứng dụng**, chấm cùng bộ prompt qua cùng một dụng cụ đo (cả hai mô hình đều đã nằm
+trong `config/models.json`, phép đo này vẫn chưa chạy).
 
 **Đọc kết quả.** Cả hai đường đều nâng được sàn, với chi phí lệch nhau hàng bậc độ lớn. Điều
 đáng chú ý là kết quả này **không mâu thuẫn** với kết luận của Mục 4.1 mà củng cố nó: sàn
@@ -439,18 +442,35 @@ hỏi.
 
 | | Báo cáo này | Đồ án song song |
 |---|---|---|
-| Dụng cụ | LLM-judge 4 trục | perplexity teacher-forced, mask completion |
-| Chi phí | ~15 giây một lần gọi | miễn phí, không cần API |
-| Kiểm soát nhiễu | tự đo nhiễu +-0.4 ở n=15, seed bắt cặp, xác nhận ở n=45 | một seed, ước lượng điểm, không khoảng tin cậy |
+| Dụng cụ chính | LLM-judge 4 trục (Qwen3-4B) | perplexity teacher-forced, mask completion |
+| Dụng cụ phụ | perplexity held-out | LLM-judge 4 trục (Qwen2.5-7B, n=50/arm) |
+| Chi phí | ~15 giây một lần gọi judge | perplexity miễn phí; judge chạy cục bộ 4-bit |
+| Kiểm soát nhiễu | tự đo nhiễu +-0.4 ở n=15, seed bắt cặp, xác nhận ở n=45 | một seed, ước lượng điểm, **chưa đo nhiễu judge** |
 | Hệ quả | số arm bị chặn bởi ngân sách judge (Mục 3.5) | so được 4 arm dưới cùng một ngân sách |
-| Điểm mù | thiên lệch judge đơn | không biết truyện có hay không |
+| Điểm mù | thiên lệch judge đơn | perplexity không biết truyện có hay không |
 
 Hai dụng cụ bổ sung cho nhau theo đúng nghĩa quy trình: **perplexity sàng lọc không gian
-thiết kế rẻ, protocol judge mới là thứ xác nhận một kết luận.** Cụ thể, quy tắc ở Mục 3.4
-(tự đo nhiễu, seed bắt cặp, xác nhận ở n=45) chính là mảnh còn thiếu của bảng xếp hạng
-3.84 / 4.82 / 5.46 phía trên, vốn là ước lượng điểm từ một seed duy nhất; ngược lại, một
-bước sàng bằng perplexity có thể giúp chiến dịch ở Mục 3 so nhiều arm hơn trong cùng ngân
-sách judge.
+thiết kế rẻ, protocol judge mới là thứ xác nhận một kết luận.** Đồ án song song vừa chạy
+judge của họ trên cả bốn arm, và kết quả đó nói được hai điều cùng lúc.
+
+**Thứ nhất, nó biện minh cho việc dùng perplexity làm bước sàng.** Xếp hạng theo judge
+(C 6.87 > A 6.70 > B 5.94 > base 5.73) **trùng khớp** xếp hạng theo perplexity
+(3.84 < 4.82 < 5.46 < 9.52), tức một chỉ báo rẻ và không cần API đã chọn đúng cấu hình
+thắng cuộc trước khi tiêu bất kỳ đồng ngân sách judge nào. Đây là bằng chứng thực nghiệm
+cho đề xuất 3 ở Mục 6.5.
+
+**Thứ hai, và quan trọng hơn, nó cho thấy chỗ perplexity đánh lừa.** Cấu hình B (adapter chỉ
+ở 1/3 layer cuối) theo perplexity lấy lại ~85% phần cải thiện với 1/3 số tham số, đọc như
+một món hời; theo judge, B thua trên **cả bốn trục**, và điểm bám prompt của nó (4.78) còn
+**thấp hơn cả mô hình chưa fine-tune** (5.08). Cách hoà giải liên quan trực tiếp tới báo cáo
+này: perplexity lấy trung bình trên mọi token, nên nó có thể bỏ sót một thất bại **tập trung
+ở số ít token mang bài toán**, mà ở đây chính là các token phải tôn trọng 5 slot của prompt.
+Chiến dịch ở Mục 3 đo prompt-adherence như một trục riêng của judge thay vì suy ra từ loss,
+và kết quả này là bằng chứng độc lập cho thấy lựa chọn đó đúng.
+
+Chiều ngược lại vẫn giữ nguyên: quy tắc ở Mục 3.4 (tự đo nhiễu, seed bắt cặp, xác nhận ở
+n=45) chính là mảnh còn thiếu của cả hai bảng xếp hạng phía trên, vốn là ước lượng điểm từ
+một seed và một judge chưa đo nhiễu.
 
 Một bài học nhỏ đi kèm, hữu ích cho biểu đồ metric nội tại ở Mục 2.3: trong đồ án song song,
 mô hình **chưa fine-tune** lại có Distinct-1 **cao nhất** (0.557) và Self-BLEU **thấp nhất**
@@ -463,12 +483,15 @@ thể chỉ là "kém mạch lạc hơn".
 1. **Đo một mốc PEFT trên mô hình nền có sẵn** để định giá đúng kết luận "nâng sàn bằng
    pretraining": cùng judge, cùng bộ prompt, đặt `slm-60m` cạnh một mô hình 135M chỉ học
    3.5% tham số. Đây là phép đo rẻ và là thứ duy nhất trả lời được câu "tự dựng prior đáng
-   giá bao nhiêu so với kế thừa".
+   giá bao nhiêu so với kế thừa". Hai con số judge hiện có (8.96 và 6.87) **không** thay
+   được phép đo này, vì chúng đến từ hai giám khảo khác nhau (Mục 6.1).
 2. **Báo cáo bits-per-character bên cạnh perplexity** khi số liệu có khả năng bị đặt cạnh
    một mô hình dùng tokenizer khác, để tránh so sánh sai như cảnh báo ở Mục 6.1.
 3. **Dùng perplexity làm bước sàng trước judge** trong các chiến dịch sau: nút chặn 15 giây
    một lần gọi judge ở Mục 3.5 là ràng buộc thật, và một chỉ báo rẻ cho phép loại sớm các
-   arm không có hy vọng trước khi tiêu ngân sách judge.
+   arm không có hy vọng trước khi tiêu ngân sách judge. Mục 6.4 cho thấy phép sàng này chọn
+   đúng thứ hạng trên bốn arm; kèm theo cảnh báo rằng nó có thể tô hồng những cấu hình hỏng
+   đúng ở phần token mang bài toán, nên bước sàng dùng để **loại**, không dùng để **chốt**.
 
 ## Tài liệu tham khảo
 

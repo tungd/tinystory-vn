@@ -20,7 +20,10 @@ cùng cấu hình đó nhưng chỉ ở **1/3 layer cuối** (**B**), và **cả
 (**C**). Trên tập held-out cố định, perplexity giảm từ **9.52** (base) xuống **3.84** (C), và độ dễ đọc Flesch tăng
 từ **−66** (gần như không đọc được) lên **+53** (phù hợp lứa tuổi). Hai phép so sánh một-biến trả lời đúng tiêu đề:
 đặt adapter trên *toàn bộ* layer thắng cấu hình 1/3 layer cuối (4.82 so với 5.46), nhưng phần thắng lớn nhất đến từ
-**độ rộng module** — thêm adapter cho các projection **MLP** (3.84 so với 4.82). Dự án được đặt như một **góc tiếp
+**độ rộng module** — thêm adapter cho các projection **MLP** (3.84 so với 4.82). Một LLM judge 4 trục (n = 50 mỗi
+arm) tái lập đúng thứ hạng đó từ những giả định độc lập — **C 6.87 > A 6.70 > B 5.94 > base 5.73** — và làm rõ một
+điểm mà perplexity đọc sai: cấu hình 1/3 layer cuối không phải lựa chọn "rẻ mà gần bằng" như nó tỏ ra, vì prompt
+adherence của nó (4.78) tụt xuống *dưới* cả model chưa huấn luyện (5.08). Dự án được đặt như một **góc tiếp
 cận đối lập có chủ đích** với dự án đồng hành vốn pretrain model của mình từ đầu; nó đánh đổi chất lượng tuyệt
 đối để đổi lấy một góc nhìn có kiểm soát về hiệu quả đặt adapter, và được triển khai đầy đủ: huấn luyện, đánh giá,
 export sang GGUF, và phục vụ qua Ollama ngay trong ứng dụng của dự án đồng hành.
@@ -49,8 +52,10 @@ chọn thêm layer nào vào model"* — mà chúng tôi hiểu chính xác là 
 
 **Đóng góp.** (1) Một ablation có kiểm soát, đổi một-biến, về vị trí đặt LoRA cho bài toán sinh tự sự trên một model
 135M, tách riêng trục *độ sâu layer* (A vs. B) và trục *độ rộng module* (A vs. C); (2) một kết quả định lượng —
-**độ rộng module lấn át độ sâu layer** cho bài toán này; (3) một pipeline hoàn chỉnh, tái lập được, kèm bước export
-GGUF → Ollama để cắm vào một ứng dụng đồng hành.
+**độ rộng module lấn át độ sâu layer** cho bài toán này; (3) **hai dụng cụ đo độc lập trên cùng bốn arm** —
+perplexity teacher-forced và một LLM judge 4 trục — đồng thuận về thứ hạng và bất đồng, một cách hữu ích, về việc
+giới hạn layer tốn kém đến đâu; (4) một pipeline hoàn chỉnh, tái lập được, kèm bước export GGUF → Ollama để cắm vào
+một ứng dụng đồng hành.
 
 ---
 
@@ -219,8 +224,14 @@ Trên một **tập held-out 500 dòng cố định** của validation (seed 42)
 - **Chỉ số không tham chiếu (reference-free)** trên 100 bản sinh mỗi arm (temp 0.8, top-p 0.9, rep-pen 1.3, có seed):
   **Distinct-1/2** (đa dạng từ vựng), **Self-BLEU** (trùng lặp nội-tập; thấp = đa dạng hơn), **Flesch Reading Ease**
   (cao = dễ đọc hơn; dưới 0 = gần như không đọc được).
-- **LLM-as-judge (dự kiến)** — một judge cục bộ theo 4 trục của bài báo (grammar, creativity, moral clarity, prompt
-  adherence). Để dành như mục tiêu mở rộng; các chỉ số định lượng đã đủ để mang kết luận. (Xem ADR-0003.)
+- **LLM-as-judge** — một judge cục bộ theo 4 trục của bài báo (grammar, creativity, moral clarity, prompt
+  adherence), mỗi trục thang 1–10, **overall** là trung bình cộng bốn trục. Judge là **Qwen2.5-7B-Instruct** nạp
+  4-bit (bitsandbytes) trên Colab L4, giải mã greedy, rubric chỉ trả JSON (`src/judge.py`, `src/run_judge.py`).
+  Chấm **n = 50** bản sinh mỗi arm (50 dòng đầu của chính tập held-out 500 dòng), mỗi bản chấm theo đúng prompt
+  yêu cầu của nó, cùng cấu hình sinh ở trên (tối đa 400 token mới, có seed). Đây là **một** judge chứ không phải
+  panel (xem ADR-0003), và cố ý **không** phải judge Qwen3-4B ở tầng ứng dụng dùng cho so sánh liên model: lượt
+  chấm này chỉ chấm bốn arm trong ablation của chúng tôi, nên các con số so được với nhau trong nội bộ và không
+  được đem so với điểm do một judge khác sinh ra.
 
 ---
 
@@ -237,11 +248,32 @@ Cả bốn cấu hình, đánh giá đồng nhất trên cùng 500 prompt held-o
 
 Xếp hạng theo perplexity: **C (3.84) < A (4.82) < B (5.46) ≪ base (9.52).**
 
+### 6.1 LLM-as-judge
+
+Cùng bốn cấu hình đó, chấm bởi judge 4 trục cục bộ (n = 50 mỗi arm, §5.6):
+
+| Cấu hình | Grammar | Creativity | Moral clarity | Prompt adherence | **Overall ↑** |
+|---|---:|---:|---:|---:|---:|
+| **base** (không FT) | 6.68 | 5.24 | 5.92 | 5.08 | 5.73 |
+| **A** — `q,v` · all-30 | 6.90 | **7.16** | 7.12 | 5.62 | 6.70 |
+| **B** — `q,v` · last-10 | 6.02 | 6.54 | 6.40 | 4.78 | 5.94 |
+| **C** — all-linear · all-30 | **7.36** | 6.94 | **7.16** | **6.00** | **6.87** |
+
+Xếp hạng theo judge overall: **C (6.87) > A (6.70) > B (5.94) > base (5.73)** — *đúng thứ tự* của perplexity, từ một
+dụng cụ đo không chia sẻ giả định nào với nó. Hai quan sát mà bảng perplexity không đưa ra được:
+
+- Phần tăng lớn nhất nhờ fine-tune nằm ở **creativity** (5.24 → 7.16) và **moral clarity** (5.92 → 7.12), đúng những
+  trục mà một chỉ số likelihood không nhìn thấy. Grammar gần như không đổi (6.68 → 7.36) vì model nền vốn đã trôi
+  chảy; thứ nó thiếu là **hình thức** của thể loại.
+- **Prompt adherence của B (4.78) tụt xuống dưới cả base chưa huấn luyện (5.08)**, ô duy nhất trong bảng mà
+  fine-tune làm mọi thứ xấu đi. §7.2 bàn tiếp.
+
 Con số nổi bật:
 
 - **−60%** perplexity so với mốc nền chưa huấn luyện, cho cấu hình tốt nhất (C).
 - **3,5%** trọng số của model được huấn luyện để đạt kết quả đó.
 - **+119 điểm Flesch** (−66 → +53) — từ không đọc được đến phù hợp lứa tuổi.
+- **+1.14 điểm judge** overall (5.73 → 6.87), với hai dụng cụ đo độc lập đồng thuận về thứ hạng.
 
 ---
 
@@ -256,20 +288,34 @@ lời cảnh báo đi kèm: các chỉ số đa dạng không-tham-chiếu, nế
 lạc.
 
 > **[Layer]** **A vs. B — đặt adapter trên toàn bộ layer thắng 1/3 layer cuối (PPL 4.82 vs. 5.46).** Độ phủ layer có
-> ích. Nhưng B lấy lại ~85% phần cải thiện của A so với base trong khi chỉ thích nghi *một phần ba* số layer (≈ 0,3M
-> vs. ≈ 0,9M tham số) — một đánh đổi hiệu quả hợp lý khi ngân sách là ràng buộc.
+> ích. Riêng trên perplexity, khoảng cách trông khá dễ tha thứ: B lấy lại ~85% phần cải thiện của A so với base
+> trong khi chỉ thích nghi *một phần ba* số layer (≈ 0,3M vs. ≈ 0,9M tham số), đọc như một đánh đổi hiệu quả hợp lý.
+
+> **[Layer · judge nói ngược]** **Judge không đồng ý, và chỉ ở đúng chỗ này.** B đạt 5.94 so với 6.70 của A và thua
+> trên *mọi* trục (grammar 6.02 vs. 6.90, creativity 6.54 vs. 7.16, moral clarity 6.40 vs. 7.12, adherence 4.78 vs.
+> 5.62). Prompt adherence của B là con số duy nhất trong cả nghiên cứu **thấp hơn cả base chưa huấn luyện** (4.78 vs.
+> 5.08): giới hạn adapter ở 10 layer cuối không chỉ lấy được ít phần cải thiện hơn, mà dường như còn **làm mất** khả
+> năng bám prompt. Cách hoà giải: lấy lại 85% khoảng cách perplexity **không phải** là lấy lại 85% khoảng cách chất
+> lượng. Perplexity lấy trung bình trên mọi token, nên một model có thể đoán tốt phần lớn token thông thường của một
+> truyện mà vẫn hỏng ở số ít token phải tôn trọng 5 slot của prompt. Đánh đổi hiệu quả **đứng vững ở khía cạnh mô
+> hình hoá, không đứng vững ở chất lượng sinh ra**; một báo cáo chỉ dựa vào perplexity sẽ khuyến nghị B trên một tiền
+> đề sai.
 
 > **[Module]** **A vs. C — all-linear thắng đậm attention-only (PPL 3.84 vs. 4.82, thấp hơn ≈ 20%).** Phần thắng lớn
 > nhất của cả nghiên cứu đến từ việc thêm adapter cho các projection **MLP**, chứ không phải từ phủ thêm layer. Với
 > bài toán này, **độ rộng module** quan trọng hơn **độ sâu layer** — khả dĩ vì các sublayer MLP mang phần lớn dung
-> lượng cho các mẫu bề mặt/từ vựng mà một bài sinh hẹp như viết fable dựa vào.
+> lượng cho các mẫu bề mặt/từ vựng mà một bài sinh hẹp như viết fable dựa vào. Judge xác nhận cùng chiều nhưng nhẹ
+> hơn: C dẫn A ở **ba trên bốn trục** (grammar 7.36 vs. 6.90, moral clarity 7.16 vs. 7.12, adherence 6.00 vs. 5.62),
+> overall 6.87 vs. 6.70; A giữ được một trục là **creativity** (7.16 vs. 6.94).
 
 ### 7.4 Cấu hình tốt nhất, và một đánh đổi
 
-**C** (all-linear, toàn bộ layer) tốt nhất ở PPL 3.84 và cũng giàu từ vựng nhất (Distinct-1 0.210); nó được export
-thành `tsv3-smollm135-best`. Một điểm tinh tế: C thắng về mô hình hoá, trong khi **A** đạt Flesch (độ dễ đọc) cao
-nhất (57.7 vs. 52.8) — model all-linear viết văn đặc hơn một chút. Với văn phong đích sư phạm, khả năng mô hình hoá
-mạnh hơn của C là kết quả tiêu điểm; A là á quân nhẹ ký đáng nhớ khi tài nguyên khan hiếm.
+**C** (all-linear, toàn bộ layer) tốt nhất trên **cả hai dụng cụ đo** — PPL 3.84 và judge overall 6.87 — và cũng
+giàu từ vựng nhất (Distinct-1 0.210); nó được export thành `tsv3-smollm135-best`. Một điểm tinh tế: **A** đạt Flesch
+(độ dễ đọc) cao nhất (57.7 vs. 52.8) và dẫn ở trục creativity của judge (7.16 vs. 6.94) — model all-linear viết văn
+đặc hơn, quy củ hơn một chút trong khi mô hình hoá bài toán tốt hơn. Với văn phong đích sư phạm, khả năng mô hình hoá
+của C cùng phần dẫn ở grammar, moral clarity và adherence là kết quả tiêu điểm; A là á quân nhẹ ký đáng nhớ khi tài
+nguyên khan hiếm, và là lựa chọn thú vị hơn nếu thứ cần tối ưu là độ đa dạng sáng tạo.
 
 ### 7.5 Kiểm tra định tính
 
@@ -324,8 +370,14 @@ kiểm chứng **khác nhau về hành vi** (base lạc đề; best viết fable
 - **Chạy một lần, không có khoảng tin cậy.** Mỗi arm một seed/lịch; ước lượng điểm không kèm confidence interval (dù
   các khoảng cách PPL cách nhau thoải mái).
 - **2×2 chưa đầy đủ.** Ô còn thiếu `all-linear × last-third` sẽ cho phép kiểm tra tương tác giữa hai trục.
-- **Chưa có panel judge.** LLM-as-judge 4 trục được để dành; kết luận dựa trên perplexity và các chỉ số không tham
-  chiếu.
+- **Một judge, không panel, chưa đo nhiễu.** Judge 4 trục chỉ là một model (Qwen2.5-7B-Instruct, 4-bit) ở n = 50 mỗi
+  arm, nên nó mang theo mọi thiên lệch của model đó, và chúng tôi **chưa** đo nhiễu giữa các lần chấm bằng cách chấm
+  lại cùng một arm hai lần. Hãy đọc từng điểm số như chỉ báo; **thứ hạng** mới là tín hiệu bền, và đó chính là phần
+  đồng thuận với perplexity. Mức đồng thuận giữa các judge khác họ model vẫn chưa được đo. Cũng lưu ý judge khá dễ
+  dãi với grammar của base (6.68 cho văn bản mà Flesch coi là không đọc được), nên overall của base (5.73) không thấp
+  như khoảng cách perplexity gợi ý.
+- **Điểm judge không mang đi nơi khác được.** Các con số này đến từ judge và rubric của riêng chúng tôi; không so
+  được với điểm của judge Qwen3-4B ở tầng ứng dụng hay của bất kỳ nghiên cứu nào khác, chỉ so được giữa bốn arm.
 - **Lệch định dạng prompt ở hạ nguồn.** Adapter huấn luyện trên đúng câu chữ của TF1 có thể chấm thấp hơn khi bị điều
   khiển bằng prompt hơi khác của tinystory-vn. Chấp nhận có chủ đích (ADR-0004).
 - **Xáo trộn dữ liệu nhẹ.** Tập con 50k lấy qua streaming shuffle với buffer 10k — xác định và giống nhau giữa các
@@ -340,6 +392,8 @@ kiểm chứng **khác nhau về hành vi** (base lạc đề; best viết fable
 - **Adapter:** công khai trên Hub — `congthanh991/tsv3-smollm135-{A-qv-all, B-qv-last3, C-alllinear}`.
 - **Train / eval:** `notebooks/colab_runner.ipynb` (hoặc `python -m src.train --arm {A,B,C} --push`), rồi các cell
   eval; kết quả trong `results_auto.json`.
+- **Lượt chấm judge:** `src/judge.py` + `src/run_judge.py`; điểm thô trong `results_judge.json`, bản chuẩn trên Hub
+  tại `congthanh991/tsv3-smollm135-eval/results_judge.json`.
 - **Hai ghi chú cho lần chạy lại trên Colab** (ghi lại để khỏi tái diễn): (i) Colab cài sẵn `torchao 0.10.0` khiến
   bước tiêm LoRA của PEFT báo lỗi ở một kiểm tra phiên bản — `pip uninstall -y torchao` (ta không dùng nó); (ii)
   websocket kernel của Colab CLI không ổn định với lệnh dài — chạy huấn luyện như một **job nền** và theo dõi tiến độ
@@ -355,9 +409,16 @@ các projection MLP, không chỉ attention, mới cho kết quả tốt nhất 
 huấn luyện 3,5% trọng số của model. Một model nhỏ đã pretrain cộng với các adapter low-rank đặt khéo là đủ để biến
 đầu ra không đọc được thành fable phù hợp lứa tuổi.
 
-**Hướng phát triển:** chạy judge 4 trục để củng cố xếp hạng theo perplexity; quét rank để tách hiệu ứng vị trí khỏi
-dung lượng thêm; bổ sung ô `all-linear × last-third` để hoàn thiện 2×2 và kiểm tra tương tác; và dùng các model đã
-export cho một so sánh định lượng nhỏ-so-với-lớn với model 4B đồng hành.
+Đứng sau câu trả lời đó là **hai dụng cụ đo, không phải một**: một LLM judge 4 trục tái lập đúng xếp hạng của
+perplexity (C 6.87 > A 6.70 > B 5.94 > base 5.73) mà không chia sẻ giả định nào với nó. Chỗ hai bên tách nhau tự nó
+là một kết quả: perplexity tô hồng cấu hình 1/3 layer cuối, thứ mà judge cho điểm bám prompt còn *thấp hơn* model
+chưa huấn luyện. **Một chỉ số likelihood lấy trung bình trên mọi token có thể bỏ sót một thất bại tập trung ở số ít
+token mang bài toán** — đó là bài học phương pháp chúng tôi mang sang nghiên cứu đặt adapter tiếp theo.
+
+**Hướng phát triển:** đo nhiễu của chính judge bằng cách chấm lại một arm hai lần, và thêm một judge khác họ model,
+trước khi coi bất kỳ khoảng cách dưới một điểm nào là thật; quét rank để tách hiệu ứng vị trí khỏi dung lượng thêm;
+bổ sung ô `all-linear × last-third` để hoàn thiện 2×2 và kiểm tra tương tác; và dùng các model đã export cho một so
+sánh định lượng với các model của dự án đồng hành dưới judge ở tầng ứng dụng.
 
 ---
 
@@ -389,6 +450,8 @@ tối ưu           AdamW  lr=2e-4  scheduler=cosine  warmup_ratio=0.03  bf16
 đánh giá         held-out=500 dòng (validation, seed 42)
                  chính=perplexity (teacher-forced, có trọng số token)
                  reference-free=Distinct-1/2, Self-BLEU, Flesch  (100 bản sinh/arm; temp 0.8, top-p 0.9, rep-pen 1.3)
+                 llm-judge=Qwen2.5-7B-Instruct 4-bit (bitsandbytes), greedy, rubric chỉ trả JSON, 4 trục 1-10
+                 n=50 bản sinh/arm (50 dòng đầu của tập held-out), max_new_tokens=400, có seed
 export           merge -> GGUF Q8_0 (llama.cpp) -> Ollama Modelfile -> tinystory-vn config/models.json
 ```
 
@@ -398,5 +461,5 @@ export           merge -> GGUF Q8_0 (llama.cpp) -> Ollama Modelfile -> tinystory
 |---|---|
 | **0001** | Model nhỏ đã pretrain + LoRA (không train từ đầu, không full fine-tune model lớn). |
 | **0002** | Ablation vị trí đặt LoRA *chính là* đóng góp (arm A/B/C + base). |
-| **0003** | Đánh giá đơn giản hoá một-judge thay cho panel 3-judge của bài báo. |
+| **0003** | Đánh giá đơn giản hoá một-judge thay cho panel 3-judge của bài báo (đã chạy: Qwen2.5-7B-Instruct, n = 50/arm). |
 | **0004** | Bàn giao qua `tinystory-vn` (GGUF/Ollama), không app riêng. |

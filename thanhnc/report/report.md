@@ -22,7 +22,10 @@ of layers (**B**), and all seven linear projections across all layers (**C**). O
 validation perplexity falls from **9.52** (base) to **3.84** (C), and Flesch Reading Ease moves from **−66**
 (effectively unreadable) to **+53** (age-appropriate). Two clean one-factor contrasts answer the title: adapting
 *all* layers beats the last third (4.82 vs. 5.46), but the dominant gain by far comes from **breadth** — adding the
-MLP projections (3.84 vs. 4.82). The project is framed as a deliberate counterpoint to a sibling project that
+MLP projections (3.84 vs. 4.82). A four-axis LLM judge (n = 50 per arm) reproduces that ranking from independent
+assumptions — **C 6.87 > A 6.70 > B 5.94 > base 5.73** — and sharpens one finding perplexity got wrong: the
+last-third placement is not the cheap near-equal it appears to be, since its prompt adherence (4.78) drops *below*
+the untrained base (5.08). The project is framed as a deliberate counterpoint to a sibling project that
 pretrains its model from scratch, trading absolute quality for a controlled look at parameter-efficient placement,
 and it is delivered end-to-end: trained, evaluated, exported to GGUF, and served through Ollama inside the sibling
 project's application.
@@ -58,7 +61,9 @@ read "which layers to add" precisely as **adapter placement**, and built the ent
    the *layer-depth* axis (A vs. B) and the *module-breadth* axis (A vs. C).
 2. A quantitative result: **module breadth dominates layer depth** for this task; adding MLP adapters yields the
    largest single improvement.
-3. A complete, reproducible pipeline — data, training, evaluation, and a **GGUF → Ollama** export that plugs the
+3. **Two independent instruments on the same four arms** — teacher-forced perplexity and a four-axis LLM judge —
+   which agree on the ranking and disagree, informatively, about how much the layer restriction costs.
+4. A complete, reproducible pipeline — data, training, evaluation, and a **GGUF → Ollama** export that plugs the
    result into a sibling application for a live small-vs-large comparison.
 
 ---
@@ -243,8 +248,14 @@ On a **fixed 500-row held-out sample** of the validation split (seed 42) we repo
   - **Self-BLEU** — mean BLEU of each generation against the rest (intra-set redundancy; lower = more diverse).
   - **Flesch Reading Ease** — a readability score from sentence and syllable counts; higher is easier, and values
     below zero indicate text that is effectively unreadable.
-- **LLM-as-judge (planned)** — a single local judge over the paper's four axes (grammar, creativity, moral clarity,
-  prompt adherence). Deferred as a stretch goal; the quantitative metrics already carry the finding. (See ADR-0003.)
+- **LLM-as-judge** — a single local judge over the paper's four axes (grammar, creativity, moral clarity, prompt
+  adherence), each scored 1–10, with **overall** the arithmetic mean of the four. The judge is
+  **Qwen2.5-7B-Instruct** loaded in 4-bit (bitsandbytes) on a Colab L4, greedy decoding, JSON-only rubric
+  (`src/judge.py`, `src/run_judge.py`). It scores **n = 50** generations per arm — the first 50 rows of the same
+  fixed 500-row held-out sample — each judged against its own request prompt, under the generation config above
+  (max 400 new tokens, seeded). A single judge, not a panel (see ADR-0003), and deliberately **not** the app-level
+  Qwen3-4B judge used for cross-model comparisons: this run scores only the four arms of our own ablation, so its
+  numbers are internally comparable and must not be read against scores produced by a different judge.
 
 ---
 
@@ -261,11 +272,32 @@ All four configurations, evaluated identically on the same 500 held-out prompts:
 
 Ranking by perplexity: **C (3.84) < A (4.82) < B (5.46) ≪ base (9.52).**
 
+### 6.1 LLM-as-judge
+
+The same four configurations scored by the local four-axis judge (n = 50 per arm, §5.6):
+
+| Config | Grammar | Creativity | Moral clarity | Prompt adherence | **Overall ↑** |
+|---|---:|---:|---:|---:|---:|
+| **base** (no FT) | 6.68 | 5.24 | 5.92 | 5.08 | 5.73 |
+| **A** — `q,v` · all-30 | 6.90 | **7.16** | 7.12 | 5.62 | 6.70 |
+| **B** — `q,v` · last-10 | 6.02 | 6.54 | 6.40 | 4.78 | 5.94 |
+| **C** — all-linear · all-30 | **7.36** | 6.94 | **7.16** | **6.00** | **6.87** |
+
+Ranking by judge overall: **C (6.87) > A (6.70) > B (5.94) > base (5.73)** — the *same order* as perplexity, from
+an instrument that shares none of its assumptions. Two observations the perplexity table cannot make:
+
+- The largest gains from fine-tuning are on **creativity** (5.24 → 7.16) and **moral clarity** (5.92 → 7.12) — the
+  axes a likelihood metric is blind to. Grammar barely moves (6.68 → 7.36), because the base model was already
+  fluent; what it lacked was the *form*.
+- **B's prompt adherence (4.78) falls below the untrained base (5.08)** — the only cell in the table where
+  fine-tuning makes something actively worse. §7.2 takes this up.
+
 Headline numbers:
 
 - **−60%** perplexity vs. the untrained floor, for the best config (C).
 - **3.5%** of the model's weights trained to reach that result.
 - **+119 Flesch points** (−66 → +53) — from unreadable to age-appropriate.
+- **+1.14 judge points** overall (5.73 → 6.87), with two independent instruments agreeing on the ranking.
 
 ---
 
@@ -282,10 +314,21 @@ can simply mean "less coherent."
 
 ### 7.2 Which layers? (A vs. B)
 
-**Adapting all layers beats the last third — PPL 4.82 vs. 5.46.** Layer coverage helps. But B recovers roughly
-**85%** of A's perplexity improvement over the base while adapting only **one third** as many layers (≈ 0.3M vs.
-≈ 0.9M parameters). Restricting adapters to later layers is therefore a **defensible efficiency trade** — not a free
-lunch, but a favourable one when parameter or compute budget is the binding constraint.
+**Adapting all layers beats the last third — PPL 4.82 vs. 5.46.** Layer coverage helps. On perplexity alone the
+gap looks forgiving: B recovers roughly **85%** of A's improvement over the base while adapting only **one third**
+as many layers (≈ 0.3M vs. ≈ 0.9M parameters), which reads as a defensible efficiency trade.
+
+**The judge disagrees, and only here.** B scores 5.94 against A's 6.70 and loses on *every* axis — grammar 6.02 vs.
+6.90, creativity 6.54 vs. 7.16, moral clarity 6.40 vs. 7.12, adherence 4.78 vs. 5.62. Its prompt adherence is the
+one number in the study that ends up **below the untrained base** (4.78 vs. 5.08): confining adapters to the last
+ten layers does not merely capture less of the gain, it appears to *cost* prompt-following outright.
+
+This is the most instructive result in the ablation, because the two instruments agree on the overall ranking
+(C > A > B > base) and diverge on exactly one question: how much the layer restriction costs. The reconciliation is
+that an 85%-of-the-perplexity-gap result is not 85% of the *quality* gap — perplexity averages over every token,
+so a model can predict the bulk of a fable's ordinary tokens well while still failing on the comparatively few
+tokens where the prompt's five slots must be honoured. **The efficiency trade is defensible on modelling and not on
+generated quality**; a report resting on perplexity alone would have recommended B on a false premise.
 
 ### 7.3 Which modules? (A vs. C)
 
@@ -295,13 +338,21 @@ fable generation on this model, module **breadth** matters more than layer **dep
 sublayers carry much of a transformer's capacity to store and recombine the surface-level, lexical patterns that a
 narrow generation task like fable-writing leans on, so giving them trainable capacity pays off disproportionately.
 
+The judge corroborates this contrast, though less emphatically than perplexity does: C leads A on **three of the
+four axes** — grammar 7.36 vs. 6.90, moral clarity 7.16 vs. 7.12, prompt adherence 6.00 vs. 5.62 — for an overall
+6.87 vs. 6.70. A holds one axis, **creativity** (7.16 vs. 6.94). So the ≈ 20% perplexity reduction translates into
+a modest but consistent quality lead, concentrated in exactly the places one would predict from a better-fitted
+model: cleaner sentences and closer prompt-following.
+
 ### 7.4 The best configuration, and a trade-off
 
-**C (all-linear, all layers)** is the best configuration at PPL 3.84 and also the richest vocabulary among the
-trained arms (Distinct-1 0.210); it is exported as `tsv3-smollm135-best`. One subtlety is worth naming: C wins
-decisively on modelling, while **A** scores highest on Flesch readability (57.7 vs. 52.8) — the all-linear model
-writes slightly denser prose. For the pedagogical target, C's stronger modelling is the headline; A is a lightweight
-runner-up worth keeping in mind when compute is scarce.
+**C (all-linear, all layers)** is the best configuration on both instruments — PPL 3.84 and judge overall 6.87 —
+and also the richest vocabulary among the trained arms (Distinct-1 0.210); it is exported as `tsv3-smollm135-best`.
+One subtlety is worth naming: **A** scores highest on Flesch readability (57.7 vs. 52.8) and on the judge's
+creativity axis (7.16 vs. 6.94), so the all-linear model writes slightly denser, slightly more conventional prose
+while modelling the task better. For the pedagogical target, C's stronger modelling and its lead on grammar, moral
+clarity and adherence are the headline; A is a lightweight runner-up worth keeping in mind when compute is scarce,
+and the more interesting of the two if creative variety is what is being optimised.
 
 ### 7.5 Qualitative check
 
@@ -364,8 +415,14 @@ Both Ollama models were created and verified **behaviourally distinct** (base of
   them.
 - **Incomplete 2×2.** We run three of the four cells; the missing `all-linear × last-third` cell would let us test
   for an interaction between the two axes rather than reading them independently.
-- **No judge panel yet.** The four-axis LLM-as-judge (and inter-judge agreement) is deferred; conclusions rest on
-  perplexity and reference-free metrics.
+- **Single judge, no panel, no measured noise.** The four-axis judge is one model (Qwen2.5-7B-Instruct, 4-bit) at
+  n = 50 per arm, so it inherits whatever biases that model has and we have not measured its run-to-run noise by
+  re-scoring the same arm twice. Treat the individual scores as indicative; the **ranking** is the robust signal,
+  and it is what agrees with perplexity. Inter-judge agreement across model families remains unmeasured. Note also
+  that the judge is lenient on the base model's grammar (6.68 for text that is unreadable by Flesch), which is why
+  base's overall (5.73) is not as low as the perplexity gap would suggest.
+- **Judge scores are not portable.** These numbers come from our own judge and rubric; they cannot be compared with
+  scores from the app-level Qwen3-4B judge or from any other study, only across our four arms.
 - **Prompt-format mismatch downstream.** The adapters are trained on TF1's exact wording; when driven by
   `tinystory-vn`'s slightly different prompt, a brittle 135M model may score lower than in our own eval. Accepted
   deliberately (ADR-0004).
@@ -381,6 +438,8 @@ Both Ollama models were created and verified **behaviourally distinct** (base of
 - **Adapters:** public on the Hub — `congthanh991/tsv3-smollm135-{A-qv-all, B-qv-last3, C-alllinear}`.
 - **Training / eval:** `notebooks/colab_runner.ipynb` (or `python -m src.train --arm {A,B,C} --push`), then the eval
   cells; results in `results_auto.json`.
+- **Judge run:** `src/judge.py` + `src/run_judge.py`; raw scores in `results_judge.json`, canonical copy on the Hub
+  at `congthanh991/tsv3-smollm135-eval/results_judge.json`.
 - **Two field notes for a Colab rerun** (recorded so they don't recur): (i) Colab preinstalls `torchao 0.10.0`, which
   makes PEFT's LoRA injection raise on a version check — `pip uninstall -y torchao` (we don't use it); (ii) the Colab
   CLI kernel socket is unreliable for long calls — run training as a **background job** and observe progress through
@@ -396,9 +455,17 @@ dominant lever is **module breadth** — attaching adapters to the MLP projectio
 result (PPL 3.84, a 60% reduction from the untrained floor) while training only 3.5% of the model. A tiny, pretrained
 model plus well-placed low-rank adapters is enough to turn unreadable output into age-appropriate fables.
 
-**Future work:** run the four-axis judge to corroborate the perplexity ranking; sweep the rank to separate placement
-effects from added capacity; add the missing `all-linear × last-third` cell to complete the 2×2 and test for
-interaction; and use the exported models for a quantitative small-vs-large comparison against the 4B sibling.
+Two instruments, not one, stand behind that answer: a four-axis LLM judge reproduces the perplexity ranking
+(C 6.87 > A 6.70 > B 5.94 > base 5.73) without sharing any of its assumptions. Where they part company is itself a
+result — perplexity flatters the last-third placement, whose prompt adherence the judge puts *below* the untrained
+base. **A likelihood metric averaged over every token can miss a failure concentrated in the few tokens that carry
+the task**, which is the methodological lesson we would take to the next placement study.
+
+**Future work:** measure the judge's own noise by re-scoring one arm twice, and add a second judge from a different
+model family, before treating any sub-point gap as real; sweep the rank to separate placement effects from added
+capacity; add the missing `all-linear × last-third` cell to complete the 2×2 and test for interaction; and use the
+exported models for a quantitative small-vs-large comparison against the sibling project's models under its
+app-level judge.
 
 ---
 
@@ -430,6 +497,8 @@ optimisation     AdamW  lr=2e-4  scheduler=cosine  warmup_ratio=0.03  bf16
 evaluation       held-out=500 rows (validation, seed 42)
                  primary=perplexity (teacher-forced, fable tokens, token-weighted)
                  reference-free=Distinct-1/2, Self-BLEU, Flesch  (100 gens/arm; temp 0.8, top-p 0.9, rep-pen 1.3)
+                 llm-judge=Qwen2.5-7B-Instruct 4-bit (bitsandbytes), greedy, JSON-only rubric, 4 axes 1-10
+                 n=50 gens/arm (first 50 of the held-out sample), max_new_tokens=400, seeded
 export           merge -> GGUF Q8_0 (llama.cpp) -> Ollama Modelfile -> tinystory-vn config/models.json
 ```
 
@@ -439,5 +508,5 @@ export           merge -> GGUF Q8_0 (llama.cpp) -> Ollama Modelfile -> tinystory
 |---|---|
 | **0001** | Small pretrained model + LoRA (not from-scratch, not a big-model full fine-tune). |
 | **0002** | The LoRA adapter-placement ablation *is* the contribution (arms A/B/C + base). |
-| **0003** | Simplified single-judge evaluation instead of the paper's 3-judge panel. |
+| **0003** | Simplified single-judge evaluation instead of the paper's 3-judge panel (run: Qwen2.5-7B-Instruct, n = 50/arm). |
 | **0004** | Deliver via `tinystory-vn` (GGUF/Ollama), no standalone app. |
