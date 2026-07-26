@@ -1,0 +1,70 @@
+{
+  "git_head": "c8a825c373e392e17a0de51fe3a15fd1106be93e",
+  "python": "3.12.13",
+  "files": {
+    "results/ablation_judge/protocol.json": {
+      "bytes": 889,
+      "sha256": "9f90a4d0839fd59feda11649afabac85636f8904ee8e8f4d4f09bd36d17c34c0"
+    },
+    "results/ablation_judge/counterfactual_prompts_v1.jsonl": {
+      "bytes": 8317,
+      "sha256": "42d779b73310585bf02de5daa3546a5e67a2b34be87354a7c2d8d0954fa0ffa8"
+    },
+    "results/ablation_judge/generations/e2.two_slot.jsonl": {
+      "bytes": 116840,
+      "sha256": "37cc61860678cd0ea563598b11d46f3cb2738d672c4bd6a3d5e1c621794d8e38"
+    },
+    "results/ablation_judge/generations/e2.counterfactual.jsonl": {
+      "bytes": 98682,
+      "sha256": "459480ea9d90291c1a1be37328de0360722fecf0b632f94bf28ad5e0eef232ea"
+    },
+    "results/ablation_judge/generations/e5.two_slot.jsonl": {
+      "bytes": 111491,
+      "sha256": "591234b5984dfc31a3109f01e1fe04200646bbb99efa2e7440a2e78ae88d75e2"
+    },
+    "results/ablation_judge/generations/e5.counterfactual.jsonl": {
+      "bytes": 93749,
+      "sha256": "ac886ffd87da2e70c01a2344d0c357a3436d80d67aec1fa8889fec9c9181ac21"
+    },
+    "results/ablation_judge/individual_map.private.json": {
+      "bytes": 116298,
+      "sha256": "63bdd1caec6bc09e952e791fb3f41b77839a9c70fa7bb1a0725c9c4313f093cb"
+    },
+    "results/ablation_judge/individual_scores.blinded.jsonl": {
+      "bytes": 135705,
+      "sha256": "f2a0496b9aaaa84d844154dfaa7e70f8eb3a6dfe52ac9aa8c1145f0ac066bbe6"
+    },
+    "results/ablation_judge/pair_map.private.json": {
+      "bytes": 21957,
+      "sha256": "329e1b793ec3154e58d725167fd7165bfbdc1e36254a9301e8680cfd4a5de444"
+    },
+    "results/ablation_judge/pair_scores.blinded.jsonl": {
+      "bytes": 8109,
+      "sha256": "ce2a3423d21100010ba31f9f9f55996046e8c37586d63cd4eae3d116131ad011"
+    },
+    "results/ablation_judge/summary.json": {
+      "bytes": 11987,
+      "sha256": "8f8adc4385e06a82d000a69f99765c331dc4fa3630091027529c92596226d724"
+    },
+    "results/ablation_judge/summary.md": {
+      "bytes": 641,
+      "sha256": "f9b4db19a141ed3072ccbeac9e63c69312a90ba91f26710460d9561083884097"
+    },
+    "results/global_judge/generations/e2.jsonl": {
+      "bytes": 100564,
+      "sha256": "e2a4890841f4fa8669b948bc8a9a9361cfeb3bbfa222aa4198e8d0f3437659c3"
+    },
+    "results/global_judge/generations/e3.jsonl": {
+      "bytes": 151575,
+      "sha256": "7176c1724a3b53b765fd70691683df711e3b95a326f0aedfd392407747724a04"
+    },
+    "results/global_judge/generations/e5.jsonl": {
+      "bytes": 102957,
+      "sha256": "34fe0168b5ad03623acc1383c5143af0df2ba732d410478b7365a1e976bd92c5"
+    },
+    "scripts/ablation_benchmark.py": {
+      "bytes": 43780,
+      "sha256": "f4092a50e992b7d52d00a63b0519aa6a404e7a92798984abee9e5b7b155097c3"
+    }
+  }
+}

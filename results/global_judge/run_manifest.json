@@ -1,0 +1,17 @@
+{
+  "git_head": "c8a825c373e392e17a0de51fe3a15fd1106be93e",
+  "python": "3.14.5",
+  "files": {
+    "results/global_judge/global_prompts_v1.jsonl": "fa9a5b9d1a74a29d64771a05891e5e2a866c90396b2575b6e54142546fa0d8be",
+    "results/global_judge/generations/e1.jsonl": "d451ad053ee30dfadd2d634dbadeb5e06182f1453383eb7b124921a743ed2d5c",
+    "results/global_judge/generations/e2.jsonl": "e2a4890841f4fa8669b948bc8a9a9361cfeb3bbfa222aa4198e8d0f3437659c3",
+    "results/global_judge/generations/e3.jsonl": "7176c1724a3b53b765fd70691683df711e3b95a326f0aedfd392407747724a04",
+    "results/global_judge/generations/e4.jsonl": "99c4fab77be158000b103b65645c0cb9c8b4fd87598fe5e4a8f390c78c333d8c",
+    "results/global_judge/generations/e5.jsonl": "34fe0168b5ad03623acc1383c5143af0df2ba732d410478b7365a1e976bd92c5",
+    "results/global_judge/judge_scores.blinded.jsonl": "38d090455078dab13ff5d10a700fe32e158850600fba4a9e75839965aa7c1e7a",
+    "results/global_judge/blind_map.private.json": "694bceb60fedeea4a5f258dcbedbfaa9292aefc1d6dda9e0457fc246de3521e9",
+    "results/global_judge/summary.json": "822a4029e9aa44537f385e24b47298093749ef0f4d7cb625ee0fd2de44417556",
+    "results/global_judge/summary.md": "f9f3d02cc6c41777de3c1af1d0d342bc71f6bb9118b8ec547945f577a96b1e9c",
+    "scripts/global_benchmark.py": "269664c57b499b4ed18ba6726f271b300281a91ee438925d476199922653400b"
+  }
+}

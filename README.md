@@ -6,12 +6,21 @@ Trình tạo **truyện ngụ ngôn tiếng Anh** cho trẻ em, chạy trên mô
 
 ---
 
-## Báo cáo theo người
+## Báo cáo tổng hợp nhóm
+
+**Báo cáo tổng hợp 5 chặng thực nghiệm:** [nguồn Markdown](report.md). Báo cáo dùng
+cùng một cấu trúc nghiên cứu
+cho năm hướng tiếp cận (`td`, `trieulh`, `lienntp`, `thanhnc`, `hoangndl`). Điểm giám
+khảo local vẫn tách theo chặng; bảng xếp hạng chung dùng 125 truyện và Gemma judge được
+lưu trong `results/global_judge/`.
+
+## Báo cáo chi tiết theo người
 
 | Người | Model | Báo cáo khoa học | Tải model |
 |---|---|---|---|
+| **td** | GPT-style 63M from-scratch, final checkpoint `v16-conditioned` | Báo cáo và manifest hiện ở `feat/td:docs/PROJECT_REPORT.md` và `feat/td:runs/v16/run.json`; phần tổng hợp đã đưa vào báo cáo nhóm | Artifact MLX đã được dùng trực tiếp cho global benchmark |
 | **lienntp** | Fine-tune Llama 3.2 3B (SFT clean-3k, failure-focused LoRA, fluency SFT) + generation mode Raw/Post/Repair | [`lienntp/README.md`](lienntp/README.md) · manifest [`lienntp/code/CODE_MANIFEST.md`](lienntp/code/CODE_MANIFEST.md) · assets [`lienntp/full/`](lienntp/full/) | Ollama Modelfiles trong [`lienntp/full/ollama/`](lienntp/full/ollama/) |
-| **trieulh** | SLM 30M/60M from-scratch trên TF1 (model cuối: slm-60m) | [`trieulh/report/report.pdf`](trieulh/report/report.pdf) (11 trang tiếng Việt: timeline 3 phase huấn luyện, chiến dịch 5 phương pháp post-training, 60M scale-up +1.0 điểm judge, phân tích giới hạn) · nguồn [`report.md`](trieulh/report/report.md) · nhật ký [`trieulh/docs/experiments/`](trieulh/docs/experiments/) | **[final-models/ (Drive)](https://drive.google.com/drive/folders/1v-d4TuMwUlTrwI7vKh9BtuO5IxkQ8nkR)**: slm-60m.gguf (model cuối, judge 8.96) + slm-30m-p2.gguf, kèm Modelfile · [toàn bộ artifact (folder)](https://drive.google.com/drive/folders/1N852R4wZ_QUq8PruO0uULLIT7VqL4sqv) |
+| **trieulh** | SLM 30M/60M from-scratch trên TF1 (model cuối: slm-60m) | Báo cáo gốc [`trieulh/report/report.md`](trieulh/report/report.md) · [PDF](trieulh/report/report.pdf) · nhật ký [`trieulh/docs/experiments/`](trieulh/docs/experiments/) | **[final-models/ (Drive)](https://drive.google.com/drive/folders/1v-d4TuMwUlTrwI7vKh9BtuO5IxkQ8nkR)**: slm-60m.gguf + slm-30m-p2.gguf, kèm Modelfile · [toàn bộ artifact](https://drive.google.com/drive/folders/1N852R4wZ_QUq8PruO0uULLIT7VqL4sqv) |
 | **thanhnc** | SmolLM2-135M + LoRA trên TF1 (nghiên cứu vị trí đặt adapter) | [`thanhnc/report/report.md`](thanhnc/report/report.md) (bản HTML: [`report.html`](thanhnc/report/report.html)) · **Tiếng Việt:** [`report.vi.md`](thanhnc/report/report.vi.md) ([HTML](thanhnc/report/report.vi.html)) | Adapter công khai trên HF Hub: [`A-qv-all`](https://huggingface.co/congthanh991/tsv3-smollm135-A-qv-all) · [`B-qv-last3`](https://huggingface.co/congthanh991/tsv3-smollm135-B-qv-last3) · [`C-alllinear`](https://huggingface.co/congthanh991/tsv3-smollm135-C-alllinear) (best) — GGUF dựng cục bộ: merge adapter → `convert_hf_to_gguf.py` → `ollama create` |
 | **hoangndl** | Llama 3.2 3B + QLoRA trên TF1-EN-3M (Ablation study 1 epoch vs 3 epochs) | [`hoangndl/report.md`](hoangndl/report.md) | **[fable-models/ (Drive)](https://drive.google.com/drive/folders/1tfy_USfWawOYiMm3bTUhYvQYcKVppfym)**: llama3-fable-300-q4.gguf  + llama3-fable-1000-q4.gguf, kèm Modelfiles tương ứng |
 

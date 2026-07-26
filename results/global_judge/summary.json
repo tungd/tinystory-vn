@@ -1,0 +1,349 @@
+{
+  "protocol": {
+    "prompt_set": "results/global_judge/global_prompts_v1.jsonl",
+    "prompt_count": 25,
+    "candidate_count": 5,
+    "story_count": 125,
+    "judge_count": 125,
+    "judge_model": "gemma-4-26b-a4b-it",
+    "blind_shuffle_seed": 20260726,
+    "generation": {
+      "temperature": 0.7,
+      "top_p": 0.9,
+      "repeat_penalty": 1.1,
+      "max_new_tokens": 400,
+      "seed_formula": "5410 + prompt_index"
+    },
+    "bootstrap_rounds": 10000
+  },
+  "artifacts": {
+    "e1": {
+      "candidate_id": "e1",
+      "name": "V16 conditioned",
+      "direction": "E1",
+      "member_name": "Đào Đức Tùng",
+      "student_code": "20252612M",
+      "backend": "mlx",
+      "path": "runs/v16/artifacts/conditioning-mlx",
+      "files": {
+        "config.json": "e81f16dc70fec52ea71948941dd77c4b0805d93aa1244ad87e19fd62e5912124",
+        "model.safetensors": "7ca7dc7dad38a133634b0fb0c7d233cc838764d377d29116fcf3d5e3e64af8f8",
+        "tokenizer.json": "96ce8577a223a37f613aefe357cd0ca08638ab55dd7fc2bd5e2ae854f98a8ffd",
+        "tokenizer_config.json": "84957613d938a1756cfe63cf2e4acb4410b24e612000a448aaef32eaf6c8ba0e"
+      }
+    },
+    "e2": {
+      "candidate_id": "e2",
+      "name": "SLM 60M",
+      "direction": "E2",
+      "member_name": "Lê Hải Triều",
+      "student_code": "20252611M",
+      "backend": "llama_completion",
+      "path": "models/global-bench/slm-60m.gguf",
+      "sha256": "b1fa7bda9582199ec655d0bf88dd63bb30c4ad9f4e78631ace8c646e2e560ada",
+      "bytes": 63748896
+    },
+    "e3": {
+      "candidate_id": "e3",
+      "name": "Base + Repair",
+      "direction": "E3",
+      "member_name": "Nguyễn Thị Phương Liên",
+      "student_code": "20252130M",
+      "backend": "llama_repair",
+      "path": "models/global-bench/llama-3.2-3b-instruct-q4.gguf",
+      "sha256": "6c1a2b41161032677be168d354123594c0e6e67d2b9227c84f296ad037c728ff",
+      "bytes": 2019377696
+    },
+    "e4": {
+      "candidate_id": "e4",
+      "name": "SmolLM2 135M + LoRA C",
+      "direction": "E4",
+      "member_name": "Nguyễn Công Thanh",
+      "student_code": "20252610M",
+      "backend": "transformers_peft",
+      "path": "models/global-bench/smollm2-135m",
+      "files": {
+        "config.json": "1d556eab73b69c7f11f64c557a2f9c6f440bd4c6b89bb2584a6b498c92603843",
+        "generation_config.json": "2056c988e990b0d13670f63f2f3b87b3b6d07edaf7a3416998ba27dab2d8a059",
+        "merges.txt": "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510",
+        "model.safetensors": "80521b40281d6ce74e35c9282c22539e75aa0ac8578892b2a59955ef78d55da1",
+        "special_tokens_map.json": "e786b595b9a23148bf1630df78d9037a048ea671e48bfd3549a1e3c233742bb3",
+        "tokenizer.json": "9ca9acddb6525a194ec8ac7a87f24fbba7232a9a15ffa1af0c1224fcd888e47c",
+        "tokenizer_config.json": "4bb9af56a342753d39374f4016a16574cab299fe088e896f425ce3c433f61424",
+        "vocab.json": "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79"
+      },
+      "adapter_path": "models/global-bench/smollm2-135m-c-adapter",
+      "adapter_files": {
+        "adapter_config.json": "e4913bba2be5dd9d27df2a987b1a3d52628ed900c65cde017e190b6c5e3419ef",
+        "adapter_model.safetensors": "906d86ad957a4da0fbeb742bea4ce783ddf0a12bff4e03d89807f1d2d955206d"
+      }
+    },
+    "e5": {
+      "candidate_id": "e5",
+      "name": "Llama 3.2 3B fable Q4",
+      "direction": "E5",
+      "member_name": "Nguyễn Đình Lê Hoàng",
+      "student_code": "20252737M",
+      "backend": "llama_chat",
+      "path": "models/global-bench/llama3-fable-1000-q4.gguf",
+      "sha256": "edb09904c8a20203cfde3f6cef9141c8127816e5c6844ef9a83c5d7f097906d7",
+      "bytes": 2019377440
+    }
+  },
+  "candidates": {
+    "e1": {
+      "name": "V16 conditioned",
+      "direction": "E1",
+      "member_name": "Đào Đức Tùng",
+      "student_code": "20252612M",
+      "n": 25,
+      "nonempty_generations": 25,
+      "grammar": 5.92,
+      "creativity": 3.2,
+      "moral_clarity": 2.52,
+      "prompt_adherence": 1.08,
+      "overall_mean": 3.18,
+      "overall_median": 3.25,
+      "overall_95pct_bootstrap_ci": [
+        2.8,
+        3.55
+      ],
+      "generation_latency_mean_ms": 442,
+      "generation_latency_median_ms": 441,
+      "word_count_mean": 275.2,
+      "word_count_median": 276,
+      "action_count": 0,
+      "rewrite_count": 0,
+      "moral_postprocess_count": 0
+    },
+    "e2": {
+      "name": "SLM 60M",
+      "direction": "E2",
+      "member_name": "Lê Hải Triều",
+      "student_code": "20252611M",
+      "n": 25,
+      "nonempty_generations": 23,
+      "grammar": 5.48,
+      "creativity": 3.4,
+      "moral_clarity": 2.88,
+      "prompt_adherence": 1.44,
+      "overall_mean": 3.3,
+      "overall_median": 3.25,
+      "overall_95pct_bootstrap_ci": [
+        2.94,
+        3.64
+      ],
+      "generation_latency_mean_ms": 344,
+      "generation_latency_median_ms": 359,
+      "word_count_mean": 233.5,
+      "word_count_median": 251,
+      "action_count": 0,
+      "rewrite_count": 0,
+      "moral_postprocess_count": 0
+    },
+    "e3": {
+      "name": "Base + Repair",
+      "direction": "E3",
+      "member_name": "Nguyễn Thị Phương Liên",
+      "student_code": "20252130M",
+      "n": 25,
+      "nonempty_generations": 25,
+      "grammar": 10.0,
+      "creativity": 7.4,
+      "moral_clarity": 9.4,
+      "prompt_adherence": 10.0,
+      "overall_mean": 9.2,
+      "overall_median": 9.25,
+      "overall_95pct_bootstrap_ci": [
+        9.08,
+        9.3
+      ],
+      "generation_latency_mean_ms": 5858,
+      "generation_latency_median_ms": 5828,
+      "word_count_mean": 257.9,
+      "word_count_median": 261,
+      "action_count": 21,
+      "rewrite_count": 5,
+      "moral_postprocess_count": 19
+    },
+    "e4": {
+      "name": "SmolLM2 135M + LoRA C",
+      "direction": "E4",
+      "member_name": "Nguyễn Công Thanh",
+      "student_code": "20252610M",
+      "n": 25,
+      "nonempty_generations": 25,
+      "grammar": 4.64,
+      "creativity": 3.2,
+      "moral_clarity": 1.96,
+      "prompt_adherence": 1.44,
+      "overall_mean": 2.81,
+      "overall_median": 2.75,
+      "overall_95pct_bootstrap_ci": [
+        2.61,
+        3.01
+      ],
+      "generation_latency_mean_ms": 7669,
+      "generation_latency_median_ms": 7888,
+      "word_count_mean": 305.0,
+      "word_count_median": 315,
+      "action_count": 0,
+      "rewrite_count": 0,
+      "moral_postprocess_count": 0
+    },
+    "e5": {
+      "name": "Llama 3.2 3B fable Q4",
+      "direction": "E5",
+      "member_name": "Nguyễn Đình Lê Hoàng",
+      "student_code": "20252737M",
+      "n": 25,
+      "nonempty_generations": 25,
+      "grammar": 9.88,
+      "creativity": 7.04,
+      "moral_clarity": 8.56,
+      "prompt_adherence": 8.28,
+      "overall_mean": 8.44,
+      "overall_median": 9.0,
+      "overall_95pct_bootstrap_ci": [
+        8.04,
+        8.8
+      ],
+      "generation_latency_mean_ms": 6020,
+      "generation_latency_median_ms": 6070,
+      "word_count_mean": 240.5,
+      "word_count_median": 242,
+      "action_count": 0,
+      "rewrite_count": 0,
+      "moral_postprocess_count": 0
+    }
+  },
+  "ranking": [
+    "e3",
+    "e5",
+    "e2",
+    "e1",
+    "e4"
+  ],
+  "pairwise": {
+    "e3_vs_e5": {
+      "left": "e3",
+      "right": "e5",
+      "mean_difference": 0.76,
+      "difference_95pct_bootstrap_ci": [
+        0.39,
+        1.17
+      ],
+      "wins": 16,
+      "ties": 6,
+      "losses": 3
+    },
+    "e3_vs_e2": {
+      "left": "e3",
+      "right": "e2",
+      "mean_difference": 5.9,
+      "difference_95pct_bootstrap_ci": [
+        5.56,
+        6.25
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e3_vs_e1": {
+      "left": "e3",
+      "right": "e1",
+      "mean_difference": 6.02,
+      "difference_95pct_bootstrap_ci": [
+        5.62,
+        6.42
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e3_vs_e4": {
+      "left": "e3",
+      "right": "e4",
+      "mean_difference": 6.39,
+      "difference_95pct_bootstrap_ci": [
+        6.16,
+        6.61
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e5_vs_e2": {
+      "left": "e5",
+      "right": "e2",
+      "mean_difference": 5.14,
+      "difference_95pct_bootstrap_ci": [
+        4.57,
+        5.71
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e5_vs_e1": {
+      "left": "e5",
+      "right": "e1",
+      "mean_difference": 5.26,
+      "difference_95pct_bootstrap_ci": [
+        4.68,
+        5.84
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e5_vs_e4": {
+      "left": "e5",
+      "right": "e4",
+      "mean_difference": 5.63,
+      "difference_95pct_bootstrap_ci": [
+        5.18,
+        6.06
+      ],
+      "wins": 25,
+      "ties": 0,
+      "losses": 0
+    },
+    "e2_vs_e1": {
+      "left": "e2",
+      "right": "e1",
+      "mean_difference": 0.12,
+      "difference_95pct_bootstrap_ci": [
+        -0.39,
+        0.62
+      ],
+      "wins": 12,
+      "ties": 4,
+      "losses": 9
+    },
+    "e2_vs_e4": {
+      "left": "e2",
+      "right": "e4",
+      "mean_difference": 0.49,
+      "difference_95pct_bootstrap_ci": [
+        0.09,
+        0.88
+      ],
+      "wins": 17,
+      "ties": 4,
+      "losses": 4
+    },
+    "e1_vs_e4": {
+      "left": "e1",
+      "right": "e4",
+      "mean_difference": 0.37,
+      "difference_95pct_bootstrap_ci": [
+        -0.05,
+        0.79
+      ],
+      "wins": 13,
+      "ties": 3,
+      "losses": 9
+    }
+  }
+}

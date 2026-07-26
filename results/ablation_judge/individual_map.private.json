@@ -1,0 +1,3232 @@
+[
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ21",
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI001"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ02",
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI002"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ06",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI003"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ05",
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI004"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ03",
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI005"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ14",
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI006"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ25",
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI007"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ22",
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI008"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ21",
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI009"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ06",
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI010"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ05",
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI011"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ01",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI012"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF05B",
+    "pair_id": "CF05",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF05B",
+      "pair_id": "CF05",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a boastful young crane determined to win at any cost",
+      "setting": "a lakeside meadow under gathering storm clouds",
+      "challenge": "a rival bird injures a wing while everyone races home",
+      "outcome": "the crane helps the rival land safely before the storm",
+      "teaching": "True strength is shown by whom we choose to help."
+    },
+    "blind_id": "AI013"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ21",
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI014"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ13",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI015"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ13",
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI016"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ09",
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI017"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ12",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI018"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ16",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI019"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF07A",
+    "pair_id": "CF07",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF07A",
+      "pair_id": "CF07",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI020"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ07",
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI021"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ23",
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI022"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ18",
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI023"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ23",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI024"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ13",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI025"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF04A",
+    "pair_id": "CF04",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF04A",
+      "pair_id": "CF04",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "an honest young fox messenger",
+      "setting": "a windy road between two hill villages",
+      "challenge": "a sealed warning letter falls into a muddy ditch",
+      "outcome": "the council receives the warning in time to reinforce the dam",
+      "teaching": "Honesty protects trust when mistakes happen."
+    },
+    "blind_id": "AI026"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF04B",
+    "pair_id": "CF04",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF04B",
+      "pair_id": "CF04",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a deceptive young fox messenger who hides mistakes",
+      "setting": "a windy road between two hill villages",
+      "challenge": "a sealed warning letter falls into a muddy ditch",
+      "outcome": "the council receives the warning in time to reinforce the dam",
+      "teaching": "Honesty protects trust when mistakes happen."
+    },
+    "blind_id": "AI027"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ11",
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI028"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF01B",
+    "pair_id": "CF01",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF01B",
+      "pair_id": "CF01",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a reckless young rabbit who leaps before looking",
+      "setting": "a narrow rope bridge above a swollen creek",
+      "challenge": "medicine must cross before sunset after several bridge planks come loose",
+      "outcome": "the rabbit reaches a sick hedgehog safely with the medicine",
+      "teaching": "Courage works best when guided by care."
+    },
+    "blind_id": "AI029"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF04A",
+    "pair_id": "CF04",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF04A",
+      "pair_id": "CF04",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "an honest young fox messenger",
+      "setting": "a windy road between two hill villages",
+      "challenge": "a sealed warning letter falls into a muddy ditch",
+      "outcome": "the council receives the warning in time to reinforce the dam",
+      "teaching": "Honesty protects trust when mistakes happen."
+    },
+    "blind_id": "AI030"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ08",
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI031"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ18",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI032"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ05",
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI033"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ19",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI034"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ14",
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI035"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ15",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI036"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ06",
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI037"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ10",
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI038"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ08",
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI039"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ17",
+    "actions": [
+      "rewrite"
+    ],
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI040"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ15",
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI041"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ21",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI042"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ15",
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI043"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF07B",
+    "pair_id": "CF07",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF07B",
+      "pair_id": "CF07",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly arranges dew-covered leaves to reflect every tiny light",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI044"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF05A",
+    "pair_id": "CF05",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF05A",
+      "pair_id": "CF05",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a humble young crane competing in her first flying contest",
+      "setting": "a lakeside meadow under gathering storm clouds",
+      "challenge": "a rival bird injures a wing while everyone races home",
+      "outcome": "the crane helps the rival land safely before the storm",
+      "teaching": "True strength is shown by whom we choose to help."
+    },
+    "blind_id": "AI045"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ08",
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI046"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ21",
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI047"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF03B",
+    "pair_id": "CF03",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF03B",
+      "pair_id": "CF03",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the old oven heats unevenly and the festival bread will not rise",
+      "outcome": "the final loaf feeds the village at the evening celebration",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI048"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ05",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI049"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ14",
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI050"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ17",
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI051"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ24",
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI052"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF05B",
+    "pair_id": "CF05",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF05B",
+      "pair_id": "CF05",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a boastful young crane determined to win at any cost",
+      "setting": "a lakeside meadow under gathering storm clouds",
+      "challenge": "a rival bird injures a wing while everyone races home",
+      "outcome": "the crane helps the rival land safely before the storm",
+      "teaching": "True strength is shown by whom we choose to help."
+    },
+    "blind_id": "AI053"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ14",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI054"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ25",
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI055"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ23",
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI056"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ05",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI057"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF03B",
+    "pair_id": "CF03",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF03B",
+      "pair_id": "CF03",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the old oven heats unevenly and the festival bread will not rise",
+      "outcome": "the final loaf feeds the village at the evening celebration",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI058"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ10",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI059"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ19",
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI060"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ04",
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI061"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ13",
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI062"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ20",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI063"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF02B",
+    "pair_id": "CF02",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF02B",
+      "pair_id": "CF02",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a selfish squirrel who guards every acorn in her winter pantry",
+      "setting": "an oak forest buried by an early snowstorm",
+      "challenge": "several neighboring animals have no food left",
+      "outcome": "the forest community shares enough food to survive until the thaw",
+      "teaching": "What we share in hard times returns as shared strength."
+    },
+    "blind_id": "AI064"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ17",
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI065"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ01",
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI066"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ19",
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI067"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ13",
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI068"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ17",
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI069"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ20",
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI070"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ15",
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI071"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF04B",
+    "pair_id": "CF04",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF04B",
+      "pair_id": "CF04",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a deceptive young fox messenger who hides mistakes",
+      "setting": "a windy road between two hill villages",
+      "challenge": "a sealed warning letter falls into a muddy ditch",
+      "outcome": "the council receives the warning in time to reinforce the dam",
+      "teaching": "Honesty protects trust when mistakes happen."
+    },
+    "blind_id": "AI072"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ05",
+    "prompt": {
+      "prompt_id": "GJ05",
+      "character": "a boastful young peacock",
+      "setting": "a quiet orchard full of ripe peaches",
+      "challenge": "the peacock claims he can guard every tree alone but falls asleep",
+      "outcome": "he admits his mistake and organizes fair watch shifts with the other birds",
+      "teaching": "Honesty after a mistake is the first step toward trust."
+    },
+    "blind_id": "AI073"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ01",
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI074"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ04",
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI075"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF09A",
+    "pair_id": "CF09",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF09A",
+      "pair_id": "CF09",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a careful young turtle carrying medicine",
+      "setting": "a forest stream after a fallen bridge",
+      "challenge": "the medicine must reach the far bank before night",
+      "outcome": "the turtle organizes flat stones into a safe chain of stepping places",
+      "teaching": "Careful planning can make a difficult crossing possible."
+    },
+    "blind_id": "AI076"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ07",
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI077"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ16",
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI078"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF02B",
+    "pair_id": "CF02",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF02B",
+      "pair_id": "CF02",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a selfish squirrel who guards every acorn in her winter pantry",
+      "setting": "an oak forest buried by an early snowstorm",
+      "challenge": "several neighboring animals have no food left",
+      "outcome": "the forest community shares enough food to survive until the thaw",
+      "teaching": "What we share in hard times returns as shared strength."
+    },
+    "blind_id": "AI079"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ18",
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI080"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF06A",
+    "pair_id": "CF06",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF06A",
+      "pair_id": "CF06",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a resourceful young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the markers for a safe path",
+      "outcome": "the otter and river animals build a new path from interlocked branches",
+      "teaching": "Shared ideas can turn a loss into a safer solution."
+    },
+    "blind_id": "AI081"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ02",
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI082"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF08B",
+    "pair_id": "CF08",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF08B",
+      "pair_id": "CF08",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "the seedlings will drown before morning",
+      "outcome": "the mouse joins the animals moving every seedling onto raised soil mounds",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI083"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ15",
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI084"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF06B",
+    "pair_id": "CF06",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF06B",
+      "pair_id": "CF06",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a resourceful young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the markers for a safe path",
+      "outcome": "the otter and river animals mark a new route with rope and woven reeds",
+      "teaching": "Shared ideas can turn a loss into a safer solution."
+    },
+    "blind_id": "AI085"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF08B",
+    "pair_id": "CF08",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF08B",
+      "pair_id": "CF08",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "the seedlings will drown before morning",
+      "outcome": "the mouse joins the animals moving every seedling onto raised soil mounds",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI086"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ22",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI087"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ04",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI088"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF03A",
+    "pair_id": "CF03",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF03A",
+      "pair_id": "CF03",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a patient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the old oven heats unevenly and the festival bread will not rise",
+      "outcome": "the final loaf feeds the village at the evening celebration",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI089"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ07",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI090"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ22",
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI091"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ02",
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI092"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ22",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI093"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF09A",
+    "pair_id": "CF09",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF09A",
+      "pair_id": "CF09",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a careful young turtle carrying medicine",
+      "setting": "a forest stream after a fallen bridge",
+      "challenge": "the medicine must reach the far bank before night",
+      "outcome": "the turtle organizes flat stones into a safe chain of stepping places",
+      "teaching": "Careful planning can make a difficult crossing possible."
+    },
+    "blind_id": "AI094"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ25",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI095"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ03",
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI096"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ11",
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI097"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ03",
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI098"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ01",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI099"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ15",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ15",
+      "character": "a playful dolphin who interrupts every lesson",
+      "setting": "a warm lagoon used as a school",
+      "challenge": "the dolphin misses the signal for a dangerous tide because he was making jokes",
+      "outcome": "he apologizes, listens carefully, and repeats the signal so everyone remembers it",
+      "teaching": "Fun is best when we also know when to listen."
+    },
+    "blind_id": "AI100"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ20",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI101"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ23",
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI102"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ09",
+    "actions": [
+      "rewrite"
+    ],
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI103"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ06",
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI104"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ24",
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI105"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ04",
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI106"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ09",
+    "actions": [
+      "rewrite"
+    ],
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI107"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF10B",
+    "pair_id": "CF10",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF10B",
+      "pair_id": "CF10",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a practical beaver who listens to younger animals",
+      "setting": "a woodland pond during a long drought",
+      "challenge": "the remaining water will not last until the rains return",
+      "outcome": "the animals build covered cisterns to collect dew and brief showers",
+      "teaching": "A community survives when every useful idea is heard."
+    },
+    "blind_id": "AI108"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ01",
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI109"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ10",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI110"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF03A",
+    "pair_id": "CF03",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF03A",
+      "pair_id": "CF03",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a patient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the old oven heats unevenly and the festival bread will not rise",
+      "outcome": "the final loaf feeds the village at the evening celebration",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI111"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ20",
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI112"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ08",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI113"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ04",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI114"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF06B",
+    "pair_id": "CF06",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF06B",
+      "pair_id": "CF06",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a resourceful young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the markers for a safe path",
+      "outcome": "the otter and river animals mark a new route with rope and woven reeds",
+      "teaching": "Shared ideas can turn a loss into a safer solution."
+    },
+    "blind_id": "AI115"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ11",
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI116"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ03",
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI117"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ12",
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI118"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ08",
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI119"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ22",
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI120"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF01B",
+    "pair_id": "CF01",
+    "variant": "b",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF01B",
+      "pair_id": "CF01",
+      "variant": "b",
+      "intervention": "trait",
+      "character": "a reckless young rabbit who leaps before looking",
+      "setting": "a narrow rope bridge above a swollen creek",
+      "challenge": "medicine must cross before sunset after several bridge planks come loose",
+      "outcome": "the rabbit reaches a sick hedgehog safely with the medicine",
+      "teaching": "Courage works best when guided by care."
+    },
+    "blind_id": "AI121"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ11",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI122"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ18",
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI123"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ19",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI124"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ24",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI125"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ23",
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI126"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ08",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ08",
+      "character": "a generous sparrow with only three seeds",
+      "setting": "a cold railway garden at the edge of town",
+      "challenge": "the sparrow must choose between eating now and helping a hungry stranger",
+      "outcome": "they plant one seed, share two, and later harvest many together",
+      "teaching": "Sharing wisely can create enough for everyone."
+    },
+    "blind_id": "AI127"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ19",
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI128"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF10A",
+    "pair_id": "CF10",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF10A",
+      "pair_id": "CF10",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a practical beaver who listens to younger animals",
+      "setting": "a woodland pond during a long drought",
+      "challenge": "the remaining water will not last until the rains return",
+      "outcome": "the animals reopen an old shaded canal from a spring",
+      "teaching": "A community survives when every useful idea is heard."
+    },
+    "blind_id": "AI129"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF07A",
+    "pair_id": "CF07",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF07A",
+      "pair_id": "CF07",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI130"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ14",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI131"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ16",
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI132"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ17",
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI133"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ24",
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI134"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ20",
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI135"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ02",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI136"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ25",
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI137"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF10A",
+    "pair_id": "CF10",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF10A",
+      "pair_id": "CF10",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a practical beaver who listens to younger animals",
+      "setting": "a woodland pond during a long drought",
+      "challenge": "the remaining water will not last until the rains return",
+      "outcome": "the animals reopen an old shaded canal from a spring",
+      "teaching": "A community survives when every useful idea is heard."
+    },
+    "blind_id": "AI138"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ09",
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI139"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ03",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI140"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ12",
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI141"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ17",
+    "actions": [
+      "rewrite"
+    ],
+    "prompt": {
+      "prompt_id": "GJ17",
+      "character": "an inventive kingfisher with a broken wing",
+      "setting": "a reed marsh where fish are becoming scarce",
+      "challenge": "the bird cannot hunt in the usual way and refuses to change",
+      "outcome": "she designs a patient perch and teaches others a gentler fishing method",
+      "teaching": "Adapting a skill is not the same as giving up."
+    },
+    "blind_id": "AI142"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF05A",
+    "pair_id": "CF05",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF05A",
+      "pair_id": "CF05",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a humble young crane competing in her first flying contest",
+      "setting": "a lakeside meadow under gathering storm clouds",
+      "challenge": "a rival bird injures a wing while everyone races home",
+      "outcome": "the crane helps the rival land safely before the storm",
+      "teaching": "True strength is shown by whom we choose to help."
+    },
+    "blind_id": "AI143"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ03",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ03",
+      "character": "an impatient red panda baker",
+      "setting": "a mountain village preparing for the first snow",
+      "challenge": "the panda keeps opening the oven and the bread will not rise",
+      "outcome": "an old crane teaches the panda to wait, and the final loaf feeds the village",
+      "teaching": "Patience gives good work time to grow."
+    },
+    "blind_id": "AI144"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ20",
+    "prompt": {
+      "prompt_id": "GJ20",
+      "character": "a careful tortoise who never tries anything new",
+      "setting": "a hillside orchard during harvest",
+      "challenge": "the usual cart path collapses and fruit will spoil",
+      "outcome": "the tortoise tests a new route in small steps and leads the carts safely",
+      "teaching": "Careful courage makes room for useful change."
+    },
+    "blind_id": "AI145"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ16",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI146"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ09",
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI147"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ16",
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI148"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ13",
+    "prompt": {
+      "prompt_id": "GJ13",
+      "character": "a tidy squirrel who labels every acorn",
+      "setting": "a great oak during a busy autumn",
+      "challenge": "a storm mixes all the stores and the squirrel refuses unfamiliar ideas",
+      "outcome": "she listens to two younger squirrels and creates a simple shared pantry",
+      "teaching": "Good plans improve when we listen to others."
+    },
+    "blind_id": "AI149"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF08A",
+    "pair_id": "CF08",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF08A",
+      "pair_id": "CF08",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "the seedlings will drown before morning",
+      "outcome": "the mouse joins the animals digging a muddy drainage channel",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI150"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ01",
+    "prompt": {
+      "prompt_id": "GJ01",
+      "character": "a young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the stones needed to mark a safe path",
+      "outcome": "the otter asks the river animals for help and builds a better path from branches",
+      "teaching": "Asking for help can turn a loss into a shared solution."
+    },
+    "blind_id": "AI151"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ25",
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI152"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF09B",
+    "pair_id": "CF09",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF09B",
+      "pair_id": "CF09",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a careful young turtle carrying medicine",
+      "setting": "a forest stream after a fallen bridge",
+      "challenge": "the medicine must reach the far bank before night",
+      "outcome": "the turtle builds a broad leaf raft and ferries the medicine across",
+      "teaching": "Careful planning can make a difficult crossing possible."
+    },
+    "blind_id": "AI153"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ06",
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI154"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF02A",
+    "pair_id": "CF02",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF02A",
+      "pair_id": "CF02",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a generous squirrel who gladly shares her winter pantry",
+      "setting": "an oak forest buried by an early snowstorm",
+      "challenge": "several neighboring animals have no food left",
+      "outcome": "the forest community shares enough food to survive until the thaw",
+      "teaching": "What we share in hard times returns as shared strength."
+    },
+    "blind_id": "AI155"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ10",
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI156"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ12",
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI157"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ24",
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI158"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ24",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ24",
+      "character": "a determined frog with a leaky leaf boat",
+      "setting": "a pond dotted with white lilies",
+      "challenge": "the frog keeps patching alone while a race is about to begin",
+      "outcome": "he accepts advice, rebuilds the boat, and finishes without needing to win",
+      "teaching": "Learning from others is a strength, not a defeat."
+    },
+    "blind_id": "AI159"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ11",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI160"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ23",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ23",
+      "character": "a young owl who judges by appearances",
+      "setting": "a ruined bell tower at dusk",
+      "challenge": "the owl avoids a ragged bat who knows the safest way through the tower",
+      "outcome": "he listens to the bat, escapes falling stones, and welcomes her as a guide",
+      "teaching": "Character matters more than a neat appearance."
+    },
+    "blind_id": "AI161"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ25",
+    "actions": [
+      "rewrite",
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ25",
+      "character": "a kind lynx who cannot read trail marks",
+      "setting": "a pine forest during the first frost",
+      "challenge": "the lynx is embarrassed to admit she cannot follow the signs",
+      "outcome": "she asks a woodpecker to teach her and later guides a younger animal home",
+      "teaching": "There is no shame in learning something late."
+    },
+    "blind_id": "AI162"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF06A",
+    "pair_id": "CF06",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF06A",
+      "pair_id": "CF06",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a resourceful young otter who collects smooth stones",
+      "setting": "a misty river bend beside a willow tree",
+      "challenge": "a sudden current carries away the markers for a safe path",
+      "outcome": "the otter and river animals build a new path from interlocked branches",
+      "teaching": "Shared ideas can turn a loss into a safer solution."
+    },
+    "blind_id": "AI163"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF02A",
+    "pair_id": "CF02",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF02A",
+      "pair_id": "CF02",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a generous squirrel who gladly shares her winter pantry",
+      "setting": "an oak forest buried by an early snowstorm",
+      "challenge": "several neighboring animals have no food left",
+      "outcome": "the forest community shares enough food to survive until the thaw",
+      "teaching": "What we share in hard times returns as shared strength."
+    },
+    "blind_id": "AI164"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ14",
+    "prompt": {
+      "prompt_id": "GJ14",
+      "character": "a lonely young wolf who pretends not to need friends",
+      "setting": "a snowy meadow under northern lights",
+      "challenge": "a heavy branch blocks the only path home",
+      "outcome": "the wolf accepts help from rabbits he once ignored and later helps clear their burrow",
+      "teaching": "Independence and friendship can grow together."
+    },
+    "blind_id": "AI165"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ06",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ06",
+      "character": "a patient snail carrying a cracked shell bell",
+      "setting": "a winding path through tall blue grass",
+      "challenge": "faster animals laugh because the bell rings late during a safety drill",
+      "outcome": "the snail notices a hidden fox track and the late bell warns everyone in time",
+      "teaching": "Moving slowly does not mean noticing less."
+    },
+    "blind_id": "AI166"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ19",
+    "prompt": {
+      "prompt_id": "GJ19",
+      "character": "a thrifty magpie who saves every shiny object",
+      "setting": "a riverside market after closing time",
+      "challenge": "a lost duckling needs a reflective marker to find the path home",
+      "outcome": "the magpie gives up a treasured silver ribbon and guides the duckling safely",
+      "teaching": "A possession is most valuable when it can help someone."
+    },
+    "blind_id": "AI167"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF10B",
+    "pair_id": "CF10",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF10B",
+      "pair_id": "CF10",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a practical beaver who listens to younger animals",
+      "setting": "a woodland pond during a long drought",
+      "challenge": "the remaining water will not last until the rains return",
+      "outcome": "the animals build covered cisterns to collect dew and brief showers",
+      "teaching": "A community survives when every useful idea is heard."
+    },
+    "blind_id": "AI168"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF01A",
+    "pair_id": "CF01",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF01A",
+      "pair_id": "CF01",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a cautious young rabbit who checks every foothold",
+      "setting": "a narrow rope bridge above a swollen creek",
+      "challenge": "medicine must cross before sunset after several bridge planks come loose",
+      "outcome": "the rabbit reaches a sick hedgehog safely with the medicine",
+      "teaching": "Courage works best when guided by care."
+    },
+    "blind_id": "AI169"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ18",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI170"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ22",
+    "prompt": {
+      "prompt_id": "GJ22",
+      "character": "a hardworking ant who refuses to rest",
+      "setting": "a warm meadow before a long journey",
+      "challenge": "exhaustion makes the ant drop the group's compass",
+      "outcome": "the team finds it, schedules rest stops, and completes the journey together",
+      "teaching": "Rest is part of doing good work."
+    },
+    "blind_id": "AI171"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF01A",
+    "pair_id": "CF01",
+    "variant": "a",
+    "intervention": "trait",
+    "prompt": {
+      "prompt_id": "CF01A",
+      "pair_id": "CF01",
+      "variant": "a",
+      "intervention": "trait",
+      "character": "a cautious young rabbit who checks every foothold",
+      "setting": "a narrow rope bridge above a swollen creek",
+      "challenge": "medicine must cross before sunset after several bridge planks come loose",
+      "outcome": "the rabbit reaches a sick hedgehog safely with the medicine",
+      "teaching": "Courage works best when guided by care."
+    },
+    "blind_id": "AI172"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ11",
+    "prompt": {
+      "prompt_id": "GJ11",
+      "character": "a young camel who hides an empty water jar",
+      "setting": "a windy desert road between two wells",
+      "challenge": "fear of being blamed keeps the camel silent as the caravan walks farther",
+      "outcome": "the camel speaks up, and the group turns back before anyone is harmed",
+      "teaching": "Speaking the truth early can prevent a bigger problem."
+    },
+    "blind_id": "AI173"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ12",
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI174"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ10",
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI175"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ07",
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI176"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF07B",
+    "pair_id": "CF07",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF07B",
+      "pair_id": "CF07",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly arranges dew-covered leaves to reflect every tiny light",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI177"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ21",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ21",
+      "character": "a talkative parrot who repeats every secret",
+      "setting": "a bright jungle library",
+      "challenge": "a friend's private worry becomes gossip and hurts her feelings",
+      "outcome": "the parrot apologizes, corrects the rumor, and learns to ask before sharing",
+      "teaching": "Trust grows when we protect what others tell us."
+    },
+    "blind_id": "AI178"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ02",
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI179"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ02",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ02",
+      "character": "a shy firefly with a very small glow",
+      "setting": "a moonless garden during a summer festival",
+      "challenge": "the lanterns go out and the smallest insects cannot find their families",
+      "outcome": "the firefly gathers friends so their tiny lights become a bright guide",
+      "teaching": "Small gifts become powerful when we share them."
+    },
+    "blind_id": "AI180"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ09",
+    "prompt": {
+      "prompt_id": "GJ09",
+      "character": "a proud little sailfish who always races",
+      "setting": "a coral bay filled with floating seaweed",
+      "challenge": "the sailfish speeds ahead and becomes tangled far from the school",
+      "outcome": "a slow turtle frees him, and he learns to match the group's pace",
+      "teaching": "Going together can be safer than going fastest."
+    },
+    "blind_id": "AI181"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ10",
+    "prompt": {
+      "prompt_id": "GJ10",
+      "character": "a forgetful beaver mapmaker",
+      "setting": "a forest crossed by many small streams",
+      "challenge": "the beaver promises directions but forgets to check a changed trail",
+      "outcome": "he corrects the map, marks the danger, and starts a careful checking habit",
+      "teaching": "A promise deserves careful preparation."
+    },
+    "blind_id": "AI182"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "CF09B",
+    "pair_id": "CF09",
+    "variant": "b",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF09B",
+      "pair_id": "CF09",
+      "variant": "b",
+      "intervention": "outcome",
+      "character": "a careful young turtle carrying medicine",
+      "setting": "a forest stream after a fallen bridge",
+      "challenge": "the medicine must reach the far bank before night",
+      "outcome": "the turtle builds a broad leaf raft and ferries the medicine across",
+      "teaching": "Careful planning can make a difficult crossing possible."
+    },
+    "blind_id": "AI183"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "raw",
+    "prompt_id": "GJ12",
+    "actions": [
+      "moral_postprocess"
+    ],
+    "prompt": {
+      "prompt_id": "GJ12",
+      "character": "a cheerful mole who wants to sing like a lark",
+      "setting": "an underground hall prepared for a spring concert",
+      "challenge": "the mole copies the lark and loses his own deep, warm voice",
+      "outcome": "he sings in his natural voice and gives the concert its missing bass",
+      "teaching": "Your own voice has a place that imitation cannot fill."
+    },
+    "blind_id": "AI184"
+  },
+  {
+    "group": "counterfactual",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "CF08A",
+    "pair_id": "CF08",
+    "variant": "a",
+    "intervention": "outcome",
+    "prompt": {
+      "prompt_id": "CF08A",
+      "pair_id": "CF08",
+      "variant": "a",
+      "intervention": "outcome",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "the seedlings will drown before morning",
+      "outcome": "the mouse joins the animals digging a muddy drainage channel",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI185"
+  },
+  {
+    "group": "e3_repair",
+    "candidate_id": "e3",
+    "condition_mode": "repaired",
+    "prompt_id": "GJ07",
+    "actions": [],
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI186"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ18",
+    "prompt": {
+      "prompt_id": "GJ18",
+      "character": "a young elephant entrusted with a village drum",
+      "setting": "a grassy plain during a welcome ceremony",
+      "challenge": "the elephant plays too loudly to attract attention and tears the drumskin",
+      "outcome": "he repairs it with the craftsperson and plays softly as part of the group",
+      "teaching": "Being heard is less important than working in harmony."
+    },
+    "blind_id": "AI187"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "full",
+    "prompt_id": "GJ04",
+    "prompt": {
+      "prompt_id": "GJ04",
+      "character": "a clever field mouse who dislikes getting dirty",
+      "setting": "a flooded vegetable garden",
+      "challenge": "seedlings will drown unless a muddy drainage channel is cleared",
+      "outcome": "the mouse joins the digging and saves both the garden and the winter food",
+      "teaching": "Useful work matters more than staying perfectly clean."
+    },
+    "blind_id": "AI188"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e2",
+    "condition_mode": "two_slot",
+    "prompt_id": "GJ16",
+    "prompt": {
+      "prompt_id": "GJ16",
+      "character": "a small hedgehog who fears thunder",
+      "setting": "a blackberry field beneath dark clouds",
+      "challenge": "the hedgehog must guide lost chicks to shelter during a storm",
+      "outcome": "he names each fear, takes one step at a time, and leads them to a hollow log",
+      "teaching": "Courage means helping even while you feel afraid."
+    },
+    "blind_id": "AI189"
+  },
+  {
+    "group": "condition_availability",
+    "candidate_id": "e5",
+    "condition_mode": "full",
+    "prompt_id": "GJ07",
+    "prompt": {
+      "prompt_id": "GJ07",
+      "character": "a curious goat who loves unanswered questions",
+      "setting": "an old stone bridge above a clear stream",
+      "challenge": "the goat ignores a warning sign and loosens a bridge stone",
+      "outcome": "she tells the truth, helps repair the bridge, and asks questions before touching things",
+      "teaching": "Curiosity needs care and responsibility."
+    },
+    "blind_id": "AI190"
+  }
+]

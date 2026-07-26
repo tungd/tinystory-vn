@@ -1,0 +1,32 @@
+{
+  "version": "v1",
+  "purpose": [
+    "condition availability: five slots versus character+moral",
+    "compositional adherence: exact semantic coverage per slot",
+    "causal use: trait-to-choice and choice-to-outcome",
+    "counterfactual sensitivity: matched trait/outcome interventions",
+    "E3 repair contribution: raw versus final output"
+  ],
+  "models": [
+    "e2",
+    "e5"
+  ],
+  "two_slot_prompts": 25,
+  "counterfactual_pairs": 10,
+  "counterfactual_prompts": 20,
+  "counterfactual_split": {
+    "trait": 5,
+    "outcome": 5
+  },
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "repeat_penalty": 1.1,
+    "max_new_tokens": 400,
+    "seed_formula": "5410 + prompt_index",
+    "two_slot_seed": "5410 + original prompt index",
+    "counterfactual_seed": "16000 + pair index; shared by A/B and E2/E5"
+  },
+  "judge_seed": 20260727,
+  "bootstrap_rounds": 10000
+}

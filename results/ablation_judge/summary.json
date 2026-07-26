@@ -1,0 +1,466 @@
+{
+  "protocol": {
+    "version": "v1",
+    "purpose": [
+      "condition availability: five slots versus character+moral",
+      "compositional adherence: exact semantic coverage per slot",
+      "causal use: trait-to-choice and choice-to-outcome",
+      "counterfactual sensitivity: matched trait/outcome interventions",
+      "E3 repair contribution: raw versus final output"
+    ],
+    "models": [
+      "e2",
+      "e5"
+    ],
+    "two_slot_prompts": 25,
+    "counterfactual_pairs": 10,
+    "counterfactual_prompts": 20,
+    "counterfactual_split": {
+      "trait": 5,
+      "outcome": 5
+    },
+    "generation": {
+      "temperature": 0.7,
+      "top_p": 0.9,
+      "repeat_penalty": 1.1,
+      "max_new_tokens": 400,
+      "seed_formula": "5410 + prompt_index",
+      "two_slot_seed": "5410 + original prompt index",
+      "counterfactual_seed": "16000 + pair index; shared by A/B and E2/E5"
+    },
+    "judge_seed": 20260727,
+    "bootstrap_rounds": 10000
+  },
+  "condition_availability": {
+    "e2": {
+      "full": {
+        "n": 25,
+        "slot_coverage_5_mean": 0.48,
+        "provided_character_teaching_coverage_2_mean": 0.16,
+        "setting_challenge_outcome_coverage_3_mean": 0.32,
+        "character_covered": 0.12,
+        "setting_covered": 0.2,
+        "challenge_covered": 0.08,
+        "outcome_covered": 0.04,
+        "teaching_covered": 0.04,
+        "moral_footer_present": 0.0,
+        "trait_drives_choice": 0.16,
+        "choice_causes_outcome": 0.24,
+        "internal_causal_consistency": 4.76,
+        "requested_causal_consistency": 1.44
+      },
+      "two_slot": {
+        "n": 25,
+        "slot_coverage_5_mean": 0.04,
+        "provided_character_teaching_coverage_2_mean": 0.0,
+        "setting_challenge_outcome_coverage_3_mean": 0.04,
+        "character_covered": 0.0,
+        "setting_covered": 0.04,
+        "challenge_covered": 0.0,
+        "outcome_covered": 0.0,
+        "teaching_covered": 0.0,
+        "moral_footer_present": 0.0,
+        "trait_drives_choice": 0.08,
+        "choice_causes_outcome": 0.2,
+        "internal_causal_consistency": 5.08,
+        "requested_causal_consistency": 1.0
+      },
+      "paired_comparisons": {
+        "character_covered": {
+          "full_minus_two_slot": 0.12,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.24
+          ]
+        },
+        "setting_covered": {
+          "full_minus_two_slot": 0.16,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.36
+          ]
+        },
+        "challenge_covered": {
+          "full_minus_two_slot": 0.08,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.2
+          ]
+        },
+        "outcome_covered": {
+          "full_minus_two_slot": 0.04,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.12
+          ]
+        },
+        "teaching_covered": {
+          "full_minus_two_slot": 0.04,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.12
+          ]
+        },
+        "moral_footer_present": {
+          "full_minus_two_slot": 0.0,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "trait_drives_choice": {
+          "full_minus_two_slot": 0.08,
+          "paired_bootstrap_95pct_ci": [
+            -0.08,
+            0.24
+          ]
+        },
+        "choice_causes_outcome": {
+          "full_minus_two_slot": 0.04,
+          "paired_bootstrap_95pct_ci": [
+            -0.16,
+            0.24
+          ]
+        },
+        "internal_causal_consistency": {
+          "full_minus_two_slot": -0.32,
+          "paired_bootstrap_95pct_ci": [
+            -1.04,
+            0.52
+          ]
+        },
+        "requested_causal_consistency": {
+          "full_minus_two_slot": 0.44,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            1.2
+          ]
+        },
+        "slot_coverage_5": {
+          "full_minus_two_slot": 0.44,
+          "paired_bootstrap_95pct_ci": [
+            0.04,
+            0.92
+          ]
+        }
+      }
+    },
+    "e5": {
+      "full": {
+        "n": 25,
+        "slot_coverage_5_mean": 4.88,
+        "provided_character_teaching_coverage_2_mean": 1.92,
+        "setting_challenge_outcome_coverage_3_mean": 2.96,
+        "character_covered": 1.0,
+        "setting_covered": 1.0,
+        "challenge_covered": 0.96,
+        "outcome_covered": 1.0,
+        "teaching_covered": 0.92,
+        "moral_footer_present": 0.4,
+        "trait_drives_choice": 0.96,
+        "choice_causes_outcome": 0.96,
+        "internal_causal_consistency": 9.28,
+        "requested_causal_consistency": 9.24
+      },
+      "two_slot": {
+        "n": 25,
+        "slot_coverage_5_mean": 1.2,
+        "provided_character_teaching_coverage_2_mean": 1.04,
+        "setting_challenge_outcome_coverage_3_mean": 0.16,
+        "character_covered": 0.32,
+        "setting_covered": 0.08,
+        "challenge_covered": 0.08,
+        "outcome_covered": 0.0,
+        "teaching_covered": 0.72,
+        "moral_footer_present": 0.2,
+        "trait_drives_choice": 0.56,
+        "choice_causes_outcome": 0.6,
+        "internal_causal_consistency": 6.68,
+        "requested_causal_consistency": 1.96
+      },
+      "paired_comparisons": {
+        "character_covered": {
+          "full_minus_two_slot": 0.68,
+          "paired_bootstrap_95pct_ci": [
+            0.48,
+            0.84
+          ]
+        },
+        "setting_covered": {
+          "full_minus_two_slot": 0.92,
+          "paired_bootstrap_95pct_ci": [
+            0.8,
+            1.0
+          ]
+        },
+        "challenge_covered": {
+          "full_minus_two_slot": 0.88,
+          "paired_bootstrap_95pct_ci": [
+            0.68,
+            1.0
+          ]
+        },
+        "outcome_covered": {
+          "full_minus_two_slot": 1.0,
+          "paired_bootstrap_95pct_ci": [
+            1.0,
+            1.0
+          ]
+        },
+        "teaching_covered": {
+          "full_minus_two_slot": 0.2,
+          "paired_bootstrap_95pct_ci": [
+            -0.04,
+            0.4
+          ]
+        },
+        "moral_footer_present": {
+          "full_minus_two_slot": 0.2,
+          "paired_bootstrap_95pct_ci": [
+            0.0,
+            0.44
+          ]
+        },
+        "trait_drives_choice": {
+          "full_minus_two_slot": 0.4,
+          "paired_bootstrap_95pct_ci": [
+            0.16,
+            0.64
+          ]
+        },
+        "choice_causes_outcome": {
+          "full_minus_two_slot": 0.36,
+          "paired_bootstrap_95pct_ci": [
+            0.16,
+            0.56
+          ]
+        },
+        "internal_causal_consistency": {
+          "full_minus_two_slot": 2.6,
+          "paired_bootstrap_95pct_ci": [
+            2.04,
+            3.2
+          ]
+        },
+        "requested_causal_consistency": {
+          "full_minus_two_slot": 7.28,
+          "paired_bootstrap_95pct_ci": [
+            6.6,
+            7.92
+          ]
+        },
+        "slot_coverage_5": {
+          "full_minus_two_slot": 3.68,
+          "paired_bootstrap_95pct_ci": [
+            3.2,
+            4.08
+          ]
+        }
+      }
+    }
+  },
+  "counterfactual": {
+    "e2": {
+      "n_stories": 20,
+      "n_pairs": 10,
+      "trait_drives_choice_rate": 0.1,
+      "choice_causes_outcome_rate": 0.1,
+      "requested_causal_consistency": 1.5,
+      "pair_match_both_rate": 0.1,
+      "pair_match_both_95pct_ci": [
+        0.0,
+        0.3
+      ],
+      "intervention_changes_story_rate": 0.1,
+      "intervention_changes_story_95pct_ci": [
+        0.0,
+        0.3
+      ],
+      "counterfactual_sensitivity": 1.7,
+      "counterfactual_sensitivity_95pct_ci": [
+        1.0,
+        3.1
+      ],
+      "by_intervention": {
+        "trait": {
+          "n": 5,
+          "match_both_rate": 0.2,
+          "changes_story_rate": 0.2,
+          "sensitivity": 2.4
+        },
+        "outcome": {
+          "n": 5,
+          "match_both_rate": 0.0,
+          "changes_story_rate": 0.0,
+          "sensitivity": 1.0
+        }
+      }
+    },
+    "e5": {
+      "n_stories": 20,
+      "n_pairs": 10,
+      "trait_drives_choice_rate": 0.95,
+      "choice_causes_outcome_rate": 1.0,
+      "requested_causal_consistency": 8.8,
+      "pair_match_both_rate": 1.0,
+      "pair_match_both_95pct_ci": [
+        1.0,
+        1.0
+      ],
+      "intervention_changes_story_rate": 1.0,
+      "intervention_changes_story_95pct_ci": [
+        1.0,
+        1.0
+      ],
+      "counterfactual_sensitivity": 9.4,
+      "counterfactual_sensitivity_95pct_ci": [
+        8.9,
+        9.9
+      ],
+      "by_intervention": {
+        "trait": {
+          "n": 5,
+          "match_both_rate": 1.0,
+          "changes_story_rate": 1.0,
+          "sensitivity": 8.8
+        },
+        "outcome": {
+          "n": 5,
+          "match_both_rate": 1.0,
+          "changes_story_rate": 1.0,
+          "sensitivity": 10.0
+        }
+      }
+    },
+    "paired_e5_minus_e2": {
+      "counterfactual_sensitivity": {
+        "mean_difference": 7.7,
+        "paired_bootstrap_95pct_ci": [
+          6.2,
+          8.7
+        ]
+      },
+      "intervention_changes_decision_or_resolution": {
+        "mean_difference": 0.9,
+        "paired_bootstrap_95pct_ci": [
+          0.7,
+          1.0
+        ]
+      }
+    }
+  },
+  "e3_repair": {
+    "raw": {
+      "n": 25,
+      "character_covered": 1.0,
+      "setting_covered": 1.0,
+      "challenge_covered": 1.0,
+      "outcome_covered": 1.0,
+      "teaching_covered": 0.8,
+      "moral_footer_present": 0.2,
+      "trait_drives_choice": 0.92,
+      "choice_causes_outcome": 1.0,
+      "internal_causal_consistency": 9.16,
+      "requested_causal_consistency": 9.0,
+      "exact_requested_moral_rate": 0.2
+    },
+    "repaired": {
+      "n": 25,
+      "character_covered": 1.0,
+      "setting_covered": 1.0,
+      "challenge_covered": 1.0,
+      "outcome_covered": 1.0,
+      "teaching_covered": 1.0,
+      "moral_footer_present": 1.0,
+      "trait_drives_choice": 0.92,
+      "choice_causes_outcome": 1.0,
+      "internal_causal_consistency": 9.56,
+      "requested_causal_consistency": 9.64,
+      "exact_requested_moral_rate": 1.0
+    },
+    "actions": {
+      "any_action": 21,
+      "rewrite": 5,
+      "moral_postprocess": 19
+    },
+    "paired_comparisons": {
+      "character_covered": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "setting_covered": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "challenge_covered": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "outcome_covered": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "teaching_covered": {
+        "repaired_minus_raw": 0.2,
+        "paired_bootstrap_95pct_ci": [
+          0.04,
+          0.36
+        ]
+      },
+      "moral_footer_present": {
+        "repaired_minus_raw": 0.8,
+        "paired_bootstrap_95pct_ci": [
+          0.64,
+          0.96
+        ]
+      },
+      "trait_drives_choice": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "choice_causes_outcome": {
+        "repaired_minus_raw": 0.0,
+        "paired_bootstrap_95pct_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "internal_causal_consistency": {
+        "repaired_minus_raw": 0.4,
+        "paired_bootstrap_95pct_ci": [
+          0.2,
+          0.6
+        ]
+      },
+      "requested_causal_consistency": {
+        "repaired_minus_raw": 0.64,
+        "paired_bootstrap_95pct_ci": [
+          0.4,
+          0.92
+        ]
+      },
+      "exact_requested_moral_rate": {
+        "repaired_minus_raw": 0.8,
+        "paired_bootstrap_95pct_ci": [
+          0.64,
+          0.96
+        ]
+      }
+    }
+  }
+}
