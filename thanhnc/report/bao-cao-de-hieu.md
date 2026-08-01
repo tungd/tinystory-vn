@@ -199,6 +199,16 @@ văn phong** càng tốt.
 A: Có rủi ro (nên bài báo gốc dùng 3 judge). Em **chủ đích đơn giản hoá thành 1 judge** và **không kết luận theo con
 số tuyệt đối**, mà theo **thứ hạng**. May mắn là **judge và perplexity cho cùng thứ hạng** → kết luận đáng tin.
 
+**Q: Điểm judge 6.87 của em có so được với nhóm khác không?**
+A: **Không.** 6.87 là điểm **judge nội bộ (Qwen2.5-7B)** — chỉ so base/A/B/C **trong riêng hướng của em**. Nhóm 16 có
+một **judge CHUNG là Gemma 4 26B** chấm mù cả 5 hướng trên **cùng 25 đề** → đó mới là so sánh liên nhóm công bằng.
+
+**Q: Dưới judge chung Gemma, model của em được bao nhiêu? Vì sao thấp?**
+A: E3 (LoRA C) được Gemma chấm **2.81/10** — thấp nhất, vì: (1) model **135M đấu với 3B** (E4 9.20, E5 8.44); (2)
+runner chung **bỏ system_message** em dùng khi train → bám đề chỉ 1.44 (đúng cảnh báo prompt-format mismatch). Giữa
+các model nhỏ thì E3 ≈ E1 (3.30) ≈ E2 (3.18). **6.87 và 2.81 KHÔNG mâu thuẫn** — hai judge, hai thang, hai mục đích.
+Đóng góp của em là **"đặt adapter ở đâu"**, không phải thắng điểm tuyệt đối (muốn cao cần model lớn như E4/E5).
+
 **Q: Vì sao Flesch của base âm (−66)?**
 A: Vì model base viết **văn bản lộn xộn/không đọc được** cho đề này → điểm dễ đọc âm. Sau fine-tune lên +51…+58
 (mức "dễ đọc", hợp trẻ em).

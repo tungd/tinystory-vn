@@ -305,6 +305,35 @@ Xếp hạng PPL: **C (3.84) < A (4.82) < B (5.46) ≪ base (9.52).**
 
 Xếp hạng judge overall: **C (6.87) > A (6.70) > B (5.94) > base (5.73).**
 
+> ⚠️ **Đây là judge NỘI BỘ (Qwen2.5-7B), chỉ để so base/A/B/C trong riêng E3 — KHÔNG so được với nhóm khác.**
+
+### 4.2b Hai tầng đánh giá — và judge CHUNG của nhóm (Gemma 4 26B)
+
+Báo cáo Nhóm 16 tách rõ **2 tầng, không trộn**:
+1. **Judge nội bộ** (mỗi thành viên tự chấm; E3 dùng Qwen2.5-7B) → chỉ chọn cấu hình tốt nhất trong hướng của mình,
+   **không dùng xếp hạng liên nhóm** (khác đề, giám khảo, thang đo).
+2. **Judge CHUNG = Gemma 4 26B** (`gemma-4-26b-a4b-it`, temp 0): sinh lại đại diện mỗi hướng trên **cùng 25 đề**,
+   chấm mù 4 trục — phép **so sánh liên nhóm công bằng**.
+
+Dưới judge chung Gemma, đại diện E3 (`tsv3-smollm135-best` = LoRA C):
+
+| Gemma judge · 25 đề | Ngôn ngữ | Sáng tạo | Moral | Bám đề | **Overall** |
+|---|---:|---:|---:|---:|---:|
+| E4 · Base+Repair (3B) | 10.0 | 7.40 | 9.40 | 10.0 | **9.20** |
+| E5 · QLoRA (3B) | 9.88 | 7.04 | 8.56 | 8.28 | **8.44** |
+| E1 · SLM 60M | 5.48 | 3.40 | 2.88 | 1.44 | **3.30** |
+| E2 · V16 (63M) | 5.92 | 3.20 | 2.52 | 1.08 | **3.18** |
+| **E3 · LoRA C (135M)** | 4.64 | 3.20 | 1.96 | 1.44 | **2.81** |
+
+**6.87 (Qwen) và 2.81 (Gemma) KHÔNG mâu thuẫn** — hai judge, hai thang, hai mục đích. E3 thấp nhất ở vòng chung vì:
+- **135M đấu với 3B** (E4/E5) — chênh cỡ mô hình ~24×;
+- **runner chung BỎ `system_message`** mà E3 dùng khi train → **bám đề chỉ 1.44** (đúng cảnh báo prompt-format
+  mismatch ở ADR-0004, giờ có số liệu xác nhận);
+- giữa các model nhỏ: E3 ≈ E1 ≈ E2 (2.81/3.30/3.18; chênh E1–E3, E2–E3 gần như không có ý nghĩa thống kê) — khoảng
+  cách lớn là **nhỏ-vs-3B**.
+
+⇒ Đóng góp E3 là **"đặt adapter ở đâu"** (đo nội bộ), **không phải** thắng điểm tuyệt đối liên nhóm.
+
 ### 4.3 Nhận định
 - **Hai thước đo độc lập ĐỒNG THUẬN:** perplexity và judge cho **cùng thứ hạng C > A > B > base** → kết luận vững.
 - **Which modules (A vs C):** all-linear (thêm MLP) thắng — PPL 3.84 vs 4.82, và judge overall 6.87 vs 6.70 (C dẫn

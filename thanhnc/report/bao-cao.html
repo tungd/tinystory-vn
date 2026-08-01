@@ -298,6 +298,15 @@
       <div class="qa"><p class="q">Chỉ 1 judge, có thiên vị không?</p><div class="a"><p>Có rủi ro (bài báo gốc dùng 3
         judge). Em <strong>chủ đích đơn giản hoá thành 1 judge</strong> và <strong>kết luận theo thứ hạng</strong>, không
         theo con số tuyệt đối. May mắn: <strong>judge và perplexity cho cùng thứ hạng</strong> → đáng tin.</p></div></div>
+      <div class="qa"><p class="q">Điểm judge 6.87 của em có so được với nhóm khác không?</p><div class="a"><p>
+        <b>Không.</b> 6.87 là điểm <b>judge nội bộ (Qwen2.5-7B)</b>, chỉ để so base/A/B/C <b>trong riêng hướng của
+        em</b>. Nhóm 16 có một <b>judge CHUNG là Gemma 4 26B</b> chấm mù cả 5 hướng trên <b>cùng 25 đề</b> — đó mới là
+        so sánh liên nhóm công bằng.</p></div></div>
+      <div class="qa"><p class="q">Dưới judge chung, model của em được bao nhiêu? Vì sao thấp?</p><div class="a"><p>
+        E3 (LoRA C) được Gemma chấm <b>2.81/10</b> — thấp nhất, vì (1) model <b>135M đấu với 3B</b> (E4 9.20, E5 8.44);
+        (2) runner chung <b>bỏ system_message</b> em dùng khi train → bám đề chỉ 1.44. Giữa các model nhỏ thì E3 ≈ E1
+        (3.30) ≈ E2 (3.18). ⇒ <b>6.87 và 2.81 không mâu thuẫn</b> — hai judge/thang/mục đích khác nhau. Đóng góp của em
+        là <b>"đặt adapter ở đâu"</b>, không phải thắng điểm tuyệt đối (cần model lớn).</p></div></div>
       <div class="qa"><p class="q">Vì sao Flesch của base âm (−66)?</p><div class="a"><p>Vì base viết <strong>văn bản
         lộn xộn/không đọc được</strong> cho đề này. Sau fine-tune lên +51…+58 (mức dễ đọc, hợp trẻ em).</p></div></div>
     </div>
@@ -425,15 +434,47 @@ PARAMETER stop "&lt;|endoftext|&gt;"    temperature 0.8  top_p 0.9  repeat_penal
       <tr><td>A — q,v·all</td><td class="num">4.82</td><td class="num">0.188</td><td class="num">0.176</td><td class="num">57.7</td><td class="num">6.70</td></tr>
       <tr><td>B — q,v·last-10</td><td class="num">5.46</td><td class="num">0.190</td><td class="num">0.171</td><td class="num">51.1</td><td class="num">5.94</td></tr>
       <tr class="best"><td>C — all-linear·all</td><td class="num"><b>3.84</b></td><td class="num">0.210</td><td class="num">0.191</td><td class="num">52.8</td><td class="num"><b>6.87</b></td></tr></tbody></table></div>
-    <div class="tablewrap"><table><thead><tr><th>Judge (n=50)</th><th class="num">Grammar</th><th class="num">Creativity</th><th class="num">Moral</th><th class="num">Adherence</th><th class="num">Overall</th></tr></thead><tbody>
+    <p><b>Judge NỘI BỘ (Qwen2.5-7B, n=50)</b> — chỉ so base/A/B/C <em>trong riêng E3</em>, không so liên nhóm:</p>
+    <div class="tablewrap"><table><thead><tr><th>Judge nội bộ · Qwen</th><th class="num">Grammar</th><th class="num">Creativity</th><th class="num">Moral</th><th class="num">Adherence</th><th class="num">Overall</th></tr></thead><tbody>
       <tr><td>base</td><td class="num">6.68</td><td class="num">5.24</td><td class="num">5.92</td><td class="num">5.08</td><td class="num">5.73</td></tr>
       <tr><td>A</td><td class="num">6.90</td><td class="num"><b>7.16</b></td><td class="num">7.12</td><td class="num">5.62</td><td class="num">6.70</td></tr>
       <tr><td>B</td><td class="num">6.02</td><td class="num">6.54</td><td class="num">6.40</td><td class="num">4.78</td><td class="num">5.94</td></tr>
       <tr class="best"><td>C</td><td class="num"><b>7.36</b></td><td class="num">6.94</td><td class="num"><b>7.16</b></td><td class="num"><b>6.00</b></td><td class="num"><b>6.87</b></td></tr></tbody></table></div>
-    <p><strong>Đồng thuận:</strong> perplexity và judge cho <strong>cùng thứ hạng C &gt; A &gt; B &gt; base</strong>.
+    <p><strong>Đồng thuận:</strong> perplexity và judge nội bộ cho <strong>cùng thứ hạng C &gt; A &gt; B &gt; base</strong>.
       <strong>Which modules (A vs C):</strong> all-linear thắng (đòn bẩy lớn nhất). <strong>Which layers (A vs B):</strong>
       toàn bộ layer thắng 1/3 cuối; B đặc biệt yếu ở prompt_adherence (4.78 &lt; base 5.08). <strong>Best = C</strong>,
       chỉ train 3,5% trọng số.</p>
+
+    <h3>Hai tầng đánh giá — và judge CHUNG của nhóm (Gemma 4 26B)</h3>
+    <p>Báo cáo Nhóm 16 tách rõ <b>2 tầng, không trộn</b> (rất quan trọng khi thầy hỏi):</p>
+    <ul>
+      <li><b>Judge nội bộ (Qwen2.5-7B):</b> bảng trên (6.87…) chỉ để <b>chọn cấu hình đặt adapter tốt nhất TRONG E3</b>
+        — KHÔNG so được với nhóm khác (khác đề, khác giám khảo, khác thang).</li>
+      <li><b>Judge CHUNG (Gemma 4 26B, temp 0):</b> sinh lại đại diện mỗi hướng trên <b>cùng 25 đề</b>, chấm mù 4 trục
+        — đây mới là phép <b>so sánh liên nhóm công bằng</b>.</li>
+    </ul>
+    <p>Dưới judge chung Gemma, đại diện E3 (<code>tsv3-smollm135-best</code> = LoRA C) so với 4 hướng còn lại:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Gemma judge · 25 đề</th><th class="num">Ngôn ngữ</th><th class="num">Sáng tạo</th><th class="num">Moral</th><th class="num">Bám đề</th><th class="num">Overall</th></tr></thead>
+      <tbody>
+        <tr><td>E4 · Base+Repair (3B)</td><td class="num">10.0</td><td class="num">7.40</td><td class="num">9.40</td><td class="num">10.0</td><td class="num"><b>9.20</b></td></tr>
+        <tr><td>E5 · QLoRA (3B)</td><td class="num">9.88</td><td class="num">7.04</td><td class="num">8.56</td><td class="num">8.28</td><td class="num"><b>8.44</b></td></tr>
+        <tr><td>E1 · SLM 60M</td><td class="num">5.48</td><td class="num">3.40</td><td class="num">2.88</td><td class="num">1.44</td><td class="num">3.30</td></tr>
+        <tr><td>E2 · V16 (63M)</td><td class="num">5.92</td><td class="num">3.20</td><td class="num">2.52</td><td class="num">1.08</td><td class="num">3.18</td></tr>
+        <tr class="best"><td><b>E3 · LoRA C (135M) — của em</b></td><td class="num">4.64</td><td class="num">3.20</td><td class="num">1.96</td><td class="num">1.44</td><td class="num"><b>2.81</b></td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Vì sao 6.87 (Qwen) và 2.81 (Gemma) KHÔNG mâu thuẫn:</b> hai judge, hai thang, hai mục đích. E3 thấp nhất ở
+      vòng chung vì:</p>
+    <ul>
+      <li><b>135M đấu với 3B</b> (E4/E5) — chênh cỡ mô hình ~24×;</li>
+      <li><b>Runner chung BỎ <code>system_message</code></b> mà E3 dùng khi train → <b>bám đề chỉ 1.44</b> (đúng cảnh
+        báo prompt-format mismatch ở ADR-0004 của em, giờ có số liệu xác nhận);</li>
+      <li>giữa các model NHỎ: E3 ≈ E1 ≈ E2 (2.81 / 3.30 / 3.18; chênh E2–E3, E1–E3 gần như không có ý nghĩa thống kê)
+        — khoảng cách lớn là <b>nhỏ-vs-3B</b>, không phải giữa các nhóm nhỏ.</li>
+    </ul>
+    <p class="note"><b>Chốt:</b> đóng góp của E3 là <b>"đặt adapter ở đâu"</b> (đo nội bộ bằng perplexity + Qwen),
+      <b>không phải</b> thắng điểm tuyệt đối liên nhóm — muốn điểm tuyệt đối cao cần model lớn (E4/E5, 3B).</p>
 
     <p class="note">Tài liệu gốc: báo cáo học thuật <code>REPORT.md</code> · bản Markdown chi tiết
       <code>docs/bao-cao-chi-tiet.md</code> · ADR <code>docs/adr/0001..0004</code>.</p>
