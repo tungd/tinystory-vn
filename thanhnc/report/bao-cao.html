@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo tinystories_v3 — Data · Phương pháp · Prompt</title>
+<style>
+  :root{
+    --paper:#F4F5F7;--surface:#FFFFFF;--surface-2:#FAFAFC;--ink:#171B24;--muted:#596072;--faint:#868C9C;--line:#E4E6EC;
+    --accent:#3E4CB0;--accent-2:#293596;--accent-soft:#E9EBF9;--good:#1E7A54;--good-soft:#E2F1EA;--bad:#B23A2B;--bad-soft:#F6E6E2;
+    --code-bg:#F2F3F7;--shadow:0 1px 2px rgba(20,25,40,.05),0 8px 24px -14px rgba(20,25,40,.14);--maxw:900px;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#0E1117;--surface:#151A22;--surface-2:#1A212B;--ink:#E8EAF0;--muted:#9BA2B4;--faint:#6C7488;--line:#262D39;
+    --accent:#8E9BF2;--accent-2:#AEB8FF;--accent-soft:#1E2540;--good:#54C08D;--good-soft:#16281F;--bad:#E1705E;--bad-soft:#2C1B18;
+    --code-bg:#1B222C;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -16px rgba(0,0,0,.6);}}
+  :root[data-theme="light"]{--paper:#F4F5F7;--surface:#FFFFFF;--surface-2:#FAFAFC;--ink:#171B24;--muted:#596072;--faint:#868C9C;--line:#E4E6EC;--accent:#3E4CB0;--accent-2:#293596;--accent-soft:#E9EBF9;--good:#1E7A54;--good-soft:#E2F1EA;--bad:#B23A2B;--bad-soft:#F6E6E2;--code-bg:#F2F3F7;}
+  :root[data-theme="dark"]{--paper:#0E1117;--surface:#151A22;--surface-2:#1A212B;--ink:#E8EAF0;--muted:#9BA2B4;--faint:#6C7488;--line:#262D39;--accent:#8E9BF2;--accent-2:#AEB8FF;--accent-soft:#1E2540;--good:#54C08D;--good-soft:#16281F;--bad:#E1705E;--bad-soft:#2C1B18;--code-bg:#1B222C;}
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.68;font-size:16.5px;-webkit-font-smoothing:antialiased;margin:0;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(16px,4vw,32px);}
+  header.mast{padding:clamp(32px,6vw,60px) 0 20px;}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 14px;}
+  h1.title{font-family:var(--serif);font-weight:600;line-height:1.1;font-size:clamp(1.8rem,4.6vw,2.7rem);margin:0 0 .35em;letter-spacing:-.01em;}
+  .lede{font-size:1.05rem;color:var(--muted);max-width:60ch;margin:0;}
+  .metarow{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;font-family:var(--mono);font-size:.76rem;color:var(--muted);}
+  .metarow b{color:var(--ink);}
+  /* tabs */
+  .tabs{position:sticky;top:0;z-index:5;background:var(--paper);display:flex;gap:8px;padding:14px 0 12px;border-bottom:1px solid var(--line);margin-bottom:8px;}
+  .tab-btn{font-family:var(--sans);font-weight:600;font-size:.95rem;padding:9px 18px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;transition:.13s;}
+  .tab-btn[aria-selected="true"]{background:var(--accent);color:#fff;border-color:transparent;box-shadow:var(--shadow);}
+  @media(prefers-color-scheme:dark){.tab-btn[aria-selected="true"]{color:#0E1117;}}
+  :root[data-theme="dark"] .tab-btn[aria-selected="true"]{color:#0E1117;} :root[data-theme="light"] .tab-btn[aria-selected="true"]{color:#fff;}
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .tabpanel{display:none;padding:22px 0 80px;}
+  .tabpanel.active{display:block;}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.35rem,2.6vw,1.7rem);margin:1.7em 0 .5em;letter-spacing:-.008em;display:flex;gap:.5em;align-items:baseline;}
+  h2 .num{font-family:var(--mono);font-size:.6em;color:var(--accent);font-weight:600;}
+  h2:first-child{margin-top:.2em;}
+  h3{font-weight:650;font-size:1.06rem;margin:1.6em 0 .3em;}
+  p{margin:0 0 1em;} strong{font-weight:650;} em{color:var(--muted);}
+  ul,ol{margin:0 0 1.1em;padding-left:1.3em;} li{margin:.35em 0;}
+  code{font-family:var(--mono);font-size:.85em;background:var(--code-bg);padding:.1em .36em;border-radius:5px;border:1px solid var(--line);}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:11px;padding:16px 18px;overflow-x:auto;margin:1.2em 0;font-size:.8rem;line-height:1.6;}
+  pre code{background:none;border:none;padding:0;}
+  blockquote{border-left:3px solid var(--accent);margin:1.1em 0;padding:2px 0 2px 16px;color:var(--ink);font-style:italic;}
+  .tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:440px;}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);}
+  thead th{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;}
+  tbody td:first-child{font-weight:600;}
+  tr.best td{background:var(--good-soft);}
+  /* Q&A cards */
+  .qgroup{margin:2em 0 0;}
+  .qgroup-h{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+  .qa{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:0 0 12px;box-shadow:var(--shadow);}
+  .qa .q{font-weight:650;color:var(--ink);margin:0 0 .5em;display:flex;gap:.5em;}
+  .qa .q::before{content:"Q";font-family:var(--mono);font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:0 7px;font-size:.85em;flex:none;height:1.5em;display:inline-flex;align-items:center;}
+  .qa .a{margin:0;color:var(--ink);}
+  .qa .a p{margin:0 0 .6em;} .qa .a p:last-child{margin:0;}
+  .qa .a ul{margin:.3em 0 .3em;} .qa .a li{margin:.25em 0;}
+  .lead{background:var(--accent-soft);border-radius:12px;padding:16px 20px;margin:0 0 8px;font-size:1.02rem;}
+  .lead b{color:var(--accent-2);}
+  @media(prefers-color-scheme:dark){.lead b{color:var(--accent-2);}}
+  .note{font-size:.86rem;color:var(--muted);border-left:3px solid var(--line);padding-left:14px;margin:1.2em 0;}
+  /* diagram: layer stack + module zoom */
+  .analogy{background:var(--accent-soft);border-radius:12px;padding:16px 20px;margin:0 0 18px;font-size:1.05rem;}
+  .diagram{display:grid;gap:18px;margin:1.4em 0;}
+  @media(min-width:720px){.diagram{grid-template-columns:230px 1fr;align-items:center;}}
+  .stack{display:flex;flex-direction:column;gap:6px;}
+  .stack .io{font-family:var(--mono);font-size:.72rem;color:var(--faint);text-align:center;}
+  .lyr{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.82rem;font-weight:600;text-align:center;box-shadow:var(--shadow);}
+  .lyr span{display:block;font-weight:400;color:var(--muted);font-size:.72rem;margin-top:2px;}
+  .lyr.dots{border:none;box-shadow:none;color:var(--faint);padding:2px;font-weight:400;}
+  .lyr.hl{border-color:var(--accent);}
+  .zoom{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);}
+  .zoom-h{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 12px;}
+  .block{border-radius:10px;padding:12px 14px;margin:0 0 10px;border:1px solid var(--line);}
+  .block b{font-size:.98rem;} .block p{margin:.35em 0 .6em;font-size:.9rem;color:var(--muted);}
+  .block.attn{background:var(--surface-2);}
+  .block.mlp{background:var(--good-soft);border-color:transparent;}
+  .mods{display:flex;flex-wrap:wrap;gap:6px;}
+  .mod{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--muted);}
+  .mod.tune{border-color:var(--accent);color:var(--accent);}
+  .mod.tunec{background:var(--good);border-color:transparent;color:#fff;}
+  @media(prefers-color-scheme:dark){.mod.tunec{color:#0E1117;}}
+  :root[data-theme="dark"] .mod.tunec{color:#0E1117;} :root[data-theme="light"] .mod.tunec{color:#fff;}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.8rem;color:var(--muted);margin:.7em 0 0;align-items:center;}
+  footer{border-top:1px solid var(--line);padding:26px 0 50px;color:var(--faint);font-family:var(--mono);font-size:.74rem;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  html{scroll-behavior:smooth;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">tinystories_v3 · Chuẩn bị vấn đáp</p>
+    <h1 class="title">Data · Phương pháp · Prompt engineering</h1>
+    <p class="lede">Nghiên cứu vị trí đặt LoRA adapter trên SmolLM2-135M cho bài toán sinh truyện ngụ ngôn — hai bản
+      để trả lời câu hỏi của thầy.</p>
+    <div class="metarow">
+      <span>model&nbsp;<b>SmolLM2-135M</b></span><span>dataset&nbsp;<b>TF1-EN-3M</b></span>
+      <span>phương pháp&nbsp;<b>LoRA placement</b></span><span>judge&nbsp;<b>Qwen2.5-7B</b></span>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" role="tab" aria-selected="true" data-target="basic">🧠 Layer &amp; Module là gì?</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-target="easy">🙋 Dễ hiểu (Q&amp;A)</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-target="train">⚙️ Quy trình &amp; tham số</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-target="detail">📋 Chi tiết (kỹ thuật)</button>
+  </div>
+
+  <!-- ================= CƠ BẢN: LAYER & MODULE ================= -->
+  <section class="tabpanel active" id="basic" role="tabpanel">
+    <div class="analogy"><b>Ví von:</b> Hãy hình dung model như một <b>dây chuyền 30 tầng</b>. Đề bài đi vào ở dưới,
+      đi qua từng tầng — mỗi tầng "hiểu thêm một chút" rồi "viết tiếp một chút" — cuối cùng ra thành truyện.</div>
+
+    <div class="diagram">
+      <div class="stack">
+        <div class="io">↑ truyện đi ra</div>
+        <div class="lyr hl">Tầng 30 <span>ý nghĩa · mạch truyện · bài học</span></div>
+        <div class="lyr">Tầng 29</div>
+        <div class="lyr dots">⋮ &nbsp;(tổng 30 tầng)</div>
+        <div class="lyr">Tầng 2</div>
+        <div class="lyr">Tầng 1 <span>từ ngữ · ngữ pháp cơ bản</span></div>
+        <div class="io">↓ đề bài đi vào</div>
+      </div>
+      <div class="zoom">
+        <p class="zoom-h">Bên trong MỘT tầng có 2 bộ phận</p>
+        <div class="block attn">
+          <b>① Attention — "nhìn lại ngữ cảnh"</b>
+          <p>Khi viết từ tiếp theo, nó quyết định <em>nên nhìn lại những từ nào đã viết</em> để giữ mạch (ai là ai,
+            chuyện gì đang xảy ra). Ví dụ viết "con cáo… <u>nó</u>…" thì attention giúp model biết "nó" = con cáo.</p>
+          <div class="mods"><span class="mod tune">q</span><span class="mod">k</span><span class="mod tune">v</span><span class="mod">o</span></div>
+        </div>
+        <div class="block mlp">
+          <b>② MLP — "nghĩ ra câu chữ"</b>
+          <p>Sau khi đã nhìn lại ngữ cảnh, đây là nơi model <em>nhào nặn</em> thành từ/cụm từ cụ thể — nó là
+            <b>kho vốn từ + cách diễn đạt + mô-típ truyện</b> của model.</p>
+          <div class="mods"><span class="mod tunec">gate</span><span class="mod tunec">up</span><span class="mod tunec">down</span></div>
+        </div>
+        <div class="legend">
+          <span><span class="mod tune">q</span> <span class="mod tune">v</span> = arm A/B chỉnh chỗ này</span>
+          <span><span class="mod tunec">gate</span> <span class="mod tunec">up</span> <span class="mod tunec">down</span> = arm C chỉnh THÊM (MLP)</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Vậy "layer" và "module" là gì?</h3>
+    <ul>
+      <li><b>Layer (tầng/lớp):</b> một "trạm" trong dây chuyền. Model có <b>30 tầng</b> xếp chồng. Tầng dưới lo cái cơ
+        bản (từ, ngữ pháp); tầng trên lo cái trừu tượng (ý nghĩa, mạch, bài học).</li>
+      <li><b>Module (bộ phận):</b> trong <em>mỗi</em> tầng có 2 bộ phận — <b>Attention</b> (nhìn lại ngữ cảnh) và
+        <b>MLP</b> (nghĩ ra câu chữ). Chúng gồm các ma trận nhỏ: attention có <code>q,k,v,o</code>; MLP có
+        <code>gate,up,down</code>. "Đặt adapter ở đâu" = chọn <em>chỉnh những ma trận nào, ở những tầng nào</em>.</li>
+    </ul>
+
+    <h3>7 bộ phận cụ thể: <code>q, k, v, o, gate, up, down</code></h3>
+    <p>Trong mỗi tầng, Attention có 4 ma trận (<code>q,k,v,o</code>), MLP có 3 (<code>gate,up,down</code>). Từng cái làm:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Ký hiệu</th><th>Tên</th><th>Thuộc</th><th>Việc của nó (dễ hiểu)</th></tr></thead>
+      <tbody>
+        <tr><td><code>q</code></td><td>query (câu hỏi)</td><td>Attention</td><td>Từ đang viết <b>hỏi</b>: "tôi cần thông tin gì từ các từ trước?"</td></tr>
+        <tr><td><code>k</code></td><td>key (chìa/nhãn)</td><td>Attention</td><td>Mỗi từ trước đó <b>tự dán nhãn</b> mình chứa gì, để so khớp với câu hỏi <code>q</code></td></tr>
+        <tr><td><code>v</code></td><td>value (nội dung)</td><td>Attention</td><td>Nếu chú ý tới từ đó thì <b>lấy nội dung gì</b> mang về</td></tr>
+        <tr><td><code>o</code></td><td>output</td><td>Attention</td><td><b>Gộp</b> kết quả đã tra cứu rồi đưa ra khỏi khối attention</td></tr>
+        <tr><td><code>gate</code></td><td>gate_proj (cổng)</td><td>MLP</td><td><b>Cổng lọc</b>: quyết định nét thông tin nào được "bật" cho đi qua</td></tr>
+        <tr><td><code>up</code></td><td>up_proj (mở rộng)</td><td>MLP</td><td><b>Bung</b> thông tin ra không gian lớn hơn để "nghĩ" (576 → 1536 chiều)</td></tr>
+        <tr><td><code>down</code></td><td>down_proj (thu gọn)</td><td>MLP</td><td><b>Nén</b> lại thành kết quả để viết ra (1536 → 576 chiều)</td></tr>
+      </tbody>
+    </table></div>
+    <p><b><code>q, k, v</code> phối hợp = cơ chế "tra cứu":</b> lấy <b>q</b> của từ đang viết <b>so khớp với k</b> của mọi
+      từ trước → biết nên chú ý từ nào → lấy <b>v</b> của những từ đó về; <b>o</b> gộp lại. <b><code>gate, up, down</code>
+      = MLP xử lý:</b> <b>up</b> trải rộng, <b>gate</b> lọc, <b>down</b> nén — chốt thành câu chữ (kiểu SwiGLU).</p>
+
+    <div class="lead"><b>Ví dụ cụ thể</b> — model đang viết: <em>"Con cáo thông minh nhìn thấy chùm nho. <u>Nó</u>…"</em>
+      <ul style="margin:.6em 0 0">
+        <li><b>Attention (q,k,v,o):</b> <code>q</code> của "Nó" hỏi <em>"nó chỉ ai?"</em> → <code>k</code> của "con cáo"
+          khớp mạnh nhất → chú ý vào "con cáo", lấy <code>v</code> = "cáo · thông minh · đang thèm nho" về (<code>o</code>
+          gộp). ⇒ model <b>giữ được mạch</b> ("nó" = con cáo), không lạc nhân vật.</li>
+        <li><b>MLP (up→gate→down):</b> nhào nặn thông tin đó thành từ tiếp theo hợp văn phong fable, ví dụ
+          <em>"…nhảy lên hết sức để với tới chùm nho."</em> ⇒ đây là chỗ quyết định <b>câu chữ &amp; giọng kể</b>.</li>
+      </ul>
+    </div>
+
+    <h3>Vì sao chọn chỉnh những cái này? Ảnh hưởng ra sao?</h3>
+    <ul>
+      <li><b>Arm A/B chỉnh <code>q, v</code></b> (chỉ "cách tra cứu ngữ cảnh") — theo bài báo LoRA gốc, q,v thường là
+        "đủ" và rẻ. <b>Ảnh hưởng:</b> giữ mạch tốt hơn, nhưng câu chữ vẫn gần văn phong gốc → loss/điểm khá nhưng chưa
+        cao nhất (A: loss 1.58, judge 6.70).</li>
+      <li><b>Arm C chỉnh cả 7</b> (thêm <code>o</code> + toàn bộ MLP <code>gate,up,down</code>) — đụng thẳng vào
+        <b>kho câu chữ &amp; giọng kể</b>. <b>Ảnh hưởng:</b> cải thiện mạnh nhất (C: loss <b>1.35</b>, PPL <b>3.84</b>,
+        judge <b>6.87</b> — tốt nhất).</li>
+      <li><b>Kết luận từ thí nghiệm:</b> phần lớn "chất fable" nằm ở <b>MLP</b> → chỉnh <code>gate,up,down</code> là
+        đáng giá nhất; chỉ chỉnh <code>q,v</code> là chưa đủ cho một bài toán đổi <em>văn phong</em>.</li>
+    </ul>
+
+    <h3>Tại sao "chỉnh" chúng lại giúp model viết tốt hơn?</h3>
+    <p>Model gốc đã biết tiếng Anh chung chung, nhưng <b>chưa quen "văn phong truyện ngụ ngôn cho trẻ"</b> — giọng kể,
+      cấu trúc 5 phần, kết bằng bài học. LoRA <b>không sửa toàn bộ</b> model (dễ làm hỏng kiến thức gốc), mà chỉ
+      <b>gắn thêm các "núm chỉnh" nhỏ</b> vào vài bộ phận, dạy chúng <em>nghiêng</em> sang văn phong fable. Ta chỉ dạy
+      thêm 0,7%–3,5% trọng số, nhưng vì <b>chỉnh đúng chỗ</b> nên đủ để đổi hẳn văn phong (đầu ra từ "không đọc được"
+      thành truyện mạch lạc).</p>
+
+    <h3>Tại sao chỉnh MLP giúp NHIỀU nhất? (vì sao cấu hình C thắng)</h3>
+    <p>Viết fable chủ yếu là chuyện <b>chọn đúng từ, đúng mô-típ, đúng giọng kể</b> — mà "kho câu chữ" đó nằm chính ở
+      <b>MLP</b>. Chỉnh MLP = chỉnh trực tiếp "cái đầu nghĩ câu chữ" → cải thiện mạnh nhất (cấu hình <b>C</b>: PPL 3.84,
+      judge 6.87 — tốt nhất). Nếu chỉ chỉnh attention (q,v — cấu hình A) thì mới sửa "cách nhìn lại ngữ cảnh", chưa động
+      vào kho câu chữ, nên kém hơn.</p>
+
+    <h3>Tại sao chỉnh CẢ 30 tầng tốt hơn chỉ 10 tầng cuối? (A &gt; B)</h3>
+    <p>Văn phong ngấm vào <b>cả dây chuyền</b>, không riêng mấy tầng cuối. Chỉnh cả 30 tầng phủ rộng hơn nên tốt hơn.
+      Chỉ chỉnh 10 tầng cuối thì <b>rẻ hơn</b> (ít núm hơn) nhưng bỏ sót phần điều chỉnh ở tầng giữa/dưới → yếu hơn
+      (cấu hình B kém hơn A rõ rệt).</p>
+
+    <div class="analogy" style="background:var(--good-soft);"><b>Chốt một câu:</b> Attention = "đọc lại đề &amp; ngữ
+      cảnh"; MLP = "cái đầu nghĩ ra câu chữ". Vì fable cần <b>giọng kể &amp; câu chữ</b>, chỉnh vào <b>MLP trên toàn bộ
+      tầng</b> (cấu hình C) là hiệu quả nhất.</div>
+  </section>
+
+  <!-- ================= DỄ HIỂU ================= -->
+  <section class="tabpanel" id="easy" role="tabpanel">
+    <div class="lead"><b>Tóm tắt 1 câu:</b> Em lấy một model nhỏ có sẵn (<b>SmolLM2-135M</b>) rồi <b>dạy thêm bằng
+      LoRA</b> để nó viết truyện ngụ ngôn cho trẻ; câu hỏi chính là <b>"nên gắn adapter vào layer/module nào thì tốt
+      nhất?"</b></div>
+
+    <div class="qgroup"><p class="qgroup-h">A · Tổng quan</p>
+      <div class="qa"><p class="q">Đề tài làm gì?</p><div class="a"><p>Sinh <strong>truyện ngụ ngôn tiếng Anh cho trẻ
+        4–7 tuổi</strong> (nhân vật, tình huống, bài học). Điểm nghiên cứu: khi fine-tune bằng <strong>LoRA</strong>,
+        <strong>đặt adapter ở đâu</strong> (layer nào, module nào) thì hiệu quả nhất.</p></div></div>
+      <div class="qa"><p class="q">Vì sao model nhỏ 135M + LoRA, không train từ đầu / model lớn?</p><div class="a"><p>Vì
+        <strong>rẻ và nhanh</strong> (vài phút/lần trên 1 GPU L4), đủ để so sánh nhiều cách đặt adapter. Đây cũng là
+        <strong>góc khác</strong> với bạn cùng nhóm (train từ đầu / model lớn) nên hai đồ án bổ sung cho nhau.</p></div></div>
+      <div class="qa"><p class="q">"Adapter placement" nghĩa là gì?</p><div class="a"><p>LoRA gắn các "miếng vá"
+        (adapter) nhỏ vào model. Có 2 lựa chọn: gắn vào <strong>lớp (layer)</strong> nào và gắn vào <strong>bộ phận
+        (module)</strong> nào. Em thí nghiệm để xem lựa chọn nào quan trọng hơn.</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">B · Xử lý dữ liệu</p>
+      <div class="qa"><p class="q">Dữ liệu lấy ở đâu?</p><div class="a"><p>Dataset <strong>TF1-EN-3M</strong> —
+        <strong>3 triệu</strong> truyện sinh sẵn (2.8M train / 100K val / 100K test). Mỗi dòng: <code>system_message</code>
+        (chỉ dẫn), <code>prompt</code> (đề bài), <code>fable</code> (truyện mẫu).</p></div></div>
+      <div class="qa"><p class="q">Đề bài có dạng gì?</p><div class="a"><p>5 ô: <strong>Main Character, Setting,
+        Challenge, Outcome, Teaching</strong> + ràng buộc "viết cho trẻ 4–7 tuổi, ~250 từ".</p></div></div>
+      <div class="qa"><p class="q">Xử lý dữ liệu thế nào?</p><div class="a"><p>4 bước:</p>
+        <ul><li><strong>Lấy 50.000 truyện</strong> (cố định, seed 42) — dùng chung cho cả 4 thí nghiệm để công bằng.</li>
+        <li><strong>Ghép</strong> system_message + prompt làm đầu vào, fable làm đầu ra.</li>
+        <li><strong>Che phần đề bài</strong> khi tính loss → model học <em>viết truyện</em>, không học <em>nhại đề</em>.</li>
+        <li>Thêm dấu <strong>kết thúc</strong> để biết dừng; cắt tối đa 512 token.</li></ul></div></div>
+      <div class="qa"><p class="q">Vì sao phải "che đề bài" (masking)?</p><div class="a"><p>Để model tập trung học viết
+        truyện. Và nhờ mọi thí nghiệm dùng <strong>cùng cách che</strong>, chỉ số <strong>perplexity</strong> mới so
+        sánh công bằng.</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">C · Phương pháp</p>
+      <div class="qa"><p class="q">LoRA là gì (đơn giản)?</p><div class="a"><p>Thay vì sửa <strong>toàn bộ</strong>
+        trọng số (tốn kém), LoRA <strong>đóng băng</strong> model gốc và chỉ học thêm <strong>vài ma trận nhỏ</strong>.
+        Rất ít tham số, nhanh, và có thể <strong>gộp lại</strong> vào model nên chạy không chậm hơn.</p></div></div>
+      <div class="qa"><p class="q">Em thí nghiệm những gì (4 cấu hình)?</p><div class="a">
+        <ul><li><strong>base</strong> = chưa fine-tune (mốc).</li>
+        <li><strong>A</strong> = adapter vào <code>q,v</code> ở <strong>tất cả 30 lớp</strong>.</li>
+        <li><strong>B</strong> = <code>q,v</code> nhưng <strong>chỉ 10 lớp cuối</strong>.</li>
+        <li><strong>C</strong> = <strong>cả 7 bộ phận tuyến tính</strong> (attention + MLP) ở <strong>tất cả 30 lớp</strong>.</li></ul></div></div>
+      <div class="qa"><p class="q">Tại sao đúng 4 cấu hình này?</p><div class="a"><p>Để <strong>tách riêng 2 câu
+        hỏi</strong>: <strong>A vs B</strong> chỉ khác <em>số lớp</em> → "layer nào"; <strong>A vs C</strong> chỉ khác
+        <em>số bộ phận</em> → "module nào". Giữ nguyên mọi thứ khác nên khác biệt <strong>chỉ do vị trí đặt adapter</strong>.</p></div></div>
+      <div class="qa"><p class="q">Vì sao chọn SmolLM2-135M?</p><div class="a"><p>Vì nó <strong>tách rời</strong> các bộ
+        phận <code>q,k,v,o,gate,up,down</code> nên mới so sánh được "chỉ gắn q,v". Model kiểu GPT-2 gộp q,k,v làm một
+        khối → không tách được → không làm thí nghiệm này được.</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">D · Prompt engineering</p>
+      <div class="qa"><p class="q">Em có tự viết prompt không? Prompt engineering ở đâu?</p><div class="a"><p>Em
+        <strong>không "chế" prompt mới cho huấn luyện</strong> — dùng <strong>nguyên văn</strong> prompt 5 ô của dataset
+        (để học đúng văn phong đích). Prompt engineering nằm ở 3 chỗ:</p>
+        <ul><li><strong>Giữ đúng format train ↔ serve:</strong> khi đưa lên Ollama, viết <code>Modelfile</code> template
+        (<code>{{ .System }}</code> rồi <code>{{ .Prompt }}</code>) <strong>trùng khớp</strong> cách ghép lúc train, dấu
+        dừng <code>&lt;|endoftext|&gt;</code> đúng như đã học.</li>
+        <li><strong>Điều khiển bằng 5 ô:</strong> vì che đề bài khi tính loss, 5 ô đóng vai "công tắc" điều khiển truyện.</li>
+        <li><strong>Prompt cho judge:</strong> ép chấm <strong>chỉ trả JSON</strong>, 4 điểm kèm lý do có trích dẫn.</li></ul></div></div>
+      <div class="qa"><p class="q">Tại sao Modelfile phải khớp format lúc train?</p><div class="a"><p>Model đã học theo
+        một khuôn cụ thể; lúc chạy đưa sai khuôn thì viết kém đi. Bài học "<strong>train sao — serve vậy</strong>".</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">E · Đánh giá</p>
+      <div class="qa"><p class="q">Đánh giá bằng gì?</p><div class="a"><p>3 tầng: (1) <strong>Perplexity</strong> —
+        thấp hơn = tốt hơn, khách quan; (2) <strong>chỉ số văn bản</strong> (Distinct, Self-BLEU, Flesch); (3)
+        <strong>LLM-as-judge</strong> — model khác (<strong>Qwen2.5-7B</strong>) chấm 50 truyện/cấu hình theo 4 tiêu chí.</p></div></div>
+      <div class="qa"><p class="q">Perplexity là gì (đơn giản)?</p><div class="a"><p>Mức độ model "ngạc nhiên" khi thấy
+        truyện đúng. Càng ít ngạc nhiên (perplexity thấp) = model <strong>nắm văn phong</strong> càng tốt.</p></div></div>
+      <div class="qa"><p class="q">Chỉ 1 judge, có thiên vị không?</p><div class="a"><p>Có rủi ro (bài báo gốc dùng 3
+        judge). Em <strong>chủ đích đơn giản hoá thành 1 judge</strong> và <strong>kết luận theo thứ hạng</strong>, không
+        theo con số tuyệt đối. May mắn: <strong>judge và perplexity cho cùng thứ hạng</strong> → đáng tin.</p></div></div>
+      <div class="qa"><p class="q">Vì sao Flesch của base âm (−66)?</p><div class="a"><p>Vì base viết <strong>văn bản
+        lộn xộn/không đọc được</strong> cho đề này. Sau fine-tune lên +51…+58 (mức dễ đọc, hợp trẻ em).</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">F · Kết quả</p>
+      <div class="qa"><p class="q">Kết quả chính?</p><div class="a"><p>Xếp hạng chất lượng <strong>C &gt; A &gt; B &gt;
+        base</strong>, và <strong>cả perplexity lẫn judge đều cho cùng thứ hạng này.</strong></p>
+        <div class="tablewrap"><table><thead><tr><th></th><th class="num">base</th><th class="num">A</th><th class="num">B</th><th class="num">C</th></tr></thead>
+        <tbody><tr><td>Perplexity ↓</td><td class="num">9.52</td><td class="num">4.82</td><td class="num">5.46</td><td class="num"><b>3.84</b></td></tr>
+        <tr><td>Judge overall ↑</td><td class="num">5.73</td><td class="num">6.70</td><td class="num">5.94</td><td class="num"><b>6.87</b></td></tr></tbody></table></div></div></div>
+      <div class="qa"><p class="q">Kết luận về "layer nào / module nào"?</p><div class="a">
+        <ul><li><strong>Module quan trọng hơn:</strong> thêm adapter cho <strong>MLP</strong> (cấu hình C) tốt nhất —
+        đòn bẩy lớn nhất.</li>
+        <li><strong>Layer:</strong> phủ toàn bộ layer tốt hơn chỉ 10 lớp cuối (A &gt; B), nhất là độ "bám đề".</li>
+        <li><strong>Tốt nhất = C</strong>, chỉ cần train <strong>3,5%</strong> trọng số.</li></ul></div></div>
+      <div class="qa"><p class="q">Fine-tune giúp gì rõ nhất?</p><div class="a"><p>Tăng mạnh <strong>sáng tạo</strong>
+        (5.24 → 7.16) và <strong>độ rõ bài học</strong> (5.92 → 7.12) — thứ perplexity không đo được nhưng judge thấy.</p></div></div>
+    </div>
+
+    <div class="qgroup"><p class="qgroup-h">G · Điểm yếu &amp; câu hỏi khó</p>
+      <div class="qa"><p class="q">Hạn chế của đồ án?</p><div class="a">
+        <ul><li>Model 135M → chất lượng tuyệt đối không bằng model lớn (chỉ so <em>tương đối</em> về vị trí adapter).</li>
+        <li>Chạy 1 lần/1 seed, chưa có khoảng tin cậy.</li>
+        <li>Chưa đủ ô 2×2 (thiếu all-linear × 10-lớp-cuối).</li>
+        <li>1 judge (không phải panel).</li></ul></div></div>
+      <div class="qa"><p class="q">So với đồ án model lớn (tinystory-vn) khác gì?</p><div class="a"><p>Bên kia <strong>train
+        từ đầu / model lớn</strong>, tập trung <strong>ứng dụng + đánh giá</strong>. Bên em <strong>model nhỏ + LoRA</strong>,
+        tập trung <strong>câu hỏi đặt adapter ở đâu</strong>. Model tốt nhất (C) đã đóng gói GGUF, cắm vào app bên kia để
+        so sánh trong Compare mode.</p></div></div>
+      <div class="qa"><p class="q">Perplexity của em có so được với đồ án model-from-scratch không?</p><div class="a"><p>
+        <strong>Không so trực tiếp được</strong>, vì hai bên dùng <strong>tokenizer khác nhau</strong> — perplexity phụ
+        thuộc tokenizer. Muốn so công bằng phải dùng <strong>cùng một LLM-judge chấm cùng đề</strong> (vai trò của judge
+        trong app).</p></div></div>
+    </div>
+  </section>
+
+  <!-- ================= CHI TIẾT ================= -->
+  <section class="tabpanel" id="detail" role="tabpanel">
+    <h2><span class="num">0</span>Câu hỏi nghiên cứu</h2>
+    <blockquote>Dưới cùng một ngân sách (cùng model nền, rank, dữ liệu, lịch huấn luyện), <strong>việc đặt LoRA adapter
+      ở đâu có thay đổi chất lượng truyện không — và trục nào quan trọng hơn: các <em>layer</em> mà adapter phủ, hay các
+      <em>module</em> mà adapter gắn vào?</strong></blockquote>
+
+    <h2><span class="num">1</span>Xử lý dữ liệu</h2>
+    <h3>1.1 Nguồn</h3>
+    <p><strong>TF1-EN-3M</strong> (<code>klusai/ds-tf1-en-3m</code>): 3 triệu fable sinh tổng hợp bởi model ~8B.
+      Split 2.8M/100K/100K. Cột dùng: <code>system_message</code>, <code>prompt</code>, <code>fable</code>.</p>
+    <h3>1.2 Cấu trúc prompt — 5 ô</h3>
+    <div class="tablewrap"><table><thead><tr><th>Ô</th><th>Ý nghĩa</th><th>Ví dụ</th></tr></thead><tbody>
+      <tr><td>Main Character</td><td>nhân vật chính (+ trait)</td><td><em>a clever skunk</em></td></tr>
+      <tr><td>Setting</td><td>bối cảnh</td><td><em>a flower field</em></td></tr>
+      <tr><td>Challenge</td><td>xung đột</td><td><em>rivalry in love</em></td></tr>
+      <tr><td>Outcome</td><td>kết cục</td><td><em>enemies sign a pact</em></td></tr>
+      <tr><td>Teaching</td><td>bài học</td><td><em>appearances can be deceiving</em></td></tr></tbody></table></div>
+    <h3>1.3 Chọn tập con</h3>
+    <p>Tập con cố định <strong>50.000 fable</strong> (seed 42), giống nhau giữa các arm. Lấy bằng streaming shuffle
+      (buffer 10k) + take 50k. <em>Nêu trung thực:</em> buffer &lt; 50k nên là "phần đầu xáo nhẹ" — nhưng deterministic
+      và giống nhau giữa các arm nên vẫn công bằng. Tập eval: <strong>500 dòng</strong> từ validation (seed 42).</p>
+    <h3>1.4 Định dạng + completion-only masking</h3>
+    <pre><code>ctx = system_message + "\n\n" + prompt + "\n\n"      # đầu vào (điều kiện)
+target = fable + &lt;eot&gt;                                # đầu ra
+labels = [-100]*len(ctx)  +  target_ids                # CHE ngữ cảnh → loss chỉ trên fable</code></pre>
+    <p>Loss chỉ trên token fable; thêm <code>&lt;|endoftext|&gt;</code> để học dừng; <code>max_len=512</code>; tokenizer
+      gốc SmolLM2 (vocab 49.152). Nhờ cùng cách mask, <strong>perplexity so sánh công bằng</strong> giữa base và 4 arm.</p>
+
+    <h2><span class="num">2</span>Phương pháp &amp; phương pháp luận</h2>
+    <h3>2.1 LoRA</h3>
+    <pre><code>W' = W + ΔW,   ΔW = (α/r)·B·A,   A∈ℝ^(r×d_in), B∈ℝ^(d_out×r),  B khởi tạo = 0</code></pre>
+    <p>Chỉ học <code>A,B</code> (<code>r·(d_in+d_out)</code> tham số/ma trận); <code>B=0</code> ⇒ bắt đầu đúng bằng
+      pretrain; suy luận gộp <code>BA</code> vào <code>W</code> ⇒ không tốn thêm độ trễ (dùng để export GGUF).</p>
+    <h3>2.2 Vì sao model nhỏ + LoRA, và vì sao SmolLM2-135M</h3>
+    <p>SmolLM2-135M (base): Llama, 30 layer, hidden 576, 9 head (3 KV), vocab 49.152. Chọn vì <strong>projection tách
+      rời</strong> (<code>q/k/v/o + gate/up/down</code>) → mới so sánh được "chỉ q,v". GPT-2 gộp QKV → không tách được.
+      Base (không instruct) → before/after trung thực.</p>
+    <h3>2.3 Thiết kế ablation (cố định r=16, α=32)</h3>
+    <div class="tablewrap"><table><thead><tr><th>Arm</th><th>Adapter</th><th>Layer</th><th>Cô lập</th></tr></thead><tbody>
+      <tr><td>base</td><td>—</td><td>—</td><td>mốc nền</td></tr>
+      <tr><td>A</td><td>q_proj, v_proj</td><td>toàn bộ 30</td><td>—</td></tr>
+      <tr><td>B</td><td>q_proj, v_proj</td><td>10 cuối (20–29)</td><td><strong>layer</strong> (vs A)</td></tr>
+      <tr><td>C</td><td>cả 7 linear</td><td>toàn bộ 30</td><td><strong>module</strong> (vs A)</td></tr></tbody></table></div>
+    <p>Có unit test kiểm chứng B chỉ ở layer 20–29, A phủ đủ 30. Tham số thích nghi: A≈0,92M (0,68%) · B≈0,31M (0,23%)
+      · C≈4,88M (3,5%).</p>
+    <h3>2.4 Cấu hình huấn luyện</h3>
+    <p>AdamW · lr 2e-4 · cosine · warmup 3% · bf16 · batch 16×accum 2 (hiệu dụng 32) · 2 epoch · seq 512 · ~3.125
+      step/arm · 1× Colab L4. Adapter → HF Hub; log → W&amp;B.</p>
+    <h3>2.5 Phương pháp luận đánh giá (3 tầng)</h3>
+    <ul><li><strong>Perplexity (chính):</strong> teacher-forced, loss trên token fable, cộng dồn có trọng số token.</li>
+      <li><strong>Reference-free:</strong> Distinct-1/2, Self-BLEU, Flesch (100 bản sinh/arm).</li>
+      <li><strong>LLM-judge (đã chạy):</strong> Qwen2.5-7B-Instruct 4-bit, 4 trục, n=50/arm.</li></ul>
+    <p class="note">Nguyên tắc: kết luận theo <strong>thứ hạng</strong> do 2 thước đo <strong>độc lập</strong> (perplexity
+      + judge) cùng đưa ra, không theo con số tuyệt đối của một chỉ số đơn lẻ.</p>
+
+    <h2><span class="num">3</span>Prompt engineering</h2>
+    <p><strong>Không "chế" prompt mới cho train</strong> — tái dùng trung thực prompt TF1, giữ format train↔serve, và
+      thiết kế prompt judge.</p>
+    <h3>3.1 Prompt huấn luyện</h3>
+    <blockquote>SYSTEM: "You are a world-class creative assistant that generates captivating and morally-driven fables
+      based on structured inputs… Age groups A (≤3), B (4–7), C (8–11), D (12–15), E (≥16)."<br>
+      PROMPT: "Create a fable based on the following elements… Main Character / Setting / Challenge / Outcome /
+      Teaching… age group B (4–7), simple vocabulary, begin with scene-setting, no names (trait + character), simple
+      dialogue, show don't tell, end with the moral. ~250 words."</blockquote>
+    <p>Ghép: <code>system_message + "\n\n" + prompt + "\n\n"</code> → target <code>fable</code>. Loss chỉ trên fable ⇒
+      prompt đóng vai điều kiện điều khiển (5 ô).</p>
+    <h3>3.2 Modelfile (Ollama) — khớp đúng train</h3>
+    <pre><code>TEMPLATE """{{ .System }}
+
+{{ .Prompt }}
+
+"""
+SYSTEM  """&lt;đúng system_message TF1&gt;"""
+PARAMETER stop "&lt;|endoftext|&gt;"    temperature 0.8  top_p 0.9  repeat_penalty 1.3</code></pre>
+    <p>Template tái tạo đúng <code>{{ .System }}\n\n{{ .Prompt }}\n\n</code>; stop khớp token kết thúc đã học.</p>
+    <h3>3.3 Prompt cho judge</h3>
+    <pre><code>"You are a strict judge of children's fables. Given the REQUEST and the STORY, rate the STORY
+ from 1 to 10 on four axes: grammar, creativity, moral clarity, prompt adherence. For EACH axis
+ return an object with an integer "score" (1-10) and a short "reason" (citing evidence from the
+ STORY). Respond ONLY with a JSON object using keys "grammar","creativity","moral_clarity",
+ "prompt_adherence".   REQUEST: {prompt}   STORY: {story}   JSON:"</code></pre>
+    <p>Kỹ thuật: JSON-only + đúng 4 key (dễ parse) · mỗi trục kèm lý do có trích dẫn · đưa cả REQUEST + STORY (chấm
+      được prompt adherence) · greedy decoding · parser chịu lỗi JSON.</p>
+
+    <h2><span class="num">4</span>Kết quả</h2>
+    <div class="tablewrap"><table><thead><tr><th>Cấu hình</th><th class="num">PPL ↓</th><th class="num">Distinct-1</th><th class="num">Self-BLEU</th><th class="num">Flesch</th><th class="num">Judge overall</th></tr></thead><tbody>
+      <tr><td>base</td><td class="num">9.52</td><td class="num">0.557</td><td class="num">0.007</td><td class="num">−66.2</td><td class="num">5.73</td></tr>
+      <tr><td>A — q,v·all</td><td class="num">4.82</td><td class="num">0.188</td><td class="num">0.176</td><td class="num">57.7</td><td class="num">6.70</td></tr>
+      <tr><td>B — q,v·last-10</td><td class="num">5.46</td><td class="num">0.190</td><td class="num">0.171</td><td class="num">51.1</td><td class="num">5.94</td></tr>
+      <tr class="best"><td>C — all-linear·all</td><td class="num"><b>3.84</b></td><td class="num">0.210</td><td class="num">0.191</td><td class="num">52.8</td><td class="num"><b>6.87</b></td></tr></tbody></table></div>
+    <div class="tablewrap"><table><thead><tr><th>Judge (n=50)</th><th class="num">Grammar</th><th class="num">Creativity</th><th class="num">Moral</th><th class="num">Adherence</th><th class="num">Overall</th></tr></thead><tbody>
+      <tr><td>base</td><td class="num">6.68</td><td class="num">5.24</td><td class="num">5.92</td><td class="num">5.08</td><td class="num">5.73</td></tr>
+      <tr><td>A</td><td class="num">6.90</td><td class="num"><b>7.16</b></td><td class="num">7.12</td><td class="num">5.62</td><td class="num">6.70</td></tr>
+      <tr><td>B</td><td class="num">6.02</td><td class="num">6.54</td><td class="num">6.40</td><td class="num">4.78</td><td class="num">5.94</td></tr>
+      <tr class="best"><td>C</td><td class="num"><b>7.36</b></td><td class="num">6.94</td><td class="num"><b>7.16</b></td><td class="num"><b>6.00</b></td><td class="num"><b>6.87</b></td></tr></tbody></table></div>
+    <p><strong>Đồng thuận:</strong> perplexity và judge cho <strong>cùng thứ hạng C &gt; A &gt; B &gt; base</strong>.
+      <strong>Which modules (A vs C):</strong> all-linear thắng (đòn bẩy lớn nhất). <strong>Which layers (A vs B):</strong>
+      toàn bộ layer thắng 1/3 cuối; B đặc biệt yếu ở prompt_adherence (4.78 &lt; base 5.08). <strong>Best = C</strong>,
+      chỉ train 3,5% trọng số.</p>
+
+    <p class="note">Tài liệu gốc: báo cáo học thuật <code>REPORT.md</code> · bản Markdown chi tiết
+      <code>docs/bao-cao-chi-tiet.md</code> · ADR <code>docs/adr/0001..0004</code>.</p>
+  </section>
+
+  <!-- ================= QUY TRÌNH & THAM SỐ ================= -->
+  <section class="tabpanel" id="train" role="tabpanel">
+    <h2><span class="num">A</span>Quy trình train (lặp cho mỗi arm A/B/C)</h2>
+    <ol>
+      <li><b>Tải</b> tokenizer + model base <code>SmolLM2-135M</code> (bf16).</li>
+      <li><b>Gắn LoRA</b> theo cấu hình arm → "mở khoá" khoảng 0,3–4,9M tham số; toàn bộ 135M gốc <b>đóng băng</b>
+        (không cập nhật).</li>
+      <li><b>Chuẩn bị data:</b> lấy 50.000 fable (seed 42) → tokenize + <b>mask ngữ cảnh</b> (system+prompt gán nhãn
+        <code>−100</code>), thêm token kết thúc <code>&lt;eot&gt;</code>. Cắt tối đa 512 token.</li>
+      <li><b>Trainer</b> (HuggingFace) + collator (pad + giữ mask). <code>save_strategy="no"</code> (chỉ lưu cuối).</li>
+      <li><b>Train 2 epoch (≈ 3.125 step):</b> mỗi step → forward → tính loss <b>chỉ trên token fable</b> → backward →
+        AdamW <b>chỉ cập nhật tham số LoRA</b> (model gốc bất động).</li>
+      <li><b>Log</b> loss/lr lên Weights &amp; Biases (heartbeat mỗi ~50 step để biết còn chạy).</li>
+      <li><b>Lưu adapter</b> (vài MB) + push lên HuggingFace Hub.</li>
+    </ol>
+    <p class="note">Thời gian ≈ 15–45 phút/arm trên 1× Colab L4. Lặp 3 lần cho A, B, C; <b>base không train</b> (chỉ
+      dùng làm mốc so sánh).</p>
+
+    <h2><span class="num">B</span>Learning rate</h2>
+    <p>Giá trị đỉnh <code>lr = 2e-4</code> (0.0002), lịch <b>cosine + warmup 3%</b>:</p>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:1.2em 0;box-shadow:var(--shadow)">
+      <p style="font-family:var(--mono);font-size:.72rem;color:var(--faint);margin:0 0 4px">Đường learning rate theo step</p>
+      <svg viewBox="0 0 320 82" width="100%" style="max-width:540px;display:block" role="img" aria-label="Learning rate tăng nhanh (warmup) rồi giảm mượt theo cosine về gần 0">
+        <line x1="28" y1="64" x2="314" y2="64" style="stroke:var(--line)"></line>
+        <line x1="28" y1="6" x2="28" y2="64" style="stroke:var(--line)"></line>
+        <path d="M28,64 L42,11 C110,13 210,52 314,60" style="fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round"></path>
+        <circle cx="42" cy="11" r="3.2" style="fill:var(--accent)"></circle>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.66rem;color:var(--faint);margin-top:2px">
+        <span>warmup ~94 step → <b style="color:var(--accent)">đỉnh 2e-4</b></span>
+        <span>cosine giảm → ~0 @ 3125 step</span>
+      </div>
+    </div>
+    <ul>
+      <li><b>~94 step đầu (3%):</b> lr tăng dần 0 → 2e-4 (<em>warmup</em> — tránh "sốc" gradient lúc mới bắt đầu).</li>
+      <li><b>~3.031 step sau:</b> lr giảm mượt theo hình cos về gần 0 (giúp hội tụ êm, không dao động cuối).</li>
+      <li><b>Vì sao 2e-4?</b> Đây là mức <b>chuẩn cho LoRA</b> (thường 1e-4 → 3e-4), <b>cao hơn full fine-tune</b>
+        (thường 1e-5 → 5e-5), vì LoRA chỉ chỉnh ít tham số nên cần lr lớn hơn để học kịp trong ít step. <em>(Nếu xem
+        W&amp;B thấy lr "thấp" ở cuối — đó là đuôi cosine, đúng thiết kế, không phải lỗi.)</em></li>
+      <li><b>Optimizer:</b> AdamW (betas 0.9/0.999, weight decay 0).</li>
+    </ul>
+
+    <h2><span class="num">C</span>Bảng tham số đầu vào (đầy đủ)</h2>
+    <div class="tablewrap"><table><thead><tr><th>Nhóm</th><th>Tham số</th><th>Giá trị</th><th>Ghi chú</th></tr></thead><tbody>
+      <tr><td>LoRA</td><td><code>r</code> (rank)</td><td class="num">16</td><td>cố định mọi arm</td></tr>
+      <tr><td></td><td><code>alpha</code></td><td class="num">32</td><td>scaling α/r = 2</td></tr>
+      <tr><td></td><td><code>dropout</code></td><td class="num">0.05</td><td></td></tr>
+      <tr><td></td><td><code>bias</code></td><td>none</td><td></td></tr>
+      <tr><td></td><td><code>target_modules</code></td><td>tuỳ arm</td><td>A/B: q,v · C: cả 7 linear</td></tr>
+      <tr><td>Data</td><td>subset</td><td class="num">50.000</td><td>seed 42, chung mọi arm</td></tr>
+      <tr><td></td><td><code>max_seq_len</code></td><td class="num">512</td><td></td></tr>
+      <tr><td></td><td>epochs</td><td class="num">2</td><td>≈ 3.125 step/arm</td></tr>
+      <tr><td>Optim</td><td>optimizer</td><td>AdamW</td><td>betas 0.9/0.999</td></tr>
+      <tr><td></td><td><code>learning_rate</code></td><td class="num">2e-4</td><td>đỉnh</td></tr>
+      <tr><td></td><td>scheduler</td><td>cosine</td><td></td></tr>
+      <tr><td></td><td><code>warmup_ratio</code></td><td class="num">0.03</td><td>~94 step</td></tr>
+      <tr><td></td><td>precision</td><td>bf16</td><td></td></tr>
+      <tr><td></td><td>batch (per device)</td><td class="num">16</td><td></td></tr>
+      <tr><td></td><td><code>grad_accum</code></td><td class="num">2</td><td>batch hiệu dụng 32</td></tr>
+      <tr><td>Sinh (eval)</td><td>temperature</td><td class="num">0.8</td><td></td></tr>
+      <tr><td></td><td>top_p</td><td class="num">0.9</td><td></td></tr>
+      <tr><td></td><td>repetition_penalty</td><td class="num">1.3</td><td>tránh lặp vòng</td></tr>
+      <tr><td></td><td>max_new_tokens</td><td class="num">400</td><td></td></tr>
+    </tbody></table></div>
+
+    <h2><span class="num">D</span>Tại sao SmolLM2-135M, không phải model khác?</h2>
+    <p><b>Lý do #1 — quyết định (làm được thí nghiệm):</b> SmolLM2 (kiến trúc Llama) giữ <b>riêng</b> các projection
+      <code>q_proj/k_proj/v_proj/o_proj</code> + <code>gate/up/down_proj</code>. Nhờ vậy mới <b>tách được</b> để so sánh
+      "chỉ q,v" (arm A/B) với "cả 7 linear" (arm C). Nếu model gộp QKV (như GPT-2) thì <b>không tách được q khỏi
+      v</b> → không làm được ablation module.</p>
+    <ul>
+      <li><b>#2 — nhỏ &amp; nhanh (135M):</b> chạy được nhiều arm trên 1 GPU L4 trong ít phút; đủ để thấy hiệu ứng.</li>
+      <li><b>#3 — model nhỏ hiện đại, mạnh:</b> SmolLM2 được train trên rất nhiều dữ liệu → tốt hơn GPT-2 cùng cỡ.</li>
+      <li><b>#4 — Llama-arch:</b> convert GGUF trực tiếp bằng <code>llama.cpp</code> để cắm vào Ollama/app.</li>
+      <li><b>#5 — bản base (không instruct):</b> before/after rõ rệt — base hoàn toàn không bám được prompt fable.</li>
+    </ul>
+    <div class="tablewrap"><table><thead><tr><th>Lựa chọn khác</th><th>Vì sao KHÔNG chọn</th></tr></thead><tbody>
+      <tr><td>GPT-2 124M</td><td>QKV hợp nhất (<code>c_attn</code>) → không tách q/v → <b>hỏng ablation module</b></td></tr>
+      <tr><td>SmolLM2-360M</td><td>cũng tách rời, nhưng lớn hơn 2,6× → chậm hơn, không cần cho mục tiêu này</td></tr>
+      <tr><td>Qwen / Llama 1–4B</td><td>quá nặng cho ablation nhiều arm; đây là hướng của đồ án bạn kia (model lớn)</td></tr>
+      <tr><td>Train từ đầu (from scratch)</td><td>tốn nhiều compute/thời gian; không tận dụng được pretrain</td></tr>
+    </tbody></table></div>
+    <p class="note">Tóm lại: chọn SmolLM2-135M <b>không phải vì nó "xịn nhất"</b>, mà vì nó <b>đúng công cụ cho câu hỏi
+      nghiên cứu</b> — đủ nhỏ để chạy nhiều arm, và có kiến trúc tách rời để tách được biến "module".</p>
+
+    <h2><span class="num">E</span>Hàm loss &amp; biểu đồ loss</h2>
+    <p><b>Hàm loss = cross-entropy cho dự đoán token tiếp theo</b> (causal language modeling loss). Model sinh văn bản
+      tự hồi quy — đoán từng token một; loss đo "model gán xác suất cho token <b>ĐÚNG</b> cao đến đâu":</p>
+    <pre><code>loss = −(1/N) · Σ  log P(token_đúng | các token đứng trước)
+        (chỉ tính trên N token của fable — xem mục F)</code></pre>
+    <p><b>Vì sao cross-entropy?</b> Đây là hàm chuẩn để train mọi language model sinh văn bản: nó <b>phạt nặng</b> khi
+      model gán xác suất thấp cho từ đúng, và tương đương <b>tối đa hoá xác suất dữ liệu thật</b> (maximum likelihood).
+      Quan trọng: <b>perplexity = <code>exp(loss)</code></b> → loss thấp ⇔ perplexity thấp ⇔ model nắm văn phong tốt hơn.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:1.2em 0;box-shadow:var(--shadow)">
+      <p style="font-family:var(--mono);font-size:.72rem;color:var(--faint);margin:0 0 6px">train loss theo step
+        &nbsp;<span style="color:var(--good)">(số THẬT từ W&amp;B · project <code>tinystories_v3</code> · 3 arm · ~3120 step)</span></p>
+      <svg viewBox="0 0 360 172" width="100%" style="max-width:600px;display:block" role="img" aria-label="Biểu đồ train loss giảm dần theo step cho 3 cấu hình A, B, C">
+        <g style="stroke:var(--line);stroke-width:1">
+          <line x1="38" y1="14" x2="326" y2="14"></line><line x1="38" y1="44.9" x2="326" y2="44.9"></line>
+          <line x1="38" y1="75.8" x2="326" y2="75.8"></line><line x1="38" y1="106.7" x2="326" y2="106.7"></line>
+          <line x1="38" y1="137.6" x2="326" y2="137.6"></line>
+        </g>
+        <g style="font-family:ui-monospace,monospace;font-size:8px;fill:var(--faint)">
+          <text x="32" y="17" text-anchor="end">3.0</text><text x="32" y="47.9" text-anchor="end">2.5</text>
+          <text x="32" y="78.8" text-anchor="end">2.0</text><text x="32" y="109.7" text-anchor="end">1.5</text>
+          <text x="32" y="140.6" text-anchor="end">1.0</text>
+          <text x="6" y="82" style="fill:var(--faint)">loss</text>
+          <text x="38" y="166">step 0</text><text x="326" y="166" text-anchor="end">~3125</text>
+        </g>
+        <polyline points="38.0,58.9 44.5,65.6 50.9,75.5 57.4,81.4 63.8,83.9 70.3,83.8 76.7,86.3 83.2,87.5 89.6,87.1 96.1,88.8 102.5,88.1 109.0,87.8 115.4,89.2 121.9,89.7 128.3,89.3 134.8,89.9 141.2,90.1 147.7,91.2 154.1,90.4 160.6,91.8 167.0,91.8 173.5,90.7 179.9,92.3 186.4,91.4 192.8,92.3 199.3,93.3 205.7,91.8 212.2,93.1 218.6,92.6 225.1,92.5 231.5,92.4 238.0,93.1 244.4,92.0 250.9,92.8 257.3,91.9 263.8,93.3 270.2,93.1 276.7,93.6 283.1,91.1 289.6,92.4 296.0,93.2 302.5,92.5 309.0,92.5 315.4,92.6 321.9,91.1 324.6,94.0" style="fill:none;stroke:var(--muted);stroke-width:2"></polyline>
+        <polyline points="38.0,59.0 44.5,77.6 50.9,86.8 57.4,89.2 63.8,91.0 70.3,91.0 76.7,93.7 83.2,94.2 89.6,94.4 96.1,96.1 102.5,95.5 109.0,94.9 115.4,96.5 121.9,96.9 128.3,96.6 134.8,97.6 141.2,97.7 147.7,98.7 154.1,97.9 160.6,99.3 167.0,99.0 173.5,98.3 179.9,99.7 186.4,99.4 192.8,99.7 199.3,101.0 205.7,99.8 212.2,101.0 218.6,100.4 225.1,100.5 231.5,100.0 238.0,101.1 244.4,99.9 250.9,100.7 257.3,99.9 263.8,101.4 270.2,101.0 276.7,101.5 283.1,99.2 289.6,100.6 296.0,101.0 302.5,100.3 309.0,100.1 315.4,100.6 321.9,99.2 324.6,101.8" style="fill:none;stroke:var(--accent);stroke-width:2"></polyline>
+        <polyline points="38.0,59.0 44.5,87.9 50.9,95.8 57.4,99.4 63.8,101.1 70.3,101.8 76.7,104.8 83.2,105.4 89.6,106.0 96.1,107.7 102.5,107.7 109.0,107.1 115.4,108.7 121.9,109.5 128.3,108.9 134.8,110.4 141.2,110.5 147.7,111.9 154.1,110.8 160.6,112.2 167.0,112.1 173.5,111.7 179.9,113.1 186.4,113.6 192.8,113.6 199.3,115.2 205.7,114.5 212.2,115.0 218.6,114.6 225.1,114.7 231.5,114.4 238.0,115.7 244.4,114.4 250.9,115.1 257.3,114.7 263.8,115.9 270.2,115.3 276.7,116.2 283.1,114.2 289.6,115.3 296.0,115.6 302.5,115.1 309.0,114.9 315.4,115.1 321.9,114.3 324.6,116.2" style="fill:none;stroke:var(--accent-2);stroke-width:2.5"></polyline>
+      </svg>
+      <div style="display:flex;gap:16px;font-family:var(--mono);font-size:.7rem;margin-top:6px;flex-wrap:wrap">
+        <span style="color:var(--accent-2)">━ C (all-linear) — thấp nhất</span>
+        <span style="color:var(--accent)">━ A (q,v·all)</span>
+        <span style="color:var(--muted)">━ B (q,v·last-10)</span>
+      </div>
+    </div>
+    <p class="note"><b>Số thật từ W&amp;B:</b> cả 3 arm bắt đầu ~2.27, loss <b>tụt nhanh</b> ~200 step đầu rồi <b>phẳng
+      dần</b> (đuôi cosine của learning rate). Loss cuối: <b>C 1.35 &lt; A 1.58 &lt; B 1.71</b> — đúng thứ hạng
+      perplexity (C &lt; A &lt; B). Mỗi arm 312 điểm log (mỗi 10 step).</p>
+
+    <h2><span class="num">F</span>"Gán nhãn −100" nghĩa là gì? Vì sao −100?</h2>
+    <p><b>−100 KHÔNG phải phép "trừ 100"</b> — nó là một <b>mã đánh dấu đặc biệt</b> (sentinel). Trong PyTorch, hàm
+      <code>CrossEntropyLoss</code> có tham số <code>ignore_index = −100</code> (mặc định): <b>token nào có nhãn = −100
+      thì bị BỎ QUA</b> khi tính loss — không đóng góp, không sinh gradient.</p>
+    <ul>
+      <li><b>Ta làm gì:</b> gán nhãn <code>−100</code> cho toàn bộ token của <code>system_message + prompt</code> → loss
+        <b>chỉ tính trên token của fable</b>. Model chỉ học <em>viết truyện</em>, không học <em>nhại lại đề bài</em>.</li>
+      <li><b>Vì sao là −100 (không phải số khác)?</b> Vì token id luôn ≥ 0, nên <b>−100 chắc chắn không trùng</b> với
+        bất kỳ token thật nào → an toàn làm "cờ bỏ qua". Đây là <b>quy ước mặc định của PyTorch</b> (dùng số âm khác cũng
+        được, miễn khai báo <code>ignore_index</code> tương ứng, nhưng −100 là chuẩn).</li>
+    </ul>
+    <pre><code>ví dụ (rút gọn):
+  token :  [SYS…] [prompt…]   Con   cáo   thông  minh  &lt;eot&gt;
+  label :  −100…  −100……      Con   cáo   thông  minh  &lt;eot&gt;
+           └── bỏ qua ──┘      └──── tính loss ở đây ─────┘</code></pre>
+  </section>
+
+  <footer>tinystories_v3 · LoRA adapter-placement · SmolLM2-135M · TF1-EN-3M · chuẩn bị vấn đáp (tiếng Việt)</footer>
+</div>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.tab-btn').forEach(function(x){ x.setAttribute('aria-selected', x===b ? 'true':'false'); });
+      document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id===b.dataset.target); });
+      window.scrollTo({top:0, behavior:'instant' in window ? 'instant':'auto'});
+    });
+  });
+</script>
+</body>
+</html>

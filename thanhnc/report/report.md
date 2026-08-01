@@ -1,4 +1,9 @@
 > **Note:** This is the report for the companion project **tinystories_v3**, ported into `tinystory-vn` (docs only). All **code, ADRs, tests, and notebooks** referenced below live in the source repo: https://github.com/harryct229/tinystories_v3 — relative paths like `src/`, `docs/adr/`, `tests/`, `notebooks/` refer to that repo. An HTML version sits beside this file: `report.html`. **Tiếng Việt:** [`report.vi.md`](report.vi.md) (HTML: [`report.vi.html`](report.vi.html)).
+>
+> **Giải thích dễ hiểu / chuẩn bị vấn đáp (VN):** [`bao-cao.html`](bao-cao.html) — trang có tab: layer/module
+> (q,k,v,o,gate,up,down), quy trình train & tham số, learning rate, hàm loss + biểu đồ loss thật (W&B), giải thích
+> `−100`, prompt engineering. Nguồn Markdown: [`bao-cao-de-hieu.md`](bao-cao-de-hieu.md) (dạng Q&A) ·
+> [`bao-cao-chi-tiet.md`](bao-cao-chi-tiet.md) (kỹ thuật).
 
 ---
 
