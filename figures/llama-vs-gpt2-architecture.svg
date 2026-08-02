@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Hai lần huấn luyện độc lập: E1 kiểu Llama và E2 kiểu GPT-2</title>
+  <desc id="desc">E1 và E2 là hai lần huấn luyện từ đầu riêng biệt trên cùng bài toán, với khác biệt về chuẩn hóa, vị trí, attention và MLP.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f6fed"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97835"/>
+    </marker>
+    <style>
+      .title { font: 700 32px Arial, sans-serif; fill: #111827; }
+      .lane-title { font: 700 25px Arial, sans-serif; }
+      .label { font: 700 18px Arial, sans-serif; fill: #111827; }
+      .body { font: 16px Arial, sans-serif; fill: #374151; }
+      .small { font: 14px Arial, sans-serif; fill: #5b6472; }
+      .box { stroke-width: 2; rx: 12; }
+    </style>
+  </defs>
+  <rect width="1600" height="760" fill="#ffffff"/>
+  <text x="48" y="52" class="title">Hai lần huấn luyện độc lập, hai thiết kế block decoder-only</text>
+  <text x="48" y="82" class="small">Cùng bài toán sinh truyện; mỗi bên là một checkpoint huấn luyện từ đầu, không phải hai cấu hình trong cùng một lần chạy.</text>
+
+  <rect x="48" y="116" width="742" height="560" fill="#f5f9ff" stroke="#c9dcff" class="box"/>
+  <rect x="810" y="116" width="742" height="560" fill="#fff8f2" stroke="#f0c8a8" class="box"/>
+  <text x="78" y="158" class="lane-title" fill="#2f6fed">E1 · slm-60m · kiểu Llama · huấn luyện từ đầu</text>
+  <text x="840" y="158" class="lane-title" fill="#d97835">E2 · v16-conditioned · kiểu GPT-2 · huấn luyện từ đầu</text>
+  <text x="78" y="186" class="small">59,56M tham số · 8 block · hidden 768 · GQA 12Q/4KV · SwiGLU 2.048</text>
+  <text x="840" y="186" class="small">62,99M tham số · 7 block · hidden 768 · MHA 12 head · GELU-new 3.072</text>
+  <text x="78" y="208" class="small">Một pipeline E1 riêng · khởi tạo ngẫu nhiên</text>
+  <text x="840" y="208" class="small">Train: PyTorch/Transformers trên Colab A100 · serve sau train: MLX-LM</text>
+
+  <line x1="151" y1="258" x2="231" y2="258" stroke="#2f6fed" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="327" y1="258" x2="407" y2="258" stroke="#2f6fed" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="503" y1="258" x2="583" y2="258" stroke="#2f6fed" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <line x1="659" y1="258" x2="716" y2="258" stroke="#2f6fed" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="78" y="220" width="73" height="76" fill="#ffffff" stroke="#2f6fed" class="box"/>
+  <rect x="231" y="220" width="96" height="76" fill="#dceaff" stroke="#2f6fed" class="box"/>
+  <rect x="407" y="220" width="96" height="76" fill="#dceaff" stroke="#2f6fed" class="box"/>
+  <rect x="583" y="220" width="76" height="76" fill="#dceaff" stroke="#2f6fed" class="box"/>
+  <rect x="716" y="220" width="48" height="76" fill="#ffffff" stroke="#2f6fed" class="box"/>
+  <text x="114" y="252" text-anchor="middle" class="label">Nhúng</text><text x="114" y="275" text-anchor="middle" class="body">token</text>
+  <text x="279" y="252" text-anchor="middle" class="label">RoPE</text><text x="279" y="275" text-anchor="middle" class="body">vị trí</text>
+  <text x="455" y="252" text-anchor="middle" class="label">RMSNorm</text><text x="455" y="275" text-anchor="middle" class="body">→ GQA</text>
+  <text x="621" y="252" text-anchor="middle" class="label">SwiGLU</text><text x="621" y="275" text-anchor="middle" class="body">2.048</text>
+  <text x="740" y="252" text-anchor="middle" class="label">Đầu ra</text><text x="740" y="275" text-anchor="middle" class="body">LM</text>
+  <text x="455" y="342" text-anchor="middle" class="body">× 8 block: RMSNorm → GQA → residual → RMSNorm → SwiGLU → residual</text>
+  <rect x="78" y="390" width="686" height="204" fill="#ffffff" stroke="#9fc1ff" class="box"/>
+  <text x="102" y="430" class="label">Các điểm chính</text>
+  <text x="102" y="466" class="body">• RoPE đưa thông tin vị trí vào attention.</text>
+  <text x="102" y="498" class="body">• GQA dùng 12 query head nhưng chỉ 4 KV head.</text>
+  <text x="102" y="530" class="body">• Dùng RMSNorm và SwiGLU thay cho LayerNorm và GELU.</text>
+  <text x="102" y="562" class="body">• Đây là lần huấn luyện E1 riêng, không phải nhánh của E2.</text>
+
+  <line x1="913" y1="258" x2="993" y2="258" stroke="#d97835" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <line x1="1089" y1="258" x2="1169" y2="258" stroke="#d97835" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <line x1="1265" y1="258" x2="1345" y2="258" stroke="#d97835" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <line x1="1421" y1="258" x2="1478" y2="258" stroke="#d97835" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="840" y="220" width="73" height="76" fill="#ffffff" stroke="#d97835" class="box"/>
+  <rect x="993" y="220" width="96" height="76" fill="#ffe8d5" stroke="#d97835" class="box"/>
+  <rect x="1169" y="220" width="96" height="76" fill="#ffe8d5" stroke="#d97835" class="box"/>
+  <rect x="1345" y="220" width="76" height="76" fill="#ffe8d5" stroke="#d97835" class="box"/>
+  <rect x="1478" y="220" width="48" height="76" fill="#ffffff" stroke="#d97835" class="box"/>
+  <text x="876" y="252" text-anchor="middle" class="label">Nhúng</text><text x="876" y="275" text-anchor="middle" class="body">token</text>
+  <text x="1041" y="252" text-anchor="middle" class="label">Vị trí</text><text x="1041" y="275" text-anchor="middle" class="body">học được</text>
+  <text x="1217" y="252" text-anchor="middle" class="label">LayerNorm</text><text x="1217" y="275" text-anchor="middle" class="body">→ MHA</text>
+  <text x="1383" y="252" text-anchor="middle" class="label">GELU-new</text><text x="1383" y="275" text-anchor="middle" class="body">3.072</text>
+  <text x="1502" y="252" text-anchor="middle" class="label">Đầu ra</text><text x="1502" y="275" text-anchor="middle" class="body">LM</text>
+  <text x="1217" y="342" text-anchor="middle" class="body">× 7 block: LayerNorm → MHA → residual → LayerNorm → GELU-new → residual</text>
+  <rect x="840" y="390" width="686" height="204" fill="#ffffff" stroke="#efb17e" class="box"/>
+  <text x="864" y="430" class="label">Các điểm chính</text>
+  <text x="864" y="466" class="body">• Dùng bảng vị trí học được thay cho RoPE.</text>
+  <text x="864" y="498" class="body">• MHA dùng đủ 12 head cho query và KV.</text>
+  <text x="864" y="530" class="body">• Dùng LayerNorm và GELU-new theo kiểu GPT-2.</text>
+  <text x="864" y="562" class="body">• Đây là lần huấn luyện E2 riêng; “GPT 63M” chỉ là tên kiến trúc.</text>
+
+  <rect x="48" y="700" width="1504" height="34" fill="#111827" rx="8"/>
+  <text x="800" y="723" text-anchor="middle" font="700 16px Arial, sans-serif" fill="#ffffff">Điểm chung ở cấp bài toán: decoder-only · loss dự đoán token kế tiếp · hidden size 768 · không phải cùng một lần huấn luyện</text>
+</svg>
