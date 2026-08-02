@@ -178,6 +178,39 @@ Trên **500 dòng held-out cố định** (validation, seed 42), 3 tầng:
 **Nguyên tắc phương pháp luận:** kết luận dựa trên **thứ hạng** (ranking) do 2 thước đo **độc lập** (perplexity và
 judge) cùng đưa ra, không dựa vào con số tuyệt đối của một chỉ số đơn lẻ.
 
+**Perplexity (PPL) tính chính xác thế nào.** Đo *teacher-forced* — luôn cho model thấy token đúng phía trước, chỉ
+chấm xác suất nó gán cho token kế tiếp:
+
+```
+# 1) Mỗi token fable thứ i: model cho phân phối p(·) trên 49.152 từ vựng
+#    loss_token = −log p(token_đúng_i)                 (cross-entropy)
+# 2) Gộp: trung bình CÓ TRỌNG SỐ theo số token, chỉ trên token fable
+#    (token ngữ cảnh bị che = −100 nên KHÔNG tính vào mẫu số)
+loss = ( Σ_i −log p(token_i) ) / N_token_fable
+# 3) Perplexity:
+PPL  = exp(loss)
+```
+
+*Diễn giải:* PPL = 3.84 ⇔ mỗi bước model "phân vân" như đang chọn giữa ~3,84 khả năng ngang nhau; PPL nhỏ ⇒ gán xác
+suất cao cho từ đúng ⇒ nắm văn phong tốt hơn. Cộng dồn **theo token** ⇒ truyện dài không bị pha loãng; che ngữ cảnh
+(−100) ⇒ PPL chỉ đo phần *sinh fable*, không tính phần đề bài.
+
+**Tokenizer & khả năng so sánh PPL.** PPL tính *trên token*, mà mỗi tokenizer cắt cùng một câu thành số token khác
+nhau ⇒ **PPL của hai model khác tokenizer KHÔNG so trực tiếp được** (mẫu số N_token khác bản chất):
+
+| Hệ (trong báo cáo) | Loại tokenizer | Vocab | Ghi chú |
+|---|---|---:|---|
+| **E3 — SmolLM2-135M** (của em) | Byte-level BPE (kiểu Llama/GPT-2), có sẵn | 49.152 | Dùng nguyên, không train mới |
+| E1 — SLM 60M (from-scratch) | BPE **tự train** (GPT-2-compat) | 12.000 | "May đo" cho domain fable |
+| E2 — GPT 63M (from-scratch) | Metaspace BPE **tự train** | 16.384 | Thẻ char/moral/story riêng |
+| E4/E5 — fine-tune 3B (Llama/Qwen) | tiktoken BBPE | 128k–152k | Vocab lớn, nén token gọn |
+| Judge nội bộ — Qwen2.5-7B | Qwen BBPE (tiktoken) | ~152.000 | Chỉ để chấm ablation |
+| Judge CHUNG — Gemma 4 26B | SentencePiece (unigram) | ~256.000 | Trọng tài liên nhóm |
+
+⇒ **Trong E3** (base + 4 arm cùng tokenizer 49.152): xếp hạng bằng **perplexity** là hợp lệ. **Giữa 5 hệ E1–E5**
+(3 loại tokenizer khác nhau): phải dùng **một LLM-judge chung (Gemma) chấm cùng bộ đề**, vì judge đứng ngoài mọi
+tokenizer — đây là lý do nhóm cần judge chung.
+
 ### 2.6 Quy trình train từng bước & learning rate
 
 **Quy trình (lặp cho mỗi arm A/B/C; base không train):**

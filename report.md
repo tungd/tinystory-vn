@@ -672,10 +672,23 @@ học cập nhật hạng thấp cho các ma trận được chọn. Cả ba nh�
 - C: `q,k,v,o,gate,up,down` ở toàn bộ layer, khoảng 4,88M, tức 3,5% model.
 
 AdamW dùng LR đỉnh `2e-4`, cosine decay, warmup 3%, bf16 trên một Colab L4, batch
-16 × gradient accumulation 2 = 32, khoảng 3.125 bước/nhánh. Báo cáo nguồn chỉ ghi “vài
-phút/nhánh”; repo tổng hợp này không mang source repo, log theo bước hay timestamp, nên
-không thể đưa thời gian chính xác hoặc vẽ loss/LR thật. Đường cosine ở đây là cấu hình,
-không phải bằng chứng đường chạy.
+16 × gradient accumulation 2 = 32, khoảng 3.125 bước/nhánh (≈1.563 bước/epoch × 2
+epoch). Đường loss huấn luyện thật của cả ba nhánh được phục hồi từ log W&B (312
+điểm/nhánh); learning-rate là lịch cosine theo cấu hình — xác định bởi công thức
+warmup 3% + cosine decay về 0, đỉnh 2e-4. Hệ thống tổng hợp không giữ log LR theo
+bước, nên panel LR là lịch cấu hình (đúng với scheduler đã chạy vì scheduler là tất
+định), không phải đường đo.
+
+![E3 — động lực huấn luyện. Trái: cross-entropy loss thật (chỉ trên token fable) của ba nhánh, phục hồi từ log W&B; thứ hạng hội tụ C (1,347) < A (1,579) < B (1,705) trùng thứ hạng perplexity held-out, và `exp` của loss cuối (3,85 / 4,85 / 5,50) gần khớp perplexity held-out (3,84 / 4,82 / 5,46) — dấu hiệu ít overfit. Phải: lịch learning-rate cấu hình (cosine, warmup 3% ≈ 93 bước, đỉnh 2e-4 rồi giảm về 0).](figures/tracks/e3_train_dynamics.png){width=98%}
+
+**Perplexity và tính so sánh của nó.** Perplexity held-out = `exp(mean cross-entropy)`
+trên 500 hàng cố định, teacher-forced, loss chỉ cộng trên token fable (token context bị
+mask `-100` nên không vào mẫu số). Vì cả ba nhánh dùng chung tokenizer GPT-2 BPE của
+SmolLM2 (49.152 token) và chung cách mask, perplexity so sánh trực tiếp và công bằng
+*trong phạm vi E3*. Nhưng perplexity tính trên token: nó KHÔNG so trực tiếp được với
+E1 (BPE 12k), E2 (Metaspace BPE 16k) hay E4/E5 (Llama BPE 128k) vì mẫu số token khác
+bản chất. Đây chính là lý do mọi so sánh liên nhóm phải dùng giám khảo LLM chung trên
+cùng bộ đề (§4), thay vì đặt cạnh các perplexity khác tokenizer.
 
 **Kết quả held-out và judge.**
 
@@ -686,7 +699,7 @@ không phải bằng chứng đường chạy.
 | B | 1/3 tầng cuối | chú ý q/v | 5.46 | 5.94 |
 | **C** | **toàn bộ** | **mọi lớp tuyến tính, chú ý + MLP** | **3.84** | **6.87** |
 
-![E3: bóc tách vị trí LoRA theo perplexity held-out và điểm LLM-as-judge nội bộ. Hình được dựng từ bảng kết quả đã lưu; artifact không có trainer state nên không dựng loss curve theo bước.](figures/tracks/e3_lora_ablation.png){width=96%}
+![E3: bóc tách vị trí LoRA theo perplexity held-out (trái, thấp hơn tốt hơn) và điểm LLM-as-judge nội bộ Qwen2.5-7B (phải, cao hơn tốt hơn); nhánh C dẫn đầu cả hai thước đo. Màu mỗi nhánh khớp với hình động lực huấn luyện phía trên.](figures/tracks/e3_lora_ablation.png){width=96%}
 
 Độ hỗn loạn và giám khảo nội bộ Qwen2.5-7B (n=50/nhánh) cùng xếp C > A > B > nền. So
 sánh A/B cho thấy phủ toàn bộ tầng tốt hơn chỉ đặt ở tầng cuối. So sánh A/C cho thấy mở
@@ -718,10 +731,18 @@ không nên diễn giải các chênh lệch nhỏ như hiệu ứng phổ quát
 trong ba cấu hình đã chạy, nhánh C cung cấp phân bổ adapter tốt nhất với khoảng 3,5%
 trọng số trainable.
 
-Trong vòng chung, E3 đạt 2,81/10. Runner chung chỉ truyền phần đề, trong khi adapter
-được train với `system_message + prompt`; sai khác hợp đồng này có thể làm giảm khả
-năng bám điều kiện. Điểm chung vì vậy đo artifact E3 trên giao diện triển khai thống
-nhất, còn xếp hạng C > A > B > base chỉ có giá trị trong giao thức nội bộ E3.
+Trong vòng chung, E3 đạt 2,81/10 — nằm cùng dải hẹp 2,81–3,30 với E1 (3,30) và E2
+(3,18), tách biệt rõ với E4/E5 (9,20 và 8,44). Điểm thấp này không nên quy cho một
+nguyên nhân đơn lẻ. Sai khác hợp đồng prompt (runner chung chỉ truyền phần đề, còn
+adapter được train với `system_message + prompt`) là một yếu tố kéo prompt-adherence
+xuống 1,44; nhưng nó không phải yếu tố duy nhất, vì E1/E2 không hề có mismatch này vẫn
+nằm cùng dải điểm với E3. Phần chi phối là các yếu tố cấu trúc đồng thời khác nhau giữa
+năm hướng: dung lượng mô hình 135M so với 3B của E4/E5, việc E3 là mô hình pretrain được
+tinh chỉnh nhẹ bằng LoRA trên 50k mẫu (so với E1/E2 huấn luyện đầy đủ từ đầu trên corpus
+fable), cùng khác biệt về dữ liệu tiền huấn luyện và giao diện điều kiện. Đúng như phần
+Tóm tắt đã lưu ý, chênh lệch điểm tổng hợp không quy trực tiếp cho số tham số vì các hướng
+khác nhau đồng thời ở nhiều chiều. Vì vậy điểm chung đo artifact E3 trên giao diện triển
+khai thống nhất, còn xếp hạng C > A > B > base chỉ có giá trị trong giao thức nội bộ E3.
 `tsv3-smollm135-best` (nhánh C) được chọn làm đại diện vì dẫn đầu cả PPL và overall
 trong phép so sánh có đối chứng của hướng này.
 

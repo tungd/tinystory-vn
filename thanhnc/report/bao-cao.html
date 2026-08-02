@@ -399,6 +399,39 @@ labels = [-100]*len(ctx)  +  target_ids                # CHE ngữ cảnh → lo
     <p class="note">Nguyên tắc: kết luận theo <strong>thứ hạng</strong> do 2 thước đo <strong>độc lập</strong> (perplexity
       + judge) cùng đưa ra, không theo con số tuyệt đối của một chỉ số đơn lẻ.</p>
 
+    <h3>2.6 Perplexity tính như thế nào?</h3>
+    <p>Perplexity (PPL) đo "độ ngạc nhiên trung bình" của model khi phải đoán đúng từng token của fable. Đo
+      <em>teacher-forced</em>: luôn cho model thấy các token đúng phía trước, chỉ chấm xác suất nó gán cho token kế tiếp.</p>
+    <pre><code># 1) Mỗi token fable thứ i: model cho phân phối p(·) trên 49.152 từ vựng
+#    loss của token = −log p(token_đúng_i)          (cross-entropy)
+# 2) Gộp: trung bình CÓ TRỌNG SỐ theo số token, chỉ trên token fable
+#    (token ngữ cảnh bị che = −100 nên KHÔNG tính)
+loss = ( Σ_i −log p(token_i) ) / N_token_fable
+# 3) Perplexity = mũ của loss
+PPL  = exp(loss)</code></pre>
+    <p>Diễn giải: PPL = 3.84 nghĩa là mỗi bước model "phân vân" như đang chọn giữa ~3,84 khả năng ngang nhau. PPL nhỏ ⇒
+      model gán xác suất cao cho từ đúng ⇒ nắm văn phong fable tốt hơn. Vì cộng dồn <strong>theo token</strong> (không lấy
+      trung bình đơn theo câu) nên truyện dài không bị "pha loãng"; và vì che ngữ cảnh (−100), PPL chỉ phản ánh phần
+      <em>sinh fable</em>, không tính phần đề bài.</p>
+
+    <h3>2.7 Tokenizer của các hệ — vì sao PPL chỉ so được nội bộ</h3>
+    <p>PPL tính <em>trên token</em>, mà mỗi tokenizer cắt cùng một câu thành số token khác nhau ⇒ <strong>PPL của hai
+      model dùng tokenizer khác nhau KHÔNG so trực tiếp được</strong> (mẫu số N_token khác bản chất).</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Hệ (trong báo cáo)</th><th>Loại tokenizer</th><th class="num">Vocab</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr class="best"><td><b>E3 — SmolLM2-135M</b> (của em)</td><td>Byte-level BPE (kiểu Llama/GPT-2), có sẵn</td><td class="num">49.152</td><td>Dùng nguyên, không train mới</td></tr>
+        <tr><td>E1 — SLM 60M (from-scratch)</td><td>BPE <b>tự train</b> (GPT-2-compat)</td><td class="num">12.000</td><td>"May đo" cho domain fable</td></tr>
+        <tr><td>E2 — GPT 63M (from-scratch)</td><td>Metaspace BPE <b>tự train</b></td><td class="num">16.384</td><td>Thẻ char/moral/story riêng</td></tr>
+        <tr><td>E4/E5 — fine-tune 3B (Llama/Qwen)</td><td>tiktoken BBPE</td><td class="num">128k–152k</td><td>Vocab lớn, nén token gọn</td></tr>
+        <tr><td>Judge nội bộ — Qwen2.5-7B</td><td>Qwen BBPE (tiktoken)</td><td class="num">~152.000</td><td>Chỉ để chấm ablation</td></tr>
+        <tr><td>Judge CHUNG — Gemma 4 26B</td><td>SentencePiece (unigram)</td><td class="num">~256.000</td><td>Trọng tài liên nhóm</td></tr>
+      </tbody>
+    </table></div>
+    <p>Hệ quả: <strong>trong E3</strong> (base + 4 arm cùng tokenizer 49.152) → xếp hạng bằng <strong>perplexity</strong>
+      là hợp lệ; <strong>giữa 5 hệ E1–E5</strong> (3 loại tokenizer khác nhau) → phải dùng <strong>một LLM-judge chung
+      (Gemma) chấm cùng bộ đề</strong>, vì judge đứng ngoài mọi tokenizer. Đây chính là lý do nhóm cần judge chung.</p>
+
     <h2><span class="num">3</span>Prompt engineering</h2>
     <p><strong>Không "chế" prompt mới cho train</strong> — tái dùng trung thực prompt TF1, giữ format train↔serve, và
       thiết kế prompt judge.</p>
