@@ -25,6 +25,11 @@ p.defineLayout({ name: 'W', width: 13.333, height: 7.5 });
 p.layout = 'W';
 let PAGE = 0;
 
+// gom mọi slide theo thứ tự tạo để gắn speaker notes ở cuối
+const SLIDES = [];
+function mkSlide() { const s = p.addSlide(); SLIDES.push(s); return s; }
+const NOTES = require(path.join(__dirname, 'deck_notes.json'));
+
 // khung chuẩn cho slide nội dung: eyebrow + title + số trang + logo góc
 function chrome(s, title, { eyebrow = 'TINYSTORY-VN · NHÓM 16 · IT5410', titleColor = C.ink, titleSize = 25 } = {}) {
   PAGE += 1;
@@ -48,7 +53,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 
 // ============================ 1. BÌA ============================
 {
-  const s = p.addSlide(); s.background = { color: C.white };
+  const s = mkSlide(); s.background = { color: C.white };
   PAGE += 1; // bìa là slide 1 (không in số), giữ số trang khớp vị trí
   s.addText('BÁO CÁO TỔNG HỢP · NHÓM 16 · IT5410', { x: 0.7, y: 0.6, w: 9, h: 0.4, fontFace: F, fontSize: 15, color: C.gray, charSpacing: 1 });
   s.addText([
@@ -65,7 +70,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 
 // ============================ 2. ĐỀ TÀI & BÀI TOÁN ============================
 {
-  const s = p.addSlide(); chrome(s, 'Đề tài và bài toán nghiên cứu');
+  const s = mkSlide(); chrome(s, 'Đề tài và bài toán nghiên cứu');
   s.addText('Tác vụ là sinh truyện ngụ ngôn thiếu nhi bằng tiếng Anh, có điều kiện theo năm trường tường thuật, với yêu cầu chạy được cục bộ. Thách thức trọng tâm không nằm ở độ trôi chảy: một truyện đọc mượt vẫn có thể bỏ qua các điều kiện được yêu cầu. Câu hỏi đặt ra là các điều kiện có thực sự chi phối diễn biến hay chỉ xuất hiện như từ khóa.',
     { x: 0.44, y: 1.75, w: 7.1, h: 1.9, fontFace: F, fontSize: 15, color: C.ink, lineSpacingMultiple: 1.05 });
   s.addText('Bốn câu hỏi nghiên cứu', { x: 0.44, y: 3.75, w: 7, h: 0.4, fontFace: F, fontSize: 15, bold: true, color: C.teal });
@@ -86,7 +91,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 
 // ============================ 3. DỮ LIỆU & CÀI CẮM ĐIỀU KIỆN ============================
 {
-  const s = p.addSlide(); chrome(s, 'Dữ liệu và cách cài cắm điều kiện đầu vào');
+  const s = mkSlide(); chrome(s, 'Dữ liệu và cách cài cắm điều kiện đầu vào');
   // hàng số liệu nổi bật
   stat(s, 0.44, 1.72, '≈ 3 triệu truyện', 'TF1-EN-3M (klusai/ds-tf1-en-3m): truyện ngụ ngôn tổng hợp có bài học (Nadas et al., 2025, arXiv 2504.20605).', C.blue, 4.0);
   stat(s, 4.66, 1.72, '5 trường điều kiện', 'Nhân vật · Bối cảnh · Thử thách · Kết quả · Bài học, đi kèm mỗi truyện.', C.blue, 4.0);
@@ -113,7 +118,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 
 // ============================ 4. HƯỚNG GIẢI QUYẾT ============================
 {
-  const s = p.addSlide(); chrome(s, 'Hướng giải quyết: ba nhóm phương pháp trên cùng một tác vụ');
+  const s = mkSlide(); chrome(s, 'Hướng giải quyết: ba nhóm phương pháp trên cùng một tác vụ');
   const col = (x, tag, tagColor, head, body, sys) => {
     s.addShape(p.ShapeType.roundRect, { x, y: 1.85, w: 3.95, h: 4.5, rectRadius: 0.08, fill: { color: C.panel }, line: { color: C.line, width: 1 } });
     s.addText(tag, { x: x + 0.25, y: 2.1, w: 3.5, h: 0.35, fontFace: F, fontSize: 13, bold: true, color: tagColor, charSpacing: 1 });
@@ -133,7 +138,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 
 // ============================ 5. BA LỚP BẰNG CHỨNG ============================
 {
-  const s = p.addSlide(); chrome(s, 'Ba lớp bằng chứng cho cùng một tác vụ');
+  const s = mkSlide(); chrome(s, 'Ba lớp bằng chứng cho cùng một tác vụ');
   s.addText('Một truyện trôi chảy chưa chứng minh rằng các điều kiện đã chi phối diễn biến. Do đó chất lượng được báo cáo trên ba lớp độc lập, không thể thay thế lẫn nhau.',
     { x: 0.44, y: 1.75, w: 12.4, h: 0.7, fontFace: F, fontSize: 15, color: C.ink, lineSpacingMultiple: 1.05 });
   const lay = (x, tag, head, body) => {
@@ -153,7 +158,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 // ======================================================================
 // a = { type, arch:[...], rationale, config:[[k,v]...], train:{loss,optimizer,batch,hardware,reg}, flow }
 function eArch(e, name, a) {
-  const s = p.addSlide(); chrome(s, `${e} · ${name} — Kiến trúc và huấn luyện`, { eyebrow: `TINYSTORY-VN · ${e}` });
+  const s = mkSlide(); chrome(s, `${e} · ${name} — Kiến trúc và huấn luyện`, { eyebrow: `TINYSTORY-VN · ${e}` });
   // CỘT TRÁI — 1. Kiến trúc
   s.addText('1 · Kiến trúc', { x: 0.44, y: 1.72, w: 6.1, h: 0.32, fontFace: F, fontSize: 14, bold: true, color: C.teal });
   s.addText(a.type, { x: 0.44, y: 2.06, w: 6.15, h: 0.5, fontFace: F, fontSize: 13, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
@@ -181,7 +186,7 @@ function eArch(e, name, a) {
     { x: 0.62, y: 6.36, w: 11.7, h: 0.6, fontFace: F, fontSize: 11.5, valign: 'middle', lineSpacingMultiple: 0.98 });
 }
 function eProg(e, name, subtitle, steps, chartFile, chartCap) {
-  const s = p.addSlide(); chrome(s, `${e} · ${name} — Tiến trình nghiên cứu`, { eyebrow: `TINYSTORY-VN · ${e}` });
+  const s = mkSlide(); chrome(s, `${e} · ${name} — Tiến trình nghiên cứu`, { eyebrow: `TINYSTORY-VN · ${e}` });
   s.addText(subtitle, { x: 0.44, y: 1.72, w: 12.4, h: 0.45, fontFace: F, fontSize: 14.5, italic: true, color: C.gray, lineSpacingMultiple: 1.0 });
   // cột trái: các mốc (bảng)
   const rows = steps.map(([mile, note]) => [
@@ -194,7 +199,7 @@ function eProg(e, name, subtitle, steps, chartFile, chartCap) {
   s.addText(chartCap, { x: 6.75, y: 6.35, w: 6.2, h: 0.6, fontFace: F, fontSize: 11, italic: true, color: C.gray, align: 'center', lineSpacingMultiple: 1.0 });
 }
 function eResult(e, name, stats, analysis, chartFile, chartCap, limitation) {
-  const s = p.addSlide(); chrome(s, `${e} · ${name} — Kết quả và phân tích`, { eyebrow: `TINYSTORY-VN · ${e}` });
+  const s = mkSlide(); chrome(s, `${e} · ${name} — Kết quả và phân tích`, { eyebrow: `TINYSTORY-VN · ${e}` });
   // trái: chart
   if (chartFile) { img(s, chartFile, { x: 0.44, y: 1.9, w: 6.3, h: 4.1 }); s.addText(chartCap, { x: 0.44, y: 6.05, w: 6.3, h: 0.7, fontFace: F, fontSize: 11, italic: true, color: C.gray, align: 'center', lineSpacingMultiple: 1.0 }); }
   vline(s, 7.0, 1.85, 4.7);
@@ -213,7 +218,7 @@ const PHASE = {
   'kết-luận': { c: C.green, label: 'Kết luận & kết quả' },
 };
 function mFlow(titleFull, eyebrow, subtitle, nodes) {
-  const s = p.addSlide(); chrome(s, titleFull, { eyebrow });
+  const s = mkSlide(); chrome(s, titleFull, { eyebrow });
   s.addText(subtitle, { x: 0.44, y: 1.68, w: 12.45, h: 0.45, fontFace: F, fontSize: 12.5, italic: true, color: C.gray, lineSpacingMultiple: 1.0 });
   const cX = [0.44, 4.74, 9.04], rY = [2.35, 3.98, 5.61], BW = 3.85, BH = 1.32;
   const place = (i) => { const row = Math.floor(i / 3), k = i % 3; const col = (row % 2 === 0) ? k : (2 - k); return { row, col, x: cX[col], y: rY[row] }; };
@@ -280,7 +285,7 @@ eProg('E1', 'Llama 30M/60M từ đầu',
   'Loss huấn luyện qua hai giai đoạn: giảm nhanh ở Phase 1, tiếp tục giảm sau khi nối Phase 2 (corpus v2); loss cuối 1,278, thấp hơn rõ so với baseline v1 1,8.');
 // --- slide bổ sung: chín bước phương pháp M1 -> M9 (SƠ ĐỒ KHỐI) ---
 {
-  const s = p.addSlide(); chrome(s, 'E1 · Llama 30M/60M từ đầu — Chín bước phương pháp (M1 đến M9)', { eyebrow: 'TINYSTORY-VN · E1' });
+  const s = mkSlide(); chrome(s, 'E1 · Llama 30M/60M từ đầu — Chín bước phương pháp (M1 đến M9)', { eyebrow: 'TINYSTORY-VN · E1' });
   s.addText('Mạch xuyên suốt: chẩn đoán bệnh, chữa bằng dữ liệu, đo cho chuẩn, thử các đường tắt hậu huấn luyện (đều thất bại), rồi kết luận phải đầu tư pretraining và mở rộng để xác nhận.',
     { x: 0.44, y: 1.68, w: 12.45, h: 0.45, fontFace: F, fontSize: 12.5, italic: true, color: C.gray, lineSpacingMultiple: 1.0 });
   // toạ độ lưới 3x3
@@ -544,7 +549,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
 
 // ============================ 20b. CÔNG NGHỆ GIÁM KHẢO TỔNG ============================
 {
-  const s = p.addSlide(); chrome(s, 'Công nghệ chấm điểm vòng chung cho năm mô hình', { eyebrow: 'TINYSTORY-VN · ĐÁNH GIÁ CHUNG' });
+  const s = mkSlide(); chrome(s, 'Công nghệ chấm điểm vòng chung cho năm mô hình', { eyebrow: 'TINYSTORY-VN · ĐÁNH GIÁ CHUNG' });
   s.addText('Đánh giá chung dùng một giám khảo LLM thống nhất, chấm mù trên cùng bộ đề, tách biệt với các giám khảo nội bộ của từng hướng; chỉ điểm vòng chung mới dùng để so sánh năm hệ thống.',
     { x: 0.44, y: 1.68, w: 12.45, h: 0.5, fontFace: F, fontSize: 13, italic: true, color: C.gray, lineSpacingMultiple: 1.0 });
   // pipeline 3 bước
@@ -592,7 +597,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
 
 // ============================ 21. BẢNG ĐỊNH LƯỢNG ============================
 {
-  const s = p.addSlide(); chrome(s, 'Kết quả định lượng trên 25 đề đánh giá thống nhất');
+  const s = mkSlide(); chrome(s, 'Kết quả định lượng trên 25 đề đánh giá thống nhất');
   const data = [{ name: 'Điểm vòng chung', labels: ['E4 · 3B+Repair', 'E5 · 3B QLoRA', 'E1 · 60M', 'E2 · 63M', 'E3 · 135M'], values: [9.2, 8.44, 3.3, 3.18, 2.81] }];
   s.addChart(p.ChartType.bar, data, {
     x: 0.44, y: 1.9, w: 7.6, h: 4.8, barDir: 'col',
@@ -611,7 +616,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
 
 // ============================ 22. BA LỚP KHÔNG THAY THẾ ============================
 {
-  const s = p.addSlide(); chrome(s, 'Ba lớp bằng chứng không thể thay thế lẫn nhau');
+  const s = mkSlide(); chrome(s, 'Ba lớp bằng chứng không thể thay thế lẫn nhau');
   const lay = (x, tag, sub, body) => {
     s.addShape(p.ShapeType.roundRect, { x, y: 1.9, w: 3.95, h: 3.9, rectRadius: 0.08, fill: { color: C.panel }, line: { color: C.line, width: 1 } });
     s.addText(tag, { x: x + 0.25, y: 2.15, w: 3.5, h: 0.4, fontFace: F, fontSize: 16, bold: true, color: C.blue });
@@ -627,7 +632,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
 
 // ============================ 23. KẾT LUẬN ============================
 {
-  const s = p.addSlide(); s.background = { color: C.white };
+  const s = mkSlide(); s.background = { color: C.white };
   PAGE += 1;
   s.addText('KẾT LUẬN', { x: 0.7, y: 0.7, w: 6, h: 0.4, fontFace: F, fontSize: 15, color: C.gray, charSpacing: 1 });
   if (HAS_LOGO) s.addImage({ path: LOGO, x: 11.0, y: 0.6, w: 1.8, h: 0.76, sizing: { type: 'contain', w: 1.8, h: 0.76 } });
@@ -645,5 +650,11 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
   s.addText(String(PAGE), { x: 12.5, y: 6.95, w: 0.5, h: 0.3, fontFace: F, fontSize: 10.5, color: C.gray, align: 'right' });
 }
 
+// gắn speaker notes: NOTES[i].n khớp số thứ tự slide (1-based)
+const NMAP = {};
+NOTES.forEach((o) => { NMAP[o.n] = o.notes; });
+let notesApplied = 0;
+SLIDES.forEach((s, i) => { const t = NMAP[i + 1]; if (t) { s.addNotes(t); notesApplied += 1; } });
+
 const OUT = path.join(ROOT, 'output/presentation/tinystory-vn-summary.pptx');
-p.writeFile({ fileName: OUT }).then(() => console.log('  ✓ đã ghi', OUT, '| logo:', HAS_LOGO ? 'CÓ' : 'CHƯA (chừa chỗ)', '| tổng slide:', PAGE));
+p.writeFile({ fileName: OUT }).then(() => console.log('  ✓ đã ghi', OUT, '| logo:', HAS_LOGO ? 'CÓ' : 'CHƯA (chừa chỗ)', '| tổng slide:', PAGE, '| notes:', notesApplied + '/' + SLIDES.length));
