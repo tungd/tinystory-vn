@@ -1,11 +1,11 @@
-/* Dựng deck tóm tắt nhóm 16 — 23 slide, style theo bản Walnut gốc.
+/* Dựng deck tóm tắt nhóm 16 — 29 slide, style theo bản Walnut gốc.
    Chạy: node output/presentation/build_deck.js  (pptxgenjs cài global) */
 const path = require('path');
 const fs = require('fs');
 const pptxgen = require(process.env.GROOT + '/pptxgenjs');
 
-const ROOT = '/Users/trieulh/Documents/Master/20252B_IT5410/Final';
-const ASSET = '/tmp/deck_assets';
+const ROOT = path.resolve(__dirname, '../..');
+const ASSET = path.join(ROOT, 'lienntp/results/figures');
 const fig = (p) => path.join(ROOT, p);
 const LOGO = path.join(ROOT, 'output/presentation/assets/hust-logo.png');
 const HAS_LOGO = fs.existsSync(LOGO);
@@ -58,7 +58,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
   s.addText('BÁO CÁO TỔNG HỢP · NHÓM 16 · IT5410', { x: 0.7, y: 0.6, w: 9, h: 0.4, fontFace: F, fontSize: 15, color: C.gray, charSpacing: 1 });
   s.addText([
     { text: 'Đánh giá thực nghiệm', options: { breakLine: true } },
-    { text: 'các mô hình sinh truyện ngụ ngôn theo điều kiện', options: { breakLine: true } },
+    { text: 'các mô hình sinh truyện ngụ ngôn có điều kiện', options: { breakLine: true } },
   ], { x: 0.7, y: 1.7, w: 11.5, h: 2.2, fontFace: FL, fontSize: 46, bold: true, color: C.ink, lineSpacingMultiple: 1.02 });
   s.addText('Năm hệ thống độc lập · tiền huấn luyện từ đầu · PEFT/QLoRA · kiểm soát đầu ra', { x: 0.7, y: 4.35, w: 11.8, h: 0.5, fontFace: F, fontSize: 20, color: C.gray });
   s.addText([
@@ -71,7 +71,7 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 // ============================ 2. ĐỀ TÀI & BÀI TOÁN ============================
 {
   const s = mkSlide(); chrome(s, 'Đề tài và bài toán nghiên cứu');
-  s.addText('Tác vụ là sinh truyện ngụ ngôn thiếu nhi bằng tiếng Anh, có điều kiện theo năm trường tường thuật, với yêu cầu chạy được cục bộ. Thách thức trọng tâm không nằm ở độ trôi chảy: một truyện đọc mượt vẫn có thể bỏ qua các điều kiện được yêu cầu. Câu hỏi đặt ra là các điều kiện có thực sự chi phối diễn biến hay chỉ xuất hiện như từ khóa.',
+  s.addText('Bài toán là sinh truyện ngụ ngôn tiếng Anh cho trẻ em từ năm trường điều kiện, với hệ thống chạy được cục bộ. Thách thức trọng tâm không chỉ là độ trôi chảy: một truyện đọc mượt vẫn có thể bỏ qua đề bài. Câu hỏi là các điều kiện có thực sự chi phối diễn biến hay chỉ xuất hiện như từ khóa.',
     { x: 0.44, y: 1.75, w: 7.1, h: 1.9, fontFace: F, fontSize: 15, color: C.ink, lineSpacingMultiple: 1.05 });
   s.addText('Bốn câu hỏi nghiên cứu', { x: 0.44, y: 3.75, w: 7, h: 0.4, fontFace: F, fontSize: 15, bold: true, color: C.teal });
   s.addText(bullets([
@@ -89,9 +89,9 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
   ], { x: 8.15, y: 2.2, w: 4.6, h: 1.4, fontFace: FL, fontSize: 19, color: C.ink, lineSpacingMultiple: 1.1 });
 }
 
-// ============================ 3. DỮ LIỆU & CÀI CẮM ĐIỀU KIỆN ============================
+// ============================ 3. DỮ LIỆU & ĐƯA ĐIỀU KIỆN VÀO MÔ HÌNH ============================
 {
-  const s = mkSlide(); chrome(s, 'Dữ liệu và cách cài cắm điều kiện đầu vào');
+  const s = mkSlide(); chrome(s, 'Dữ liệu và cách đưa điều kiện vào mô hình');
   // hàng số liệu nổi bật
   stat(s, 0.44, 1.72, '≈ 3 triệu truyện', 'TF1-EN-3M (klusai/ds-tf1-en-3m): truyện ngụ ngôn tổng hợp có bài học (Nadas et al., 2025, arXiv 2504.20605).', C.blue, 4.0);
   stat(s, 4.66, 1.72, '5 trường điều kiện', 'Nhân vật · Bối cảnh · Thử thách · Kết quả · Bài học, đi kèm mỗi truyện.', C.blue, 4.0);
@@ -105,14 +105,14 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
     'Vì kích thước tập và bộ tách từ khác nhau nên perplexity không so trực tiếp được giữa các hướng; mọi so sánh liên nhóm đều dùng chung một giám khảo.',
   ]), { x: 0.44, y: 3.72, w: 7.2, h: 3.0 });
   vline(s, 7.95, 3.3, 3.5);
-  // cột phải: định dạng cài cắm + kỹ thuật giữ đa dạng
-  s.addText('Cài cắm điều kiện và giữ đa dạng', { x: 8.25, y: 3.3, w: 4.6, h: 0.35, fontFace: F, fontSize: 15, bold: true, color: C.teal });
+  // cột phải: định dạng điều kiện + kỹ thuật giữ đa dạng
+  s.addText('Định dạng điều kiện và giữ đa dạng', { x: 8.25, y: 3.3, w: 4.6, h: 0.35, fontFace: F, fontSize: 15, bold: true, color: C.teal });
   s.addText('<năm trường>  <|story|>  <truyện>  <|end|>',
     { x: 8.25, y: 3.72, w: 4.6, h: 0.5, fontFace: 'Courier New', fontSize: 12.5, color: C.ink, fill: { color: C.panel }, align: 'left', valign: 'middle', margin: 6 });
   s.addText(bullets([
     'Với hướng huấn luyện từ đầu (E1, E2), token phần điều kiện bị mask -100 nên loss chỉ tính trên truyện: mô hình học kể chuyện, không học thuộc mẫu đề.',
     'Hai giao diện điều kiện: E1, E3, E4, E5 dùng đủ năm trường; E2 dùng Nhân vật + Bài học theo hợp đồng V16.',
-    'Giữ đa dạng: slot dropout che ngẫu nhiên từng trường, cap tỷ lệ khuôn mẫu chiếm ưu thế, và khử trùng lặp theo mã băm đề bài.',
+    'Giữ đa dạng: slot dropout che ngẫu nhiên từng trường, giới hạn tỷ lệ khuôn mẫu chiếm ưu thế, và loại trùng theo mã băm của đề bài.',
   ]), { x: 8.25, y: 4.35, w: 4.6, h: 2.4 });
 }
 
@@ -127,11 +127,11 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
     s.addText(sys, { x: x + 0.25, y: 5.75, w: 3.5, h: 0.5, fontFace: F, fontSize: 12.5, italic: true, color: tagColor });
   };
   col(0.44, 'NHÓM 1 · TIỀN HUẤN LUYỆN TỪ ĐẦU', C.teal, 'Xây năng lực nền từ khởi tạo ngẫu nhiên',
-    'Thiết kế bộ tách từ, kiến trúc và ngân sách token; kiểm soát toàn bộ chuỗi xử lý để quy kết mỗi thay đổi chất lượng về đúng một nguyên nhân.', 'E1 · Llama 30M/60M      E2 · GPT-2 63M');
+    'Thiết kế bộ tách từ, kiến trúc và ngân sách token; kiểm soát toàn bộ chuỗi xử lý để gắn mỗi thay đổi chất lượng với đúng nguyên nhân.', 'E1 · Llama 30M/60M      E2 · GPT-2 63M');
   col(4.69, 'NHÓM 2 · PEFT / QLoRA', C.orange, 'Thích nghi một mô hình đã tiền huấn luyện',
-    'Giữ mô hình nền, chỉ học các cập nhật hạng thấp; khảo sát vị trí đặt adapter và ngân sách huấn luyện để đạt hiệu quả với chi phí tham số nhỏ.', 'E3 · SmolLM2-135M + LoRA      E5 · Llama 3.2 3B + QLoRA');
+    'Giữ mô hình nền, chỉ học các cập nhật hạng thấp; khảo sát vị trí đặt adapter và ngân sách huấn luyện với số tham số phải học ít.', 'E3 · SmolLM2-135M + LoRA      E5 · Llama 3.2 3B + QLoRA');
   col(8.94, 'NHÓM 3 · KIỂM SOÁT ĐẦU RA', C.green, 'Bảo đảm độ tin cậy tại thời điểm suy luận',
-    'Kiểm tra định dạng, hậu xử lý và viết lại có điều kiện quanh một mô hình nền mạnh, nhằm nâng độ tin cậy của sản phẩm cuối.', 'E4 · Llama 3.2 3B + Repair');
+    'Kết hợp kiểm tra định dạng, hậu xử lý và viết lại có điều kiện với một mô hình nền mạnh để tăng độ tin cậy của đầu ra.', 'E4 · Llama 3.2 3B + Repair');
   s.addText('Hạ tầng dùng chung: ứng dụng FastAPI/React với chế độ so sánh, phục vụ qua Ollama/MLX; đánh giá vòng chung trên 25 đề cố định, chấm mù bằng cùng một giám khảo Gemma.',
     { x: 0.44, y: 6.5, w: 12.4, h: 0.6, fontFace: F, fontSize: 12.5, italic: true, color: C.gray, align: 'center' });
 }
@@ -273,7 +273,7 @@ eArch('E1', 'Llama 30M/60M từ đầu', {
   flow: 'Học: gradient chỉ dồn vào token truyện sau <|story|>; Sinh: nối token tự hồi quy tới khi gặp <|end|>.',
 });
 eProg('E1', 'Llama 30M/60M từ đầu',
-  'Bốn giai đoạn: chẩn đoán under-training, cấp đủ token, can thiệp phân bố dữ liệu, rồi mở rộng quy mô để kiểm chứng.',
+  'Bốn giai đoạn: chẩn đoán mô hình chưa được huấn luyện đủ, tăng ngân sách token, can thiệp phân bố dữ liệu, rồi mở rộng quy mô để kiểm chứng.',
   [
     ['v1', 'Cố ý giới hạn dữ liệu (150k) để chẩn đoán; judge 2,50 — under-training.'],
     ['Phase 1', 'Tăng token (400k × 4 epoch); loss 1,447, judge 6,00. Đúng chẩn đoán.'],
@@ -286,7 +286,7 @@ eProg('E1', 'Llama 30M/60M từ đầu',
 // --- slide bổ sung: chín bước phương pháp M1 -> M9 (SƠ ĐỒ KHỐI) ---
 {
   const s = mkSlide(); chrome(s, 'E1 · Llama 30M/60M từ đầu — Chín bước phương pháp (M1 đến M9)', { eyebrow: 'TINYSTORY-VN · E1' });
-  s.addText('Mạch xuyên suốt: chẩn đoán bệnh, chữa bằng dữ liệu, đo cho chuẩn, thử các đường tắt hậu huấn luyện (đều thất bại), rồi kết luận phải đầu tư pretraining và mở rộng để xác nhận.',
+  s.addText('Tiến trình: chẩn đoán, can thiệp bằng dữ liệu, đo lường, thử các hướng hậu huấn luyện, rồi mở rộng quy mô để kiểm chứng.',
     { x: 0.44, y: 1.68, w: 12.45, h: 0.45, fontFace: F, fontSize: 12.5, italic: true, color: C.gray, lineSpacingMultiple: 1.0 });
   // toạ độ lưới 3x3
   const cX = [0.44, 4.74, 9.04], rY = [2.35, 3.98, 5.61];
@@ -333,7 +333,7 @@ eProg('E1', 'Llama 30M/60M từ đầu',
     { text: '■ ', options: { color: C.teal } }, { text: 'Xây nền tảng    ', options: { color: C.gray } },
     { text: '■ ', options: { color: C.blue } }, { text: 'Chẩn đoán & chữa bằng dữ liệu    ', options: { color: C.gray } },
     { text: '■ ', options: { color: C.gray } }, { text: 'Đo lường    ', options: { color: C.gray } },
-    { text: '■ ', options: { color: C.orange } }, { text: 'Đường tắt (thất bại)    ', options: { color: C.gray } },
+    { text: '■ ', options: { color: C.orange } }, { text: 'Các hướng hậu huấn luyện    ', options: { color: C.gray } },
     { text: '■ ', options: { color: C.green } }, { text: 'Kết luận & mở rộng', options: { color: C.gray } },
   ], { x: 0.44, y: 7.02, w: 12.45, h: 0.3, fontFace: F, fontSize: 10, align: 'center' });
 }
@@ -365,7 +365,7 @@ eArch('E2', 'GPT-2 63M từ đầu', {
   flow: 'Học: nhận gradient trên token truyện sau <story>; Sinh: nối token truyện cho tới khi gặp </story>.',
 });
 eProg('E2', 'GPT-2 63M từ đầu',
-  'Chuỗi thí nghiệm nối tiếp theo giả thuyết: sửa tokenizer, bám trường đầu vào, rồi nhiều hướng nhằm tạo lập kế hoạch nhân quả.',
+  'Các thí nghiệm nối tiếp theo từng giả thuyết: sửa tokenizer, cải thiện bám trường, rồi thử các cách tạo kế hoạch nhân quả.',
   [
     ['V1–V3', 'Sửa ranh giới từ; khớp đủ hai trường 3%→55%; kết thúc sạch 0%→100%.'],
     ['V7–V10', 'Chưng cất plan+story, trộn replay nhân quả; giữ trôi chảy, causal-pass ~2%.'],
@@ -376,7 +376,7 @@ eProg('E2', 'GPT-2 63M từ đầu',
   fig('figures/tracks/e2_v10_causal_replay.png'),
   'V10 — replay nhân quả: loss validation nhân quả giảm 3,404→2,968 nhưng causal-pass giữ ở mức ~2%.');
 mFlow('E2 · GPT-2 63M từ đầu — Các bước phương pháp (V1 đến V16)', 'TINYSTORY-VN · E2',
-  'Mạch nghiên cứu: sửa biểu diễn token, bám trường đầu vào, rồi nhiều nỗ lực tạo lập kế hoạch nhân quả; kết luận loss thấp và matching cao vẫn không đủ để điều kiện chi phối diễn biến.',
+  'Tiến trình: sửa biểu diễn token, cải thiện bám trường, rồi thử nhiều cách tạo kế hoạch nhân quả; loss thấp và matching cao vẫn chưa đủ để điều kiện chi phối diễn biến.',
   [
     { id: 'V1-V2', title: 'Thiết kế lại tokenizer', cap: 'Metaspace BPE 16.384 xóa lỗi vỡ từ; Distinct-1 +33%, Self-BLEU giảm 64%.', phase: 'nền-tảng' },
     { id: 'V3', title: 'Điều kiện hóa có mask', cap: 'Khớp cả hai trường 3% lên 55%, kết thúc </story> 0% lên 100%, fluency 6,21.', phase: 'nền-tảng' },
@@ -416,7 +416,7 @@ eArch('E3', 'SmolLM2-135M + LoRA', {
   flow: 'Học: chỉ tích low-rank B·A cập nhật trên token truyện; Sinh: dự đoán tuần tự từng token theo điều kiện system + đề.',
 });
 eProg('E3', 'SmolLM2-135M + LoRA',
-  'Bốn cấu hình trên cùng nền, cùng dữ liệu và cùng ngân sách; chỉ đổi vị trí đặt adapter qua ba nhánh so với mô hình nền.',
+  'Bốn cấu hình dùng chung mô hình nền, dữ liệu và ngân sách; ba nhánh chỉ thay vị trí adapter để so với mô hình nền.',
   [
     ['Nền', 'Không adapter; PPL 9,52, điểm nội bộ 5,73 — mốc tham chiếu.'],
     ['A · q/v toàn tầng', '≈0,92M tham số; PPL 4,82, điểm 6,70; dẫn đầu sáng tạo và độ dễ đọc.'],
@@ -426,7 +426,7 @@ eProg('E3', 'SmolLM2-135M + LoRA',
   fig('figures/tracks/e3_train_dynamics.png'),
   'Động lực huấn luyện: cross-entropy thật trên token truyện; thứ hạng hội tụ C < A < B trùng thứ hạng perplexity held-out.');
 mFlow('E3 · SmolLM2-135M + LoRA — Các bước phương pháp', 'TINYSTORY-VN · E3',
-  'Mạch nghiên cứu: đóng băng mô hình nền, thiết kế ablation một biến về vị trí adapter, huấn luyện ba nhánh cùng điều kiện rồi so sánh perplexity và giám khảo nội bộ để tìm vị trí tối ưu.',
+  'Tiến trình: đóng băng mô hình nền, thiết kế thí nghiệm loại trừ về vị trí adapter, huấn luyện ba nhánh cùng điều kiện rồi so sánh perplexity và điểm giám khảo nội bộ.',
   [
     { id: 'B1', title: 'Chọn nền đóng băng', cap: 'SmolLM2-135M, 30 tầng, đóng băng toàn bộ trọng số; chỉ học adapter.', phase: 'nền-tảng' },
     { id: 'B2', title: 'Định dạng sinh có điều kiện', cap: 'system + đề 5 trường → truyện, loss chỉ trên token truyện (mask -100), seq 512.', phase: 'nền-tảng' },
@@ -466,18 +466,18 @@ eArch('E4', 'Llama 3.2 3B + Repair', {
   flow: 'Sinh assistant tối đa 400 token; validator soát, nếu lỗi nặng sinh lại tối đa 500 token rồi chuẩn hóa một dòng Moral.',
 });
 eProg('E4', 'Llama 3.2 3B + Repair',
-  'Đánh giá nhân lực trên năm cấu hình, và bóc tách đóng góp của bước sửa lỗi so với đầu ra thô của mô hình nền.',
+  'Đánh giá bằng người trên năm cấu hình, đồng thời bóc tách đóng góp của bước sửa lỗi so với đầu ra thô của mô hình nền.',
   [
-    ['Base + Repair', 'Điểm nhân lực 4,32/5 — cao nhất trong các cấu hình E4.'],
+    ['Base + Repair', 'Điểm do người chấm 4,32/5 — cao nhất trong các cấu hình E4.'],
     ['Strict + post', 'Prompt nghiêm ngặt kèm hậu xử lý: 4,20/5.'],
     ['Fluency-SFT', 'SFT 10k mẫu độ trôi chảy: 3,84/5.'],
     ['Repair (bóc tách)', 'Bài học đúng nguyên văn 20%→100%; nhất quán yêu cầu 9,00→9,64.'],
     ['Nhân quả', 'trait→choice 92%, choice→outcome 100% — repair không làm thay đổi.'],
   ],
   fig('figures/tracks/e4_human_eval.png'),
-  'Đánh giá nhân lực năm cấu hình E4: Base + Repair đạt điểm cao nhất về độ tin cậy tổng thể.');
+  'Đánh giá bằng người trên năm cấu hình E4: Base + Repair đạt điểm cao nhất về độ tin cậy tổng thể.');
 mFlow('E4 · Llama 3.2 3B + Repair — Các bước phương pháp', 'TINYSTORY-VN · E4',
-  'Mạch nghiên cứu: thử fine-tune rồi chuyển sang kiểm soát đầu ra (prompt, hậu xử lý, repair), đánh giá nhân lực bảy cấu hình và bóc tách riêng đóng góp của bước repair.',
+  'Tiến trình: thử fine-tune, rồi chuyển sang kiểm soát đầu ra (prompt, hậu xử lý, repair), đánh giá bằng người trên bảy cấu hình và bóc tách riêng đóng góp của bước repair.',
   [
     { id: 'B1', title: 'Chọn mô hình nền 3B', cap: 'Llama 3.2 3B Instruct Q4_K_M, 3,21 tỷ tham số, ngữ cảnh runner 2.048 token.', phase: 'nền-tảng' },
     { id: 'B2', title: 'Thử fine-tune SFT/LoRA', cap: 'SFT-clean-3k và Failure-LoRA 300 mẫu đều âm, không sửa được dòng bài học.', phase: 'nền-tảng' },
@@ -485,7 +485,7 @@ mFlow('E4 · Llama 3.2 3B + Repair — Các bước phương pháp', 'TINYSTORY-
     { id: 'B4', title: 'Hậu xử lý chuẩn hóa Moral', cap: 'Chuẩn hóa đúng một dòng Moral; exact-moral và clean-ending lên 1,00.', phase: 'can-thiệp' },
     { id: 'B5', title: 'Pipeline Base + Repair', cap: 'Sinh, validate rồi repair; chỉ gọi lại mô hình khi validator báo lỗi nghiêm trọng.', phase: 'can-thiệp' },
     { id: 'B6', title: 'Kiểm chứng Fluency-SFT 10k', cap: 'SFT 10.000 mẫu đã lọc vẫn cho Moral rỗng 0,76 và clean-ending 0,12, không cải thiện.', phase: 'phát-hiện' },
-    { id: 'B7', title: 'Đánh giá nhân lực 7 cấu hình', cap: 'Base + Repair đạt 4,32/5, đứng đầu về bám đề, cấu trúc, bài học và an toàn.', phase: 'phát-hiện' },
+    { id: 'B7', title: 'Đánh giá bằng người trên 7 cấu hình', cap: 'Base + Repair đạt 4,32/5, đứng đầu về bám đề, cấu trúc, bài học và an toàn.', phase: 'phát-hiện' },
     { id: 'B8', title: 'Bóc tách đóng góp repair', cap: 'Bài học nguyên văn 20% lên 100%, nhất quán 9,00 lên 9,64; nhân quả giữ 92% và 100%.', phase: 'phát-hiện' },
     { id: 'B9', title: 'Kết luận toàn hệ thống', cap: 'Vòng chung 9,20/10, đứng đầu năm hướng; 5/25 đề phải gọi mô hình lần hai.', phase: 'kết-luận' },
   ]);
@@ -494,7 +494,7 @@ eResult('E4', 'Llama 3.2 3B + Repair',
    ['20% → 100%', 'Tỷ lệ bài học đúng nguyên văn sau bước repair, không đổi hai liên kết nhân quả.', C.blue],
    ['5 / 25', 'Số đề mà pipeline phải gọi mô hình lần hai; chi phí của độ tin cậy.', C.gray]],
   'Kiểm soát khi sinh hiệu quả hơn các lần fine-tune đã thử. Quan hệ nhân quả giữa điều kiện và diễn biến đã có sẵn trong đầu ra thô của mô hình nền 3B; repair chủ yếu sửa hợp đồng đầu ra và các sai lệch cục bộ.',
-  ASSET + '/automatic_reliability.png',
+  ASSET + '/automatic_reliability.svg',
   'Độ tin cậy tự động: tỷ lệ đạt các ràng buộc định dạng trước và sau bước repair.',
   'Giới hạn: kho mã không lưu trainer_state của các lần SFT nên chưa tái lập được đường huấn luyện.');
 
@@ -506,7 +506,7 @@ eArch('E5', 'Llama 3.2 3B + QLoRA', {
     'Sau huấn luyện merge adapter vào nền và lượng tử hóa GGUF Q4_K_M (~2,0GB) để phục vụ Ollama.',
   ],
   rationale: 'QLoRA nạp nền 4-bit và chỉ huấn luyện 0,75% tham số, cho phép fine-tune và chạy cục bộ Llama 3B trong ngân sách GPU phổ thông.',
-  config: [['Nền (sau merge)', '3,21B'], ['Tham số LoRA', '24,31M (0,75%)'], ['Khối / hidden', '28 / 3.072'], ['Attention', 'GQA 24 q / 8 kv'], ['Artifact', 'GGUF Q4_K_M']],
+  config: [['Nền (sau merge)', '3,21B'], ['Tham số LoRA', '24,31M (0,75%)'], ['Khối / hidden', '28 / 3.072'], ['Attention', 'GQA 24 q / 8 kv'], ['Đầu ra', 'GGUF Q4_K_M']],
   train: {
     loss: 'Cross-entropy token kế tiếp, áp trên toàn bộ chuỗi chat đã đóng gói (không riêng token truyện).',
     optimizer: 'AdamW 8-bit, LR đỉnh 2e-4 giảm tuyến tính, warmup 5 bước, weight decay 0,001; LoRA r=16, alpha=16, dropout 0.',
@@ -528,7 +528,7 @@ eProg('E5', 'Llama 3.2 3B + QLoRA',
   fig('figures/tracks/e5_training_curves.png'),
   'Đường huấn luyện QLoRA: train loss giảm nhanh trong epoch đầu rồi phẳng dần qua ba epoch.');
 mFlow('E5 · Llama 3.2 3B + QLoRA — Các bước phương pháp', 'TINYSTORY-VN · E5',
-  'Mạch nghiên cứu: nạp nền 3B ở 4-bit, cấu hình QLoRA gọn trên attention và MLP, huấn luyện hai lần Fable-300 và Fable-1000, rồi lượng tử hóa GGUF để phục vụ và đánh giá.',
+  'Tiến trình: nạp nền 3B ở 4-bit, cấu hình QLoRA gọn trên attention và MLP, huấn luyện hai lần Fable-300 và Fable-1000, rồi lượng tử hóa GGUF để chạy và đánh giá.',
   [
     { id: 'B1', title: 'Chọn nền 3B ở 4-bit', cap: 'Llama 3.2 3B Instruct nạp 4-bit qua Unsloth, chat template, ngữ cảnh 2.048.', phase: 'nền-tảng' },
     { id: 'B2', title: 'Cấu hình QLoRA rank 16', cap: 'r=16, α=16, dropout 0 trên toàn bộ attention + MLP; 24,31M tham số, tức 0,75%.', phase: 'nền-tảng' },
@@ -543,7 +543,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
   [['8,44', 'Điểm vòng chung — mạnh nhất trong các mô hình sinh trực tiếp một lượt.', C.green],
    ['10 / 10', 'Số cặp counterfactual đổi diễn biến đúng hướng khi thay một điều kiện (9,40/10).', C.blue],
    ['0,75%', 'Tỷ lệ tham số được huấn luyện; 339 bước, 47,3 phút trên một GPU T4.', C.gray]],
-  'Với chi phí thích nghi tối thiểu, QLoRA tạo được một artifact sinh trực tiếp dùng điều kiện để thay đổi diễn biến. Đây là bằng chứng mạnh nhất trong nhóm về khả năng kết hợp điều kiện ngay trong một lượt sinh.',
+  'Với chi phí thích nghi tối thiểu, QLoRA tạo được một mô hình sinh trực tiếp biết dùng điều kiện để thay đổi diễn biến. Đây là bằng chứng mạnh nhất trong nhóm về khả năng kết hợp điều kiện ngay trong một lượt sinh.',
   null, null,
   'Giới hạn: chưa cô lập ảnh hưởng của mô hình nền so với QLoRA, hoặc một so với ba epoch; loss chấm trên toàn chuỗi chat, không riêng token truyện.');
 
@@ -588,9 +588,9 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
     'Khoảng tin cậy 95% dùng bootstrap 10.000 lần theo 25 đề; so sánh bắt cặp lấy điểm tổng trên cùng đề (E4 − E5 = +0,76 [0,39; 1,17]).',
     'Đây là lượt chấm mới, tách khỏi giám khảo nội bộ (Qwen của E1/E3, Gemma local của E2); điểm nội bộ không nhập vào bảng chung.',
   ]).map(o => ({ ...o, options: { ...o.options, fontSize: 11.5 } })), { x: 6.95, y: 4.42, w: 5.95, h: 2.0 });
-  // dải dưới: artifact và môi trường
+  // dải dưới: mô hình và môi trường
   s.addShape(p.ShapeType.roundRect, { x: 0.44, y: 6.5, w: 12.0, h: 0.5, rectRadius: 0.05, fill: { color: C.panel }, line: { color: C.line, width: 0.75 } });
-  s.addText([{ text: 'Artifact vòng chung:  ', options: { bold: true, color: C.teal } },
+  s.addText([{ text: 'Mô hình chạy vòng chung:  ', options: { bold: true, color: C.teal } },
     { text: 'E1/E5 GGUF qua llama.cpp · E2 MLX-LM · E3 Transformers/PEFT · E4 llama.cpp kèm validator/repair; chạy trên Apple M4 Pro 24 GiB.', options: { color: C.ink } }],
     { x: 0.62, y: 6.5, w: 11.7, h: 0.5, fontFace: F, fontSize: 10.5, valign: 'middle' });
 }
@@ -645,7 +645,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
     'E4 là hệ thống đáng tin cậy nhất khi nội dung gốc đã đúng ngữ nghĩa; E5 là mô hình sinh trực tiếp mạnh nhất về khả năng kết hợp điều kiện trong một lượt.',
     'Hai kết quả dẫn tới hai ưu tiên thiết kế khác nhau: cải thiện mô hình/dữ liệu/mục tiêu điều kiện hóa khi diễn biến chưa bị điều kiện chi phối; dùng lớp repair khi diễn biến đã đúng nhưng định dạng chưa ổn định.',
   ]), { x: 0.7, y: 4.0, w: 11.9, h: 2.3 });
-  s.addText('Hạn chế: 25 đề, một seed, một giám khảo. Bước tiếp theo: chấm nhân lực chung, nhiều seed, định dạng prompt thống nhất và thí nghiệm loại trừ base–checkpoint bắt cặp.',
+  s.addText('Hạn chế: 25 đề, một seed, một giám khảo. Bước tiếp theo: đánh giá bằng người trên cùng bộ đề, chạy nhiều seed, thống nhất định dạng prompt và làm thí nghiệm loại trừ base–checkpoint bắt cặp.',
     { x: 0.7, y: 6.5, w: 11.9, h: 0.6, fontFace: F, fontSize: 12.5, italic: true, color: C.gray });
   s.addText(String(PAGE), { x: 12.5, y: 6.95, w: 0.5, h: 0.3, fontFace: F, fontSize: 10.5, color: C.gray, align: 'right' });
 }

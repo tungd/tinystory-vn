@@ -15,12 +15,12 @@ toc-depth: 2
 ## Tóm tắt
 
 **Mục tiêu.** Nghiên cứu đánh giá các cách xây dựng hệ thống sinh truyện ngụ ngôn tiếng
-Anh theo yêu cầu, có thể chạy cục bộ và đáp ứng năm trường đầu vào: nhân vật, bối cảnh,
-thử thách, kết quả và bài học đạo đức.
+Anh có điều kiện theo năm trường và có thể chạy cục bộ: nhân vật, bối cảnh, thử thách,
+kết quả và bài học đạo đức.
 
 **Phương pháp.** Nghiên cứu khảo sát ba nhóm phương pháp: (i) tiền huấn luyện mô hình
 từ trạng thái khởi tạo ngẫu nhiên; (ii) PEFT/QLoRA trên mô hình đã tiền huấn luyện; và
-(iii) kiểm soát đầu ra bằng kiểm tra hợp lệ, hậu xử lý và sửa lỗi theo điều kiện. Trong
+(iii) kiểm soát đầu ra bằng kiểm tra tính hợp lệ, hậu xử lý và sửa lỗi theo điều kiện. Trong
 từng hướng, kết quả đánh giá nội bộ chỉ dùng để chọn cấu hình đại diện; không dùng để
 so sánh giữa các hướng vì tập đề và giám khảo khác nhau. Năm hệ thống đại diện sau đó
 được chạy trên cùng 25 đề, tạo ra 125 truyện và được chấm mù bằng
@@ -35,7 +35,7 @@ dữ liệu tiền huấn luyện, giao diện điều kiện, kỹ thuật tinh
 nghiệm loại trừ cho thấy nguyên nhân cụ thể hơn. Khi tăng số trường đầu vào từ hai lên
 năm, E5 tăng độ phủ lên 3,68/5 và điểm nhất quán với chuỗi sự kiện được yêu cầu lên
 7,28/10. E1 chỉ tăng độ phủ 0,44/5 và vẫn ở gần mức sàn; điểm nhất quán nội tại gần
-như không đổi. Điều này cho thấy mô hình có thể tạo ra một câu chuyện tự nó hợp lý
+như không đổi. Điều này cho thấy mô hình có thể tạo ra một câu chuyện tự thân hợp lý
 nhưng không thực sự dùng đề bài. Trong 10 cặp counterfactual, E5 điều chỉnh lựa chọn
 hoặc cách giải quyết phù hợp với thay đổi về tính cách hay kết quả ở cả 10 cặp, so với
 1/10 của E1. Với E4, repair đưa tỷ lệ bài học đúng nguyên văn từ 20% lên 100% và tăng
@@ -55,7 +55,7 @@ nội dung gốc đã đúng về mặt ngữ nghĩa. Hai kết quả này dẫn
 nhau: nếu truyện chưa dùng điều kiện để chi phối diễn biến, cần cải thiện mô hình, dữ
 liệu hoặc mục tiêu huấn luyện theo điều kiện; nếu diễn biến đã đúng nhưng định dạng và
 bài học chưa ổn định, repair là lớp kiểm soát phù hợp. Kết luận này chỉ áp dụng cho tập
-kiểm thử hiện tại và chưa cho phép xác định một ngưỡng tham số có tính phổ quát cho năng
+kiểm thử hiện tại và chưa cho phép suy ra một ngưỡng số tham số áp dụng rộng rãi cho năng
 lực suy luận nhân quả.
 
 ## 1. Giới thiệu
@@ -90,7 +90,7 @@ vào có điều kiện:
 - E2 sử dụng `Nhân vật` và `Bài học`, phù hợp với định dạng huấn luyện của V16;
 - E1, E3, E4 và E5 sử dụng năm trường `Nhân vật`, `Bối cảnh`, `Thử thách`, `Kết quả` và `Bài học`.
 
-Ứng dụng dùng chung gồm FastAPI, React và lớp phục vụ Ollama/MLX; hỗ trợ truyền kết quả
+Hạ tầng dùng chung gồm FastAPI, React và lớp phục vụ Ollama/MLX; hỗ trợ truyền kết quả
 theo thời gian thực và chế độ so sánh. Mỗi hướng có một hệ thống đại diện, được đăng ký
 như một backend riêng để kiểm tra khả năng vận hành trước khi đưa vào đánh giá.
 
@@ -151,7 +151,7 @@ các lần chạy thực tế với thông tin chỉ có trong mô tả cấu h�
 
 | Cấu hình | Dữ liệu và cách chia | Cấu hình huấn luyện | Đầu ra do mô hình sinh |
 |---|---|---|---|
-| E1 · Lê Hải Triều (20252611M) | có nhật ký xây dựng corpus | có script và nhật ký | mẫu chạy cục bộ + 25 lần chạy trong vòng chung |
+| E1 · Lê Hải Triều (20252611M) | có nhật ký xây dựng corpus | có script và nhật ký | mẫu chạy cục bộ + 25 đầu ra trong vòng chung |
 | E2 · Đào Đức Tùng (20252612M) | có manifest và corpus đã lưu | có manifest V16, mã PyTorch và wrapper Colab | 100 đầu ra cục bộ + 25 đầu ra trong vòng chung |
 | E3 · Nguyễn Công Thanh (20252610M) | có mô tả seed/cách chia | có cấu hình + base/best đã gộp và xuất GGUF | trích đoạn chạy cục bộ + 25 đầu ra trong vòng chung |
 | E4 · Nguyễn Thị Phương Liên (20252130M) | có manifest cho 300/10k | công thức Failure-LoRA có tài liệu; Drive có bốn GGUF | CSV cục bộ + 25 đầu ra trong vòng chung, gồm bản thô/bản repair |
@@ -182,7 +182,7 @@ Colab bằng PyTorch và Hugging Face Transformers. Trong `feat/td`,
 `scripts/train_v16.py` dùng `GPT2Config` và `GPT2LMHeadModel` cho pha tiền huấn luyện,
 sau đó dùng `AutoModelForCausalLM` và `Trainer` cho các pha điều kiện hóa và nhân quả;
 `scripts/colab_v16_train.py` điều phối ba pha trên máy Colab. Sau khi huấn luyện,
-checkpoint Hugging Face được chuyển thành artifact MLX để phục vụ local; MLX không phải
+checkpoint Hugging Face được chuyển thành artifact MLX để chạy cục bộ; MLX không phải
 framework huấn luyện V16.
 
 Đoạn mã dưới đây dùng `LlamaConfig` và `GPT2Config` để tóm tắt các kích thước cốt lõi
@@ -239,7 +239,7 @@ Khi đọc kết quả chung, cần lưu ý hai khác biệt về định dạng
 với `<|story|>` nhưng runner chung truyền trực tiếp đề năm trường; E3 được huấn luyện với
 `system_message + prompt` nhưng runner chung chỉ truyền phần đề. E2, E4 và E5 được chạy
 theo đúng định dạng đầu vào của artifact đại diện. Các khác biệt này không làm thay đổi
-kiến trúc mô hình nhưng có thể ảnh hưởng điểm tuân thủ.
+kiến trúc mô hình nhưng có thể ảnh hưởng đến điểm tuân thủ.
 
 ### 2.2 E1 — Llama 30M/60M huấn luyện từ đầu — Lê Hải Triều (20252611M)
 
@@ -253,8 +253,9 @@ sánh các biến thể E1.
 `-100`; hàm mất mát cross-entropy chỉ được tính trên truyện và token kết thúc. Bộ lọc giữ
 truyện 60–320 từ. Slot dropout tạo các tập con điều kiện trong quá trình huấn luyện. Tokenizer BPE
 12.000 token được huấn luyện riêng để giảm chi phí embedding. Phase 1 dùng 400.000
-truyện; Phase 2 giữ cùng quy mô nhưng thay phân bố dữ liệu. Lần chạy 60M lọc và loại trùng
-toàn bộ nguồn dữ liệu còn 2.341.231 truyện, tương đương 934M token, không lặp lại epoch.
+truyện; Phase 2 giữ cùng quy mô nhưng thay phân bố dữ liệu. Ở lần chạy 60M, sau khi lọc
+và loại trùng toàn bộ nguồn dữ liệu, còn 2.341.231 truyện, tương đương 934M token, không
+lặp lại epoch.
 
 **Cấu hình mô hình.**
 
@@ -323,9 +324,9 @@ cũng được so với truyện thật: Distinct-2 lệch khoảng 4%, Self-BLE
 
 ![Đa dạng, mức lặp và độ dễ đọc của truyện sinh so với truyện thật.](trieulh/report/figures/06_intrinsic_quality.png){width=86%}
 
-Điểm judge nội bộ tăng theo ba loại can thiệp khác nhau: ngân sách token tạo mức tăng
-lớn nhất ở 30M; sửa decoding tạo mức tăng nhỏ; thay phân bố dữ liệu cải thiện tiếp độ
-bám điều kiện và giảm khuôn mẫu.
+Điểm giám khảo nội bộ tăng theo ba kiểu can thiệp: ngân sách token tạo mức tăng lớn nhất
+ở 30M; sửa decoding tạo mức tăng nhỏ; thay phân bố dữ liệu tiếp tục cải thiện mức độ bám
+điều kiện và giảm khuôn mẫu.
 
 ![Điểm judge nội bộ qua các mốc E1.](trieulh/report/figures/11_score_progression.png){width=74%}
 
@@ -366,7 +367,7 @@ sách 60 bước. Distillation là can thiệp duy nhất tạo ra độ lệch 
 theo văn phong của teacher và làm giảm chất lượng. Ngược lại, Best-of-N không thay đổi
 phân bố; nó khai thác những mẫu tốt đã tồn tại và làm giảm phương sai lựa chọn.
 
-**Độ tin cậy của giám khảo nội bộ.** Cùng một checkpoint được chấm lại cho chênh lệch
+**Độ tin cậy của giám khảo nội bộ.** Khi chấm lại cùng một checkpoint, điểm dao động
 khoảng ±0,4 điểm ở n=15. Vì vậy, E1 quy ước rằng chênh lệch dưới 0,5 tại n=15 chưa đủ
 để kết luận và xác nhận các kết quả chính ở n=45 với seed bắt cặp. Quy tắc này khiến hai
 kết quả sơ bộ không còn được giữ: DPO tăng adherence và GRPO tăng 0,45 điểm.
@@ -375,7 +376,7 @@ kết quả sơ bộ không còn được giữ: DPO tăng adherence và GRPO t�
 
 **Kiểm tra trên ứng dụng.** Phase 1, Phase 2 và Phase 2+DPO được chạy ở hai chế độ:
 sinh tự do và sinh với đủ năm trường. Mỗi ô gồm bốn prompt, seed bắt cặp; đầu ra được
-chấm bởi giám khảo Qwen3-4B của ứng dụng và đọc độc lập thêm một lượt bằng Claude. Hai
+giám khảo Qwen3-4B của ứng dụng chấm và được Claude đọc độc lập thêm một lượt. Hai
 giám khảo cho cùng thứ tự tương đối. DPO thường tạo chuỗi giống Phase 2 trên phần lớn độ dài
 và chỉ rẽ nhánh ở đoạn cuối, phù hợp với kết luận rằng cập nhật này không dịch phân bố
 đáng kể.
@@ -401,8 +402,8 @@ thấp hơn ở 4 đề.
 | Prompt adherence | 7,87 | **9,11** | +1,24 |
 | Thắng / hòa / thua | — | — | 36 / 5 / 4 |
 
-Đây là phép so sánh dương rõ nhất trong E1, nhưng không phải một bóc tách đơn biến hoàn
-toàn: 60M đồng thời tăng số tham số, context và ngân sách dữ liệu. Kết quả chỉ xác nhận
+Đây là phép so sánh dương rõ nhất trong E1, nhưng không phải một thí nghiệm loại trừ chỉ
+thay một biến: 60M đồng thời tăng số tham số, context và ngân sách dữ liệu. Kết quả chỉ xác nhận
 rằng gói scale-up tiền huấn luyện hiệu quả hơn các cấu hình hậu huấn luyện đã thử; nó
 không định lượng riêng đóng góp của từng thành phần.
 
@@ -544,7 +545,7 @@ có thực sự chi phối diễn biến truyện hay không.
 nhưng chuyển 103.063 mẫu sang mục tiêu chỉ tính loss trên phần truyện. Trên 100 đề,
 khớp chính xác character tăng từ 18% lên 65%, khớp chính xác moral từ 17% lên 86%, khớp cả hai từ 3% lên
 55%, và tỷ lệ sinh `</story>` tăng từ 0% lên 100%. Điểm chấm nội bộ ban đầu tăng
-thể từ 5,06 lên 6,78. Các chỉ số này cho thấy prompt masking giúp mô hình sao chép đúng
+từ 5,06 lên 6,78. Các chỉ số này cho thấy prompt masking giúp mô hình sao chép đúng
 hai trường và dừng sạch hơn; chúng chưa cho biết diễn biến có chứng minh bài học hay
 không.
 
@@ -713,7 +714,7 @@ phần điều kiện, `fable` là phần truyện; mọi token điều kiện b
 truyện và token kết thúc. Mỗi nhánh học 2 epoch với ngữ cảnh 512 token. Tập giữ lại cố định gồm
 500 hàng.
 
-**Kiến trúc và LoRA.** SmolLM2-135M là mô hình decoder kiểu Llama với chính xác 134.515.008
+**Kiến trúc và LoRA.** SmolLM2-135M là mô hình decoder kiểu Llama với đúng 134.515.008
 tham số: embedding/output head dùng chung vocabulary 49.152 token, 30 khối hidden 576,
 GQA 9 query head/3 KV head và MLP SwiGLU `576 → 1.536 → 576`. Mô hình hỗ trợ ngữ cảnh
 8.192 token, còn thí nghiệm cố định chuỗi ở 512 token. Mô hình nền được đóng băng; LoRA chỉ
@@ -754,7 +755,7 @@ cùng bộ đề (§4), thay vì đặt cạnh các perplexity khác tokenizer.
 
 ![E3: thí nghiệm loại trừ vị trí LoRA theo perplexity trên tập giữ lại (trái, thấp hơn tốt hơn) và điểm giám khảo nội bộ Qwen2.5-7B (phải, cao hơn tốt hơn); nhánh C dẫn đầu cả hai thước đo. Màu mỗi nhánh khớp với hình động lực huấn luyện phía trên.](figures/tracks/e3_lora_ablation.png){width=96%}
 
-PPL và điểm chấm nội bộ Qwen2.5-7B (n=50/nhánh) cùng cho thứ tự C > A > B > nền. So
+PPL và điểm chấm nội bộ Qwen2.5-7B (n=50/nhánh) đều cho cùng thứ tự C > A > B > nền. So
 sánh A/B cho thấy phủ toàn bộ tầng tốt hơn chỉ đặt ở tầng cuối. So sánh A/C cho thấy mở
 rộng sang MLP quan trọng hơn chỉ tăng mô-đun chú ý. Tập sinh chẩn đoán có 100 truyện cho mỗi
 nhánh với temperature 0,8, top-p 0,9, repetition penalty 1,3; điểm chấm dùng 50 truyện đầu,
@@ -806,7 +807,7 @@ Bảy cấu hình trên Llama 3.2 3B được so sánh: mô hình nền, SFT-cle
 Fluency-SFT 10k.
 
 **Kiến trúc và giao diện sinh.** Hệ thống đại diện dùng trực tiếp
-Llama 3.2 3B Instruct Q4_K_M, gồm chính xác 3.212.749.824 tham số, 28 khối hidden
+Llama 3.2 3B Instruct Q4_K_M, gồm đúng 3.212.749.824 tham số, 28 khối với kích thước ẩn
 3.072, GQA 24 query
 head/8 KV head, MLP SwiGLU 8.192 và Llama BPE 128.256 token. Mô hình gốc hỗ trợ ngữ cảnh
 131.072 token nhưng bộ chạy chỉ dùng 2.048 token. Đầu vào gồm system prompt về truyện trẻ em và
@@ -877,9 +878,9 @@ chung, hệ thống đạt 9,20/10 và đứng đầu năm hướng. Các kết 
 soát tại thời điểm suy luận tăng độ tin cậy mà vẫn giữ năng lực kể chuyện của mô hình
 nền.
 
-Ba thử nghiệm fine-tuning cho thấy những kết quả không thuận lợi. SFT-clean-3k làm giảm
-độ trôi chảy, cấu trúc và chất lượng kết thúc; Failure-LoRA 300 không sửa được lỗi
-footer mục tiêu; Fluency-SFT trên 10.000 mẫu đã lọc vẫn có `Moral:` rỗng ở 76% đầu ra
+Ba thử nghiệm fine-tuning đều cho kết quả không thuận lợi. SFT-clean-3k làm giảm
+độ trôi chảy, cấu trúc và chất lượng kết thúc; Failure-LoRA 300 không sửa được dòng bài học
+mục tiêu; Fluency-SFT trên 10.000 mẫu đã lọc vẫn có `Moral:` rỗng ở 76% đầu ra
 và chỉ đạt clean-ending 12%. Kích thước dữ liệu lớn hơn vì vậy không đủ nếu target
 format, phân bố độ dài hoặc template assistant chưa khớp chặt với giao diện sinh.
 Những kết quả này không chứng minh SFT hay LoRA kém hiệu quả nói chung; chúng cho thấy
@@ -895,7 +896,7 @@ tỷ lệ bài học đúng nguyên văn từ 20% lên 100%, nhưng trait→choi
 choice→outcome giữ 100%. Các liên kết cốt truyện đã tồn tại trong bản raw; repair chủ
 yếu thực thi hợp đồng đầu ra và sửa sai lệch cục bộ.
 
-Đóng góp của E4 vì vậy nằm ở cách phân bổ biện pháp theo loại lỗi: dùng hậu xử lý cho
+Đóng góp của E4 vì vậy nằm ở cách chọn biện pháp theo loại lỗi: dùng hậu xử lý cho
 ràng buộc cú pháp xác định, dùng validator + rewrite cho lỗi nội dung phát hiện được,
 và chỉ fine-tune khi có dữ liệu đủ mạnh để thay đổi hành vi phân bố. Đơn vị đánh giá
 phải là toàn bộ quy trình, không phải checkpoint nền. Kết luận còn bị giới hạn bởi 25
@@ -905,7 +906,7 @@ suy luận với các hệ thống sinh một lượt.
 
 ### 2.6 E5 — QLoRA và lượng tử hóa Llama 3.2 3B — Nguyễn Đình Lê Hoàng (20252737M)
 
-Áp dụng Unsloth QLoRA hạng 16 lên toàn bộ phép chiếu attention và MLP của
+Áp dụng QLoRA rank 16 qua Unsloth lên toàn bộ phép chiếu attention và MLP của
 Llama 3.2 3B, rồi so sánh một với ba epoch; artifact cuối được lượng tử hóa
 GGUF Q4_K_M.
 
@@ -926,7 +927,7 @@ tính loss trên completion, nên cross-entropy được áp dụng lên toàn b
 `q,k,v,o,gate,up,down`; Unsloth gradient checkpointing; batch 4 × accumulation 2 = 8;
 warmup 5 bước; LR đỉnh `2e-4`; fp16 hoặc bf16 tùy T4 hỗ trợ. Có 24.313.856 tham số được
 huấn luyện, tương đương 0,75% mô hình. Hai lần chạy cho phép xem xét ảnh hưởng của số epoch
-và kiểm tra đường xuất
+và kiểm tra quy trình xuất
 GGUF Q4_K_M → Ollama → chế độ So sánh:
 
 | Phiên bản | Chu kỳ | Bước | Thời gian | Mất mát huấn luyện cuối | Sản phẩm |
@@ -934,7 +935,7 @@ GGUF Q4_K_M → Ollama → chế độ So sánh:
 | Fable-300 | 1 | ~113 | ~15 phút | báo cáo thành viên: ~0,492 | GGUF Q4_K_M |
 | Fable-1000 | 3 | 339 | ~47 phút | báo cáo thành viên: 0,514 | GGUF Q4_K_M |
 
-**Diễn biến tối ưu qua ba epoch.** `trainer_state.json` ghi nhận cửa sổ loss giảm nhanh rồi phẳng:
+**Quá trình tối ưu qua ba epoch.** `trainer_state.json` ghi nhận cửa sổ loss giảm nhanh rồi phẳng:
 
 | Bước/epoch | Train loss window | LR | Validation loss |
 |---|---:|---:|---:|
@@ -960,7 +961,7 @@ epoch 2. Tuy nhiên, vì không có validation ở epoch 3 và không có traine
 cho run một epoch, các đường này không đủ để quy phần tăng chất lượng cho việc huấn
 luyện thêm hai epoch.
 
-**Kết luận E5.** Lần chạy ba epoch xác nhận tính khả thi của việc thích nghi và chạy cục bộ
+**Kết luận E5.** Lần chạy ba epoch cho thấy việc thích nghi và chạy cục bộ
 Llama 3.2 3B trong ngân sách phần cứng phổ thông. QLoRA chỉ cập nhật 24,31M tham số,
 tương đương 0,75% mô hình, hoàn tất 339 bước trong khoảng 47,3 phút trên Tesla T4; sau
 merge, artifact GGUF Q4_K_M khoảng 2GB chạy được bằng Ollama. Loss huấn luyện giảm mạnh ở
@@ -968,7 +969,7 @@ merge, artifact GGUF Q4_K_M khoảng 2GB chạy được bằng Ollama. Loss hu�
 epoch 2 và chưa cho thấy phân kỳ tại mốc được lưu. Đây là bằng chứng về quá trình tối ưu ổn định
 và khả năng đóng gói, không tự nó là bằng chứng về chất lượng truyện.
 
-Thiết kế một so với ba epoch chưa tạo thành một thí nghiệm loại trừ đầy đủ. Artifact không giữ
+So sánh một và ba epoch chưa tạo thành một thí nghiệm loại trừ đầy đủ. Artifact không giữ
 trainer state của run một epoch, run ba epoch không có validation tại bước 339, và báo
 cáo thành viên không lưu điểm chất lượng bắt cặp giữa hai checkpoint. Vì vậy không thể
 quy điểm cao của artifact cuối cho hai epoch bổ sung hoặc kết luận ba epoch tốt hơn một
@@ -976,7 +977,7 @@ epoch. Tương tự, vòng chung không có một bản Llama 3.2 3B chưa QLoRA
 chính codec E5; đóng góp riêng của adapter so với năng lực đã có của model nền chưa
 được cô lập.
 
-Dù vậy, chất lượng cấp hệ thống của artifact cuối được xác nhận trực tiếp. E5 đạt
+Dù vậy, chất lượng ở cấp hệ thống của artifact cuối được xác nhận trực tiếp. E5 đạt
 8,44/10 trên 25 đề, là mô hình sinh một lượt tốt nhất và chỉ thấp hơn pipeline E4 có
 validator/repair 0,76 điểm. Khi chuyển từ hai lên năm trường, độ phủ tăng 3,68/5 và
 điểm nhất quán với chuỗi sự kiện được yêu cầu tăng 7,28/10. Trong mười cặp
@@ -1085,7 +1086,7 @@ hay logic “frog climbed trees”. Điểm thủ công 4,32 là trung bình to�
 >
 > Moral: Careful courage makes room for useful change.
 
-Đây là output thật của checkpoint, không phải target trong `val_data.json`. Truyện có
+Đây là đầu ra thật của checkpoint, không phải target trong `val_data.json`. Truyện có
 240 từ trung bình trên 25 đề global; riêng GJ20 có 236 từ và được Gemma chấm 9,00.
 
 ## 3. Kết quả theo câu hỏi nghiên cứu
@@ -1100,21 +1101,21 @@ chất lượng thích nghi.
 
 Do đó, tiền huấn luyện từ đầu và PEFT không phải hai phương pháp thay thế trực tiếp:
 phương pháp thứ nhất xây dựng biểu diễn nền, còn phương pháp thứ hai thích nghi biểu diễn
-đã có. Điểm nội bộ giữa hai nhóm không có tính so sánh khi tokenizer, tập đề và giám
+đã có. Điểm nội bộ giữa hai nhóm không thể so sánh trực tiếp khi tokenizer, tập đề và giám
 khảo khác nhau.
 
 ### 3.2 RQ2a — Ảnh hưởng của dữ liệu và tối ưu hóa
 
 - E2 sửa bộ tách từ rồi tăng tiền huấn luyện; dữ liệu nhân quả từ mô hình giáo viên vẫn
-  không tạo được năng lực suy luận.
-- E1 vừa tăng token vừa sửa chế độ dữ liệu; mở rộng lên toàn bộ TF1 là can thiệp dương
-  rõ nhất.
+  chưa tạo được năng lực suy luận.
+- E1 vừa tăng token vừa sửa chế độ dữ liệu; mở rộng lên toàn bộ TF1 là can thiệp mang lại
+  cải thiện rõ nhất.
 - E4 ghi nhận rằng 10k hàng đã lọc vẫn có thể học sai định dạng bài học.
 - E3 giữ dữ liệu cố định để cô lập vị trí bộ chuyển đổi.
 - E5 dùng 1k hàng và thay số chu kỳ, nhưng chưa có kết luận chất lượng để tách thiếu
   khớp với quá khớp.
 
-Kết quả không hỗ trợ việc dùng số hàng làm đại diện trực tiếp cho chất lượng tín hiệu
+Kết quả không hỗ trợ việc dùng số lượng mẫu làm đại diện trực tiếp cho chất lượng tín hiệu
 huấn luyện. Các báo cáo cần chỉ rõ định dạng, vùng tính loss, độ phủ trường và phân bố
 lỗi để phân biệt hiệu ứng dữ liệu với hiệu ứng tối ưu.
 
@@ -1422,8 +1423,8 @@ cặp, trong khi E1 chỉ đạt 1/10. Kết quả này xác nhận độ nhạy
 trong tập kiểm thử, nhưng chưa chứng minh suy luận nhân quả ngoài miền.
 
 Repair của E4 tác động lên một thành phần khác. Nó chuẩn hóa bài học và cải thiện nhẹ
-điểm nhất quán, trong khi hai liên kết trait→choice và choice→outcome đã có trong bản
-ở bản thô và không đổi sau repair. Vì vậy cần báo cáo riêng năng lực sinh của checkpoint,
+điểm nhất quán, trong khi hai liên kết trait→choice và choice→outcome đã có trong bản thô
+và không đổi sau repair. Vì vậy cần báo cáo riêng năng lực sinh của checkpoint,
 độ tin cậy của quy trình và chi phí gọi mô hình bổ sung.
 
 ### 5.2 Hàm ý cho việc lựa chọn hệ thống
@@ -1454,7 +1455,7 @@ ngôn ngữ khác hoặc năng lực suy luận nhân quả tổng quát.
 
 **Tính tái lập.** E4 và E3 thiếu trainer state, đường loss/LR và thời gian huấn luyện;
 E5 thiếu eval cuối epoch 3. Những khoảng trống này không ảnh hưởng việc chạy artifact
- cuối nhưng hạn chế khả năng tái lập đầy đủ quá trình huấn luyện.
+cuối nhưng hạn chế khả năng tái lập đầy đủ quá trình huấn luyện.
 
 ## 6. Kết luận
 
