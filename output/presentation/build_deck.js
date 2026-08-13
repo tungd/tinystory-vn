@@ -156,22 +156,79 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 // ======================================================================
 // HÀM DỰNG 3 SLIDE MỖI E
 // ======================================================================
-// a = { type, arch:[...], rationale, config:[[k,v]...], train:{loss,optimizer,batch,hardware,reg}, flow, viewer? }
+// Sơ đồ HF Viewer-style dựng bằng shape native, nhưng dữ liệu luôn lấy từ cấu hình của nhóm.
+function addHfViewerStyleGraph(s, x, y, w, h, g) {
+  const panel = { x, y, w, h };
+  s.addShape(p.ShapeType.roundRect, { ...panel, rectRadius: 0.08, fill: { color: '111827' }, line: { color: '27364B', width: 1 } });
+  s.addText('HF VIEWER STYLE · CẤU HÌNH CỦA NHÓM', {
+    x: x + 0.15, y: y + 0.12, w: w - 0.3, h: 0.18,
+    fontFace: F, fontSize: 7.2, bold: true, color: '7DD3FC', charSpacing: 0.5, align: 'center', fit: 'shrink',
+  });
+  s.addText(`${g.label}  ·  ${g.params}`, {
+    x: x + 0.15, y: y + 0.32, w: w - 0.3, h: 0.18,
+    fontFace: F, fontSize: 8.2, bold: true, color: C.white, align: 'center', fit: 'shrink',
+  });
+
+  const ix = x + 0.14, iy = y + 0.54, iw = w - 0.28, ih = 3.02;
+  s.addShape(p.ShapeType.roundRect, { x: ix, y: iy, w: iw, h: ih, rectRadius: 0.05, fill: { color: '0B1220' }, line: { color: '233B52', width: 0.6 } });
+  const mid = x + w / 2;
+  const node = (nx, ny, nw, nh, fill, title, subtitle, titleSize = 7.4, subSize = 6.2) => {
+    s.addShape(p.ShapeType.roundRect, { x: nx, y: ny, w: nw, h: nh, rectRadius: 0.035, fill: { color: fill }, line: { color: 'A9C6D8', width: 0.55 } });
+    const lines = [{ text: title, options: { bold: true, color: C.white, fontSize: titleSize, breakLine: Boolean(subtitle) } }];
+    if (subtitle) lines.push({ text: subtitle, options: { color: 'E2E8F0', fontSize: subSize } });
+    s.addText(lines, { x: nx + 0.025, y: ny + 0.025, w: nw - 0.05, h: nh - 0.05, fontFace: F, align: 'center', valign: 'mid', margin: 0, fit: 'shrink', lineSpacingMultiple: 0.88 });
+  };
+  const arrow = (x1, y1, x2, y2) => s.addShape(p.ShapeType.line, {
+    x: x1, y: y1, w: x2 - x1, h: y2 - y1,
+    line: { color: '71809A', width: 1, endArrowType: 'triangle' },
+  });
+
+  // Connectors are added first so the graph reads like a model viewer rather than a stack of cards.
+  const input = { x: mid - 0.40, y: y + 0.68, w: 0.80, h: 0.22 };
+  const token = { x: x + 0.16, y: y + 1.02, w: 0.91, h: 0.51 };
+  const position = { x: x + w - 0.16 - 0.91, y: y + 1.02, w: 0.91, h: 0.51 };
+  const add = { x: mid - 0.38, y: y + 1.68, w: 0.76, h: 0.25 };
+  const block = { x: mid - 0.87, y: y + 2.04, w: 1.74, h: 0.76 };
+  const ln = { x: mid - 0.44, y: y + 2.92, w: 0.88, h: 0.25 };
+  const head = { x: mid - 0.69, y: y + 3.27, w: 1.38, h: 0.27 };
+  const output = { x: mid - 0.54, y: y + 3.64, w: 1.08, h: 0.24 };
+  arrow(input.x + input.w / 2, input.y + input.h, mid, token.y - 0.05);
+  arrow(input.x + input.w / 2, input.y + input.h, mid, position.y - 0.05);
+  arrow(token.x + token.w / 2, token.y + token.h, add.x + add.w / 2, add.y - 0.05);
+  arrow(position.x + position.w / 2, position.y + position.h, add.x + add.w / 2, add.y - 0.05);
+  arrow(add.x + add.w / 2, add.y + add.h, block.x + block.w / 2, block.y - 0.05);
+  arrow(block.x + block.w / 2, block.y + block.h, ln.x + ln.w / 2, ln.y - 0.05);
+  arrow(ln.x + ln.w / 2, ln.y + ln.h, head.x + head.w / 2, head.y - 0.05);
+  arrow(head.x + head.w / 2, head.y + head.h, output.x + output.w / 2, output.y - 0.05);
+
+  node(input.x, input.y, input.w, input.h, '355C7D', 'input tokens', null, 6.8);
+  node(token.x, token.y, token.w, token.h, '6466A7', 'Token emb.', g.token, 7.0, 6.0);
+  node(position.x, position.y, position.w, position.h, '4D83A7', 'Position emb.', g.position, 7.0, 6.0);
+  node(add.x, add.y, add.w, add.h, 'C65B00', 'Add', null, 7.2);
+  node(block.x, block.y, block.w, block.h, '6D754D', g.block, `${g.attention}\n${g.ffn}`, 8.0, 6.0);
+  node(ln.x, ln.y, ln.w, ln.h, '2E7490', 'LayerNorm', null, 7.0);
+  node(head.x, head.y, head.w, head.h, '147A55', 'LM head · tied', 'hidden 768', 7.2, 6.0);
+  node(output.x, output.y, output.w, output.h, '9B4D76', 'logits', g.output, 7.0, 6.0);
+
+  s.addText('decoder-only  ·  context 1.024  ·  weight tying vào/ra', {
+    x: x + 0.12, y: y + 3.91, w: w - 0.24, h: 0.19,
+    fontFace: F, fontSize: 7.0, color: 'B8C4D8', align: 'center', fit: 'shrink',
+  });
+}
+
+// a = { type, arch:[...], rationale, config:[[k,v]...], train:{loss,optimizer,batch,hardware,reg}, flow, viewerGraph? }
 function eArch(e, name, a) {
   const s = mkSlide(); chrome(s, `${e} · ${name} — Kiến trúc và huấn luyện`, { eyebrow: `TINYSTORY-VN · ${e}` });
   // CỘT TRÁI — 1. Kiến trúc
   s.addText('1 · Kiến trúc', { x: 0.44, y: 1.72, w: 6.1, h: 0.32, fontFace: F, fontSize: 14, bold: true, color: C.teal });
-  if (!a.viewer) {
+  if (!a.viewerGraph) {
     s.addText(a.type, { x: 0.44, y: 2.06, w: 6.15, h: 0.5, fontFace: F, fontSize: 13, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
     s.addText(a.arch.map((t, i) => ({ text: t, options: { bullet: { code: '2022', indent: 12 }, breakLine: true, paraSpaceAfter: 5, fontFace: F, fontSize: 11.5, color: C.ink } })),
       { x: 0.44, y: 2.6, w: 6.15, h: 1.55 });
     s.addText([{ text: 'Lý do chọn: ', options: { bold: true, color: C.teal } }, { text: a.rationale, options: { color: C.ink } }],
       { x: 0.44, y: 4.18, w: 6.15, h: 0.72, fontFace: F, fontSize: 11.5, lineSpacingMultiple: 1.0 });
   } else {
-    s.addShape(p.ShapeType.roundRect, { x: 0.44, y: 2.03, w: 2.28, h: 4.15, rectRadius: 0.08, fill: { color: '111827' }, line: { color: '27364B', width: 1 } });
-    img(s, a.viewer.path, { x: 0.58, y: 2.16, w: 2.0, h: 2.96 });
-    s.addText('HF Viewer · tham khảo GPT-2', { x: 0.61, y: 5.35, w: 1.94, h: 0.28, fontFace: F, fontSize: 10.5, bold: true, color: C.white, align: 'center' });
-    s.addText(a.viewer.caption, { x: 0.60, y: 5.68, w: 1.96, h: 0.38, fontFace: F, fontSize: 9.2, color: 'B8C4D8', align: 'center', lineSpacingMultiple: 0.95 });
+    addHfViewerStyleGraph(s, 0.44, 2.03, 2.28, 4.15, a.viewerGraph);
     s.addText(a.type, { x: 2.98, y: 2.06, w: 3.55, h: 0.72, fontFace: F, fontSize: 12, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
     s.addText(a.arch.map((t, i) => ({ text: t, options: { bullet: { code: '2022', indent: 12 }, breakLine: true, paraSpaceAfter: 5, fontFace: F, fontSize: 10.5, color: C.ink } })),
       { x: 2.98, y: 2.9, w: 3.55, h: 1.5 });
@@ -182,7 +239,7 @@ function eArch(e, name, a) {
     { text: k, options: { fontFace: F, fontSize: 11, color: C.gray, valign: 'middle' } },
     { text: v, options: { fontFace: F, fontSize: 11, bold: true, color: C.ink, align: 'right', valign: 'middle' } },
   ]);
-  if (!a.viewer) {
+  if (!a.viewerGraph) {
     s.addTable(crows, { x: 0.44, y: 4.98, w: 6.15, colW: [2.7, 3.45], border: { type: 'solid', color: C.line, pt: 0.5 }, rowH: 0.26, valign: 'middle' });
   } else {
     const viewerRows = a.config.slice(0, 4).map(([k, v]) => [
@@ -369,9 +426,15 @@ eResult('E1', 'Llama 30M/60M từ đầu',
 // ---------------- E2 ----------------
 eArch('E2', 'GPT-2 63M từ đầu', {
   type: 'Transformer decoder-only kiểu GPT-2 (GPT2LMHeadModel), 7 khối, huấn luyện từ đầu.',
-  viewer: {
-    path: fig('output/presentation/assets/hfviewer-gpt2.svg'),
-    caption: 'Đồ thị tham khảo từ openai-community/gpt2; E2 dùng 7 khối và vocab 16k.',
+  viewerGraph: {
+    label: 'E2 · V16',
+    params: '62,99M params',
+    token: 'vocab 16.384',
+    position: 'learned · ctx 1.024',
+    block: 'GPT2Block ×7',
+    attention: 'LN → MHA 12h → residual',
+    ffn: 'LN → GELU-new 3.072 → residual',
+    output: '16.384 classes',
   },
   arch: [
     'Khối LayerNorm → multi-head attention → residual → LayerNorm → GELU MLP → residual, với bảng vị trí học được và weight tying vào/ra.',
