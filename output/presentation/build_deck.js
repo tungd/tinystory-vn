@@ -156,21 +156,41 @@ function vline(s, x, y, h) { s.addShape(p.ShapeType.line, { x, y, w: 0, h, line:
 // ======================================================================
 // HÀM DỰNG 3 SLIDE MỖI E
 // ======================================================================
-// a = { type, arch:[...], rationale, config:[[k,v]...], train:{loss,optimizer,batch,hardware,reg}, flow }
+// a = { type, arch:[...], rationale, config:[[k,v]...], train:{loss,optimizer,batch,hardware,reg}, flow, viewer? }
 function eArch(e, name, a) {
   const s = mkSlide(); chrome(s, `${e} · ${name} — Kiến trúc và huấn luyện`, { eyebrow: `TINYSTORY-VN · ${e}` });
   // CỘT TRÁI — 1. Kiến trúc
   s.addText('1 · Kiến trúc', { x: 0.44, y: 1.72, w: 6.1, h: 0.32, fontFace: F, fontSize: 14, bold: true, color: C.teal });
-  s.addText(a.type, { x: 0.44, y: 2.06, w: 6.15, h: 0.5, fontFace: F, fontSize: 13, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
-  s.addText(a.arch.map((t, i) => ({ text: t, options: { bullet: { code: '2022', indent: 12 }, breakLine: true, paraSpaceAfter: 5, fontFace: F, fontSize: 11.5, color: C.ink } })),
-    { x: 0.44, y: 2.6, w: 6.15, h: 1.55 });
-  s.addText([{ text: 'Lý do chọn: ', options: { bold: true, color: C.teal } }, { text: a.rationale, options: { color: C.ink } }],
-    { x: 0.44, y: 4.18, w: 6.15, h: 0.72, fontFace: F, fontSize: 11.5, lineSpacingMultiple: 1.0 });
+  if (!a.viewer) {
+    s.addText(a.type, { x: 0.44, y: 2.06, w: 6.15, h: 0.5, fontFace: F, fontSize: 13, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
+    s.addText(a.arch.map((t, i) => ({ text: t, options: { bullet: { code: '2022', indent: 12 }, breakLine: true, paraSpaceAfter: 5, fontFace: F, fontSize: 11.5, color: C.ink } })),
+      { x: 0.44, y: 2.6, w: 6.15, h: 1.55 });
+    s.addText([{ text: 'Lý do chọn: ', options: { bold: true, color: C.teal } }, { text: a.rationale, options: { color: C.ink } }],
+      { x: 0.44, y: 4.18, w: 6.15, h: 0.72, fontFace: F, fontSize: 11.5, lineSpacingMultiple: 1.0 });
+  } else {
+    s.addShape(p.ShapeType.roundRect, { x: 0.44, y: 2.03, w: 2.28, h: 4.15, rectRadius: 0.08, fill: { color: '111827' }, line: { color: '27364B', width: 1 } });
+    img(s, a.viewer.path, { x: 0.58, y: 2.16, w: 2.0, h: 2.96 });
+    s.addText('HF Viewer · tham khảo GPT-2', { x: 0.61, y: 5.35, w: 1.94, h: 0.28, fontFace: F, fontSize: 10.5, bold: true, color: C.white, align: 'center' });
+    s.addText(a.viewer.caption, { x: 0.60, y: 5.68, w: 1.96, h: 0.38, fontFace: F, fontSize: 9.2, color: 'B8C4D8', align: 'center', lineSpacingMultiple: 0.95 });
+    s.addText(a.type, { x: 2.98, y: 2.06, w: 3.55, h: 0.72, fontFace: F, fontSize: 12, bold: true, color: C.ink, lineSpacingMultiple: 0.98 });
+    s.addText(a.arch.map((t, i) => ({ text: t, options: { bullet: { code: '2022', indent: 12 }, breakLine: true, paraSpaceAfter: 5, fontFace: F, fontSize: 10.5, color: C.ink } })),
+      { x: 2.98, y: 2.9, w: 3.55, h: 1.5 });
+    s.addText([{ text: 'Lý do chọn: ', options: { bold: true, color: C.teal } }, { text: a.rationale, options: { color: C.ink } }],
+      { x: 2.98, y: 4.48, w: 3.55, h: 0.65, fontFace: F, fontSize: 10.5, lineSpacingMultiple: 1.0 });
+  }
   const crows = a.config.map(([k, v]) => [
     { text: k, options: { fontFace: F, fontSize: 11, color: C.gray, valign: 'middle' } },
     { text: v, options: { fontFace: F, fontSize: 11, bold: true, color: C.ink, align: 'right', valign: 'middle' } },
   ]);
-  s.addTable(crows, { x: 0.44, y: 4.98, w: 6.15, colW: [2.7, 3.45], border: { type: 'solid', color: C.line, pt: 0.5 }, rowH: 0.26, valign: 'middle' });
+  if (!a.viewer) {
+    s.addTable(crows, { x: 0.44, y: 4.98, w: 6.15, colW: [2.7, 3.45], border: { type: 'solid', color: C.line, pt: 0.5 }, rowH: 0.26, valign: 'middle' });
+  } else {
+    const viewerRows = a.config.slice(0, 4).map(([k, v]) => [
+      { text: k, options: { fontFace: F, fontSize: 9.5, color: C.gray, valign: 'middle' } },
+      { text: v, options: { fontFace: F, fontSize: 9.5, bold: true, color: C.ink, align: 'right', valign: 'middle' } },
+    ]);
+    s.addTable(viewerRows, { x: 2.98, y: 5.14, w: 3.55, colW: [1.55, 2.0], border: { type: 'solid', color: C.line, pt: 0.5 }, rowH: 0.22, valign: 'middle' });
+  }
   vline(s, 6.72, 1.72, 4.55);
   // CỘT PHẢI — 2. Thiết lập huấn luyện
   s.addText('2 · Thiết lập huấn luyện', { x: 6.95, y: 1.72, w: 5.95, h: 0.32, fontFace: F, fontSize: 14, bold: true, color: C.teal });
@@ -349,6 +369,10 @@ eResult('E1', 'Llama 30M/60M từ đầu',
 // ---------------- E2 ----------------
 eArch('E2', 'GPT-2 63M từ đầu', {
   type: 'Transformer decoder-only kiểu GPT-2 (GPT2LMHeadModel), 7 khối, huấn luyện từ đầu.',
+  viewer: {
+    path: fig('output/presentation/assets/hfviewer-gpt2.svg'),
+    caption: 'Đồ thị tham khảo từ openai-community/gpt2; E2 dùng 7 khối và vocab 16k.',
+  },
   arch: [
     'Khối LayerNorm → multi-head attention → residual → LayerNorm → GELU MLP → residual, với bảng vị trí học được và weight tying vào/ra.',
     'Bộ tách từ Metaspace BPE 16.384; điều kiện đóng thẻ character/moral/story, loss phần prompt bị mask.',
