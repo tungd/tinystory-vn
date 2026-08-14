@@ -13,6 +13,10 @@ It exposes the five representative systems from the global benchmark:
 | E4 | Base + Repair | llama.cpp plus validator/self-repair |
 | E5 | Llama 3.2 3B fable Q4 | llama.cpp chat |
 
+E2 keeps its original V16 inference contract (`<char>`, `<moral>`, then
+`<story>`); the other fields remain in the shared brief for judging and for the
+other systems.
+
 Each row has an explicit Load/Unload action. A loaded row can run the shared
 brief in the center canvas. Select two or more loaded rows with Compare, then
 run the same brief across them and judge each output side by side. The Case

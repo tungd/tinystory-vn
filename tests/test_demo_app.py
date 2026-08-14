@@ -1,3 +1,4 @@
+from pathlib import Path
 from types import SimpleNamespace
 
 from demo.judge import GoogleJudge
@@ -46,6 +47,25 @@ def test_e1_uses_the_full_five_field_benchmark_prompt():
     assert "Challenge: the river rises" in prompt
     assert "Outcome: the fox finds a safe path" in prompt
     assert "Teaching/Moral: Kindness helps everyone" in prompt
+
+
+def test_e2_uses_the_v16_training_prompt_contract():
+    row = {
+        "character": "a tidy squirrel who labels every acorn",
+        "setting": "a great oak during a busy autumn",
+        "challenge": "a storm mixes all the stores",
+        "outcome": "she creates a simple shared pantry",
+        "teaching": "Good plans improve when we listen to others.",
+        "length": "medium",
+    }
+
+    prompt = StudioRuntime._model_prompt(STUDIO_SPECS[1], row)
+
+    assert prompt == (
+        "<char> a tidy squirrel who labels every acorn </char>\n"
+        "<moral> Good plans improve when we listen to others. </moral>\n"
+        "<story>\n"
+    )
 
 
 def test_judge_is_explicitly_google_not_ollama(monkeypatch):
@@ -107,3 +127,12 @@ def test_compare_runs_each_selected_model_and_keeps_per_model_failures(monkeypat
     assert result["completed"] == 1
     assert result["results"][0]["story"] == "A complete story."
     assert result["results"][1] == {"model_id": "e5-fable-q4", "error": "runtime unavailable"}
+
+
+def test_compare_ui_has_a_direct_output_switcher():
+    html = (Path(__file__).parents[1] / "demo/static/index.html").read_text(encoding="utf-8")
+
+    assert "Quick switch" in html
+    assert "data-compare-select" in html
+    assert "data-compare-prev" in html
+    assert "Judge selected output" in html

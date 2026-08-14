@@ -86,6 +86,7 @@ STUDIO_SPECS: tuple[StudioSpec, ...] = (
         artifact=ROOT / "runs/v16/artifacts/conditioning-mlx",
         port=18102,
         description="The V16 conditioning direction loaded directly with MLX-LM.",
+        prompt_style="v16",
     ),
     StudioSpec(
         id="e3-smollm2-lora-c",
@@ -401,7 +402,7 @@ class StudioRuntime:
 
     @staticmethod
     def _model_prompt(spec: StudioSpec, row: dict[str, str]) -> str:
-        if spec.prompt_style == "slm":
+        if spec.prompt_style in {"slm", "v16"}:
             return (
                 f"<char> {row['character'].strip()} </char>\n"
                 f"<moral> {row['teaching'].strip()} </moral>\n"

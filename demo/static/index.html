@@ -113,7 +113,16 @@
       .compare-toolbar h2 { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: .13em; text-transform: uppercase; }
       .compare-toolbar span { color: var(--quiet); font-size: 11px; }
       .compare-actions { display: flex; gap: 8px; align-items: center; }
-      .compare-list { display: flex; flex-direction: column; gap: 10px; }
+      .compare-tabs-label { margin: 4px 0 8px; color: var(--quiet); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+      .compare-tabs { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 5px; }
+      .compare-tab { min-width: 150px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--muted); padding: 9px 11px; text-align: left; }
+      .compare-tab:hover { background: rgba(255,255,255,.05); border-color: var(--line-strong); }
+      .compare-tab.active { background: var(--panel-raised); border-color: var(--mint-deep); color: var(--ink); }
+      .compare-tab strong, .compare-tab span { display: block; }
+      .compare-tab strong { font-size: 11px; }
+      .compare-tab span { margin-top: 3px; color: var(--quiet); font-size: 10px; }
+      .compare-tab.active span { color: var(--mint); }
+      .compare-list { display: flex; flex-direction: column; gap: 10px; margin-top: 13px; }
       .compare-item { border-bottom: 1px solid var(--line); padding: 15px 0 18px; }
       .compare-item:last-child { border-bottom: 0; }
       .compare-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
@@ -132,6 +141,7 @@
       .compare-score span { color: var(--quiet); }
       .compare-error { margin-top: 12px; color: var(--red); font-size: 11px; }
       .compare-empty { padding: 22px 0; color: var(--quiet); font-size: 12px; line-height: 1.5; }
+      .compare-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; color: var(--quiet); font-size: 10px; }
       .evidence-intro { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0 0 18px; }
       .judge-card { border: 1px solid var(--line); border-radius: 10px; padding: 15px; background: var(--panel-raised); }
       .judge-provider { display: flex; gap: 9px; align-items: flex-start; }
@@ -195,7 +205,9 @@
           <section id="story-paper" class="story-paper"><div class="story-placeholder"><div class="glyph">◌</div><p>Select a model, load its runtime, and run the shared brief to place its story here.</p></div></section>
           <div id="run-strip" class="run-strip"></div>
           <section id="compare-panel" class="compare-panel" style="display:none">
-            <div class="compare-toolbar"><div><h2>Comparison</h2><span id="compare-summary">Same case, multiple loaded systems</span></div><div class="compare-actions"><button id="judge-all-button" class="primary-button" disabled>Judge all outputs</button></div></div>
+            <div class="compare-toolbar"><div><h2>Compare outputs</h2><span id="compare-summary">Same case, multiple loaded systems</span></div><div class="compare-actions"><button id="judge-all-button" class="primary-button" disabled>Judge all outputs</button></div></div>
+            <div class="compare-tabs-label">Quick switch</div>
+            <div id="compare-tabs" class="compare-tabs" role="tablist"></div>
             <div id="compare-list" class="compare-list"><div class="compare-empty">Select at least two loaded models in the inventory, then compare them on the selected case.</div></div>
           </section>
         </main>
@@ -223,7 +235,7 @@
       };
       const AXES = ["grammar", "creativity", "moral_clarity", "prompt_adherence"];
       const AXIS_LABELS = { grammar: "Grammar", creativity: "Creativity", moral_clarity: "Moral clarity", prompt_adherence: "Prompt adherence" };
-      const state = { models: [], selected: null, output: null, judge: null, judgeStatus: null, busy: new Set(), presets: [], presetId: null, compareIds: new Set(), compareResults: [], compareBusy: false, view: "single" };
+      const state = { models: [], selected: null, output: null, judge: null, judgeStatus: null, busy: new Set(), presets: [], presetId: null, compareIds: new Set(), compareResults: [], compareSelectedId: null, compareBusy: false, view: "single" };
 
       const $ = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
@@ -231,8 +243,9 @@
       const api = async (path, options = {}) => { const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options }); const body = await response.json().catch(() => ({})); if (!response.ok) throw new Error(body.error || body.detail || `HTTP ${response.status}`); return body; };
       const brief = () => ({ character: $("character").value, setting: $("setting").value, challenge: $("challenge").value, outcome: $("outcome").value, teaching: $("teaching").value, length: $("length").value });
       const selectedModel = () => state.models.find((model) => model.id === state.selected);
-      const storyHtml = (story, className = "story-text") => escapeHtml(story).split(/\n\s*\n/).map((part) => `<p>${part.replace(/^Moral:/, "<span class=\"moral\">Moral:</span>")}</p>`).join("");
+      const storyHtml = (story) => escapeHtml(story).split(/\n\s*\n/).map((part) => `<p>${part.replace(/^Moral:/, "<span class=\"moral\">Moral:</span>")}</p>`).join("");
       const currentPreset = () => state.presets.find((preset) => preset.prompt_id === state.presetId);
+      const selectedCompareResult = () => state.compareResults.find((result) => result.model_id === state.compareSelectedId);
 
       function renderModels() {
         $("model-count").textContent = `${state.models.filter((m) => m.available).length} available`;
@@ -286,6 +299,7 @@
         state.output = null;
         state.judge = null;
         state.compareResults = [];
+        state.compareSelectedId = null;
         state.view = "single";
         render();
       }
@@ -299,6 +313,7 @@
         state.output = null;
         state.judge = null;
         state.compareResults = [];
+        state.compareSelectedId = null;
         state.view = "single";
         render();
       }
@@ -312,26 +327,47 @@
         panel.style.display = inCompare ? "block" : "none";
         if (!inCompare) return;
         const preset = currentPreset();
-        $("compare-summary").textContent = `${preset?.prompt_id || "Custom"} · ${state.compareResults.length} output${state.compareResults.length === 1 ? "" : "s"}`;
-        const judgeable = state.compareResults.filter((result) => result.story && !result.error).length;
+        const results = state.compareResults;
+        $("compare-summary").textContent = `${preset?.prompt_id || "Custom"} · ${results.length} output${results.length === 1 ? "" : "s"}`;
+        const judgeable = results.filter((result) => result.story && !result.error).length;
         const judgeAll = $("judge-all-button");
         judgeAll.disabled = state.compareBusy || judgeable === 0;
         judgeAll.textContent = state.compareBusy ? "Comparing…" : "Judge all outputs";
-        if (!state.compareResults.length) {
+        if (!results.length) {
+          $("compare-tabs").innerHTML = "";
           $("compare-list").innerHTML = `<div class="compare-empty">Select at least two loaded models in the inventory, then compare them on the selected case.</div>`;
           return;
         }
-        $("compare-list").innerHTML = state.compareResults.map((result) => {
+        if (!state.compareSelectedId || !results.some((result) => result.model_id === state.compareSelectedId)) state.compareSelectedId = results[0].model_id;
+        $("compare-tabs").innerHTML = results.map((result) => {
           const model = state.models.find((item) => item.id === result.model_id);
-          if (result.error) return `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.model_id)}</em><strong>${escapeHtml(model?.name || result.model_id)}</strong></div><div class="compare-runtime">Could not run this model</div></div></div><div class="compare-error">${escapeHtml(result.error)}</div></article>`;
-          const score = result.judge ? `<div class="compare-score"><strong>Overall ${result.judge.overall.toFixed(2)} / 10</strong><span>Grammar ${result.judge.grammar} · Creativity ${result.judge.creativity} · Moral ${result.judge.moral_clarity} · Adherence ${result.judge.prompt_adherence}</span></div>` : `<div class="compare-score"><span>${result.judgeState === "loading" ? "Judging…" : result.judgeError ? `Judge error: ${escapeHtml(result.judgeError)}` : "Not judged yet"}</span></div>`;
-          return `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.direction)}</em><strong>${escapeHtml(model?.name || result.model_name)}</strong></div><div class="compare-runtime">${escapeHtml(result.backend)} · ${escapeHtml(result.artifact)}</div></div><div class="compare-actions"><div class="compare-metrics"><span><strong>${result.word_count}</strong> words</span><span><strong>${result.latency_ms}</strong> ms</span></div><button class="small-button" data-judge-result="${escapeHtml(result.model_id)}" ${result.judgeState === "loading" ? "disabled" : ""}>${result.judge ? "Rejudge" : "Judge"}</button></div></div><div class="compare-story">${storyHtml(result.story)}</div>${score}</article>`;
+          const title = model?.name || result.model_name || result.model_id;
+          const status = result.error ? "Error" : result.judge ? `Score ${result.judge.overall.toFixed(2)}` : "Not judged";
+          return `<button type="button" class="compare-tab ${result.model_id === state.compareSelectedId ? "active" : ""}" data-compare-select="${escapeHtml(result.model_id)}" role="tab" aria-selected="${result.model_id === state.compareSelectedId}"><strong>${escapeHtml(model?.direction || result.direction || result.model_id)} · ${escapeHtml(title)}</strong><span>${escapeHtml(status)}</span></button>`;
         }).join("");
+        document.querySelectorAll("[data-compare-select]").forEach((el) => el.addEventListener("click", () => { state.compareSelectedId = el.dataset.compareSelect; render(); }));
+
+        const result = selectedCompareResult();
+        if (!result) return;
+        const model = state.models.find((item) => item.id === result.model_id);
+        const index = results.findIndex((item) => item.model_id === result.model_id);
+        const previousId = results[(index - 1 + results.length) % results.length].model_id;
+        const nextId = results[(index + 1) % results.length].model_id;
+        const score = result.judge ? `<div class="compare-score"><strong>Overall ${result.judge.overall.toFixed(2)} / 10</strong><span>Grammar ${result.judge.grammar} · Creativity ${result.judge.creativity} · Moral ${result.judge.moral_clarity} · Adherence ${result.judge.prompt_adherence}</span></div>` : `<div class="compare-score"><span>${result.judgeState === "loading" ? "Judging…" : result.judgeError ? `Judge error: ${escapeHtml(result.judgeError)}` : "Not judged yet — use Judge selected output"}</span></div>`;
+        const detail = result.error
+          ? `<div class="compare-error">${escapeHtml(result.error)}</div>`
+          : `<div class="compare-story">${storyHtml(result.story)}</div>${score}`;
+        $("compare-list").innerHTML = `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.direction || result.model_id)}</em><strong>${escapeHtml(model?.name || result.model_name || result.model_id)}</strong></div><div class="compare-runtime">${result.error ? "Could not run this model" : `${escapeHtml(result.backend)} · ${escapeHtml(result.artifact)}`}</div></div><div class="compare-actions">${result.error ? "" : `<div class="compare-metrics"><span><strong>${result.word_count}</strong> words</span><span><strong>${result.latency_ms}</strong> ms</span></div><button class="small-button" data-judge-result="${escapeHtml(result.model_id)}" ${result.judgeState === "loading" ? "disabled" : ""}>${result.judge ? "Rejudge" : "Judge"}</button>`}</div></div>${detail}<div class="compare-nav"><button class="small-button" data-compare-prev ${results.length < 2 ? "disabled" : ""}>← Previous</button><span>Output ${index + 1} of ${results.length}</span><button class="small-button" data-compare-next ${results.length < 2 ? "disabled" : ""}>Next →</button></div></article>`;
         document.querySelectorAll("[data-judge-result]").forEach((el) => el.addEventListener("click", () => judgeResult(el.dataset.judgeResult)));
+        $("compare-list").querySelector("[data-compare-prev]")?.addEventListener("click", () => { state.compareSelectedId = previousId; render(); });
+        $("compare-list").querySelector("[data-compare-next]")?.addEventListener("click", () => { state.compareSelectedId = nextId; render(); });
       }
 
       async function lifecycle(modelId, action) {
-        if (action === "unload") state.compareIds.delete(modelId);
+        if (action === "unload") {
+          state.compareIds.delete(modelId);
+          if (state.compareSelectedId === modelId) state.compareSelectedId = null;
+        }
         state.busy.add(modelId); renderModels();
         try { await api(`/api/models/${encodeURIComponent(modelId)}/${action}`, { method: "POST" }); toast(action === "load" ? "Runtime loaded" : "Runtime unloaded"); }
         catch (error) { toast(error.message); }
@@ -346,22 +382,33 @@
         $("run-strip").innerHTML = `<span><strong>${output.word_count}</strong> words</span><span><strong>${output.latency_ms}</strong> ms</span><span><strong>${output.backend}</strong></span><span><strong>seed ${output.seed}</strong></span>${output.actions?.length ? `<span><strong>${escapeHtml(output.actions.join(", "))}</strong></span>` : ""}`;
       }
 
+      function scoreBlockHtml(score) {
+        return `<div class="score-total"><span>Overall</span><div><strong>${score.overall.toFixed(2)}</strong><small> / 10</small></div></div>` + AXES.map((axis) => `<div class="axis"><div class="axis-line"><span>${AXIS_LABELS[axis]}</span><strong>${score[axis]} / 10</strong></div><div class="bar"><i style="width: ${score[axis] * 10}%"></i></div>${score.rationale?.[axis] ? `<p class="reason">${escapeHtml(score.rationale[axis])}</p>` : ""}</div>`).join("");
+      }
+
       function renderJudge() {
         const status = state.judgeStatus;
         const chip = $("judge-chip");
         if (status) { chip.innerHTML = `<i class="dot ${status.configured ? "live" : "warn"}"></i><span>${status.configured ? "Google judge ready" : "Judge needs setup"}</span>`; $("judge-model").textContent = `${status.provider} · ${status.model_id}`; $("judge-detail").textContent = status.detail; }
         if (state.view === "compare") {
-          $("judge-button").disabled = true;
-          $("judge-button").textContent = "Use comparison rows";
-          $("score-block").innerHTML = "";
-          $("judge-empty").style.display = "block";
-          $("judge-empty").textContent = "Comparison scores appear beside each output. Use Judge all outputs or judge one row individually.";
+          const result = selectedCompareResult();
+          const button = $("judge-button");
+          button.textContent = result?.judge ? "Rejudge selected output" : "Judge selected output";
+          button.disabled = !result?.story || !status?.configured || result.judgeState === "loading";
+          if (result?.judge) {
+            $("judge-empty").style.display = "none";
+            $("score-block").innerHTML = scoreBlockHtml(result.judge);
+          } else {
+            $("score-block").innerHTML = "";
+            $("judge-empty").style.display = "block";
+            $("judge-empty").textContent = result?.story ? "This panel follows the selected output. Judge it here, or use Judge all outputs." : "Select a completed output to judge it here.";
+          }
           return;
         }
         const button = $("judge-button"); button.textContent = "Judge this output"; button.disabled = !state.output || !status?.configured;
         if (!state.judge) { $("score-block").innerHTML = ""; $("judge-empty").style.display = "block"; return; }
         $("judge-empty").style.display = "none";
-        $("score-block").innerHTML = `<div class="score-total"><span>Overall</span><div><strong>${state.judge.overall.toFixed(2)}</strong><small> / 10</small></div></div>` + AXES.map((axis) => `<div class="axis"><div class="axis-line"><span>${AXIS_LABELS[axis]}</span><strong>${state.judge[axis]} / 10</strong></div><div class="bar"><i style="width: ${state.judge[axis] * 10}%"></i></div>${state.judge.rationale?.[axis] ? `<p class="reason">${escapeHtml(state.judge.rationale[axis])}</p>` : ""}</div>`).join("");
+        $("score-block").innerHTML = scoreBlockHtml(state.judge);
       }
 
       function render() { renderPresets(); renderModels(); renderStory(); renderCompare(); renderJudge(); updateCompareButton(); }
@@ -395,6 +442,7 @@
         if (!model?.loaded) return;
         state.view = "single";
         state.compareResults = [];
+        state.compareSelectedId = null;
         state.busy.add(model.id);
         $("run-button").classList.add("loading");
         $("run-button").textContent = "Running";
@@ -413,12 +461,14 @@
         state.view = "compare";
         state.compareBusy = true;
         state.compareResults = [];
+        state.compareSelectedId = null;
         state.output = null;
         state.judge = null;
         render();
         try {
           const response = await api("/api/compare", { method: "POST", body: JSON.stringify({ model_ids: [...state.compareIds], prompt: brief() }) });
           state.compareResults = response.results || [];
+          state.compareSelectedId = state.compareResults[0]?.model_id || null;
           toast(`${response.completed} comparison outputs ready`);
         } catch (error) { toast(error.message); }
         finally { state.compareBusy = false; render(); }
@@ -429,7 +479,7 @@
         if (!result?.story) return;
         result.judgeState = "loading";
         result.judgeError = null;
-        renderCompare();
+        render();
         try {
           result.judge = await api("/api/judge", { method: "POST", body: JSON.stringify({ story: result.story, prompt: result.judge_prompt || result.prompt_sent }) });
           result.judgeState = "done";
@@ -439,7 +489,7 @@
           result.judgeError = error.message;
           if (notify) toast(error.message);
         }
-        renderCompare();
+        render();
       }
 
       async function judgeAll() {
@@ -469,6 +519,7 @@
         state.output = null;
         state.judge = null;
         state.compareResults = [];
+        state.compareSelectedId = null;
         state.view = "single";
         render();
       }
@@ -477,7 +528,7 @@
       $("preset-select").addEventListener("change", (event) => choosePreset(event.target.value));
       ["character", "setting", "challenge", "outcome", "teaching", "length"].forEach((id) => $(id).addEventListener("input", () => { if (state.presetId !== "custom" || state.output || state.compareResults.length || state.view !== "single") useCustomBrief(); else { state.presetId = "custom"; $("preset-select").value = "custom"; } }));
       $("compare-button").addEventListener("click", compareSelected); $("single-button").addEventListener("click", () => { state.view = "single"; render(); });
-      $("judge-all-button").addEventListener("click", judgeAll); $("run-button").addEventListener("click", runSelected); $("judge-button").addEventListener("click", judgeOutput); $("reset-button").addEventListener("click", resetBrief);
+      $("judge-all-button").addEventListener("click", judgeAll); $("run-button").addEventListener("click", runSelected); $("judge-button").addEventListener("click", () => state.view === "compare" ? judgeResult(state.compareSelectedId) : judgeOutput()); $("reset-button").addEventListener("click", resetBrief);
       resetBrief(); refreshPresets(); refreshModels(); refreshJudgeStatus(); setInterval(refreshModels, 5000);
     </script>
   </body>
