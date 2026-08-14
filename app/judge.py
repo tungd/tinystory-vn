@@ -15,6 +15,42 @@ AXIS_RUBRIC = {
 }
 
 
+def build_google_judge_prompt(story: str, prompt: str) -> str:
+    """Build the shared compact rubric used by the Google judges.
+
+    Generation-format details are deliberately excluded from ``prompt`` by the
+    callers. A literal ``Moral:`` footer is a model-format diagnostic, not a
+    quality axis, so it must not affect the score.
+    """
+
+    return (
+        "Judge this children's fable strictly on four 1-10 integer scales. "
+        "Grammar covers grammatical correctness, coherence, and child-appropriate style. "
+        "Creativity covers originality and vivid storytelling. Moral clarity covers whether "
+        "the requested lesson is clearly earned by the plot. Prompt adherence covers the "
+        "requested character, setting, challenge, outcome, and teaching as represented in "
+        "the story. Do not reward or penalize a literal `Moral:` footer, its exact wording, "
+        "or whether it appears; judge the lesson from the events. "
+        "Return only one JSON object with exactly these integer keys: grammar, creativity, "
+        "moral_clarity, prompt_adherence. Do not include reasons or markdown.\n\n"
+        f"REQUEST:\n{prompt}\n\nSTORY:\n{story}\n\nJSON:"
+    )
+
+
+def build_google_judge_schema() -> dict:
+    """Return the strict four-axis JSON schema shared by Google judge clients."""
+
+    return {
+        "type": "object",
+        "properties": {
+            axis: {"type": "integer", "minimum": 1, "maximum": 10}
+            for axis in AXES
+        },
+        "required": AXES,
+        "additionalProperties": False,
+    }
+
+
 def build_judge_prompt(story: str, prompt: str) -> str:
     return (
         "You are a strict judge of children's fables. Given the REQUEST and the STORY, "
@@ -131,6 +167,33 @@ def parse_scores(raw: str) -> dict:
     out["overall"] = round(sum(out[a] for a in AXES) / len(AXES), 2)
     out["rationale"] = rationale
     return out
+
+
+def scores_from_google_response(response) -> tuple[dict, str]:
+    """Read either Gemini's structured ``parsed`` value or its text fallback."""
+
+    parsed = getattr(response, "parsed", None)
+    raw = getattr(response, "text", "") or ""
+    if parsed is not None and hasattr(parsed, "model_dump"):
+        parsed = parsed.model_dump()
+    if isinstance(parsed, dict):
+        raw = json.dumps(parsed, ensure_ascii=False)
+    return parse_scores(raw), raw
+
+
+def validate_google_scores(scores: dict) -> dict:
+    """Reject incomplete/out-of-range Google responses instead of scoring zero."""
+
+    invalid = [
+        axis
+        for axis in AXES
+        if not isinstance(scores.get(axis), int)
+        or isinstance(scores.get(axis), bool)
+        or not 1 <= scores[axis] <= 10
+    ]
+    if invalid:
+        raise ValueError(f"invalid scores for axes: {', '.join(invalid)}")
+    return scores
 
 
 def evaluate(story: str, prompt: str, model: str, gen=None) -> dict:

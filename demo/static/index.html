@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TinyStory · Demo Studio</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f3f0e8;
+        --muted: #9e9b92;
+        --quiet: #6d6a62;
+        --line: rgba(243, 240, 232, 0.12);
+        --line-strong: rgba(243, 240, 232, 0.23);
+        --panel: #171918;
+        --panel-raised: #1d201e;
+        --canvas: #101211;
+        --mint: #a8e4c1;
+        --mint-deep: #4e9f73;
+        --amber: #e9be72;
+        --red: #e98e86;
+        --paper: #f3eee3;
+        --paper-ink: #282b27;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 1100px; background: var(--canvas); color: var(--ink); }
+      button, input, textarea, select { font: inherit; }
+      button { cursor: pointer; }
+      .app { min-height: 100vh; display: flex; flex-direction: column; }
+      .topbar { min-height: 74px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--line); background: rgba(16, 18, 17, .96); }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .mark { width: 30px; height: 30px; border: 1px solid var(--mint); border-radius: 9px 9px 9px 3px; position: relative; }
+      .mark::after { content: ""; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--mint); left: 9px; top: 9px; }
+      .brand-copy { display: flex; flex-direction: column; gap: 3px; }
+      .eyebrow { color: var(--mint); font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+      .brand-title { font-size: 16px; font-weight: 650; letter-spacing: -.015em; }
+      .top-meta { display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 12px; }
+      .judge-chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 8px 11px; border-radius: 999px; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--quiet); display: inline-block; }
+      .dot.live { background: var(--mint); box-shadow: 0 0 0 4px rgba(168,228,193,.08); }
+      .dot.warn { background: var(--amber); }
+      .dot.error { background: var(--red); }
+      .workspace { flex: 1; display: grid; grid-template-columns: 315px minmax(520px, 1fr) 330px; min-height: 0; }
+      .rail, .evidence { background: var(--panel); }
+      .rail { border-right: 1px solid var(--line); padding: 27px 20px 24px; }
+      .evidence { border-left: 1px solid var(--line); padding: 27px 21px 24px; }
+      .stage { padding: 27px 30px 40px; min-width: 0; }
+      .section-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+      .section-heading h2 { margin: 0; font-size: 12px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+      .section-heading span { color: var(--quiet); font-size: 11px; }
+      .model-list { display: flex; flex-direction: column; gap: 6px; }
+      .model-row { border: 1px solid transparent; border-radius: 10px; padding: 12px 11px 11px; background: transparent; transition: background .16s, border-color .16s; }
+      .model-row:hover { background: rgba(255,255,255,.025); border-color: var(--line); }
+      .model-row.selected { background: var(--panel-raised); border-color: var(--line-strong); }
+      .model-main { display: flex; justify-content: space-between; gap: 10px; cursor: pointer; }
+      .model-name { font-size: 13px; font-weight: 650; line-height: 1.3; }
+      .direction { color: var(--mint); font-size: 10px; letter-spacing: .1em; font-weight: 750; }
+      .model-sub { margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+      .backend { margin-top: 8px; color: var(--quiet); font-size: 10px; }
+      .row-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 11px; }
+      .row-tools { display: flex; align-items: center; gap: 9px; }
+      .compare-toggle { display: inline-flex; align-items: center; gap: 5px; color: var(--quiet); font-size: 10px; cursor: pointer; }
+      .compare-toggle input { accent-color: var(--mint-deep); margin: 0; }
+      .state { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; }
+      .state.loaded { color: var(--mint); }
+      .state.error { color: var(--red); }
+      .small-button, .primary-button, .ghost-button { border: 1px solid var(--line-strong); background: transparent; color: var(--ink); border-radius: 6px; padding: 7px 10px; font-size: 11px; font-weight: 650; transition: background .16s, border-color .16s, opacity .16s; }
+      .small-button:hover, .ghost-button:hover { background: rgba(255,255,255,.07); border-color: rgba(243,240,232,.4); }
+      .primary-button { background: var(--mint); border-color: var(--mint); color: #102119; }
+      .primary-button:hover { background: #c5f2d5; }
+      button:disabled { cursor: not-allowed; opacity: .42; }
+      .rail-note { margin-top: 25px; padding-top: 17px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 11px; line-height: 1.55; }
+      .rail-note strong { color: var(--muted); font-weight: 600; }
+      .stage-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+      .stage-header h1 { margin: 0; font-size: 25px; letter-spacing: -.035em; line-height: 1.1; }
+      .stage-header p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+      .stage-actions { display: flex; gap: 8px; }
+      .prompt-panel { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); padding: 19px 20px 20px; }
+      .prompt-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+      .prompt-top h2 { margin: 0; font-size: 13px; font-weight: 650; }
+      .prompt-top span { color: var(--quiet); font-size: 11px; }
+      .preset-control { display: flex; align-items: center; gap: 8px; }
+      .preset-control label { color: var(--quiet); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+      .preset-control select { min-width: 170px; border: 1px solid var(--line); border-radius: 6px; background: #121513; color: var(--ink); padding: 6px 8px; font-size: 11px; }
+      .preset-count { color: var(--quiet); font-size: 10px; }
+      .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field.full { grid-column: 1 / -1; }
+      .field label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .11em; font-weight: 700; }
+      .field input, .field textarea, .field select { width: 100%; border: 1px solid var(--line); border-radius: 6px; background: #121513; color: var(--ink); padding: 9px 10px; outline: none; }
+      .field textarea { min-height: 56px; resize: vertical; line-height: 1.4; }
+      .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--mint-deep); box-shadow: 0 0 0 3px rgba(168,228,193,.08); }
+      .prompt-footer { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 16px; }
+      .selected-runtime { color: var(--muted); font-size: 11px; line-height: 1.5; }
+      .selected-runtime strong { color: var(--ink); font-weight: 650; }
+      .run-button { min-width: 140px; padding: 10px 14px; }
+      .output-header { display: flex; align-items: center; justify-content: space-between; margin: 30px 0 12px; }
+      .output-header h2 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); }
+      .output-meta { color: var(--quiet); font-size: 11px; }
+      .story-paper { min-height: 330px; border-radius: 12px; background: var(--paper); color: var(--paper-ink); padding: 29px 33px 31px; box-shadow: 0 18px 40px rgba(0,0,0,.18); }
+      .story-placeholder { min-height: 270px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #8c8a81; }
+      .story-placeholder .glyph { font-size: 35px; opacity: .55; margin-bottom: 10px; }
+      .story-placeholder p { max-width: 300px; margin: 0; font-size: 13px; line-height: 1.5; }
+      .story-text { white-space: pre-wrap; font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.72; }
+      .story-text p { margin: 0 0 15px; }
+      .story-text p:last-child { margin-bottom: 0; }
+      .story-text .moral { font-weight: 700; }
+      .run-strip { display: flex; gap: 18px; margin-top: 12px; color: var(--quiet); font-size: 10px; }
+      .run-strip strong { color: var(--muted); font-weight: 650; }
+      .compare-panel { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 20px; }
+      .compare-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 13px; }
+      .compare-toolbar h2 { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: .13em; text-transform: uppercase; }
+      .compare-toolbar span { color: var(--quiet); font-size: 11px; }
+      .compare-actions { display: flex; gap: 8px; align-items: center; }
+      .compare-tabs-label { margin: 4px 0 8px; color: var(--quiet); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+      .compare-tabs { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 5px; }
+      .compare-tab { min-width: 150px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--muted); padding: 9px 11px; text-align: left; }
+      .compare-tab:hover { background: rgba(255,255,255,.05); border-color: var(--line-strong); }
+      .compare-tab.active { background: var(--panel-raised); border-color: var(--mint-deep); color: var(--ink); }
+      .compare-tab strong, .compare-tab span { display: block; }
+      .compare-tab strong { font-size: 11px; }
+      .compare-tab span { margin-top: 3px; color: var(--quiet); font-size: 10px; }
+      .compare-tab.active span { color: var(--mint); }
+      .compare-list { display: flex; flex-direction: column; gap: 10px; margin-top: 13px; }
+      .compare-item { border-bottom: 1px solid var(--line); padding: 15px 0 18px; }
+      .compare-item:last-child { border-bottom: 0; }
+      .compare-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+      .compare-title { display: flex; align-items: baseline; gap: 9px; }
+      .compare-title strong { font-size: 13px; }
+      .compare-title em { color: var(--mint); font-size: 10px; font-style: normal; font-weight: 750; letter-spacing: .1em; }
+      .compare-runtime { margin-top: 4px; color: var(--quiet); font-size: 10px; }
+      .compare-metrics { display: flex; gap: 11px; color: var(--quiet); font-size: 10px; white-space: nowrap; }
+      .compare-metrics strong { color: var(--muted); font-weight: 650; }
+      .compare-story { margin-top: 12px; border-left: 2px solid var(--line-strong); padding: 3px 15px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+      .compare-story p { margin: 0 0 10px; }
+      .compare-story p:last-child { margin-bottom: 0; }
+      .compare-story .moral { font-weight: 700; }
+      .compare-score { display: flex; align-items: center; gap: 13px; margin-top: 12px; color: var(--muted); font-size: 10px; }
+      .compare-score strong { color: var(--mint); font-size: 15px; }
+      .compare-score span { color: var(--quiet); }
+      .compare-error { margin-top: 12px; color: var(--red); font-size: 11px; }
+      .compare-empty { padding: 22px 0; color: var(--quiet); font-size: 12px; line-height: 1.5; }
+      .compare-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; color: var(--quiet); font-size: 10px; }
+      .evidence-intro { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0 0 18px; }
+      .judge-card { border: 1px solid var(--line); border-radius: 10px; padding: 15px; background: var(--panel-raised); }
+      .judge-provider { display: flex; gap: 9px; align-items: flex-start; }
+      .provider-mark { width: 25px; height: 25px; border-radius: 7px; background: #4167d9; color: white; display: grid; place-items: center; font-weight: 800; font-size: 12px; }
+      .judge-provider strong { display: block; font-size: 12px; }
+      .judge-provider span { display: block; color: var(--muted); font-size: 10px; margin-top: 3px; }
+      .judge-button { width: 100%; margin-top: 14px; }
+      .score-block { margin-top: 20px; }
+      .score-total { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+      .score-total span { color: var(--muted); font-size: 11px; }
+      .score-total strong { color: var(--mint); font-size: 28px; letter-spacing: -.05em; }
+      .score-total small { color: var(--quiet); font-size: 11px; }
+      .axis { margin-top: 13px; }
+      .axis-line { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--muted); }
+      .axis-line strong { color: var(--ink); }
+      .bar { height: 4px; background: #2a2e2b; margin-top: 6px; border-radius: 99px; overflow: hidden; }
+      .bar i { display: block; height: 100%; width: 0; background: var(--mint); border-radius: inherit; transition: width .4s ease; }
+      .reason { margin: 6px 0 0; color: var(--quiet); font-size: 10px; line-height: 1.45; }
+      .judge-empty { margin-top: 22px; padding-top: 17px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 11px; line-height: 1.5; }
+      .error-box { color: var(--red); background: rgba(233,142,134,.08); border: 1px solid rgba(233,142,134,.3); border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.45; }
+      .toast { position: fixed; right: 24px; bottom: 24px; max-width: 360px; background: #282d29; border: 1px solid var(--line-strong); color: var(--ink); border-radius: 8px; padding: 11px 13px; font-size: 12px; box-shadow: 0 12px 30px rgba(0,0,0,.28); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .18s, transform .18s; }
+      .toast.show { opacity: 1; transform: translateY(0); }
+      .loading::after { content: ""; display: inline-block; width: 10px; height: 10px; margin-left: 7px; border: 1px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -1px; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (max-width: 1250px) { body { min-width: 0; } .workspace { grid-template-columns: 270px minmax(460px, 1fr) 290px; } .stage { padding-left: 22px; padding-right: 22px; } }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="mark"></div>
+          <div class="brand-copy"><span class="eyebrow">TinyStory / operator surface</span><span class="brand-title">Demo Studio</span></div>
+        </div>
+        <div class="top-meta"><span>five representative systems</span><span id="judge-chip" class="judge-chip"><i class="dot"></i><span>Judge loading…</span></span></div>
+      </header>
+      <div class="workspace">
+        <aside class="rail">
+          <div class="section-heading"><h2>Model inventory</h2><span id="model-count">—</span></div>
+          <div id="model-list" class="model-list"></div>
+          <div class="rail-note"><strong>Lifecycle is explicit.</strong><br />Load warms a real backend process. Unload terminates it. A row is runnable only while its own runtime is loaded.</div>
+        </aside>
+        <main class="stage">
+          <div class="stage-header">
+            <div><h1>One prompt. Five directions.</h1><p>Warm a system, run the same fable brief, then send the output to the independent judge.</p></div>
+            <div class="stage-actions"><button id="single-button" class="ghost-button" style="display:none">Single output</button><button id="compare-button" class="ghost-button" disabled>Compare 0 models</button><button id="reset-button" class="ghost-button">Reset brief</button></div>
+          </div>
+          <section class="prompt-panel">
+            <div class="prompt-top"><h2>Demo brief</h2><div class="preset-control"><label for="preset-select">Case</label><select id="preset-select" disabled><option>Loading cases…</option></select><span id="preset-count" class="preset-count">25 benchmark cases</span></div></div>
+            <div class="fields">
+              <div class="field"><label for="character">Character</label><input id="character" /></div>
+              <div class="field"><label for="setting">Setting</label><input id="setting" /></div>
+              <div class="field full"><label for="challenge">Challenge</label><textarea id="challenge"></textarea></div>
+              <div class="field full"><label for="outcome">Outcome</label><textarea id="outcome"></textarea></div>
+              <div class="field"><label for="teaching">Teaching / moral</label><input id="teaching" /></div>
+              <div class="field"><label for="length">Length</label><select id="length"><option value="short">Short</option><option value="medium" selected>Medium</option><option value="long">Long</option></select></div>
+            </div>
+            <div class="prompt-footer"><div id="selected-runtime" class="selected-runtime"></div><button id="run-button" class="primary-button run-button" disabled>Run selected</button></div>
+          </section>
+          <div id="output-header" class="output-header"><h2>Model output</h2><span id="output-meta" class="output-meta">No run yet</span></div>
+          <section id="story-paper" class="story-paper"><div class="story-placeholder"><div class="glyph">◌</div><p>Select a model, load its runtime, and run the shared brief to place its story here.</p></div></section>
+          <div id="run-strip" class="run-strip"></div>
+          <section id="compare-panel" class="compare-panel" style="display:none">
+            <div class="compare-toolbar"><div><h2>Compare outputs</h2><span id="compare-summary">Same case, multiple loaded systems</span></div><div class="compare-actions"><button id="judge-all-button" class="primary-button" disabled>Judge all outputs</button></div></div>
+            <div class="compare-tabs-label">Quick switch</div>
+            <div id="compare-tabs" class="compare-tabs" role="tablist"></div>
+            <div id="compare-list" class="compare-list"><div class="compare-empty">Select at least two loaded models in the inventory, then compare them on the selected case.</div></div>
+          </section>
+        </main>
+        <aside class="evidence">
+          <div class="section-heading"><h2>Judge</h2><span>evidence</span></div>
+          <p class="evidence-intro">The score comes from the configured Google GenAI judge, never from the local model runtime. Format is reported separately and does not affect the four scores.</p>
+          <div class="judge-card">
+            <div class="judge-provider"><div class="provider-mark">G</div><div><strong id="judge-model">Google GenAI</strong><span id="judge-detail">Checking configuration…</span></div></div>
+            <button id="judge-button" class="primary-button judge-button" disabled>Judge this output</button>
+          </div>
+          <div id="score-block" class="score-block"></div>
+          <div id="judge-empty" class="judge-empty">Run a model first. The judge returns four compact 1–10 scores: grammar, creativity, moral clarity, and prompt adherence.</div>
+        </aside>
+      </div>
+      <div id="toast" class="toast"></div>
+    </div>
+    <script>
+      const DEFAULTS = {
+        character: "A patient fox",
+        setting: "a quiet forest after rain",
+        challenge: "the river rises before the animals can cross",
+        outcome: "the fox helps the smaller animals find a safe path",
+        teaching: "Kindness makes every journey easier",
+        length: "medium",
+      };
+      const AXES = ["grammar", "creativity", "moral_clarity", "prompt_adherence"];
+      const AXIS_LABELS = { grammar: "Grammar", creativity: "Creativity", moral_clarity: "Moral clarity", prompt_adherence: "Prompt adherence" };
+      const state = { models: [], selected: null, output: null, judge: null, judgeStatus: null, busy: new Set(), presets: [], presetId: null, compareIds: new Set(), compareResults: [], compareSelectedId: null, compareBusy: false, view: "single" };
+
+      const $ = (id) => document.getElementById(id);
+      const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+      const toast = (message) => { const el = $("toast"); el.textContent = message; el.classList.add("show"); clearTimeout(window.__toast); window.__toast = setTimeout(() => el.classList.remove("show"), 3000); };
+      const api = async (path, options = {}) => { const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options }); const body = await response.json().catch(() => ({})); if (!response.ok) throw new Error(body.error || body.detail || `HTTP ${response.status}`); return body; };
+      const brief = () => ({ character: $("character").value, setting: $("setting").value, challenge: $("challenge").value, outcome: $("outcome").value, teaching: $("teaching").value, length: $("length").value });
+      const selectedModel = () => state.models.find((model) => model.id === state.selected);
+      const storyHtml = (story) => escapeHtml(story).split(/\n\s*\n/).map((part) => `<p>${part.replace(/^Moral:/, "<span class=\"moral\">Moral:</span>")}</p>`).join("");
+      const formatLabel = (format) => !format ? "" : format.moral_is_exact ? "Moral exact" : format.moral_is_final ? "Moral line" : format.has_moral_line ? "Moral not final" : "No Moral line";
+      const currentPreset = () => state.presets.find((preset) => preset.prompt_id === state.presetId);
+      const selectedCompareResult = () => state.compareResults.find((result) => result.model_id === state.compareSelectedId);
+
+      function renderModels() {
+        $("model-count").textContent = `${state.models.filter((m) => m.available).length} available`;
+        $("model-list").innerHTML = state.models.map((model) => {
+          const loaded = model.loaded;
+          const error = model.status === "error" || model.status === "unavailable";
+          const busy = state.busy.has(model.id);
+          return `<article class="model-row ${state.selected === model.id ? "selected" : ""}" data-model="${escapeHtml(model.id)}">
+            <div class="model-main" data-select="${escapeHtml(model.id)}"><div><div class="model-name">${escapeHtml(model.name)}</div><div class="model-sub">${escapeHtml(model.member_name)}</div></div><span class="direction">${escapeHtml(model.direction)}</span></div>
+            <div class="backend">${escapeHtml(model.backend_label)}</div>
+            <div class="row-footer"><span class="state ${loaded ? "loaded" : error ? "error" : ""}"><i class="dot ${loaded ? "live" : error ? "error" : ""}"></i>${loaded ? "Loaded" : model.status === "unavailable" ? "Unavailable" : model.status === "error" ? "Error" : "Unloaded"}</span><div class="row-tools"><label class="compare-toggle"><input type="checkbox" data-compare="${escapeHtml(model.id)}" ${state.compareIds.has(model.id) ? "checked" : ""} ${!loaded || busy ? "disabled" : ""} /> Compare</label><button class="small-button" data-action="${loaded ? "unload" : "load"}" data-model="${escapeHtml(model.id)}" ${busy || (!loaded && !model.available) ? "disabled" : ""}>${busy ? "Working…" : loaded ? "Unload" : "Load"}</button></div></div>
+            ${error ? `<div class="model-sub" style="color: var(--red); margin-top: 8px">${escapeHtml(model.availability_detail || model.error)}</div>` : ""}
+          </article>`;
+        }).join("");
+        document.querySelectorAll("[data-select]").forEach((el) => el.addEventListener("click", () => { state.selected = el.dataset.select; state.judge = null; render(); }));
+        document.querySelectorAll("[data-action]").forEach((el) => el.addEventListener("click", async (event) => { event.stopPropagation(); await lifecycle(el.dataset.model, el.dataset.action); }));
+        document.querySelectorAll("[data-compare]").forEach((el) => el.addEventListener("change", (event) => { event.stopPropagation(); if (el.checked) state.compareIds.add(el.dataset.compare); else state.compareIds.delete(el.dataset.compare); updateCompareButton(); }));
+        updateSelectedRuntime();
+        updateCompareButton();
+      }
+
+      function updateSelectedRuntime() {
+        const model = selectedModel();
+        const button = $("run-button");
+        if (!model) { $("selected-runtime").textContent = "Choose a model from the inventory."; button.disabled = true; return; }
+        $("selected-runtime").innerHTML = `<strong>${escapeHtml(model.direction)} · ${escapeHtml(model.name)}</strong><br />${escapeHtml(model.loaded ? model.backend_label + " · runtime warm" : "Load this runtime before running")}`;
+        button.disabled = !model.loaded || state.busy.has(model.id);
+      }
+
+      function updateCompareButton() {
+        const button = $("compare-button");
+        button.textContent = state.compareBusy ? "Comparing…" : `Compare ${state.compareIds.size} models`;
+        button.disabled = state.compareBusy || state.compareIds.size < 2;
+        $("single-button").style.display = state.view === "compare" ? "inline-block" : "none";
+      }
+
+      function renderPresets() {
+        const select = $("preset-select");
+        select.innerHTML = `<option value="custom">Custom brief</option>` + state.presets.map((preset) => `<option value="${escapeHtml(preset.prompt_id)}">${escapeHtml(preset.prompt_id)} · ${escapeHtml(preset.character)}</option>`).join("");
+        select.value = state.presetId || "custom";
+        select.disabled = state.presets.length === 0;
+        $("preset-count").textContent = state.presets.length ? `${state.presets.length} benchmark cases` : "Custom only";
+      }
+
+      function setBrief(values) {
+        ["character", "setting", "challenge", "outcome", "teaching", "length"].forEach((key) => { $(key).value = values[key] || ""; });
+      }
+
+      function useCustomBrief() {
+        state.presetId = "custom";
+        state.output = null;
+        state.judge = null;
+        state.compareResults = [];
+        state.compareSelectedId = null;
+        state.view = "single";
+        render();
+      }
+
+      function choosePreset(promptId) {
+        if (promptId === "custom") { useCustomBrief(); return; }
+        const preset = state.presets.find((item) => item.prompt_id === promptId);
+        if (!preset) return;
+        setBrief(preset);
+        state.presetId = preset.prompt_id;
+        state.output = null;
+        state.judge = null;
+        state.compareResults = [];
+        state.compareSelectedId = null;
+        state.view = "single";
+        render();
+      }
+
+      function renderCompare() {
+        const panel = $("compare-panel");
+        const inCompare = state.view === "compare";
+        $("output-header").style.display = inCompare ? "none" : "flex";
+        $("story-paper").style.display = inCompare ? "none" : "block";
+        $("run-strip").style.display = inCompare ? "none" : "flex";
+        panel.style.display = inCompare ? "block" : "none";
+        if (!inCompare) return;
+        const preset = currentPreset();
+        const results = state.compareResults;
+        $("compare-summary").textContent = `${preset?.prompt_id || "Custom"} · ${results.length} output${results.length === 1 ? "" : "s"}`;
+        const judgeable = results.filter((result) => result.story && !result.error).length;
+        const judgeAll = $("judge-all-button");
+        judgeAll.disabled = state.compareBusy || judgeable === 0;
+        judgeAll.textContent = state.compareBusy ? "Comparing…" : "Judge all outputs";
+        if (!results.length) {
+          $("compare-tabs").innerHTML = "";
+          $("compare-list").innerHTML = `<div class="compare-empty">Select at least two loaded models in the inventory, then compare them on the selected case.</div>`;
+          return;
+        }
+        if (!state.compareSelectedId || !results.some((result) => result.model_id === state.compareSelectedId)) state.compareSelectedId = results[0].model_id;
+        $("compare-tabs").innerHTML = results.map((result) => {
+          const model = state.models.find((item) => item.id === result.model_id);
+          const title = model?.name || result.model_name || result.model_id;
+          const status = result.error ? "Error" : result.judge ? `Score ${result.judge.overall.toFixed(2)}` : "Not judged";
+          return `<button type="button" class="compare-tab ${result.model_id === state.compareSelectedId ? "active" : ""}" data-compare-select="${escapeHtml(result.model_id)}" role="tab" aria-selected="${result.model_id === state.compareSelectedId}"><strong>${escapeHtml(model?.direction || result.direction || result.model_id)} · ${escapeHtml(title)}</strong><span>${escapeHtml(status)}</span></button>`;
+        }).join("");
+        document.querySelectorAll("[data-compare-select]").forEach((el) => el.addEventListener("click", () => { state.compareSelectedId = el.dataset.compareSelect; render(); }));
+
+        const result = selectedCompareResult();
+        if (!result) return;
+        const model = state.models.find((item) => item.id === result.model_id);
+        const index = results.findIndex((item) => item.model_id === result.model_id);
+        const previousId = results[(index - 1 + results.length) % results.length].model_id;
+        const nextId = results[(index + 1) % results.length].model_id;
+        const score = result.judge ? `<div class="compare-score"><strong>Overall ${result.judge.overall.toFixed(2)} / 10</strong><span>Grammar ${result.judge.grammar} · Creativity ${result.judge.creativity} · Moral ${result.judge.moral_clarity} · Adherence ${result.judge.prompt_adherence}</span></div>` : `<div class="compare-score"><span>${result.judgeState === "loading" ? "Judging…" : result.judgeError ? `Judge error: ${escapeHtml(result.judgeError)}` : "Not judged yet — use Judge selected output"}</span></div>`;
+        const detail = result.error
+          ? `<div class="compare-error">${escapeHtml(result.error)}</div>`
+          : `<div class="compare-story">${storyHtml(result.story)}</div>${score}`;
+        $("compare-list").innerHTML = `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.direction || result.model_id)}</em><strong>${escapeHtml(model?.name || result.model_name || result.model_id)}</strong></div><div class="compare-runtime">${result.error ? "Could not run this model" : `${escapeHtml(result.backend)} · ${escapeHtml(result.artifact)}`}</div></div><div class="compare-actions">${result.error ? "" : `<div class="compare-metrics"><span><strong>${result.word_count}</strong> words</span><span><strong>${result.latency_ms}</strong> ms</span>${formatLabel(result.format) ? `<span><strong>${formatLabel(result.format)}</strong></span>` : ""}</div><button class="small-button" data-judge-result="${escapeHtml(result.model_id)}" ${result.judgeState === "loading" ? "disabled" : ""}>${result.judge ? "Rejudge" : "Judge"}</button>`}</div></div>${detail}<div class="compare-nav"><button class="small-button" data-compare-prev ${results.length < 2 ? "disabled" : ""}>← Previous</button><span>Output ${index + 1} of ${results.length}</span><button class="small-button" data-compare-next ${results.length < 2 ? "disabled" : ""}>Next →</button></div></article>`;
+        document.querySelectorAll("[data-judge-result]").forEach((el) => el.addEventListener("click", () => judgeResult(el.dataset.judgeResult)));
+        $("compare-list").querySelector("[data-compare-prev]")?.addEventListener("click", () => { state.compareSelectedId = previousId; render(); });
+        $("compare-list").querySelector("[data-compare-next]")?.addEventListener("click", () => { state.compareSelectedId = nextId; render(); });
+      }
+
+      async function lifecycle(modelId, action) {
+        if (action === "unload") {
+          state.compareIds.delete(modelId);
+          if (state.compareSelectedId === modelId) state.compareSelectedId = null;
+        }
+        state.busy.add(modelId); renderModels();
+        try { await api(`/api/models/${encodeURIComponent(modelId)}/${action}`, { method: "POST" }); toast(action === "load" ? "Runtime loaded" : "Runtime unloaded"); }
+        catch (error) { toast(error.message); }
+        finally { state.busy.delete(modelId); await refreshModels(); }
+      }
+
+      function renderStory() {
+        const output = state.output;
+        if (!output) { $("story-paper").innerHTML = `<div class="story-placeholder"><div class="glyph">◌</div><p>Select a model, load its runtime, and run the shared brief to place its story here.</p></div>`; $("output-meta").textContent = "No run yet"; $("run-strip").innerHTML = ""; return; }
+        $("story-paper").innerHTML = `<div class="story-text">${storyHtml(output.story)}</div>`;
+        $("output-meta").textContent = `${output.direction} · ${output.model_name}`;
+        $("run-strip").innerHTML = `<span><strong>${output.word_count}</strong> words</span><span><strong>${output.latency_ms}</strong> ms</span><span><strong>${output.backend}</strong></span><span><strong>seed ${output.seed}</strong></span>${formatLabel(output.format) ? `<span><strong>${formatLabel(output.format)}</strong></span>` : ""}${output.actions?.length ? `<span><strong>${escapeHtml(output.actions.join(", "))}</strong></span>` : ""}`;
+      }
+
+      function scoreBlockHtml(score) {
+        return `<div class="score-total"><span>Overall</span><div><strong>${score.overall.toFixed(2)}</strong><small> / 10</small></div></div>` + AXES.map((axis) => `<div class="axis"><div class="axis-line"><span>${AXIS_LABELS[axis]}</span><strong>${score[axis]} / 10</strong></div><div class="bar"><i style="width: ${score[axis] * 10}%"></i></div>${score.rationale?.[axis] ? `<p class="reason">${escapeHtml(score.rationale[axis])}</p>` : ""}</div>`).join("");
+      }
+
+      function renderJudge() {
+        const status = state.judgeStatus;
+        const chip = $("judge-chip");
+        if (status) { chip.innerHTML = `<i class="dot ${status.configured ? "live" : "warn"}"></i><span>${status.configured ? "Google judge ready" : "Judge needs setup"}</span>`; $("judge-model").textContent = `${status.provider} · ${status.model_id}`; $("judge-detail").textContent = status.detail; }
+        if (state.view === "compare") {
+          const result = selectedCompareResult();
+          const button = $("judge-button");
+          button.textContent = result?.judge ? "Rejudge selected output" : "Judge selected output";
+          button.disabled = !result?.story || !status?.configured || result.judgeState === "loading";
+          if (result?.judge) {
+            $("judge-empty").style.display = "none";
+            $("score-block").innerHTML = scoreBlockHtml(result.judge);
+          } else {
+            $("score-block").innerHTML = "";
+            $("judge-empty").style.display = "block";
+            $("judge-empty").textContent = result?.story ? "This panel follows the selected output. Judge it here, or use Judge all outputs." : "Select a completed output to judge it here.";
+          }
+          return;
+        }
+        const button = $("judge-button"); button.textContent = "Judge this output"; button.disabled = !state.output || !status?.configured;
+        if (!state.judge) { $("score-block").innerHTML = ""; $("judge-empty").style.display = "block"; return; }
+        $("judge-empty").style.display = "none";
+        $("score-block").innerHTML = scoreBlockHtml(state.judge);
+      }
+
+      function render() { renderPresets(); renderModels(); renderStory(); renderCompare(); renderJudge(); updateCompareButton(); }
+
+      async function refreshModels() {
+        try {
+          state.models = await api("/api/models");
+          const loadedIds = new Set(state.models.filter((model) => model.loaded).map((model) => model.id));
+          state.compareIds = new Set([...state.compareIds].filter((modelId) => loadedIds.has(modelId)));
+          if (!state.selected && state.models.length) state.selected = state.models[0].id;
+          if (state.selected && !state.models.some((model) => model.id === state.selected)) state.selected = state.models[0]?.id;
+          render();
+        } catch (error) { toast(error.message); }
+      }
+
+      async function refreshPresets() {
+        try {
+          state.presets = await api("/api/presets");
+          if ((!state.presetId || state.presetId === "custom") && state.presets.length) {
+            state.presetId = state.presets[0].prompt_id;
+            setBrief(state.presets[0]);
+          }
+          render();
+        } catch (error) { toast(error.message); }
+      }
+
+      async function refreshJudgeStatus() { try { state.judgeStatus = await api("/api/judge/status"); renderJudge(); } catch (error) { toast(error.message); } }
+
+      async function runSelected() {
+        const model = selectedModel();
+        if (!model?.loaded) return;
+        state.view = "single";
+        state.compareResults = [];
+        state.compareSelectedId = null;
+        state.busy.add(model.id);
+        $("run-button").classList.add("loading");
+        $("run-button").textContent = "Running";
+        state.output = null;
+        state.judge = null;
+        render();
+        try {
+          state.output = await api(`/api/models/${encodeURIComponent(model.id)}/run`, { method: "POST", body: JSON.stringify(brief()) });
+          toast(`${model.direction} output ready`);
+        } catch (error) { toast(error.message); }
+        finally { state.busy.delete(model.id); $("run-button").classList.remove("loading"); $("run-button").textContent = "Run selected"; render(); }
+      }
+
+      async function compareSelected() {
+        if (state.compareIds.size < 2) return;
+        state.view = "compare";
+        state.compareBusy = true;
+        state.compareResults = [];
+        state.compareSelectedId = null;
+        state.output = null;
+        state.judge = null;
+        render();
+        try {
+          const response = await api("/api/compare", { method: "POST", body: JSON.stringify({ model_ids: [...state.compareIds], prompt: brief() }) });
+          state.compareResults = response.results || [];
+          state.compareSelectedId = state.compareResults[0]?.model_id || null;
+          toast(`${response.completed} comparison outputs ready`);
+        } catch (error) { toast(error.message); }
+        finally { state.compareBusy = false; render(); }
+      }
+
+      async function judgeResult(modelId, notify = true) {
+        const result = state.compareResults.find((item) => item.model_id === modelId);
+        if (!result?.story) return;
+        result.judgeState = "loading";
+        result.judgeError = null;
+        render();
+        try {
+          result.judge = await api("/api/judge", { method: "POST", body: JSON.stringify({ story: result.story, prompt: result.judge_prompt || result.prompt_sent }) });
+          result.judgeState = "done";
+          if (notify) toast(`${result.direction} judged`);
+        } catch (error) {
+          result.judgeState = "error";
+          result.judgeError = error.message;
+          if (notify) toast(error.message);
+        }
+        render();
+      }
+
+      async function judgeAll() {
+        const results = state.compareResults.filter((result) => result.story && !result.error);
+        if (!results.length) return;
+        $("judge-all-button").classList.add("loading");
+        for (const result of results) await judgeResult(result.model_id, false);
+        $("judge-all-button").classList.remove("loading");
+        renderCompare();
+        toast("Comparison scores ready");
+      }
+
+      async function judgeOutput() {
+        if (!state.output) return;
+        $("judge-button").disabled = true;
+        $("judge-button").classList.add("loading");
+        $("judge-button").textContent = "Judging";
+        try { state.judge = await api("/api/judge", { method: "POST", body: JSON.stringify({ story: state.output.story, prompt: state.output.judge_prompt || state.output.prompt_sent }) }); toast("Google judge returned scores"); }
+        catch (error) { toast(error.message); }
+        finally { $("judge-button").classList.remove("loading"); $("judge-button").textContent = "Judge this output"; renderJudge(); }
+      }
+
+      function resetBrief() {
+        const preset = state.presets[0];
+        if (preset) { setBrief(preset); state.presetId = preset.prompt_id; }
+        else { setBrief(DEFAULTS); state.presetId = "custom"; }
+        state.output = null;
+        state.judge = null;
+        state.compareResults = [];
+        state.compareSelectedId = null;
+        state.view = "single";
+        render();
+      }
+
+      $("model-list").addEventListener("click", (event) => { const row = event.target.closest(".model-row"); if (row && !event.target.closest("button") && !event.target.closest("input")) { state.selected = row.dataset.model; state.judge = null; render(); } });
+      $("preset-select").addEventListener("change", (event) => choosePreset(event.target.value));
+      ["character", "setting", "challenge", "outcome", "teaching", "length"].forEach((id) => $(id).addEventListener("input", () => { if (state.presetId !== "custom" || state.output || state.compareResults.length || state.view !== "single") useCustomBrief(); else { state.presetId = "custom"; $("preset-select").value = "custom"; } }));
+      $("compare-button").addEventListener("click", compareSelected); $("single-button").addEventListener("click", () => { state.view = "single"; render(); });
+      $("judge-all-button").addEventListener("click", judgeAll); $("run-button").addEventListener("click", runSelected); $("judge-button").addEventListener("click", () => state.view === "compare" ? judgeResult(state.compareSelectedId) : judgeOutput()); $("reset-button").addEventListener("click", resetBrief);
+      resetBrief(); refreshPresets(); refreshModels(); refreshJudgeStatus(); setInterval(refreshModels, 5000);
+    </script>
+  </body>
+</html>
