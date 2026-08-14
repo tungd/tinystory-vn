@@ -27,6 +27,9 @@ from app.prompt_en import (
     LENGTH_NUM_PREDICT,
     SYSTEM_PROMPT_EN,
     SYSTEM_PROMPT_MINIMAL_EN,
+    build_smollm2_prompt,
+    build_slm_prompt,
+    build_v16_prompt,
     build_evaluation_brief,
     build_fable_prompt,
 )
@@ -78,6 +81,7 @@ STUDIO_SPECS: tuple[StudioSpec, ...] = (
         artifact=ROOT / "models/global-bench/slm-60m.gguf",
         port=18101,
         description="A compact scratch-trained model served through llama.cpp completion.",
+        prompt_style="slm",
     ),
     StudioSpec(
         id="e2-v16-conditioned",
@@ -100,6 +104,7 @@ STUDIO_SPECS: tuple[StudioSpec, ...] = (
         adapter=ROOT / "models/global-bench/smollm2-135m-c-adapter",
         port=18103,
         description="SmolLM2-135M with the C LoRA adapter, served by Transformers and PEFT.",
+        prompt_style="smollm2",
     ),
     StudioSpec(
         id="e4-base-repair",
@@ -404,11 +409,24 @@ class StudioRuntime:
 
     @staticmethod
     def _model_prompt(spec: StudioSpec, row: dict[str, str]) -> str:
-        if spec.prompt_style in {"slm", "v16"}:
-            return (
-                f"<char> {row['character'].strip()} </char>\n"
-                f"<moral> {row['teaching'].strip()} </moral>\n"
-                "<story>\n"
+        if spec.prompt_style == "slm":
+            return build_slm_prompt(
+                row["character"],
+                row["setting"],
+                row["challenge"],
+                row["outcome"],
+                row["teaching"],
+                LENGTH_HINT_EN[row["length"]],
+            )
+        if spec.prompt_style == "v16":
+            return build_v16_prompt(row["character"], row["teaching"])
+        if spec.prompt_style == "smollm2":
+            return build_smollm2_prompt(
+                row["character"],
+                row["setting"],
+                row["challenge"],
+                row["outcome"],
+                row["teaching"],
             )
         return build_fable_prompt(
             row["character"],

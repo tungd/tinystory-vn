@@ -1,0 +1,627 @@
+[
+  {
+    "blind_id": "B001",
+    "candidate_id": "e2",
+    "prompt_id": "GJ16"
+  },
+  {
+    "blind_id": "B002",
+    "candidate_id": "e2",
+    "prompt_id": "GJ19"
+  },
+  {
+    "blind_id": "B003",
+    "candidate_id": "e1",
+    "prompt_id": "GJ25"
+  },
+  {
+    "blind_id": "B004",
+    "candidate_id": "e1",
+    "prompt_id": "GJ14"
+  },
+  {
+    "blind_id": "B005",
+    "candidate_id": "e1",
+    "prompt_id": "GJ02"
+  },
+  {
+    "blind_id": "B006",
+    "candidate_id": "e2",
+    "prompt_id": "GJ15"
+  },
+  {
+    "blind_id": "B007",
+    "candidate_id": "e2",
+    "prompt_id": "GJ18"
+  },
+  {
+    "blind_id": "B008",
+    "candidate_id": "e3",
+    "prompt_id": "GJ20"
+  },
+  {
+    "blind_id": "B009",
+    "candidate_id": "e3",
+    "prompt_id": "GJ12"
+  },
+  {
+    "blind_id": "B010",
+    "candidate_id": "e1",
+    "prompt_id": "GJ18"
+  },
+  {
+    "blind_id": "B011",
+    "candidate_id": "e4",
+    "prompt_id": "GJ19"
+  },
+  {
+    "blind_id": "B012",
+    "candidate_id": "e5",
+    "prompt_id": "GJ07"
+  },
+  {
+    "blind_id": "B013",
+    "candidate_id": "e5",
+    "prompt_id": "GJ09"
+  },
+  {
+    "blind_id": "B014",
+    "candidate_id": "e4",
+    "prompt_id": "GJ09"
+  },
+  {
+    "blind_id": "B015",
+    "candidate_id": "e2",
+    "prompt_id": "GJ14"
+  },
+  {
+    "blind_id": "B016",
+    "candidate_id": "e3",
+    "prompt_id": "GJ13"
+  },
+  {
+    "blind_id": "B017",
+    "candidate_id": "e1",
+    "prompt_id": "GJ16"
+  },
+  {
+    "blind_id": "B018",
+    "candidate_id": "e5",
+    "prompt_id": "GJ03"
+  },
+  {
+    "blind_id": "B019",
+    "candidate_id": "e5",
+    "prompt_id": "GJ19"
+  },
+  {
+    "blind_id": "B020",
+    "candidate_id": "e4",
+    "prompt_id": "GJ13"
+  },
+  {
+    "blind_id": "B021",
+    "candidate_id": "e4",
+    "prompt_id": "GJ08"
+  },
+  {
+    "blind_id": "B022",
+    "candidate_id": "e2",
+    "prompt_id": "GJ07"
+  },
+  {
+    "blind_id": "B023",
+    "candidate_id": "e3",
+    "prompt_id": "GJ16"
+  },
+  {
+    "blind_id": "B024",
+    "candidate_id": "e5",
+    "prompt_id": "GJ02"
+  },
+  {
+    "blind_id": "B025",
+    "candidate_id": "e2",
+    "prompt_id": "GJ12"
+  },
+  {
+    "blind_id": "B026",
+    "candidate_id": "e5",
+    "prompt_id": "GJ10"
+  },
+  {
+    "blind_id": "B027",
+    "candidate_id": "e1",
+    "prompt_id": "GJ04"
+  },
+  {
+    "blind_id": "B028",
+    "candidate_id": "e5",
+    "prompt_id": "GJ01"
+  },
+  {
+    "blind_id": "B029",
+    "candidate_id": "e2",
+    "prompt_id": "GJ25"
+  },
+  {
+    "blind_id": "B030",
+    "candidate_id": "e2",
+    "prompt_id": "GJ02"
+  },
+  {
+    "blind_id": "B031",
+    "candidate_id": "e1",
+    "prompt_id": "GJ19"
+  },
+  {
+    "blind_id": "B032",
+    "candidate_id": "e4",
+    "prompt_id": "GJ01"
+  },
+  {
+    "blind_id": "B033",
+    "candidate_id": "e3",
+    "prompt_id": "GJ08"
+  },
+  {
+    "blind_id": "B034",
+    "candidate_id": "e4",
+    "prompt_id": "GJ21"
+  },
+  {
+    "blind_id": "B035",
+    "candidate_id": "e5",
+    "prompt_id": "GJ24"
+  },
+  {
+    "blind_id": "B036",
+    "candidate_id": "e4",
+    "prompt_id": "GJ20"
+  },
+  {
+    "blind_id": "B037",
+    "candidate_id": "e4",
+    "prompt_id": "GJ04"
+  },
+  {
+    "blind_id": "B038",
+    "candidate_id": "e2",
+    "prompt_id": "GJ06"
+  },
+  {
+    "blind_id": "B039",
+    "candidate_id": "e5",
+    "prompt_id": "GJ12"
+  },
+  {
+    "blind_id": "B040",
+    "candidate_id": "e1",
+    "prompt_id": "GJ11"
+  },
+  {
+    "blind_id": "B041",
+    "candidate_id": "e3",
+    "prompt_id": "GJ25"
+  },
+  {
+    "blind_id": "B042",
+    "candidate_id": "e4",
+    "prompt_id": "GJ14"
+  },
+  {
+    "blind_id": "B043",
+    "candidate_id": "e1",
+    "prompt_id": "GJ23"
+  },
+  {
+    "blind_id": "B044",
+    "candidate_id": "e2",
+    "prompt_id": "GJ23"
+  },
+  {
+    "blind_id": "B045",
+    "candidate_id": "e5",
+    "prompt_id": "GJ08"
+  },
+  {
+    "blind_id": "B046",
+    "candidate_id": "e3",
+    "prompt_id": "GJ18"
+  },
+  {
+    "blind_id": "B047",
+    "candidate_id": "e3",
+    "prompt_id": "GJ03"
+  },
+  {
+    "blind_id": "B048",
+    "candidate_id": "e2",
+    "prompt_id": "GJ08"
+  },
+  {
+    "blind_id": "B049",
+    "candidate_id": "e3",
+    "prompt_id": "GJ04"
+  },
+  {
+    "blind_id": "B050",
+    "candidate_id": "e2",
+    "prompt_id": "GJ09"
+  },
+  {
+    "blind_id": "B051",
+    "candidate_id": "e5",
+    "prompt_id": "GJ22"
+  },
+  {
+    "blind_id": "B052",
+    "candidate_id": "e5",
+    "prompt_id": "GJ21"
+  },
+  {
+    "blind_id": "B053",
+    "candidate_id": "e4",
+    "prompt_id": "GJ18"
+  },
+  {
+    "blind_id": "B054",
+    "candidate_id": "e4",
+    "prompt_id": "GJ22"
+  },
+  {
+    "blind_id": "B055",
+    "candidate_id": "e3",
+    "prompt_id": "GJ19"
+  },
+  {
+    "blind_id": "B056",
+    "candidate_id": "e2",
+    "prompt_id": "GJ05"
+  },
+  {
+    "blind_id": "B057",
+    "candidate_id": "e3",
+    "prompt_id": "GJ24"
+  },
+  {
+    "blind_id": "B058",
+    "candidate_id": "e3",
+    "prompt_id": "GJ07"
+  },
+  {
+    "blind_id": "B059",
+    "candidate_id": "e3",
+    "prompt_id": "GJ21"
+  },
+  {
+    "blind_id": "B060",
+    "candidate_id": "e4",
+    "prompt_id": "GJ11"
+  },
+  {
+    "blind_id": "B061",
+    "candidate_id": "e5",
+    "prompt_id": "GJ17"
+  },
+  {
+    "blind_id": "B062",
+    "candidate_id": "e5",
+    "prompt_id": "GJ11"
+  },
+  {
+    "blind_id": "B063",
+    "candidate_id": "e5",
+    "prompt_id": "GJ04"
+  },
+  {
+    "blind_id": "B064",
+    "candidate_id": "e4",
+    "prompt_id": "GJ05"
+  },
+  {
+    "blind_id": "B065",
+    "candidate_id": "e3",
+    "prompt_id": "GJ10"
+  },
+  {
+    "blind_id": "B066",
+    "candidate_id": "e3",
+    "prompt_id": "GJ09"
+  },
+  {
+    "blind_id": "B067",
+    "candidate_id": "e5",
+    "prompt_id": "GJ20"
+  },
+  {
+    "blind_id": "B068",
+    "candidate_id": "e1",
+    "prompt_id": "GJ01"
+  },
+  {
+    "blind_id": "B069",
+    "candidate_id": "e1",
+    "prompt_id": "GJ15"
+  },
+  {
+    "blind_id": "B070",
+    "candidate_id": "e5",
+    "prompt_id": "GJ06"
+  },
+  {
+    "blind_id": "B071",
+    "candidate_id": "e3",
+    "prompt_id": "GJ01"
+  },
+  {
+    "blind_id": "B072",
+    "candidate_id": "e4",
+    "prompt_id": "GJ25"
+  },
+  {
+    "blind_id": "B073",
+    "candidate_id": "e1",
+    "prompt_id": "GJ06"
+  },
+  {
+    "blind_id": "B074",
+    "candidate_id": "e2",
+    "prompt_id": "GJ17"
+  },
+  {
+    "blind_id": "B075",
+    "candidate_id": "e5",
+    "prompt_id": "GJ23"
+  },
+  {
+    "blind_id": "B076",
+    "candidate_id": "e2",
+    "prompt_id": "GJ11"
+  },
+  {
+    "blind_id": "B077",
+    "candidate_id": "e1",
+    "prompt_id": "GJ05"
+  },
+  {
+    "blind_id": "B078",
+    "candidate_id": "e4",
+    "prompt_id": "GJ10"
+  },
+  {
+    "blind_id": "B079",
+    "candidate_id": "e2",
+    "prompt_id": "GJ20"
+  },
+  {
+    "blind_id": "B080",
+    "candidate_id": "e3",
+    "prompt_id": "GJ14"
+  },
+  {
+    "blind_id": "B081",
+    "candidate_id": "e5",
+    "prompt_id": "GJ14"
+  },
+  {
+    "blind_id": "B082",
+    "candidate_id": "e3",
+    "prompt_id": "GJ22"
+  },
+  {
+    "blind_id": "B083",
+    "candidate_id": "e4",
+    "prompt_id": "GJ02"
+  },
+  {
+    "blind_id": "B084",
+    "candidate_id": "e1",
+    "prompt_id": "GJ03"
+  },
+  {
+    "blind_id": "B085",
+    "candidate_id": "e5",
+    "prompt_id": "GJ05"
+  },
+  {
+    "blind_id": "B086",
+    "candidate_id": "e3",
+    "prompt_id": "GJ05"
+  },
+  {
+    "blind_id": "B087",
+    "candidate_id": "e2",
+    "prompt_id": "GJ03"
+  },
+  {
+    "blind_id": "B088",
+    "candidate_id": "e4",
+    "prompt_id": "GJ24"
+  },
+  {
+    "blind_id": "B089",
+    "candidate_id": "e5",
+    "prompt_id": "GJ15"
+  },
+  {
+    "blind_id": "B090",
+    "candidate_id": "e2",
+    "prompt_id": "GJ13"
+  },
+  {
+    "blind_id": "B091",
+    "candidate_id": "e4",
+    "prompt_id": "GJ23"
+  },
+  {
+    "blind_id": "B092",
+    "candidate_id": "e5",
+    "prompt_id": "GJ13"
+  },
+  {
+    "blind_id": "B093",
+    "candidate_id": "e4",
+    "prompt_id": "GJ03"
+  },
+  {
+    "blind_id": "B094",
+    "candidate_id": "e2",
+    "prompt_id": "GJ24"
+  },
+  {
+    "blind_id": "B095",
+    "candidate_id": "e5",
+    "prompt_id": "GJ25"
+  },
+  {
+    "blind_id": "B096",
+    "candidate_id": "e4",
+    "prompt_id": "GJ17"
+  },
+  {
+    "blind_id": "B097",
+    "candidate_id": "e2",
+    "prompt_id": "GJ01"
+  },
+  {
+    "blind_id": "B098",
+    "candidate_id": "e1",
+    "prompt_id": "GJ22"
+  },
+  {
+    "blind_id": "B099",
+    "candidate_id": "e1",
+    "prompt_id": "GJ21"
+  },
+  {
+    "blind_id": "B100",
+    "candidate_id": "e1",
+    "prompt_id": "GJ08"
+  },
+  {
+    "blind_id": "B101",
+    "candidate_id": "e5",
+    "prompt_id": "GJ16"
+  },
+  {
+    "blind_id": "B102",
+    "candidate_id": "e1",
+    "prompt_id": "GJ20"
+  },
+  {
+    "blind_id": "B103",
+    "candidate_id": "e1",
+    "prompt_id": "GJ10"
+  },
+  {
+    "blind_id": "B104",
+    "candidate_id": "e3",
+    "prompt_id": "GJ17"
+  },
+  {
+    "blind_id": "B105",
+    "candidate_id": "e1",
+    "prompt_id": "GJ07"
+  },
+  {
+    "blind_id": "B106",
+    "candidate_id": "e3",
+    "prompt_id": "GJ23"
+  },
+  {
+    "blind_id": "B107",
+    "candidate_id": "e3",
+    "prompt_id": "GJ02"
+  },
+  {
+    "blind_id": "B108",
+    "candidate_id": "e1",
+    "prompt_id": "GJ17"
+  },
+  {
+    "blind_id": "B109",
+    "candidate_id": "e3",
+    "prompt_id": "GJ15"
+  },
+  {
+    "blind_id": "B110",
+    "candidate_id": "e1",
+    "prompt_id": "GJ12"
+  },
+  {
+    "blind_id": "B111",
+    "candidate_id": "e2",
+    "prompt_id": "GJ21"
+  },
+  {
+    "blind_id": "B112",
+    "candidate_id": "e3",
+    "prompt_id": "GJ11"
+  },
+  {
+    "blind_id": "B113",
+    "candidate_id": "e1",
+    "prompt_id": "GJ09"
+  },
+  {
+    "blind_id": "B114",
+    "candidate_id": "e2",
+    "prompt_id": "GJ10"
+  },
+  {
+    "blind_id": "B115",
+    "candidate_id": "e4",
+    "prompt_id": "GJ12"
+  },
+  {
+    "blind_id": "B116",
+    "candidate_id": "e1",
+    "prompt_id": "GJ24"
+  },
+  {
+    "blind_id": "B117",
+    "candidate_id": "e4",
+    "prompt_id": "GJ16"
+  },
+  {
+    "blind_id": "B118",
+    "candidate_id": "e4",
+    "prompt_id": "GJ06"
+  },
+  {
+    "blind_id": "B119",
+    "candidate_id": "e5",
+    "prompt_id": "GJ18"
+  },
+  {
+    "blind_id": "B120",
+    "candidate_id": "e2",
+    "prompt_id": "GJ04"
+  },
+  {
+    "blind_id": "B121",
+    "candidate_id": "e4",
+    "prompt_id": "GJ07"
+  },
+  {
+    "blind_id": "B122",
+    "candidate_id": "e2",
+    "prompt_id": "GJ22"
+  },
+  {
+    "blind_id": "B123",
+    "candidate_id": "e4",
+    "prompt_id": "GJ15"
+  },
+  {
+    "blind_id": "B124",
+    "candidate_id": "e3",
+    "prompt_id": "GJ06"
+  },
+  {
+    "blind_id": "B125",
+    "candidate_id": "e1",
+    "prompt_id": "GJ13"
+  }
+]

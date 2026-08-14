@@ -6,6 +6,7 @@ import numpy as np
 from demo.judge import GoogleJudge
 from demo.runtime import STUDIO_SPECS, StudioRuntime
 from demo.server import CompareRequest, StoryRequest, compare_models, load_presets
+from app.prompt_en import SMOLLM2_TF1_SYSTEM_MESSAGE, TF1_FABLE_PROMPT
 from scripts.convert_v16_mlx import convert_key_and_tensor
 
 
@@ -50,6 +51,26 @@ def test_e1_uses_the_full_five_field_benchmark_prompt():
     assert "Challenge: the river rises" in prompt
     assert "Outcome: the fox finds a safe path" in prompt
     assert "Teaching/Moral: Kindness helps everyone" in prompt
+    assert prompt.endswith("\n<|story|>")
+
+
+def test_e3_uses_the_original_tf1_system_and_prompt_contract():
+    row = {
+        "character": "a patient fox",
+        "setting": "a quiet forest",
+        "challenge": "the river rises",
+        "outcome": "the fox finds a safe path",
+        "teaching": "Kindness helps everyone",
+        "length": "medium",
+    }
+
+    prompt = StudioRuntime._model_prompt(STUDIO_SPECS[2], row)
+
+    assert prompt == (
+        f"{SMOLLM2_TF1_SYSTEM_MESSAGE}\n\n"
+        + TF1_FABLE_PROMPT.format(**row)
+        + "\n\n"
+    )
 
 
 def test_e2_uses_the_v16_training_prompt_contract():
@@ -169,6 +190,21 @@ def test_judge_accepts_a_structured_flat_response_without_text():
     scores, raw = GoogleJudge._scores_from_response(response)
     assert scores["overall"] == 8.0
     assert raw.startswith('{"grammar": 8')
+
+
+def test_judge_rejects_a_structured_response_with_a_missing_axis():
+    response = SimpleNamespace(
+        text="",
+        parsed={
+            "grammar": 8,
+            "creativity": 7,
+            "moral_clarity": 9,
+        },
+    )
+
+    scores, _ = GoogleJudge._scores_from_response(response)
+
+    assert scores["prompt_adherence"] == 0
 
 
 def test_compare_runs_each_selected_model_and_keeps_per_model_failures(monkeypatch):

@@ -26,18 +26,33 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.enhanced_generation import enhance_story  # noqa: E402
-from app.judge import AXES, build_judge_prompt, parse_scores  # noqa: E402
-from app.prompt_en import LENGTH_HINT_EN, SYSTEM_PROMPT_EN, build_fable_prompt  # noqa: E402
+from app.judge import (  # noqa: E402
+    AXES,
+    build_google_judge_prompt,
+    build_google_judge_schema,
+    scores_from_google_response,
+    validate_google_scores,
+)
+from app.prompt_en import (  # noqa: E402
+    LENGTH_HINT_EN,
+    SYSTEM_PROMPT_EN,
+    build_evaluation_brief,
+    build_fable_prompt,
+    build_smollm2_prompt,
+    build_slm_prompt,
+    build_v16_prompt,
+)
 
 RESULTS = ROOT / "results" / "global_judge"
+PROTOCOL_VERSION = "v2"
 PROMPTS_PATH = RESULTS / "global_prompts_v1.jsonl"
-GEN_DIR = RESULTS / "generations"
+GEN_DIR = RESULTS / f"generations.{PROTOCOL_VERSION}"
 LOG_DIR = RESULTS / "logs"
-JUDGE_PATH = RESULTS / "judge_scores.blinded.jsonl"
-BLIND_MAP_PATH = RESULTS / "blind_map.private.json"
-SUMMARY_PATH = RESULTS / "summary.json"
-SUMMARY_MD_PATH = RESULTS / "summary.md"
-RUN_MANIFEST_PATH = RESULTS / "run_manifest.json"
+JUDGE_PATH = RESULTS / f"judge_scores.blinded.{PROTOCOL_VERSION}.jsonl"
+BLIND_MAP_PATH = RESULTS / f"blind_map.private.{PROTOCOL_VERSION}.json"
+SUMMARY_PATH = RESULTS / f"summary.{PROTOCOL_VERSION}.json"
+SUMMARY_MD_PATH = RESULTS / f"summary.{PROTOCOL_VERSION}.md"
+RUN_MANIFEST_PATH = RESULTS / f"run_manifest.{PROTOCOL_VERSION}.json"
 
 MODEL_DIR = ROOT / "models" / "global-bench"
 CANDIDATES = {
@@ -167,10 +182,26 @@ def prompt_text(row: dict[str, Any]) -> str:
 
 def model_prompt(candidate: str, row: dict[str, Any]) -> str:
     if candidate == "e1":
-        return (
-            f"<char> {row['character'].strip()} </char>\n"
-            f"<moral> {row['teaching'].strip()} </moral>\n"
-            "<story>\n"
+        return build_v16_prompt(
+            row["character"],
+            row["teaching"],
+        )
+    if candidate == "e2":
+        return build_slm_prompt(
+            row["character"],
+            row["setting"],
+            row["challenge"],
+            row["outcome"],
+            row["teaching"],
+            LENGTH_HINT_EN["medium"],
+        )
+    if candidate == "e4":
+        return build_smollm2_prompt(
+            row["character"],
+            row["setting"],
+            row["challenge"],
+            row["outcome"],
+            row["teaching"],
         )
     return prompt_text(row)
 
@@ -395,6 +426,7 @@ def generation_row(
     result = {
         "candidate_id": candidate,
         "candidate_name": CANDIDATES[candidate]["name"],
+        "protocol_version": PROTOCOL_VERSION,
         "prompt_id": prompt["prompt_id"],
         "status": "ok" if words else "error",
         "seed": seed,
@@ -507,7 +539,7 @@ def load_env(path: Path) -> None:
         os.environ.setdefault(key.strip(), value)
 
 
-def blind_items() -> list[dict[str, Any]]:
+def blind_items(candidates: set[str] | None = None) -> list[dict[str, Any]]:
     items = []
     for candidate in CANDIDATES:
         rows = read_jsonl(GEN_DIR / f"{candidate}.jsonl")
@@ -520,16 +552,26 @@ def blind_items() -> list[dict[str, Any]]:
                     "candidate_id": candidate,
                     "prompt_id": prompt_id,
                     "formatted_prompt": row["formatted_prompt"],
+                    "judge_prompt": build_evaluation_brief(
+                        row["prompt"]["character"],
+                        row["prompt"]["setting"],
+                        row["prompt"]["challenge"],
+                        row["prompt"]["outcome"],
+                        row["prompt"]["teaching"],
+                        LENGTH_HINT_EN["medium"],
+                    ),
                     "story": row["story"],
                 }
             )
     random.Random(20260726).shuffle(items)
     for index, item in enumerate(items, 1):
         item["blind_id"] = f"B{index:03d}"
+    if candidates is not None:
+        return [item for item in items if item["candidate_id"] in candidates]
     return items
 
 
-def command_judge(workers: int) -> None:
+def command_judge(workers: int, candidates: list[str] | None = None) -> None:
     from google import genai
     from google.genai import types
 
@@ -539,14 +581,7 @@ def command_judge(workers: int) -> None:
         raise RuntimeError("FABLE_JUDGE_API_KEY is not configured")
     model_id = os.environ.get("FABLE_JUDGE_MODEL_ID", "gemma-4-26b-a4b-it")
     client = genai.Client(api_key=api_key)
-    schema = {
-        "type": "object",
-        "properties": {
-            axis: {"type": "integer", "minimum": 1, "maximum": 10}
-            for axis in AXES
-        },
-        "required": AXES,
-    }
+    schema = build_google_judge_schema()
     config = types.GenerateContentConfig(
         system_instruction="You are a strict, fair evaluator. Output JSON only.",
         temperature=0,
@@ -559,10 +594,23 @@ def command_judge(workers: int) -> None:
             include_thoughts=False,
         ),
     )
-    items = blind_items()
+    all_items = blind_items()
+    selected = set(candidates) if candidates else None
+    items = (
+        all_items
+        if selected is None
+        else [item for item in all_items if item["candidate_id"] in selected]
+    )
     BLIND_MAP_PATH.write_text(
         json.dumps(
-            [{"blind_id": i["blind_id"], "candidate_id": i["candidate_id"], "prompt_id": i["prompt_id"]} for i in items],
+            [
+                {
+                    "blind_id": i["blind_id"],
+                    "candidate_id": i["candidate_id"],
+                    "prompt_id": i["prompt_id"],
+                }
+                for i in all_items
+            ],
             ensure_ascii=False,
             indent=2,
         )
@@ -570,19 +618,12 @@ def command_judge(workers: int) -> None:
         encoding="utf-8",
     )
     completed = {row["blind_id"] for row in read_jsonl(JUDGE_PATH) if row.get("status") == "ok"}
-    print(f"judge: {len(completed)} complete, {len(items) - len(completed)} pending", flush=True)
+    pending_count = sum(item["blind_id"] not in completed for item in items)
+    scope = ", ".join(sorted(selected)) if selected else "all candidates"
+    print(f"judge: scope={scope}; {len(items) - pending_count} complete, {pending_count} pending", flush=True)
 
     def evaluate_item(item: dict[str, Any]) -> dict[str, Any]:
-        prompt = (
-            "Judge this children's fable strictly on four 1-10 integer scales. "
-            "Grammar covers grammatical correctness, coherence, and child-appropriate style. "
-            "Creativity covers originality and vivid storytelling. Moral clarity covers whether "
-            "the requested lesson is clearly earned by the plot. Prompt adherence covers all "
-            "requested character, setting, challenge, outcome, teaching, and final Moral line. "
-            "Return only a JSON object with integer keys grammar, creativity, moral_clarity, "
-            "prompt_adherence. Do not explain.\n\n"
-            f"REQUEST:\n{item['formatted_prompt']}\n\nSTORY:\n{item['story']}\n\nJSON:"
-        )
+        prompt = build_google_judge_prompt(item["story"], item["judge_prompt"])
         last_error: Exception | None = None
         for attempt in range(1, 9):
             try:
@@ -592,13 +633,12 @@ def command_judge(workers: int) -> None:
                     contents=prompt,
                     config=config,
                 )
-                raw = response.text or ""
-                scores = parse_scores(raw)
-                if any(not 1 <= scores[axis] <= 10 for axis in AXES):
-                    raise ValueError(f"invalid scores: {scores}")
+                scores, raw = scores_from_google_response(response)
+                validate_google_scores(scores)
                 return {
                     "blind_id": item["blind_id"],
                     "status": "ok",
+                    "protocol_version": PROTOCOL_VERSION,
                     "judge_model": model_id,
                     "latency_ms": round((time.perf_counter() - started) * 1000),
                     "scores": scores,
@@ -672,6 +712,7 @@ def command_summarize() -> None:
             "candidate_count": 5,
             "story_count": 125,
             "judge_count": 125,
+            "protocol_version": PROTOCOL_VERSION,
             "judge_model": next(iter(judgments.values()))["judge_model"],
             "blind_shuffle_seed": 20260726,
             "generation": GENERATION,
@@ -840,12 +881,22 @@ def command_validate() -> None:
     if JUDGE_PATH.exists():
         judgments = read_jsonl(JUDGE_PATH)
         blind_ids = [row["blind_id"] for row in judgments]
-        if len(judgments) != 125 or len(set(blind_ids)) != 125:
-            raise ValueError("Expected 125 unique judge rows")
+        if len(judgments) > 125 or len(set(blind_ids)) != len(blind_ids):
+            raise ValueError("Judge rows must be a unique subset of the 125 blind IDs")
+        allowed_blind_ids = {
+            row["blind_id"] for row in json.loads(BLIND_MAP_PATH.read_text(encoding="utf-8"))
+        } if BLIND_MAP_PATH.exists() else {f"B{index:03d}" for index in range(1, 126)}
+        if set(blind_ids) - allowed_blind_ids:
+            raise ValueError("Judge rows contain an unknown blind ID")
         for row in judgments:
+            if row.get("status") != "ok":
+                raise ValueError(f"Invalid judge row status in {row['blind_id']}")
             if any(not 1 <= row["scores"][axis] <= 10 for axis in AXES):
                 raise ValueError(f"Invalid judge scores in {row['blind_id']}")
-    print("OK: prompts, artifacts, generations, and judge rows")
+        judge_status = f"judge rows {len(judgments)}/125"
+    else:
+        judge_status = "judge rows 0/125"
+    print(f"OK: prompts, artifacts, generations, and {judge_status}")
 
 
 def main() -> None:
@@ -855,13 +906,19 @@ def main() -> None:
     generate_parser.add_argument("--candidate", choices=CANDIDATES, required=True)
     judge_parser = sub.add_parser("judge")
     judge_parser.add_argument("--workers", type=int, default=6)
+    judge_parser.add_argument(
+        "--candidate",
+        action="append",
+        choices=tuple(CANDIDATES),
+        help="Restrict judging to one or more candidates; repeat the flag to select several.",
+    )
     sub.add_parser("summarize")
     sub.add_parser("validate")
     args = parser.parse_args()
     if args.command == "generate":
         command_generate(args.candidate)
     elif args.command == "judge":
-        command_judge(args.workers)
+        command_judge(args.workers, args.candidate)
     elif args.command == "summarize":
         command_summarize()
     else:

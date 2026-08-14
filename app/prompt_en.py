@@ -21,6 +21,29 @@ LENGTH_HINT_EN = {
     "long": "Write a fuller fable (about 280-340 words).",
 }
 
+# Per-model prompt contracts. These are kept next to the shared English prompt
+# builders so the global benchmark and Demo Studio cannot silently drift apart.
+SLM_STORY_SEPARATOR = "<|story|>"
+SMOLLM2_TF1_SYSTEM_MESSAGE = (
+    "You are a world-class creative assistant that generates captivating and morally-driven "
+    "fables based on structured inputs. Each fable must be: - Imaginative and coherent. "
+    "- Appropriate for a wide audience, including young readers. - Structured around a "
+    "classic fable format (character, setting, conflict, resolution, and moral). Age groups "
+    "are defined as: A (≤3), B (4–7), C (8–11), D (12–15), E (≥16)."
+)
+TF1_FABLE_PROMPT = (
+    "Create a fable based on the following elements. Weave them naturally into a story:\n"
+    "- Main Character: {character}\n"
+    "- Setting: {setting}\n"
+    "- Challenge: {challenge}\n"
+    "- Outcome: {outcome}\n"
+    "- Teaching: {teaching}\n"
+    "The fable should: be appropriate for age group B (4–7), use simple vocabulary, "
+    "begin with vivid scene-setting, not use names (use trait + character), include simple "
+    "dialogue, show (don't tell) growth, end with a clear connection to the moral. Keep it "
+    "around 250 words."
+)
+
 _LABELS = [
     ("character", "Main character"),
     ("setting", "Setting"),
@@ -54,6 +77,46 @@ def build_fable_prompt(
     if length_hint:
         base += "\n" + length_hint.strip()
     return base
+
+
+def build_slm_prompt(
+    character="", setting="", challenge="", outcome="", teaching="", length_hint=""
+) -> str:
+    """Build the SLM prompt plus the separator it saw during training."""
+
+    return (
+        build_fable_prompt(character, setting, challenge, outcome, teaching, length_hint)
+        + "\n"
+        + SLM_STORY_SEPARATOR
+    )
+
+
+def build_v16_prompt(character="", teaching="") -> str:
+    """Build the two-field codec used by the V16 conditioned checkpoint."""
+
+    return (
+        f"<char> {character.strip()} </char>\n"
+        f"<moral> {teaching.strip()} </moral>\n"
+        "<story>\n"
+    )
+
+
+def build_smollm2_prompt(
+    character="", setting="", challenge="", outcome="", teaching=""
+) -> str:
+    """Replay SmolLM2 LoRA C's TF1 system + five-slot training context."""
+
+    prompt = TF1_FABLE_PROMPT.format(
+        character=character.strip(),
+        setting=setting.strip(),
+        challenge=challenge.strip(),
+        outcome=outcome.strip(),
+        teaching=teaching.strip(),
+    )
+    return (
+        f"{SMOLLM2_TF1_SYSTEM_MESSAGE.strip()}\n\n"
+        f"{prompt}\n\n"
+    )
 
 
 def build_evaluation_brief(

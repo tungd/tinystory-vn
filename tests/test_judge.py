@@ -1,4 +1,11 @@
-from app.judge import parse_scores, build_judge_prompt
+import pytest
+
+from app.judge import (
+    build_google_judge_prompt,
+    build_judge_prompt,
+    parse_scores,
+    validate_google_scores,
+)
 
 
 def test_build_judge_prompt_mentions_axes():
@@ -70,3 +77,26 @@ def test_parse_scores_missing_defaults_zero():
     assert s["creativity"] == 0
     assert "creativity" not in s["rationale"]
     assert s["rationale"]["grammar"] == "fine"
+
+
+def test_google_judge_prompt_does_not_make_a_moral_footer_a_requirement():
+    prompt = build_google_judge_prompt(
+        "A complete story.\n\nMoral: kindness matters.",
+        "Teaching/Moral: kindness matters",
+    )
+
+    assert "final Moral line" not in prompt
+    assert "literal `Moral:` footer" in prompt
+    assert "do not reward or penalize" in prompt.lower()
+
+
+def test_google_score_validation_requires_all_four_axes():
+    with pytest.raises(ValueError, match="prompt_adherence"):
+        validate_google_scores(
+            {
+                "grammar": 8,
+                "creativity": 7,
+                "moral_clarity": 9,
+                "prompt_adherence": 0,
+            }
+        )

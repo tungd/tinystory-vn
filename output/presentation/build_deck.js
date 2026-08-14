@@ -417,8 +417,8 @@ eProg('E1', 'Llama 30M/60M từ đầu',
 eResult('E1', 'Llama 30M/60M từ đầu',
   [['+1,017', '60M so với 30M Phase 2 (n=45, seed bắt cặp); cao hơn ở 36/45 đề, t = 6,53.', C.blue],
    ['8,55', 'Best-of-3 từ trung bình một lần sinh 7,72: mô hình đã chứa mẫu tốt nhưng phân bố chưa ổn định.', C.blue],
-   ['3,30', 'Điểm vòng chung: runner không truyền token <|story|>, tạo đầu vào lệch hợp đồng prompt.', C.gray]],
-  'Trong phạm vi E1, mở rộng quy mô tiền huấn luyện hiệu quả hơn mọi cấu hình hậu huấn luyện đã thử. Chênh lệch giữa 8,96 nội bộ và 3,30 vòng chung phản ánh độ nhạy với định dạng prompt, không phải năng lực kém.',
+   ['4,60', 'Điểm v2 sau khi runner thêm <|story|> (25/25); baseline v1 là 3,30, adherence v2 vẫn 1,64.', C.blue]],
+  'Trong phạm vi E1, mở rộng quy mô tiền huấn luyện hiệu quả hơn mọi cấu hình hậu huấn luyện đã thử. Runner v2 đã sửa token <|story|>, nhưng điểm v2 4,60 vẫn dùng rubric và đầu ra mới; không quy toàn bộ chênh lệch 3,30 → 4,60 riêng cho token phân cách.',
   fig('trieulh/report/figures/19_headtohead_progression.png'),
   'Đối đầu các checkpoint E1 ở hai chế độ sinh và hai giám khảo.',
   'Giới hạn: 60M thay đổi đồng thời tham số, ngữ cảnh và ngân sách token — chưa cô lập riêng ảnh hưởng của dung lượng.');
@@ -528,8 +528,8 @@ mFlow('E3 · SmolLM2-135M + LoRA — Các bước phương pháp', 'TINYSTORY-VN
 eResult('E3', 'SmolLM2-135M + LoRA',
   [['3,84', 'Perplexity held-out của nhánh C — thấp nhất trong bốn cấu hình.', C.blue],
    ['C > A > B', 'Cùng thứ tự trên cả perplexity lẫn điểm giám khảo nội bộ (Qwen2.5-7B, n=50/nhánh).', C.blue],
-   ['2,81', 'Điểm vòng chung; runner thiếu system message khiến truyện đổi nhân vật hoặc kết sớm.', C.gray]],
-  'Phủ toàn bộ tầng tốt hơn chỉ đặt ở tầng cuối, và mở rộng adapter sang MLP là mức tăng lớn nhất — với chỉ 3,5% tham số được huấn luyện. Đây là bằng chứng phản bác cách hiểu "fine-tune luôn không hiệu quả".',
+   ['3,13', 'Điểm v2 sau khi runner gửi system + prompt (25/25); baseline v1 là 2,81, adherence v2 là 2,04.', C.blue]],
+  'Phủ toàn bộ tầng tốt hơn chỉ đặt ở tầng cuối, và mở rộng adapter sang MLP là mức tăng lớn nhất — với chỉ 3,5% tham số được huấn luyện. Runner v2 đã khớp system message, nhưng overall chỉ tăng 2,81 → 3,13; bản sửa đường vào không biến checkpoint thành một mô hình kể chuyện khác.',
   fig('figures/tracks/e3_lora_ablation.png'),
   'Thí nghiệm loại trừ vị trí LoRA: perplexity (trái) và điểm giám khảo nội bộ (phải); nhánh C dẫn đầu cả hai.',
   'Giới hạn: thiếu cấu hình all-linear × 1/3 tầng cuối; mỗi nhánh chỉ một seed.');
@@ -661,7 +661,7 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
     ['grammar', 'Ngữ pháp, mạch lạc, văn phong phù hợp trẻ em'],
     ['creativity', 'Độ mới và sức sống của truyện'],
     ['moral_clarity', 'Bài học rõ và được diễn biến chứng minh'],
-    ['prompt_adherence', 'Bám character, setting, challenge, outcome, teaching và dòng Moral'],
+    ['prompt_adherence', 'Bám character, setting, challenge, outcome và teaching'],
   ].map(([k, v]) => [
     { text: k, options: { fontFace: 'Courier New', fontSize: 10, bold: true, color: C.teal, valign: 'middle' } },
     { text: v, options: { fontFace: F, fontSize: 10.5, color: C.ink, valign: 'middle' } },
@@ -671,8 +671,8 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
   // cột phải: tổng hợp + thống kê
   s.addText('Tổng hợp điểm và thống kê', { x: 6.95, y: 4.02, w: 5.95, h: 0.32, fontFace: F, fontSize: 13, bold: true, color: C.teal });
   s.addText(bullets([
-    'Điểm mỗi truyện = trung bình bốn trục; điểm mỗi hệ = trung bình 25 truyện (kể cả hai đầu ra gần rỗng của E1, Gemma chấm 1).',
-    'Khoảng tin cậy 95% dùng bootstrap 10.000 lần theo 25 đề; so sánh bắt cặp lấy điểm tổng trên cùng đề (E4 − E5 = +0,76 [0,39; 1,17]).',
+    'Baseline v1: điểm mỗi truyện = trung bình bốn trục; điểm mỗi hệ = trung bình 25 truyện (kể cả hai đầu ra gần rỗng của E1, Gemma chấm 1).',
+    'V2 đã sinh lại cả năm hệ; lượt judge ưu tiên E1 và E3: E1 4,60, E3 3,13, đều 25/25. Khoảng tin cậy dùng bootstrap 10.000 lần theo 25 đề.',
     'Đây là lượt chấm mới, tách khỏi giám khảo nội bộ (Qwen của E1/E3, Gemma local của E2); điểm nội bộ không nhập vào bảng chung.',
   ]).map(o => ({ ...o, options: { ...o.options, fontSize: 11.5 } })), { x: 6.95, y: 4.42, w: 5.95, h: 2.0 });
   // dải dưới: mô hình và môi trường
@@ -684,8 +684,8 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
 
 // ============================ 21. BẢNG ĐỊNH LƯỢNG ============================
 {
-  const s = mkSlide(); chrome(s, 'Kết quả định lượng trên 25 đề đánh giá thống nhất');
-  const data = [{ name: 'Điểm vòng chung', labels: ['E4 · 3B+Repair', 'E5 · 3B QLoRA', 'E1 · 60M', 'E2 · 63M', 'E3 · 135M'], values: [9.2, 8.44, 3.3, 3.18, 2.81] }];
+  const s = mkSlide(); chrome(s, 'Kết quả định lượng: baseline v1 và kiểm tra v2');
+  const data = [{ name: 'Baseline v1 · 125 lượt', labels: ['v1 · E4 · 3B+Repair', 'v1 · E5 · 3B QLoRA', 'v1 · E1 · 60M', 'v1 · E2 · 63M', 'v1 · E3 · 135M'], values: [9.2, 8.44, 3.3, 3.18, 2.81] }];
   s.addChart(p.ChartType.bar, data, {
     x: 0.44, y: 1.9, w: 7.6, h: 4.8, barDir: 'col',
     showValue: true, dataLabelPosition: 'outEnd', dataLabelColor: C.ink, dataLabelFontSize: 13, dataLabelFontBold: true,
@@ -695,9 +695,9 @@ eResult('E5', 'Llama 3.2 3B + QLoRA',
     valAxisHidden: true, valGridLine: { style: 'none' }, catGridLine: { style: 'none' },
     valAxisMaxVal: 10, valAxisMinVal: 0,
   });
-  stat(s, 8.4, 2.0, '+0,76', 'Chênh lệch E4 − E5 (giám khảo Gemma), khoảng tin cậy [0,39; 1,17].', C.blue, 4.4);
-  stat(s, 8.4, 3.35, '25 đề · 125 truyện', 'Sinh lại đầu ra hệ thống đại diện, chấm mù 125 lượt bằng cùng một giám khảo.', C.gray, 4.4);
-  s.addText('Trung bình của E4 phản ánh cả mô hình 3B lẫn chi phí hệ thống (kiểm tra, viết lại, chuẩn hóa). Chênh lệch điểm giữa các hướng không thể quy trực tiếp cho số tham số, vì năm hướng còn khác nhau về dữ liệu, giao diện điều kiện và hậu xử lý. Cùng một seed và một giám khảo — chưa phải thang điểm tuyệt đối.',
+  stat(s, 8.4, 2.0, 'E1 v2 · 4,60', '25/25 · CI [4,38; 4,83] · prompt adherence 1,64.', C.blue, 4.4);
+  stat(s, 8.4, 3.35, 'E3 v2 · 3,13', '25/25 · CI [2,95; 3,31] · prompt adherence 2,04.', C.blue, 4.4);
+  s.addText('Biểu đồ bên trái là baseline v1 đã đủ 125 lượt; hai runner bị phát hiện lệch hợp đồng đã được sửa trong v2. Ba hệ còn lại đã sinh lại nhưng chưa đủ judge v2 do quota Google, nên không trộn các số v2 của E1/E3 vào một bảng xếp hạng với baseline v1. Điểm v2 vẫn dùng cùng bốn trục, nhưng không chấm literal dòng Moral.',
     { x: 8.4, y: 4.85, w: 4.4, h: 2.0, fontFace: F, fontSize: 12.5, color: C.ink, lineSpacingMultiple: 1.05 });
 }
 

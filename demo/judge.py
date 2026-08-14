@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import os
-import json
 import time
 from pathlib import Path
 from typing import Any
 
-from app.judge import AXES, parse_scores
+from app.judge import (
+    build_google_judge_prompt,
+    build_google_judge_schema,
+    scores_from_google_response,
+    validate_google_scores,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,40 +83,15 @@ class GoogleJudge:
 
     @staticmethod
     def _schema() -> dict[str, Any]:
-        return {
-            "type": "object",
-            "properties": {
-                axis: {"type": "integer", "minimum": 1, "maximum": 10}
-                for axis in AXES
-            },
-            "required": AXES,
-        }
+        return build_google_judge_schema()
 
     @staticmethod
     def _prompt(story: str, prompt: str) -> str:
-        return (
-            "Judge this children's fable strictly on four 1-10 integer scales. "
-            "Grammar covers grammatical correctness, coherence, and child-appropriate style. "
-            "Creativity covers originality and vivid storytelling. Moral clarity covers whether "
-            "the requested lesson is clearly earned by the plot. Prompt adherence covers the "
-            "requested character, setting, challenge, outcome, and teaching as represented in "
-            "the story. Do not reward or penalize a literal `Moral:` footer, its exact wording, "
-            "or whether it appears; judge the lesson from the events. "
-            "Return only one JSON object with exactly these integer keys: grammar, creativity, "
-            "moral_clarity, prompt_adherence. Do not include reasons or markdown.\n\n"
-            f"REQUEST:\n{prompt}\n\nSTORY:\n{story}\n\nJSON:"
-        )
+        return build_google_judge_prompt(story, prompt)
 
     @staticmethod
     def _scores_from_response(response: Any) -> tuple[dict[str, Any], str]:
-        parsed = getattr(response, "parsed", None)
-        raw = response.text or ""
-        if parsed is not None and hasattr(parsed, "model_dump"):
-            parsed = parsed.model_dump()
-        if isinstance(parsed, dict):
-            raw = json.dumps(parsed, ensure_ascii=False)
-        scores = parse_scores(raw)
-        return scores, raw
+        return scores_from_google_response(response)
 
     def evaluate(self, story: str, prompt: str) -> dict[str, Any]:
         from google.genai import types
@@ -144,8 +123,7 @@ class GoogleJudge:
                 )
                 scores, raw = self._scores_from_response(response)
                 last_raw = raw
-                if any(not 1 <= scores[axis] <= 10 for axis in AXES):
-                    raise ValueError(f"invalid scores: {scores}")
+                validate_google_scores(scores)
                 return {
                     **scores,
                     "judge_model": self.model_id,

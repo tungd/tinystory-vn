@@ -28,8 +28,8 @@ so sánh giữa các hướng vì tập đề và giám khảo khác nhau. Năm 
 kiện, **counterfactual sensitivity** (mức độ đầu ra thay đổi đúng hướng khi chỉ thay
 đổi một điều kiện) và đóng góp của bước sửa lỗi.
 
-**Kết quả.** Quy trình đánh giá chung cho thấy hai nhóm kết quả rõ rệt: E4 đạt 9,20/10
-và E5 đạt 8,44/10, trong khi E1–E3 nằm trong khoảng 2,81–3,30. Tuy nhiên, chênh lệch
+**Kết quả baseline v1.** Quy trình đánh giá chung ban đầu cho thấy hai nhóm kết quả rõ rệt:
+E4 đạt 9,20/10 và E5 đạt 8,44/10, trong khi E1–E3 nằm trong khoảng 2,81–3,30. Tuy nhiên, chênh lệch
 điểm tổng hợp không thể quy trực tiếp cho số tham số, vì năm hệ thống còn khác nhau ở
 dữ liệu tiền huấn luyện, giao diện điều kiện, kỹ thuật tinh chỉnh và hậu xử lý. Các thí
 nghiệm loại trừ cho thấy nguyên nhân cụ thể hơn. Khi tăng số trường đầu vào từ hai lên
@@ -43,6 +43,16 @@ hoặc cách giải quyết phù hợp với thay đổi về tính cách hay k�
 trait→choice (92%) và choice→outcome (100%). Như vậy, mối quan hệ giữa điều kiện và
 diễn biến đã có trong đầu ra thô; repair chủ yếu sửa định dạng đầu ra và các sai lệch
 cục bộ.
+
+**Cập nhật giao thức v2 (14/08/2026).** Sau khi phát hiện runner v1 bỏ token mở truyện
+`<|story|>` của E1 và bỏ `system_message` của E3, nhóm đã sửa hai runner và sinh lại đủ
+25/25 đầu ra cho cả năm hệ. Lượt chấm Google v2 được ưu tiên cho hai hệ bị ảnh hưởng:
+E1 đạt **4,60/10** (95% CI **[4,38; 4,83]**) và E3 đạt **3,13/10** (95% CI
+**[2,95; 3,31]**), đều đủ 25/25 truyện. Ba hệ còn lại đã có đầu ra v2 nhưng lượt chấm
+đang dừng ở quota Google, nên các số v1 bên dưới được giữ làm baseline và không trộn với
+hai số v2 thành một bảng xếp hạng mới. Giao thức v2 cũng không thưởng hay phạt việc xuất
+hiện nguyên văn dòng `Moral:`; vì vậy không nên so sánh cơ học các điểm v2 với điểm nội bộ
+8,96 và 6,87 vốn dùng prompt, judge và quy trình khác.
 
 **Kết luận.** Đóng góp chính của nghiên cứu không phải là kết luận đơn giản rằng mô hình
 lớn hơn sẽ đạt điểm cao hơn. Quan trọng hơn, nghiên cứu phân biệt ba mức độ tuân thủ:
@@ -229,17 +239,18 @@ kích thước đúng bằng vocabulary; các token có xác suất cao được
 
 | Hướng | Tokenizer và vocabulary | Cửa sổ ngữ cảnh | Định dạng input → output | Trọng số và artifact dùng để chạy |
 |---|---|---|---|---|
-| E1 | BPE tương thích GPT-2, 12.000 token; có `<\|story\|>`, `<\|end\|>`, `<\|pad\|>` | huấn luyện: 1.024 token; runner chung: 2.048 | năm trường dạng chỉ dẫn + `<\|story\|>` → token truyện → `<\|end\|>` | học toàn bộ 59,56M từ đầu; đánh giá bằng GGUF Q8_0 |
+| E1 | BPE tương thích GPT-2, 12.000 token; có `<\|story\|>`, `<\|end\|>`, `<\|pad\|>` | huấn luyện: 1.024 token; runner: 2.048 | năm trường dạng chỉ dẫn + `<\|story\|>` → token truyện → `<\|end\|>` | học toàn bộ 59,56M từ đầu; đánh giá bằng GGUF Q8_0 |
 | E2 | Metaspace BPE, 16.384 token; sáu thẻ `<char>…</char><moral>…</moral><story>…</story>` | 1.024 token; pha causal dùng block 512 | character + moral trong các thẻ → phần truyện; loss của prompt bị mask | học toàn bộ 62,99M từ đầu bằng PyTorch trên Colab; chuyển sang artifact MLX để phục vụ |
-| E3 | GPT-2 BPE của SmolLM2, 49.152 token | mô hình hỗ trợ 8.192; thí nghiệm huấn luyện ở 512 | `system_message +` đề năm trường → phần truyện sinh ra | giữ nguyên base; học LoRA C 4,88M; vòng chung dùng base FP16 + adapter PEFT |
+| E3 | GPT-2 BPE của SmolLM2, 49.152 token | mô hình hỗ trợ 8.192; thí nghiệm huấn luyện ở 512 | `system_message +` đề năm trường → phần truyện sinh ra | giữ nguyên base; học LoRA C 4,88M; runner v2 gửi đúng system + prompt |
 | E4 | Llama BPE, 128.256 token | mô hình hỗ trợ 131.072; runner dùng 2.048 | system + đề năm trường → assistant story → validator → rewrite khi cần → chuẩn hóa `Moral:` | checkpoint nền Q4_K_M, không huấn luyện thêm trong hệ thống đại diện |
 | E5 | Llama BPE, 128.256 token | mô hình hỗ trợ 131.072; huấn luyện và runner dùng 2.048 | chat template `system/user/assistant` với năm trường → assistant story → `<\|eot_id\|>` | base 4-bit khi QLoRA; gộp adapter rồi xuất GGUF Q4_K_M |
 
-Khi đọc kết quả chung, cần lưu ý hai khác biệt về định dạng đầu vào. E1 được huấn luyện
-với `<|story|>` nhưng runner chung truyền trực tiếp đề năm trường; E3 được huấn luyện với
-`system_message + prompt` nhưng runner chung chỉ truyền phần đề. E2, E4 và E5 được chạy
-theo đúng định dạng đầu vào của artifact đại diện. Các khác biệt này không làm thay đổi
-kiến trúc mô hình nhưng có thể ảnh hưởng đến điểm tuân thủ.
+Khi đọc baseline v1, cần lưu ý hai khác biệt về định dạng đầu vào. E1 được huấn luyện
+với `<|story|>` nhưng runner v1 truyền trực tiếp đề năm trường; E3 được huấn luyện với
+`system_message + prompt` nhưng runner v1 chỉ truyền phần đề. Hai lỗi này đã được sửa trong
+runner v2: E1 thêm `<|story|>`, còn E3 gửi đúng system message và prompt huấn luyện. E2, E4
+và E5 giữ định dạng artifact đại diện. Các khác biệt này không làm thay đổi kiến trúc mô
+hình nhưng có thể ảnh hưởng đáng kể đến điểm tuân thủ.
 
 ### 2.2 E1 — Llama 30M/60M huấn luyện từ đầu — Lê Hải Triều (20252611M)
 
@@ -408,11 +419,12 @@ rằng gói scale-up tiền huấn luyện hiệu quả hơn các cấu hình h�
 không định lượng riêng đóng góp của từng thành phần.
 
 **Quan hệ với đánh giá thống nhất.** Điểm 8,956 ở trên thuộc judge và prompt contract
-nội bộ của E1. Trong vòng chung, runner không thêm token `<|story|>` như khi train và
-Gemma chấm theo rubric khác; `slm-60m` đạt 3,30/10. Vì vậy kết quả nội bộ được dùng để
-kết luận về can thiệp bên trong E1, còn điểm vòng chung dùng để so sánh hệ thống trên
-giao diện triển khai thống nhất. Chênh lệch lớn giữa hai phép đo cũng là bằng chứng rằng
-khả năng chuyển giao qua prompt contract là một phần của chất lượng hệ thống.
+nội bộ của E1. Baseline vòng chung v1 dùng runner chưa thêm token `<|story|>` và Gemma
+chấm theo rubric khác, nên `slm-60m` đạt 3,30/10. Sau khi sửa runner, lượt v2 đủ 25 đề
+đạt **4,60/10** (grammar 8,48; creativity 4,24; moral clarity 4,04;
+prompt adherence 1,64; CI [4,38; 4,83]). Đây là tín hiệu đo trên giao diện đã khớp hơn,
+nhưng không thể quy toàn bộ chênh lệch 3,30 → 4,60 riêng cho token phân cách vì v2 đồng
+thời sinh lại đầu ra và dùng rubric judge không chấm literal `Moral:`.
 
 **Kết luận E1.** Kết quả nội bộ cho thấy chất lượng mặc định của mô hình nhỏ phụ thuộc
 chủ yếu vào nền tiền huấn luyện. Khi mô hình 30M được cấp đủ ngân sách token, loss,
@@ -441,14 +453,13 @@ không tạo mức cải thiện tương đương. Việc tự đo nhiễu của
 thấy các chênh lệch nhỏ phải được chấm lặp hoặc đánh giá trên mẫu lớn hơn trước khi
 xem là hiệu ứng thực sự.
 
-Điểm 3,30 trong vòng chung không phủ định các thí nghiệm loại trừ nội bộ, nhưng bộc lộ một
-hạn chế khi triển khai: checkpoint được huấn luyện với token `<|story|>` trong khi runner chung
-không truyền token đó. E1 vì vậy chứng minh được hiệu quả của gói tăng quy mô trong đúng
-định dạng huấn luyện, nhưng chưa chứng minh khả năng giữ chất lượng khi giao diện prompt
-thay đổi. `slm-60m` được chọn làm đại diện E1 vì là checkpoint trực tiếp tốt nhất của
-hướng này; best-of-N được xem là lớp tìm kiếm lúc suy luận, không được trộn vào chất
-lượng một lần sinh của checkpoint. Mẫu định tính và trường hợp thay thế điều kiện được
-trình bày ở Mục 2.7.
+Điểm 3,30 của baseline v1 không phủ định các thí nghiệm loại trừ nội bộ, nhưng bộc lộ một
+lỗi triển khai: checkpoint được huấn luyện với token `<|story|>` trong khi runner v1 không
+truyền token đó. Runner v2 đã khớp lại hợp đồng này; điểm v2 **4,60/10** là kết quả tương
+ứng cần dùng khi trình bày E1 sau bản sửa. `slm-60m` được chọn làm đại diện E1 vì là
+checkpoint trực tiếp tốt nhất của hướng này; best-of-N được xem là lớp tìm kiếm lúc suy
+luận, không được trộn vào chất lượng một lần sinh của checkpoint. Mẫu định tính và trường
+hợp thay thế điều kiện được trình bày ở Mục 2.7.
 
 ### 2.3 E2 — GPT 63M huấn luyện từ đầu — Đào Đức Tùng (20252612M)
 
@@ -785,12 +796,16 @@ không nên diễn giải các chênh lệch nhỏ như hiệu ứng phổ quát
 trong ba cấu hình đã chạy, nhánh C cung cấp phân bổ adapter tốt nhất với khoảng 3,5%
 trọng số trainable.
 
-Trong vòng chung, E3 đạt 2,81/10 — nằm cùng dải hẹp 2,81–3,30 với E1 (3,30) và E2
-(3,18), tách biệt rõ với E4/E5 (9,20 và 8,44). Điểm thấp này không nên quy cho một
-nguyên nhân đơn lẻ. Sai khác hợp đồng prompt (runner chung chỉ truyền phần đề, còn
-adapter được train với `system_message + prompt`) là một yếu tố kéo prompt-adherence
-xuống 1,44; nhưng nó không phải yếu tố duy nhất, vì E1/E2 không hề có mismatch này vẫn
-nằm cùng dải điểm với E3. Phần chi phối là các yếu tố cấu trúc đồng thời khác nhau giữa
+Trong baseline vòng chung v1, E3 đạt 2,81/10 — nằm cùng dải hẹp 2,81–3,30 với E1 (3,30)
+và E2 (3,18), tách biệt rõ với E4/E5 (9,20 và 8,44). Runner v1 chỉ truyền phần đề,
+trong khi adapter được train với `system_message + prompt`, khiến prompt-adherence v1
+xuống 1,44. Runner v2 đã gửi lại đúng system message và prompt; trên 25 đề, E3 đạt
+**3,13/10** (grammar 4,76; creativity 3,48; moral clarity 2,24; prompt adherence
+2,04; CI [2,95; 3,31]). Mức tăng overall chỉ **+0,32**, nên bản sửa đã khắc phục
+đường vào nhưng không biến checkpoint thành một mô hình kể chuyện khác. Không nên quy
+toàn bộ chênh lệch 2,81 → 3,13 cho system message vì v2 đồng thời sinh lại đầu ra và
+dùng rubric judge đã bỏ điều kiện chấm literal `Moral:`. Phần chi phối còn lại là các
+yếu tố cấu trúc đồng thời khác nhau giữa
 năm hướng: dung lượng mô hình 135M so với 3B của E4/E5, việc E3 là mô hình pretrain được
 tinh chỉnh nhẹ bằng LoRA trên 50k mẫu (so với E1/E2 huấn luyện đầy đủ từ đầu trên corpus
 fable), cùng khác biệt về dữ liệu tiền huấn luyện và giao diện điều kiện. Đúng như phần
@@ -1257,6 +1272,8 @@ tính thời gian chờ quota.
 
 ### 4.6 Kết quả định lượng
 
+#### Baseline v1 — đủ 125 lượt chấm
+
 Điểm tổng của một truyện là trung bình bốn trục; điểm của phương án là trung bình 25 truyện,
 kể cả hai output gần-rỗng của E1. Vì schema judge có miền 1–10, hai output này nhận điểm
 1 do Gemma chấm, không bị thay thủ công thành 0.
@@ -1288,6 +1305,21 @@ trên cùng đề:
 Các CI mô tả biến thiên theo tập 25 prompt và không điều chỉnh cho 10 phép so sánh. Dù
 CI của E4 − E5 không chứa 0, không nên chuyển nó thành tuyên bố phổ quát: chỉ có một
 judge, một seed sinh và một lượt chấm.
+
+#### Kiểm tra v2 — hai runner đã sửa
+
+Nhóm đã sinh lại đủ 25 đầu ra cho cả năm hệ. Do quota Google giới hạn lượt chấm tại thời
+điểm cập nhật, lượt v2 được ưu tiên cho E1 và E3; hai hệ này đã có đủ 25/25 điểm. Judge
+v2 giữ bốn trục như baseline nhưng không yêu cầu, thưởng hay phạt dòng `Moral:` nguyên văn.
+
+| Phương án | Có nội dung | Ngôn ngữ | Sáng tạo | Moral | Bám đề | Overall | 95% CI | Từ/truyện | Latency |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| E1 · SLM 60M · v2 | 25/25 | 8,48 | 4,24 | 4,04 | 1,64 | **4,60** | [4,38; 4,83] | 258,2 | 0,33 s |
+| E3 · SmolLM2 135M + LoRA C · v2 | 25/25 | 4,76 | 3,48 | 2,24 | 2,04 | **3,13** | [2,95; 3,31] | 315,0 | 8,58 s |
+
+Ba hệ còn lại đã hoàn tất sinh v2 nhưng chưa đủ lượt judge v2 do quota Google, nên không
+được đưa vào bảng này. Vì prompt và rubric đã thay đổi, không đọc hai hàng v2 như một bảng
+xếp hạng chung với ba hàng baseline v1; bảng v1 phía trên là mốc đầy đủ để đối chiếu.
 
 ### 4.7 Phân tích trường hợp GJ20
 
