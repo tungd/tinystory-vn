@@ -54,3 +54,28 @@ def build_fable_prompt(
     if length_hint:
         base += "\n" + length_hint.strip()
     return base
+
+
+def build_evaluation_brief(
+    character="", setting="", challenge="", outcome="", teaching="", length_hint=""
+) -> str:
+    """Describe requested story elements without generation-format rules."""
+
+    vals = {
+        "character": character,
+        "setting": setting,
+        "challenge": challenge,
+        "outcome": outcome,
+        "teaching": teaching,
+    }
+    parts = [
+        f"- {label}: {vals[key].strip()}"
+        for key, label in _LABELS
+        if vals[key].strip()
+    ]
+    brief = "Evaluate the story against these requested narrative elements."
+    if parts:
+        brief += "\n" + "\n".join(parts)
+    if length_hint:
+        brief += "\n" + length_hint.strip()
+    return brief

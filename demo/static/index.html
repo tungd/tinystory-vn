@@ -213,7 +213,7 @@
         </main>
         <aside class="evidence">
           <div class="section-heading"><h2>Judge</h2><span>evidence</span></div>
-          <p class="evidence-intro">The score comes from the configured Google GenAI judge, never from the local model runtime.</p>
+          <p class="evidence-intro">The score comes from the configured Google GenAI judge, never from the local model runtime. Format is reported separately and does not affect the four scores.</p>
           <div class="judge-card">
             <div class="judge-provider"><div class="provider-mark">G</div><div><strong id="judge-model">Google GenAI</strong><span id="judge-detail">Checking configuration…</span></div></div>
             <button id="judge-button" class="primary-button judge-button" disabled>Judge this output</button>
@@ -244,6 +244,7 @@
       const brief = () => ({ character: $("character").value, setting: $("setting").value, challenge: $("challenge").value, outcome: $("outcome").value, teaching: $("teaching").value, length: $("length").value });
       const selectedModel = () => state.models.find((model) => model.id === state.selected);
       const storyHtml = (story) => escapeHtml(story).split(/\n\s*\n/).map((part) => `<p>${part.replace(/^Moral:/, "<span class=\"moral\">Moral:</span>")}</p>`).join("");
+      const formatLabel = (format) => !format ? "" : format.moral_is_exact ? "Moral exact" : format.moral_is_final ? "Moral line" : format.has_moral_line ? "Moral not final" : "No Moral line";
       const currentPreset = () => state.presets.find((preset) => preset.prompt_id === state.presetId);
       const selectedCompareResult = () => state.compareResults.find((result) => result.model_id === state.compareSelectedId);
 
@@ -357,7 +358,7 @@
         const detail = result.error
           ? `<div class="compare-error">${escapeHtml(result.error)}</div>`
           : `<div class="compare-story">${storyHtml(result.story)}</div>${score}`;
-        $("compare-list").innerHTML = `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.direction || result.model_id)}</em><strong>${escapeHtml(model?.name || result.model_name || result.model_id)}</strong></div><div class="compare-runtime">${result.error ? "Could not run this model" : `${escapeHtml(result.backend)} · ${escapeHtml(result.artifact)}`}</div></div><div class="compare-actions">${result.error ? "" : `<div class="compare-metrics"><span><strong>${result.word_count}</strong> words</span><span><strong>${result.latency_ms}</strong> ms</span></div><button class="small-button" data-judge-result="${escapeHtml(result.model_id)}" ${result.judgeState === "loading" ? "disabled" : ""}>${result.judge ? "Rejudge" : "Judge"}</button>`}</div></div>${detail}<div class="compare-nav"><button class="small-button" data-compare-prev ${results.length < 2 ? "disabled" : ""}>← Previous</button><span>Output ${index + 1} of ${results.length}</span><button class="small-button" data-compare-next ${results.length < 2 ? "disabled" : ""}>Next →</button></div></article>`;
+        $("compare-list").innerHTML = `<article class="compare-item"><div class="compare-head"><div><div class="compare-title"><em>${escapeHtml(model?.direction || result.direction || result.model_id)}</em><strong>${escapeHtml(model?.name || result.model_name || result.model_id)}</strong></div><div class="compare-runtime">${result.error ? "Could not run this model" : `${escapeHtml(result.backend)} · ${escapeHtml(result.artifact)}`}</div></div><div class="compare-actions">${result.error ? "" : `<div class="compare-metrics"><span><strong>${result.word_count}</strong> words</span><span><strong>${result.latency_ms}</strong> ms</span>${formatLabel(result.format) ? `<span><strong>${formatLabel(result.format)}</strong></span>` : ""}</div><button class="small-button" data-judge-result="${escapeHtml(result.model_id)}" ${result.judgeState === "loading" ? "disabled" : ""}>${result.judge ? "Rejudge" : "Judge"}</button>`}</div></div>${detail}<div class="compare-nav"><button class="small-button" data-compare-prev ${results.length < 2 ? "disabled" : ""}>← Previous</button><span>Output ${index + 1} of ${results.length}</span><button class="small-button" data-compare-next ${results.length < 2 ? "disabled" : ""}>Next →</button></div></article>`;
         document.querySelectorAll("[data-judge-result]").forEach((el) => el.addEventListener("click", () => judgeResult(el.dataset.judgeResult)));
         $("compare-list").querySelector("[data-compare-prev]")?.addEventListener("click", () => { state.compareSelectedId = previousId; render(); });
         $("compare-list").querySelector("[data-compare-next]")?.addEventListener("click", () => { state.compareSelectedId = nextId; render(); });
@@ -379,7 +380,7 @@
         if (!output) { $("story-paper").innerHTML = `<div class="story-placeholder"><div class="glyph">◌</div><p>Select a model, load its runtime, and run the shared brief to place its story here.</p></div>`; $("output-meta").textContent = "No run yet"; $("run-strip").innerHTML = ""; return; }
         $("story-paper").innerHTML = `<div class="story-text">${storyHtml(output.story)}</div>`;
         $("output-meta").textContent = `${output.direction} · ${output.model_name}`;
-        $("run-strip").innerHTML = `<span><strong>${output.word_count}</strong> words</span><span><strong>${output.latency_ms}</strong> ms</span><span><strong>${output.backend}</strong></span><span><strong>seed ${output.seed}</strong></span>${output.actions?.length ? `<span><strong>${escapeHtml(output.actions.join(", "))}</strong></span>` : ""}`;
+        $("run-strip").innerHTML = `<span><strong>${output.word_count}</strong> words</span><span><strong>${output.latency_ms}</strong> ms</span><span><strong>${output.backend}</strong></span><span><strong>seed ${output.seed}</strong></span>${formatLabel(output.format) ? `<span><strong>${formatLabel(output.format)}</strong></span>` : ""}${output.actions?.length ? `<span><strong>${escapeHtml(output.actions.join(", "))}</strong></span>` : ""}`;
       }
 
       function scoreBlockHtml(score) {

@@ -27,6 +27,7 @@ from app.prompt_en import (
     LENGTH_NUM_PREDICT,
     SYSTEM_PROMPT_EN,
     SYSTEM_PROMPT_MINIMAL_EN,
+    build_evaluation_brief,
     build_fable_prompt,
 )
 from app.textproc import trim_to_last_sentence
@@ -34,6 +35,7 @@ from app.textproc import trim_to_last_sentence
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LLAMA_SERVER = Path("/opt/local/bin/llama-server")
+MORAL_LINE_RE = re.compile(r"(?im)^\s*Moral\s*:\s*(.*)$")
 
 
 def _load_dotenv(path: Path) -> None:
@@ -85,7 +87,7 @@ STUDIO_SPECS: tuple[StudioSpec, ...] = (
         backend="mlx",
         artifact=ROOT / "runs/v16/artifacts/conditioning-mlx",
         port=18102,
-        description="The V16 conditioning direction loaded directly with MLX-LM.",
+        description="The selected V16 conditioning checkpoint loaded directly with MLX-LM.",
         prompt_style="v16",
     ),
     StudioSpec(
@@ -417,6 +419,38 @@ class StudioRuntime:
             LENGTH_HINT_EN[row["length"]],
         )
 
+    @staticmethod
+    def _judge_prompt(spec: StudioSpec, row: dict[str, str]) -> str:
+        return build_evaluation_brief(
+            row["character"],
+            row["setting"],
+            row["challenge"],
+            row["outcome"],
+            row["teaching"],
+            LENGTH_HINT_EN[row["length"]],
+        )
+
+    @staticmethod
+    def _story_format(story: str, teaching: str) -> dict[str, bool]:
+        cleaned = story.strip()
+        matches = list(MORAL_LINE_RE.finditer(cleaned))
+        if not matches:
+            return {
+                "has_moral_line": False,
+                "moral_is_final": False,
+                "moral_is_exact": False,
+            }
+        last = matches[-1]
+
+        def normalize(value: str) -> str:
+            return re.sub(r"[.!?]+\s*$", "", value.strip()).casefold()
+
+        return {
+            "has_moral_line": True,
+            "moral_is_final": not cleaned[last.end() :].strip(),
+            "moral_is_exact": normalize(last.group(1)) == normalize(teaching),
+        }
+
     def _llama_completion(
         self, handle: _Handle, prompt: str, seed: int, num_predict: int
     ) -> dict[str, Any]:
@@ -499,14 +533,7 @@ class StudioRuntime:
             actual_seed = _seed(seed if seed is not None else row.get("seed"))
             num_predict = LENGTH_NUM_PREDICT[row["length"]]
             prompt = self._model_prompt(spec, row)
-            judge_prompt = build_fable_prompt(
-                row["character"],
-                row["setting"],
-                row["challenge"],
-                row["outcome"],
-                row["teaching"],
-                LENGTH_HINT_EN[row["length"]],
-            )
+            judge_prompt = self._judge_prompt(spec, row)
 
             if spec.backend == "llama_completion":
                 generated = self._llama_completion(handle, prompt, actual_seed, num_predict)
@@ -556,6 +583,10 @@ class StudioRuntime:
                 "judge_prompt": judge_prompt,
                 "story": story,
                 "raw_story": raw_story if enhancement else None,
+                "format": self._story_format(story, row["teaching"]),
+                "raw_format": self._story_format(raw_story, row["teaching"])
+                if enhancement
+                else None,
                 "word_count": _word_count(story),
                 "latency_ms": round((time.perf_counter() - started) * 1000),
                 "input_tokens": generated.get("input_tokens", 0),
